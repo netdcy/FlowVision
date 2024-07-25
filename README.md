@@ -14,7 +14,8 @@ A waterfall-style image viewer for macOS, offering a smooth and immersive browsi
 
 ## Instructions:
 ### In Image View:
- - Hold right-click/left-click and scroll the wheel to zoom
+ - Hold down the right/left mouse button and scroll the wheel to zoom
+ - Hold down the middle mouse button and drag to move the window
  - Long press the left mouse button to switch to 100% zoom
  - Long press the right mouse button to fit the image to the view
 ### Right-Click Gestures:
