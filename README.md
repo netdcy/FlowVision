@@ -1,8 +1,11 @@
-# FlowVision
 
-[![](https://img.shields.io/github/release/netdcy/FlowVision.svg)](https://github.com/netdcy/FlowVision/releases/latest "GitHub release")
+<p align="center">
+<h1 align="center">FlowVision</h1>
+<h3 align="center">Waterfall-style Image Viewer for macOS<br><br><a href="./README_zh.md">[中文说明]</a></h3> 
+</p>
 
-A waterfall-style image viewer for macOS, offering a smooth and immersive browsing experience.
+[![](https://img.shields.io/github/release/netdcy/FlowVision.svg)](https://github.com/netdcy/FlowVision/releases/latest?color=blue "GitHub release") ![GitHub License](https://img.shields.io/github/license/netdcy/FlowVision?color=blue)
+
 
 ## Screenshots
 
