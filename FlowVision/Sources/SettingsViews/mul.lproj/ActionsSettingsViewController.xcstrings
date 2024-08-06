@@ -1,0 +1,114 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "diV-0n-cUs.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Keyboard Shortcuts:\"; ObjectID = \"diV-0n-cUs\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Keyboard Shortcuts:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "键盘按键："
+          }
+        }
+      }
+    },
+    "jjU-gf-0lm.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Double-click to open/close the image. \\nHold down the right/left mouse button and scroll the wheel to zoom.\\nHold down the middle mouse button and drag to move the window.\\nLong press the left mouse button to switch to 100% zoom.\\nLong press the right mouse button to fit the image to the view.\"; ObjectID = \"jjU-gf-0lm\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Double-click to open/close the image. \nHold down the right/left mouse button and scroll the wheel to zoom.\nHold down the middle mouse button and drag to move the window.\nLong press the left mouse button to switch to 100% zoom.\nLong press the right mouse button to fit the image to the view."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "双击打开/关闭图片。\n按住右键/左键滚动滚轮可以缩放。\n按住中键拖动可以移动窗口。\n长按左键切换 100%缩放。\n长按右键切换缩放到视图。"
+          }
+        }
+      }
+    },
+    "p6V-rJ-gwR.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Image Viewing:\"; ObjectID = \"p6V-rJ-gwR\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Image Viewing:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图像浏览："
+          }
+        }
+      }
+    },
+    "Ple-dV-Ujq.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"W: Same as the right-click gesture Up.\\nA/D: Same as the right-click gesture Left/Right.\\nS: Same as the right-click gesture Down.\"; ObjectID = \"Ple-dV-Ujq\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "W: Same as the right-click gesture Up.\nA/D: Same as the right-click gesture Left/Right.\nS: Same as the right-click gesture Down."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "W：同右键手势-向上。\nA/D：同右键手势-向左/右。\nS：同右键手势-向下。"
+          }
+        }
+      }
+    },
+    "qK4-Oc-vMt.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Right-Click Gestures:\"; ObjectID = \"qK4-Oc-vMt\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Right-Click Gestures:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右键手势："
+          }
+        }
+      }
+    },
+    "xau-nf-fbD.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk).\\nUp: Switch to the parent directory.\\nDown: Return to the previous directory.\\nDown-Right/Down-Left: Switch to the next/previous folder with images at the same level as the current folder.\\nUp-Right/Up-Left: Switch to the parent directory, then perform the Down-Right/Down-Left action.\"; ObjectID = \"xau-nf-fbD\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk).\nUp: Switch to the parent directory.\nDown: Return to the previous directory.\nDown-Right/Down-Left: Switch to the next/previous folder with images at the same level as the current folder.\nUp-Right/Up-Left: Switch to the parent directory, then perform the Down-Right/Down-Left action."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "向右/左：切换到下一个/上一个有图片/视频的文件夹(逻辑上等同于将整个磁盘中的文件夹排序后的下一个)。\n向上：切换到上级目录。\n向下：返回到上一次的目录。\n向下右/下左：切换到与当前文件夹平级的下一个/上一个有图片的文件夹。\n向上右/上左：切换到上级目录后，再执行向下右/下左的操作。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

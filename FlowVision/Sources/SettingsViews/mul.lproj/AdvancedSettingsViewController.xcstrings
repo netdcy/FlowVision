@@ -1,0 +1,348 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "1V0-bu-KPz.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Do Not Use FFmpeg\"; ObjectID = \"1V0-bu-KPz\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Do Not Use FFmpeg"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不使用FFmpeg"
+          }
+        }
+      }
+    },
+    "a8Q-Mw-3Xn.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Memory Usage Limit:\"; ObjectID = \"a8Q-Mw-3Xn\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Memory Usage Limit:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内存使用限制："
+          }
+        }
+      }
+    },
+    "A97-Bz-qH3.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"For mechanical hard drives and network drives, it is recommended to set it to 1. For external SSDs, this value can be increased appropriately.\"; ObjectID = \"A97-Bz-qH3\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "For mechanical hard drives and network drives, it is recommended to set it to 1. For external SSDs, this value can be increased appropriately."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对于机械硬盘和网络驱动器建议设置为1，对于外置SSD可适当增大。"
+          }
+        }
+      }
+    },
+    "bnu-AS-zpg.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Load Dynamic Library:\"; ObjectID = \"bnu-AS-zpg\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Load Dynamic Library:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加载动态库："
+          }
+        }
+      }
+    },
+    "EWL-HL-RdL.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"4\"; ObjectID = \"EWL-HL-RdL\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "4"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4"
+          }
+        }
+      }
+    },
+    "fpm-qG-HXc.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Thumbnail Threads:\\n（External Volumes）\"; ObjectID = \"fpm-qG-HXc\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Thumbnail Threads:\n（External Volumes）"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图线程数：\n（外部卷）"
+          }
+        }
+      }
+    },
+    "FwL-1J-M3z.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"This setting applies to internal SSD. It is recommended to set it between 4 and 8.\"; ObjectID = \"FwL-1J-M3z\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This setting applies to internal SSD. It is recommended to set it between 4 and 8."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此设置应用于内置SSD。建议设置为4~8。"
+          }
+        }
+      }
+    },
+    "G15-Qe-p8C.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Use FFmpeg for More Video Format Thumbnails\"; ObjectID = \"G15-Qe-p8C\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Use FFmpeg for More Video Format Thumbnails"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用FFmpeg支持更多视频格式缩略图"
+          }
+        }
+      }
+    },
+    "L44-0u-7JE.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Folder Search Depth:\\n(External Volumes)\"; ObjectID = \"L44-0u-7JE\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Folder Search Depth:\n(External Volumes)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件夹搜索深度：\n（外部卷）"
+          }
+        }
+      }
+    },
+    "lIW-EQ-tyL.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"The application will attempt to free thumbnail cache of historical directories to meet the limit, but the current directory's usage might exceed the specified value.\"; ObjectID = \"lIW-EQ-tyL\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The application will attempt to free thumbnail cache of historical directories to meet the limit, but the current directory's usage might exceed the specified value."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "程序会尝试释放历史目录的缩略图缓存以符合限制，但当前目录的占用量可能会超过指定值。"
+          }
+        }
+      }
+    },
+    "qvY-7X-FWO.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"8\"; ObjectID = \"qvY-7X-FWO\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "8"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
+          }
+        }
+      }
+    },
+    "Tb5-5a-q2X.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"The number of subfolder levels to search when generating folder thumbnails. If set to 0, folder thumbnails will not be generated, and the left-side directory tree will not indicate whether subfolders exist.\"; ObjectID = \"Tb5-5a-q2X\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The number of subfolder levels to search when generating folder thumbnails. If set to 0, folder thumbnails will not be generated, and the left-side directory tree will not indicate whether subfolders exist."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生成文件夹缩略图时，搜索子文件夹的层数。设置为0时，不生成文件夹缩略图，且左侧目录树中将不能区分是否有子文件夹。"
+          }
+        }
+      }
+    },
+    "U1E-PH-Kdi.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"0\"; ObjectID = \"U1E-PH-Kdi\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "0"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        }
+      }
+    },
+    "UN1-r8-SEh.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Folder Search Depth:\"; ObjectID = \"UN1-r8-SEh\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Folder Search Depth:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件夹搜索深度："
+          }
+        }
+      }
+    },
+    "UWB-wJ-kV4.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Thumbnail Threads:\"; ObjectID = \"UWB-wJ-kV4\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Thumbnail Threads:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图线程数："
+          }
+        }
+      }
+    },
+    "v0X-zl-sTc.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"For network drives, it is recommended to set it to 0.\"; ObjectID = \"v0X-zl-sTc\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "For network drives, it is recommended to set it to 0."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对于网络驱动器建议设置为0。"
+          }
+        }
+      }
+    },
+    "VVf-Z7-kSI.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"e.g. 4G\"; ObjectID = \"VVf-Z7-kSI\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "e.g. 4G"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. 4G"
+          }
+        }
+      }
+    },
+    "WIz-pH-xsE.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"1\"; ObjectID = \"WIz-pH-xsE\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "1"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        }
+      }
+    },
+    "YPT-xM-oyn.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"These settings apply to external volumes, including external drives, network drives, and other mounted directories.\"; ObjectID = \"YPT-xM-oyn\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "These settings apply to external volumes, including external drives, network drives, and other mounted directories."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此处设置应用于外部卷，包括外置驱动器、网络驱动器和其它挂载目录。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

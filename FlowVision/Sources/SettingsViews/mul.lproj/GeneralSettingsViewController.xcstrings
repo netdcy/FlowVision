@@ -1,0 +1,204 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "7aF-tg-6Qj.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Permissions:\"; ObjectID = \"7aF-tg-6Qj\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Permissions:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "权限设置："
+          }
+        }
+      }
+    },
+    "dB2-6s-xY8.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Quit Application When Closing Last Window\"; ObjectID = \"dB2-6s-xY8\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Quit Application When Closing Last Window"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭最后一个窗口时退出程序"
+          }
+        }
+      }
+    },
+    "hGF-9Y-ejC.title" : {
+      "comment" : "Class = \"NSMenuItem\"; title = \"Auto\"; ObjectID = \"hGF-9Y-ejC\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Auto"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto"
+          }
+        }
+      }
+    },
+    "NOF-sJ-b0B.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Click the button to set this application as the default program for all supported image formats.\"; ObjectID = \"NOF-sJ-b0B\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Click the button to set this application as the default program for all supported image formats."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击按钮将此应用设置为所有支持图像格式的默认程序。"
+          }
+        }
+      }
+    },
+    "pPv-HR-smI.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Set as Default Application\"; ObjectID = \"pPv-HR-smI\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Set as Default Application"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设为默认应用"
+          }
+        }
+      }
+    },
+    "PZ6-Ug-5uU.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"File Associations:\"; ObjectID = \"PZ6-Ug-5uU\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "File Associations:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件关联："
+          }
+        }
+      }
+    },
+    "QqU-Xz-7dB.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Restart the application for changes to take effect.\"; ObjectID = \"QqU-Xz-7dB\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Restart the application for changes to take effect."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重启应用以使更改生效。"
+          }
+        }
+      }
+    },
+    "s9c-vd-E8g.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Language:\"; ObjectID = \"s9c-vd-E8g\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Language:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "界面语言："
+          }
+        }
+      }
+    },
+    "uKy-ok-dDi.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Close Behavior:\"; ObjectID = \"uKy-ok-dDi\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Close Behavior:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭行为："
+          }
+        }
+      }
+    },
+    "x5i-CI-gSv.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Open Permissions Settings\"; ObjectID = \"x5i-CI-gSv\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Open Permissions Settings"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开权限设置"
+          }
+        }
+      }
+    },
+    "Z13-dJ-JBv.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"\\\"Files and Folders\\\" permission is required to open directories and files.\\n\\\"Automation\\\" permission is required to retain original location information when deleting to the Trash (without this permission, the \\\"Put Back\\\" feature in the Trash will not work).\"; ObjectID = \"Z13-dJ-JBv\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "\"Files and Folders\" permission is required to open directories and files.\n\"Automation\" permission is required to retain original location information when deleting to the Trash (without this permission, the \"Put Back\" feature in the Trash will not work)."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要“文件和文件夹”权限以打开目录和文件。\n需要“自动化”权限以支持删除到废纸篓时保留原位置信息（不授予时无法在废纸篓使用“还原到原位置”功能）。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
