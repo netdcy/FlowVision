@@ -52,7 +52,7 @@
 
 ### Environment
 
-Xcode 15.2+, macOS 13.5+
+Xcode 15.2+
 
 ### Libraries
 
