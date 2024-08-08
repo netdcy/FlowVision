@@ -9,7 +9,7 @@
 
 ## Screenshots
 
-![preview](https://github.com/user-attachments/assets/4220453c-050d-4700-860e-bc6a0981a944)
+![preview](https://netdcy.github.io/FlowVision/docs/preview.jpg)
 
 ## Features:
  - Adaptive layout mode, light/dark mode

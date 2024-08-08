@@ -7,7 +7,7 @@
 
 ## 预览
 
-![preview](https://github.com/user-attachments/assets/4220453c-050d-4700-860e-bc6a0981a944)
+![preview](https://netdcy.github.io/FlowVision/docs/preview.jpg)
 
 ## 应用特点:
 
