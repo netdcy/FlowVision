@@ -24,10 +24,10 @@ class CustomImageView: NSImageView {
     }
     
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
-        if isFolder {
-            return .copy
-        } else if sender.draggingSource == nil {
+        if sender.draggingSource == nil {
             return .link
+        } else if isFolder {
+            return .copy
         } else {
             return .every
         }
@@ -37,17 +37,18 @@ class CustomImageView: NSImageView {
         defer {
             sender.draggingPasteboard.clearContents()
         }
-        if isFolder {
-            getViewController(self)?.handleMove(targetURL: url, pasteboard: sender.draggingPasteboard)
-            getViewController(self)?.refreshAll()
-            return true
-        } else if sender.draggingSource == nil {
+        
+        if sender.draggingSource == nil {
             let pasteboard = sender.draggingPasteboard
             if let urls = pasteboard.readObjects(forClasses: [NSURL.self], options: nil) as? [URL] {
                 getViewController(self)?.handleDraggedFiles(urls)
                 return false
             }
             return false
+        } else if isFolder {
+            getViewController(self)?.handleMove(targetURL: url, pasteboard: sender.draggingPasteboard)
+            getViewController(self)?.refreshAll()
+            return true
         } else {
             return false
         }
