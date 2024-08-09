@@ -211,8 +211,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         collectionView.delegate = collectionViewManager
         collectionView.dataSource = collectionViewManager
         collectionView.register(CustomCollectionViewItem.self, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: "CustomCollectionViewItem"))
-        //collectionView.setDraggingSourceOperationMask([], forLocal: true)  // 本地拖动操作
-        collectionView.setDraggingSourceOperationMask([.every], forLocal: false)       // 全局拖动操作
+        collectionView.setDraggingSourceOperationMask([.every], forLocal: true)  // 本地拖动操作
+        collectionView.setDraggingSourceOperationMask([.every], forLocal: false) // 全局拖动操作
         
 //        publicVar.justifiedLayout.minimumInteritemSpacing=10
 //        publicVar.justifiedLayout.minimumLineSpacing=10
@@ -225,8 +225,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         outlineView.delegate = outlineViewManager
         outlineView.dataSource = outlineViewManager
         outlineView.registerForDraggedTypes([.fileURL])
-        //outlineView.setDraggingSourceOperationMask([], forLocal: true)  // 本地拖动操作
-        outlineView.setDraggingSourceOperationMask([.every], forLocal: false)       // 全局拖动操作
+        outlineView.setDraggingSourceOperationMask([.every], forLocal: true)  // 本地拖动操作
+        outlineView.setDraggingSourceOperationMask([.every], forLocal: false) // 全局拖动操作
         outlineView.columnAutoresizingStyle = .noColumnAutoresizing
         treeViewData.initData(path: treeRootFolder)
         outlineView.reloadData()
@@ -1703,16 +1703,39 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
         }
         fileDB.unlock()
-        switchDirByDirection(direction: .zero, stackDeep: 0)
+        switchDirByDirection(direction: .zero, doCollapse: false, stackDeep: 0)
     }
     
     func refreshTreeView(){
-        treeViewData.initData(path: treeRootFolder)
-        outlineView.reloadData()
+        var expandedItems: [TreeNode] = []
+        
+        func checkExpandedItems(item: TreeNode) {
+            if outlineView.isItemExpanded(item) {
+                expandedItems.append(item)
+                if let children = item.children {
+                    for child in children {
+                        checkExpandedItems(item: child)
+                    }
+                }
+            }
+        }
+        
+        if let children = treeViewData.root?.children {
+            for item in children {
+                checkExpandedItems(item: item)
+            }
+        }
+
+        // 对已展开的项进行操作
+        for item in expandedItems {
+            treeViewData.expand(node: item, isLookSub: true)
+        }
+        
         fileDB.lock()
         let curFolder = fileDB.curFolder
         fileDB.unlock()
-        treeReLocate(path: curFolder, doCollapse: true, expandLast: true)
+        outlineView.reloadData()
+        treeReLocate(path: curFolder, doCollapse: false, expandLast: false)
     }
     
     @objc func outlineViewDoubleClicked(_ sender: AnyObject) {

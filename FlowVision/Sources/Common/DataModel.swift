@@ -484,20 +484,19 @@ class TreeViewModel {
             }
             subFolders.sort { $0.lastPathComponent.lowercased().localizedStandardCompare($1.lastPathComponent.lowercased()) == .orderedAscending }
             
+            let oldChildren=node.children
+            node.children=[]
+            
             for subFolder in subFolders {
                 var name = subFolder.lastPathComponent
                 if name == "/" { name = ROOT_NAME }
                 var newNode = TreeNode(name: name, fullPath: subFolder.absoluteString)
-                if node.children == nil {
-                    node.children = [newNode]
-                } else {
-                    
-                    if node.children?.contains(where: { $0.name == newNode.name }) ?? false {
-                        newNode = node.children!.first(where: { $0.name == newNode.name })!
-                    } else {
-                        node.children?.append(newNode)
-                    }
+                
+                if oldChildren?.contains(where: { $0.name == newNode.name }) ?? false {
+                    newNode = oldChildren!.first(where: { $0.name == newNode.name })!
                 }
+                node.children?.append(newNode)
+                
                 if isLookSub{
                     if VolumeManager.shared.isExternalVolume(subFolder) && globalVar.folderSearchDepth_External == 0 {
                         newNode.hasChild=true
