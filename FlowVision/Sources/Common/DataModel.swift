@@ -419,7 +419,7 @@ class TreeViewModel {
             
             // 检查是否是根目录
             if folderURL.path != "root" {
-                contents = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: [.isDirectoryKey, .isUbiquitousItemKey], options: [])
+                contents = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: [.isDirectoryKey, .isUbiquitousItemKey, .isHiddenKey], options: [])
             }else{
 
                 let fileManager = FileManager.default
@@ -456,7 +456,7 @@ class TreeViewModel {
             
             //过滤隐藏文件
             contents = contents.filter { url in
-                if VolumeManager.shared.isExternalVolume(url) {return true} //外置卷则不获取属性避免频繁请求
+
                 // 获取隐藏属性
                 let resourceValues = try? url.resourceValues(forKeys: [.isHiddenKey])
                 let isHidden = resourceValues?.isHidden ?? false
