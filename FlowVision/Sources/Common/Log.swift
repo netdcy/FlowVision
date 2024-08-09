@@ -109,9 +109,27 @@ class Logger {
 
     private func setupLogFile() {
         let fileManager = FileManager.default
-        let logFileName = ".FlowVision.log"
-        let userDirectory = fileManager.homeDirectoryForCurrentUser
-        logFileURL = userDirectory.appendingPathComponent(logFileName)
+        do {
+            let appSupportDirectory = try fileManager.url(
+                for: .applicationSupportDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: true
+            )
+
+            let appDirectory = appSupportDirectory.appendingPathComponent("FlowVision", isDirectory: true)
+            if !fileManager.fileExists(atPath: appDirectory.path) {
+                try fileManager.createDirectory(at: appDirectory, withIntermediateDirectories: true, attributes: nil)
+            }
+
+            let logFileName = "FlowVision.log"
+            logFileURL = appDirectory.appendingPathComponent(logFileName)
+            
+        } catch {
+            let logFileName = ".FlowVision.log"
+            let userDirectory = fileManager.homeDirectoryForCurrentUser
+            logFileURL = userDirectory.appendingPathComponent(logFileName)
+        }
     }
 
     private func setupLogWindow() {
