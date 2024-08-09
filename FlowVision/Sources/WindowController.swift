@@ -36,6 +36,10 @@ class WindowController: NSWindowController, NSWindowDelegate {
             toolbar.showsBaselineSeparator = true
             window.toolbar = toolbar
 
+            if globalVar.autoHideToolbar {
+                window.acceptsMouseMovedEvents = true
+                window.styleMask.insert(.fullSizeContentView)
+            }
         }
         
         if globalVar.portableMode && globalVar.startSpeedUpImageSizeCache != nil {
@@ -111,6 +115,42 @@ class WindowController: NSWindowController, NSWindowDelegate {
         }
     }
 
+    override func mouseEntered(with event: NSEvent) {
+        showTitleBar()
+    }
+    
+    override func mouseExited(with event: NSEvent) {
+        hideTitleBar()
+    }
+    
+    override func mouseMoved(with event: NSEvent) {
+        let location = event.locationInWindow
+        if location.y > window!.frame.height - 40 {
+            showTitleBar()
+        } else {
+            hideTitleBar()
+        }
+    }
+    
+    // 显示标题栏和工具栏
+    func showTitleBar() {
+        guard let window = window else { return }
+        window.standardWindowButton(.closeButton)?.isHidden = false
+        window.standardWindowButton(.miniaturizeButton)?.isHidden = false
+        window.standardWindowButton(.zoomButton)?.isHidden = false
+        window.titlebarAppearsTransparent = false
+        window.toolbar?.isVisible = true
+    }
+    
+    // 隐藏标题栏和工具栏
+    func hideTitleBar() {
+        guard let window = window else { return }
+        window.standardWindowButton(.closeButton)?.isHidden = true
+        window.standardWindowButton(.miniaturizeButton)?.isHidden = true
+        window.standardWindowButton(.zoomButton)?.isHidden = true
+        window.titlebarAppearsTransparent = true
+        window.toolbar?.isVisible = false
+    }
 }
 
 extension NSToolbarItem.Identifier {

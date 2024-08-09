@@ -102,6 +102,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let savedTerminateAfterLastWindowClosed = UserDefaults.standard.value(forKey: "terminateAfterLastWindowClosed") as? Bool {
             globalVar.terminateAfterLastWindowClosed = savedTerminateAfterLastWindowClosed
         }
+        if let autoHideToolbar = UserDefaults.standard.value(forKey: "autoHideToolbar") as? Bool {
+            globalVar.autoHideToolbar = autoHideToolbar
+        }
         if let savedMemUseLimit = UserDefaults.standard.value(forKey: "memUseLimit") as? Int {
             globalVar.memUseLimit = savedMemUseLimit
         }

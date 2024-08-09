@@ -1034,6 +1034,7 @@ CA
                         <outlet property="largeImageBgEffectView" destination="n6b-Kn-1wp" id="ssP-Ix-vCG"/>
                         <outlet property="largeImageView" destination="z8e-hf-kBc" id="8ua-Lf-xK7"/>
                         <outlet property="mainScrollView" destination="HCJ-ft-cb3" id="QL5-pe-bhY"/>
+                        <outlet property="outlineScrollView" destination="M7J-0g-BMV" id="yat-aw-YZV"/>
                         <outlet property="outlineView" destination="h0O-ks-zQa" id="kKD-nQ-q3a"/>
                         <outlet property="splitView" destination="w1O-va-xrK" id="8dE-fu-nrE"/>
                     </connections>

@@ -16,6 +16,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
     override var nibName: NSNib.Name? { "GeneralSettingsViewController" }
     
     @IBOutlet weak var terminateAfterLastWindowClosedCheckbox: NSButton!
+    @IBOutlet weak var autoHideToolbarCheckbox: NSButton!
     @IBOutlet weak var languagePopUpButton: NSPopUpButton!
 
     override func viewDidLoad() {
@@ -24,6 +25,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
         //self.preferredContentSize = NSSize(width: 600, height: 400)
         
         terminateAfterLastWindowClosedCheckbox.state = globalVar.terminateAfterLastWindowClosed ? .on : .off
+        autoHideToolbarCheckbox.state = globalVar.autoHideToolbar ? .on : .off
         
         // 初始化 NSPopUpButton 的选项
         let autoTitle = NSLocalizedString("Auto", comment: "自动")
@@ -64,6 +66,10 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
     @IBAction func terminateAfterLastWindowClosedToggled(_ sender: NSButton) {
         globalVar.terminateAfterLastWindowClosed = (sender.state == .on)
         UserDefaults.standard.set(globalVar.terminateAfterLastWindowClosed, forKey: "terminateAfterLastWindowClosed")
+    }
+    
+    @IBAction func autoHideToolbarToggled(_ sender: NSButton) {
+        UserDefaults.standard.set(sender.state, forKey: "autoHideToolbar")
     }
     
     @IBAction func openSystemPreferences(_ sender: Any) {

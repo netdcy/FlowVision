@@ -52,6 +52,7 @@ class GlobalVar{
     var toolbarIndex = 0
     
     var terminateAfterLastWindowClosed = true
+    var autoHideToolbar = false
     var doNotUseFFmpeg = false
     var memUseLimit: Int = 4000
     var thumbThreadNum: Int = 8

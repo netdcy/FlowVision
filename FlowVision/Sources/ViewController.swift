@@ -86,6 +86,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     
     @IBOutlet weak var collectionView: CustomCollectionView!
     @IBOutlet weak var mainScrollView: NSScrollView!
+    @IBOutlet weak var outlineScrollView: NSScrollView!
     @IBOutlet weak var largeImageView: LargeImageView!
     @IBOutlet weak var largeImageBgEffectView: NSVisualEffectView!
     @IBOutlet weak var coreAreaView: CoreAreaView!
@@ -280,6 +281,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             // 光模式下的颜色
             collectionView.layer?.backgroundColor = hexToNSColor(hex: "#FFFFFF").cgColor
             lastTheme = .aqua
+        }
+        
+        if globalVar.autoHideToolbar {
+            mainScrollView.automaticallyAdjustsContentInsets = false
+            outlineScrollView.automaticallyAdjustsContentInsets = false
         }
         
         //=========以下是事件监听配置==========

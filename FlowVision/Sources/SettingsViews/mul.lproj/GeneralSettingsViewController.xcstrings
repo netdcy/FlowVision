@@ -37,6 +37,24 @@
         }
       }
     },
+    "EBi-bb-P2R.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Auto Hide Toolbar\"; ObjectID = \"EBi-bb-P2R\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Auto Hide Toolbar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动隐藏工具栏"
+          }
+        }
+      }
+    },
     "hGF-9Y-ejC.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Auto\"; ObjectID = \"hGF-9Y-ejC\";",
       "extractionState" : "extracted_with_value",
@@ -105,6 +123,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "文件关联："
+          }
+        }
+      }
+    },
+    "qe3-7u-Trn.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Restart the application for changes to take effect.\"; ObjectID = \"qe3-7u-Trn\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Restart the application for changes to take effect."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重启应用以使更改生效。"
+          }
+        }
+      }
+    },
+    "QHt-c1-9Ji.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Toolbar:\"; ObjectID = \"QHt-c1-9Ji\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Toolbar:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "工具栏："
           }
         }
       }
