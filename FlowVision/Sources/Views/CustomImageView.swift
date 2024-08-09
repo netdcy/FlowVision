@@ -26,7 +26,7 @@ class CustomImageView: NSImageView {
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
         if sender.draggingSource == nil {
             return .link
-        } else if isFolder {
+        } else if isFolder && sender.draggingSource is CustomCollectionView {
             return .copy
         } else {
             return .every
@@ -45,7 +45,7 @@ class CustomImageView: NSImageView {
                 return false
             }
             return false
-        } else if isFolder {
+        } else if isFolder && sender.draggingSource is CustomCollectionView {
             getViewController(self)?.handleMove(targetURL: url, pasteboard: sender.draggingPasteboard)
             getViewController(self)?.refreshAll()
             return true

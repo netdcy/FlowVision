@@ -1603,7 +1603,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "添加日期(倒序)"
+            "value" : "添加日期(降序)"
           }
         }
       }
