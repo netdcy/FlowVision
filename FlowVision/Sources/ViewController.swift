@@ -3992,7 +3992,19 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 //按实际目标分辨率绘制效果较差，观察到1080P屏幕双倍插值后绘制与直接使用原图效果才类似，因此即使scale==1，此处size也不除以2
-                var largeImage=ImageProcessor.getImageCache(url: url, size: largeSize, rotate: file.rotate, useOriginalImage: doNotGenResized)
+                var largeImage: NSImage?
+                if resetSize {
+                    largeImage=ImageProcessor.getImageCache(url: url, size: largeSize, rotate: file.rotate, useOriginalImage: doNotGenResized)
+                }else{
+                    if doNotGenResized {
+                        largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*file.rotate))
+                    }else{
+                        largeImage = getResizedImage(url: url, size: largeSize, rotate: file.rotate)
+                        if largeImage == nil {
+                            largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*file.rotate))
+                        }
+                    }
+                }
                 
                 if task?.isCancelled ?? false {
                     log("2 - Load large image replace task was cancelled.")

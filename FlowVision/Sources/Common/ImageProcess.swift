@@ -1091,7 +1091,7 @@ func recognizeQRCode(from image: NSImage) -> [String]? {
 class ImageProcessor {
     private static let cache: NSCache<NSString, CacheWrapper> = {
         let cache = NSCache<NSString, CacheWrapper>()
-        cache.countLimit = 20 // 设置缓存容量
+        cache.countLimit = 12 // 设置缓存容量
         return cache
     }()
     
