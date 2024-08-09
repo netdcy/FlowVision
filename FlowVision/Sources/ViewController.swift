@@ -3488,7 +3488,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         let fileCount = fileDB.db[SortKeyDir(curFolder)]!.fileCount
         var nextLargeImagePos=currLargeImagePos
         var ifFoundNextImage=false
-        while nextLargeImagePos > totalCount - fileCount {
+        while nextLargeImagePos >= 0 {
             nextLargeImagePos-=1
             if fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.type == .image {
                 ifFoundNextImage=true
@@ -3642,6 +3642,153 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //setWindowTitleOfLargeImage(file: item.file)
     }
     
+    func preloadLargeImage(){
+        //if !publicVar.isInLargeView {return} //由于第一次打开的顺序问题，此处不能作判断
+        if publicVar.openFromFinderPath != "" {return}
+        if currLargeImagePos == -1 || currLargeImagePos >= collectionView.numberOfItems(inSection: 0) {
+            return
+        }
+
+        fileDB.lock()
+        let curFolder=fileDB.curFolder
+        let totalCount = fileDB.db[SortKeyDir(curFolder)]!.files.count
+        fileDB.unlock()
+        guard let path = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: currLargeImagePos)?.1.path,
+              let url = URL(string: path)
+        else{ return }
+        
+        var threadNum: Int
+        if VolumeManager.shared.isExternalVolume(url) {
+            threadNum=globalVar.thumbThreadNum_External
+        }else{
+            threadNum=globalVar.thumbThreadNum
+        }
+//        let preloadNumNext=Int(ceil(Double(threadNum)*0.75))
+//        let preloadNumPrevious=Int(ceil(Double(threadNum)*0.25))
+        var preloadNumNext:Int
+        var preloadNumPrevious:Int
+        
+        if threadNum == 1 {
+            preloadNumNext = 0
+            preloadNumPrevious = 0
+        }else if threadNum <= 4 {
+            preloadNumNext = 1
+            preloadNumPrevious = 1
+        }else{
+            preloadNumNext = 3
+            preloadNumPrevious = 2
+        }
+        
+        var fileQueue = [(FileModel, Double)]()
+
+        do{ // 后面的图像
+            fileDB.lock()
+            var nextLargeImagePos=currLargeImagePos
+            var loadCount=0
+            while nextLargeImagePos < totalCount-1 {
+                nextLargeImagePos += 1
+                if let file=fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
+                   file.type == .image{
+                    loadCount += 1
+                    if loadCount > preloadNumNext { break } // 预载入数量
+                    fileQueue.append((file, Double(loadCount)-0.5))
+                }
+            }
+            fileDB.unlock()
+        }
+        
+        do{ // 前面的图像
+            fileDB.lock()
+            var nextLargeImagePos=currLargeImagePos
+            var loadCount=0
+            while nextLargeImagePos >= 0 {
+                nextLargeImagePos -= 1
+                if let file=fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
+                   file.type == .image{
+                    loadCount += 1
+                    if loadCount > preloadNumPrevious { break } // 预载入数量
+                    fileQueue.append((file, Double(loadCount)))
+                }
+            }
+            fileDB.unlock()
+        }
+        
+        do{ // 当前图像
+            if let file=fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: currLargeImagePos)?.1,
+               file.type == .image{
+                fileQueue.append((file, 0))
+            }
+        }
+        
+        fileQueue.sort { $0.1 > $1.1 }
+        
+        fileDB.lock()
+        for (file,priority) in fileQueue {
+            preloadLargeImageForFile(file: file, priority: priority)
+        }
+        fileDB.unlock()
+
+    }
+    
+    func preloadLargeImageForFile(file: FileModel, priority: Double){
+
+        let url=URL(string:file.path)!
+        let scale = NSScreen.main?.backingScaleFactor ?? 1
+        let maxBounds=largeImageView.bounds
+        //print(maxBounds)
+        
+        var largeSize: NSSize
+        var originalSize: NSSize? = file.originalSize
+        
+        //当文件被修改，列表重新读取但大小还没来得及获取时可能为空，此时需要获取一下
+        //或者由于外置卷，使用的默认大小 || VolumeManager.shared.isExternalVolume(url)
+        if originalSize == nil {
+            originalSize = getImageSize(url: url)
+            if originalSize == nil {
+                originalSize = DEFAULT_SIZE
+                file.isGetImageSizeFail = true
+            }else{
+                file.isGetImageSizeFail = false
+            }
+        }
+        
+        if let originalSize=originalSize{
+            
+            //计算宽高
+            if originalSize.height/originalSize.width*maxBounds.width > maxBounds.height {
+                largeSize=NSSize(width: originalSize.width/originalSize.height*maxBounds.height, height: maxBounds.height)
+            }else{
+                largeSize=NSSize(width: maxBounds.width, height: originalSize.height/originalSize.width*maxBounds.width)
+            }
+            
+            //当原图实际大小小于视图大小时，按实际大小显示
+            if !publicVar.isLargeImageFitWindow && originalSize.width<largeSize.width*scale {
+                largeSize=NSSize(width: originalSize.width/scale, height: originalSize.height/scale)
+            }
+            
+            //不进行过大缩放，内存炸了
+            var doNotGenResized=false
+            if largeSize.width*scale>=originalSize.width && largeSize.height*scale>=originalSize.height {
+                doNotGenResized=true
+            }
+            
+            //gif图直接使用缩略图（原图），能直接播放
+            if ["gif"].contains(url.pathExtension.lowercased()){
+                doNotGenResized=true
+            }
+            
+            //svg图直接使用缩略图（原图），没必要缩放
+            if ["svg"].contains(url.pathExtension.lowercased()){
+                doNotGenResized=true
+            }
+
+            DispatchQueue.global(qos: .userInitiated).async {
+                _ = ImageProcessor.getImageCache(url: url, size: largeSize, rotate: 0, useOriginalImage: doNotGenResized)
+            }
+            
+        }
+    }
+    
     func changeLargeImage(firstShowThumb: Bool = true, resetSize: Bool = true, triggeredByLongPress: Bool = false, justChangeLargeImageViewFile: Bool = false){
         let pos=currLargeImagePos
         var file=FileModel(path: "", ver: 0)
@@ -3667,6 +3814,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 file=fileInDb
             }
             fileDB.unlock()
+            
+            if !globalVar.portableMode {
+                // 预载入附近图像（包括本张），此处对于便携模式计算似乎有一像素小数偏差，待完善
+                preloadLargeImage()
+            }
         }
         
         largeImageView.file=file
@@ -3684,20 +3836,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         log("largeImageView.imageView",largeImageView.imageView.bounds)
         log("largeImageView",largeImageView.bounds)
-        
-        if let exifData = getExifData(from: url) {
-            let translatedExifData = formatExifData(exifData)
-//            let resultString = translatedExifData.map { pair -> String in
-//                let (key, value) = pair
-//                return "\(key): \(value)"
-//            }.joined(separator: "\n")
-            largeImageView.updateTextItems(translatedExifData)
-            //log("Original EXIF Data: \(exifData)")
-            //log("Translated EXIF Data: \(translatedExifData)")
-        } else {
-            log("Failed to get EXIF data")
-            largeImageView.updateTextItems([])
-        }
         
         var largeSize: NSSize
         var originalSize: NSSize? = file.originalSize
@@ -3744,6 +3882,17 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             if largeSize.width*scale>=originalSize.width && largeSize.height*scale>=originalSize.height {
                 doNotGenResized=true
             }
+            
+            //gif图直接使用缩略图（原图），能直接播放
+            if ["gif"].contains(url.pathExtension.lowercased()){
+                doNotGenResized=true
+            }
+            
+            //svg图直接使用缩略图（原图），没必要缩放
+            if ["svg"].contains(url.pathExtension.lowercased()){
+                doNotGenResized=true
+            }
+            
             //但如果是旋转，还是缩放占用更小
             if file.rotate != 0 {
                 doNotGenResized=false
@@ -3756,9 +3905,29 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             lastDoNotGenResized=doNotGenResized
             lastLargeImageRotate=file.rotate
             
+            //检查是否有大图缓存
+            let isImageCached = ImageProcessor.isImageCached(url: url, size: largeSize, rotate: file.rotate)
+            
             //先显示小图
-            if firstShowThumb{
+            if firstShowThumb && !isImageCached {
                 largeImageView.imageView.image=file.image?.rotated(by: CGFloat(-90*file.rotate))
+            }
+            
+            //有大图缓存则直接载入
+            if isImageCached {
+                log("命中缓存:",url.absoluteString.removingPercentEncoding!)
+                largeImageView.imageView.image=ImageProcessor.getImageCache(url: url, size: largeSize, rotate: file.rotate, useOriginalImage: doNotGenResized)
+            }else{
+                log("即时载入:",url.absoluteString.removingPercentEncoding!)
+            }
+            
+            //读取exif信息
+            if let exifData = getExifData(from: url) {
+                let translatedExifData = formatExifData(exifData)
+                largeImageView.updateTextItems(translatedExifData)
+            } else {
+                log("Failed to get EXIF data")
+                largeImageView.updateTextItems([])
             }
             
             //显示窗口
@@ -3768,13 +3937,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 windowController.showWindow(nil)
             }
             
-            //gif图直接使用缩略图（原图），能直接播放
-            if ["gif"].contains(url.pathExtension.lowercased()){
-                return
-            }
-            
-            //svg图直接使用缩略图（原图），没必要缩放
-            if ["svg"].contains(url.pathExtension.lowercased()){
+            if isImageCached {
                 return
             }
             
@@ -3794,27 +3957,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     return
                 }
                 
-                var largeImage: NSImage?=nil
-                if doNotGenResized{
-                    log("Get original image...")
-                    largeImage=NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*file.rotate))
-                }else{
-                    log("Get resized image...")
-                    if false && scale==1{ //按实际目标分辨率绘制效果较差，观察到1080P屏幕双倍插值后绘制与直接使用原图效果才类似
-                        largeImage=getResizedImage(url: url, size: NSSize(width: largeSize.width/2, height: largeSize.height/2), rotate: file.rotate)
-                        //log("请求1/2")
-                    }else{
-                        largeImage=getResizedImage(url: url, size: largeSize, rotate: file.rotate)
-                        //log("请求1/1")
-                    }
-                    
-                    //无法缩放的，直接使用原图
-                    //TODO: 此处可能会反复重新载入，待优化
-                    if (largeImage == nil) {
-                        log("缩放失败")
-                        largeImage=NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*file.rotate))
-                    }
-                }
+                //按实际目标分辨率绘制效果较差，观察到1080P屏幕双倍插值后绘制与直接使用原图效果才类似，因此即使scale==1，此处size也不除以2
+                var largeImage=ImageProcessor.getImageCache(url: url, size: largeSize, rotate: file.rotate, useOriginalImage: doNotGenResized)
                 
                 if task?.isCancelled ?? false {
                     log("2 - Load large image replace task was cancelled.")

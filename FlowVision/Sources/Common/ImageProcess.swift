@@ -1087,3 +1087,95 @@ func recognizeQRCode(from image: NSImage) -> [String]? {
     
     return qrCodeStrings.isEmpty ? nil : qrCodeStrings
 }
+
+class ImageProcessor {
+    private static let cache: NSCache<NSString, CacheWrapper> = {
+        let cache = NSCache<NSString, CacheWrapper>()
+        cache.countLimit = 20 // 设置缓存容量
+        return cache
+    }()
+    
+    private static let lock = NSLock()
+    private static var ongoingTasks: [String: (DispatchSemaphore, Int)] = [:]
+    
+    // 用于包装缓存中的图像，包括nil情况
+    private class CacheWrapper {
+        let image: NSImage?
+        init(image: NSImage?) {
+            self.image = image
+        }
+    }
+    
+    // 原始的图像处理函数
+    private static func originalGetResizedImage(url: URL, size: NSSize, rotate: Int = 0) -> NSImage? {
+        return getResizedImage(url: url, size: size, rotate: rotate)
+    }
+    
+    static func getImageCache(url: URL, size: NSSize, rotate: Int = 0, useOriginalImage: Bool) -> NSImage? {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)" as NSString
+        //print(cacheKey)
+        
+        // 先检查缓存中是否已有图像（包括nil情况）
+        if let cachedWrapper = cache.object(forKey: cacheKey) {
+            return cachedWrapper.image
+        }
+        
+        lock.lock()
+        // 检查是否有相同参数的任务正在进行
+        if let (semaphore, count) = ongoingTasks[cacheKey as String] {
+            ongoingTasks[cacheKey as String] = (semaphore, count + 1)
+            lock.unlock()
+            // 等待正在进行的任务完成
+            semaphore.wait()
+            // 任务完成后再检查缓存
+            return cache.object(forKey: cacheKey)?.image
+        } else {
+            // 创建新的信号量并标记任务开始
+            let semaphore = DispatchSemaphore(value: 0)
+            ongoingTasks[cacheKey as String] = (semaphore, 1)
+            lock.unlock()
+            
+            // 生成图像
+            var image: NSImage?
+            if useOriginalImage {
+                image = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
+            }else{
+                image = originalGetResizedImage(url: url, size: size, rotate: rotate)
+                if image == nil {
+                    image = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
+                }
+            }
+            
+            // 更新缓存（包括nil情况）
+            let cacheWrapper = CacheWrapper(image: image)
+            cache.setObject(cacheWrapper, forKey: cacheKey)
+            
+            lock.lock()
+            // 任务完成，移除信号量
+            let (_, count) = ongoingTasks.removeValue(forKey: cacheKey as String)!
+            lock.unlock()
+            
+            // 释放所有等待的线程
+            for _ in 0..<count {
+                semaphore.signal()
+            }
+            
+            return image
+        }
+    }
+    
+    // 检查缓存中是否有图像（且不是nil）
+    static func isImageCached(url: URL, size: NSSize, rotate: Int = 0) -> Bool {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)" as NSString
+        if let cachedWrapper = cache.object(forKey: cacheKey) {
+            return cachedWrapper.image != nil
+        }
+        return false
+    }
+    
+    // 清空缓存
+    static func clearCache() {
+        cache.removeAllObjects()
+    }
+}
+
