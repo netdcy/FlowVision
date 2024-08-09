@@ -116,19 +116,25 @@ class WindowController: NSWindowController, NSWindowDelegate {
     }
 
     override func mouseEntered(with event: NSEvent) {
-        showTitleBar()
+        if globalVar.autoHideToolbar {
+            showTitleBar()
+        }
     }
     
     override func mouseExited(with event: NSEvent) {
-        hideTitleBar()
+        if globalVar.autoHideToolbar {
+            hideTitleBar()
+        }
     }
     
     override func mouseMoved(with event: NSEvent) {
-        let location = event.locationInWindow
-        if location.y > window!.frame.height - 40 {
-            showTitleBar()
-        } else {
-            hideTitleBar()
+        if globalVar.autoHideToolbar {
+            let location = event.locationInWindow
+            if location.y > window!.frame.height - 40 {
+                showTitleBar()
+            } else {
+                hideTitleBar()
+            }
         }
     }
     
