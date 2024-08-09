@@ -326,7 +326,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 NSDocumentController.shared.noteNewRecentDocumentURL(result)
                 
                 log("Selected file: \(result.path)")
-                getMainViewController()?.coreAreaView.handleDraggedFiles([result])
+                getMainViewController()?.handleDraggedFiles([result])
             }
         } else {
             // User clicked on "Cancel"

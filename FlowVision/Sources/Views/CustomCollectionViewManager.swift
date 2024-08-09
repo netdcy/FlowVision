@@ -79,6 +79,15 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
         }
         return DEFAULT_SIZE
     }
+    
+    func collectionView(_ collectionView: NSCollectionView, pasteboardWriterForItemAt indexPath: IndexPath) -> NSPasteboardWriting? {
+        let pasteboardItem = NSPasteboardItem()
+        if let path = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.elementSafe(atOffset: indexPath.item)?.1.path,
+           let url = URL(string: path){
+            pasteboardItem.setString(url.absoluteString, forType: .fileURL)
+        }
+        return pasteboardItem
+    }
 
 }
 

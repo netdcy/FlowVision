@@ -211,6 +211,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         collectionView.delegate = collectionViewManager
         collectionView.dataSource = collectionViewManager
         collectionView.register(CustomCollectionViewItem.self, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: "CustomCollectionViewItem"))
+        //collectionView.setDraggingSourceOperationMask([], forLocal: true)  // 本地拖动操作
+        collectionView.setDraggingSourceOperationMask([.every], forLocal: false)       // 全局拖动操作
         
 //        publicVar.justifiedLayout.minimumInteritemSpacing=10
 //        publicVar.justifiedLayout.minimumLineSpacing=10
@@ -222,6 +224,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         outlineViewManager=CustomOutlineViewManager(fileDB: fileDB, treeViewData: treeViewData, outlineView: outlineView)
         outlineView.delegate = outlineViewManager
         outlineView.dataSource = outlineViewManager
+        outlineView.registerForDraggedTypes([.fileURL])
+        //outlineView.setDraggingSourceOperationMask([], forLocal: true)  // 本地拖动操作
+        outlineView.setDraggingSourceOperationMask([.every], forLocal: false)       // 全局拖动操作
         outlineView.columnAutoresizingStyle = .noColumnAutoresizing
         treeViewData.initData(path: treeRootFolder)
         outlineView.reloadData()
@@ -1501,8 +1506,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         restorePasteboard(items: backupItems)
     }
 
-    func handleMove(targetURL: URL? = nil) {
-        let pasteboard = NSPasteboard.general
+    func handleMove(targetURL: URL? = nil, pasteboard: NSPasteboard = NSPasteboard.general) {
+        //let pasteboard = NSPasteboard.general
         guard let items = pasteboard.pasteboardItems else { return }
         
         fileDB.lock()
@@ -4283,6 +4288,45 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if let visibleItems = collectionView.visibleItems() as? [CustomCollectionViewItem] {
             for item in visibleItems {
                 item.setTooltip()
+            }
+        }
+    }
+    
+    func handleDraggedFiles(_ urls: [URL]) {
+        var folderPath="file:///"
+        var path="file:///"
+        
+        let viewController=self
+        
+        if urls.count == 1 {
+            if urls[0].hasDirectoryPath {
+                folderPath=""+urls[0].absoluteString
+                if viewController.publicVar.isInLargeView {
+                    //由于图像关闭有动画，导致大图时瞬间关闭再打开大图会有bug，因此暂时只对目录关闭大图
+                    viewController.closeLargeImage(0)
+                }
+            }else{
+                if !HandledImageExtensions.contains(urls[0].pathExtension) {return} //限制文件类型
+                folderPath=""+urls[0].deletingLastPathComponent().absoluteString
+                path=""+urls[0].absoluteString
+                viewController.publicVar.openFromFinderPath=path
+                viewController.OpenLargeImageFromFinder(path: path)
+                
+                NSDocumentController.shared.noteNewRecentDocumentURL(urls[0])
+            }
+        } else if urls.count >= 2 {
+            folderPath=""+urls[0].deletingLastPathComponent().absoluteString
+        }
+        
+        viewController.switchDirByDirection(direction: .zero, dest: folderPath, doCollapse: true, expandLast: true, skip: false, stackDeep: 0)
+        
+        for url in urls {
+            if url.hasDirectoryPath {
+                // 处理文件夹
+                log("Dragged folder: \(url.path)")
+            } else {
+                // 处理文件
+                log("Dragged file: \(url.path)")
             }
         }
     }

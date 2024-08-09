@@ -164,6 +164,35 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
             column.width = maxWidth
         }
     }
+    
+    func outlineView(_ outlineView: NSOutlineView, validateDrop info: NSDraggingInfo, proposedItem item: Any?, proposedChildIndex index: Int) -> NSDragOperation {
+        return .move
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, acceptDrop info: NSDraggingInfo, item: Any?, childIndex index: Int) -> Bool {
+        guard let outlineItem = item as? TreeNode else { return false }
+
+        if let targetUrl=URL(string: outlineItem.fullPath) {
+            getViewController(outlineView)?.handleMove(targetURL: targetUrl, pasteboard: info.draggingPasteboard)
+            getViewController(outlineView)?.refreshTreeView()
+            return true
+        }
+
+        return false
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, pasteboardWriterForItem item: Any) -> NSPasteboardWriting? {
+        guard let outlineItem = item as? TreeNode else { return nil }
+        
+        let pasteboardItem = NSPasteboardItem()
+
+        if let url=URL(string: outlineItem.fullPath) {
+            pasteboardItem.setString(url.absoluteString, forType: .fileURL)
+        }
+        
+        return pasteboardItem
+    }
+    
 }
 
 class CustomTableCellView: NSTableCellView {

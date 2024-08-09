@@ -9,6 +9,9 @@ import Foundation
 import Cocoa
 
 class CustomImageView: NSImageView {
+    
+    var isFolder = false
+    var url: URL? = nil
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -21,20 +24,33 @@ class CustomImageView: NSImageView {
     }
     
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
-        return .copy
+        if isFolder {
+            return .copy
+        } else if sender.draggingSource == nil {
+            return .link
+        } else {
+            return .every
+        }
     }
     
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
-        let pasteboard = sender.draggingPasteboard
-        if let urls = pasteboard.readObjects(forClasses: [NSURL.self], options: nil) as? [URL] {
-            handleDraggedFiles(urls)
-            return true
+        defer {
+            sender.draggingPasteboard.clearContents()
         }
-        return false
-    }
-    
-    func handleDraggedFiles(_ urls: [URL]) {
-        getViewController(self)?.coreAreaView.handleDraggedFiles(urls)
+        if isFolder {
+            getViewController(self)?.handleMove(targetURL: url, pasteboard: sender.draggingPasteboard)
+            getViewController(self)?.refreshAll()
+            return true
+        } else if sender.draggingSource == nil {
+            let pasteboard = sender.draggingPasteboard
+            if let urls = pasteboard.readObjects(forClasses: [NSURL.self], options: nil) as? [URL] {
+                getViewController(self)?.handleDraggedFiles(urls)
+                return false
+            }
+            return false
+        } else {
+            return false
+        }
     }
     
     var center: CGPoint {

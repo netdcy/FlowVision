@@ -136,6 +136,13 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             imageViewObj.imageScaling = .scaleAxesIndependently
         }
         
+        imageViewObj.url = URL(string: file.path)
+        if file.isDir {
+            imageViewObj.isFolder = true
+        }else{
+            imageViewObj.isFolder = false
+        }
+        
         imageNameField.stringValue=URL(string:file.path)!.lastPathComponent
         
         if(playAnimation){
