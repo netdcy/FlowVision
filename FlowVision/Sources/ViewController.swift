@@ -2113,7 +2113,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             fullTitle += String(format: ")")
         }
 
-        view.window?.title = (curFolder as NSString).lastPathComponent.removingPercentEncoding!
+        var shortTitle = (curFolder as NSString).lastPathComponent.removingPercentEncoding!
+        if curFolder == "file:///" {shortTitle = ROOT_NAME}
+        view.window?.title = shortTitle
         publicVar.fullTitle = fullTitle
         if let windowController = view.window?.windowController as? WindowController {
             windowController.updateToolbar()

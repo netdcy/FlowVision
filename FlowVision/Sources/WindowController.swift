@@ -39,6 +39,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
             if globalVar.autoHideToolbar {
                 window.acceptsMouseMovedEvents = true
                 window.styleMask.insert(.fullSizeContentView)
+                window.tabbingMode = .disallowed
             }
         }
         
