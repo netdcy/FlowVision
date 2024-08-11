@@ -509,43 +509,46 @@ func getImageThumb(url: URL, size: NSSize? = nil, refSize: NSSize? = nil) -> NSI
 }
 
 func rotationAngle(for orientation: Int) -> CGFloat {
-    //return .pi / 2
     switch orientation {
-    case 6: // 90 degrees clockwise
-        return -.pi / 2
-    case 8: // 90 degrees counter-clockwise
-        return .pi / 2
-    case 3: // 180 degrees
+    case 1, 2: // 0 degrees
+        return 0
+    case 3, 4: // 180 degrees
         return .pi
+    case 5, 6: // 90 degrees clockwise
+        return -.pi / 2
+    case 7, 8: // 270 degrees clockwise
+        return .pi / 2
     default:
         return 0
     }
 }
+
 extension CGSize {
     static func applyAffineTransform(size: CGSize, transform: CGAffineTransform) -> CGSize {
         let rect = CGRect(origin: .zero, size: size).applying(transform)
         return CGSize(width: abs(rect.width), height: abs(rect.height))
     }
 }
+
 func newOrientation(currentOrientation: Int, rotate: Int) -> Int {
     // EXIF orientation values
-    // 1: 0° (normal)
+    // 1: 0° (normal) 正常
     // 2: 0° (flipped horizontally)
-    // 3: 180° (flipped vertically)
+    // 3: 180° (flipped vertically) 正常
     // 4: 180° (flipped horizontally)
     // 5: 90° (flipped vertically)
-    // 6: 90° (normal)
+    // 6: 90° (normal) 正常
     // 7: 270° (flipped vertically)
-    // 8: 270° (normal)
-    
+    // 8: 270° (normal) 正常
+
     let orientationMap: [Int: [Int: Int]] = [
         1: [0: 1, 1: 6, 2: 3, 3: 8],
-        2: [0: 2, 1: 5, 2: 4, 3: 7],
+        2: [0: 2, 1: 7, 2: 4, 3: 5],
         3: [0: 3, 1: 8, 2: 1, 3: 6],
-        4: [0: 4, 1: 7, 2: 2, 3: 5],
-        5: [0: 5, 1: 3, 2: 7, 3: 1],
+        4: [0: 4, 1: 5, 2: 2, 3: 7],
+        5: [0: 5, 1: 4, 2: 7, 3: 2],
         6: [0: 6, 1: 3, 2: 8, 3: 1],
-        7: [0: 7, 1: 4, 2: 2, 3: 5],
+        7: [0: 7, 1: 2, 2: 5, 3: 4],
         8: [0: 8, 1: 1, 2: 6, 3: 3]
     ]
     
@@ -580,7 +583,21 @@ func getResizedImage(url: URL, size: NSSize, rotate: Int = 0) -> NSImage? {
         pointSize = CGSize(width: size.width * 2, height: size.height * 2)
     }
     
-    let transform = CGAffineTransform(rotationAngle: rotationAngle(for: orientation))
+
+    let rotation = rotationAngle(for: orientation)
+    var transform = CGAffineTransform.identity
+    transform = transform.rotated(by: rotation)
+    
+    // Handle flipping based on orientation
+    switch orientation {
+    case 2, 4:
+        transform = transform.scaledBy(x: -1, y: 1) // Horizontal flip
+    case 5, 7:
+        transform = transform.scaledBy(x: 1, y: -1) // Vertical flip
+    default:
+        break
+    }
+    
     let rotatedSize = CGSize.applyAffineTransform(size: pointSize, transform: transform)
     
     var adjustedBitmapInfo = image.bitmapInfo.rawValue
