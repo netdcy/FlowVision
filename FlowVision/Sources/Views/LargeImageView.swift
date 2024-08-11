@@ -208,14 +208,16 @@ class LargeImageView: NSView {
         }
         
         // 检测双击
-        let currentTime = event.timestamp
-        let currentLocation = event.locationInWindow
-        if currentTime - lastClickTime < NSEvent.doubleClickInterval &&
-            distanceBetweenPoints(lastClickLocation, currentLocation) < positionThreshold {
-            getViewController(self)?.closeLargeImage(0)
+        if !(getViewController(self)!.publicVar.isRightMouseDown) {
+            let currentTime = event.timestamp
+            let currentLocation = event.locationInWindow
+            if currentTime - lastClickTime < NSEvent.doubleClickInterval,
+               distanceBetweenPoints(lastClickLocation, currentLocation) < positionThreshold {
+                getViewController(self)?.closeLargeImage(0)
+            }
+            lastClickTime = currentTime
+            lastClickLocation = currentLocation
         }
-        lastClickTime = currentTime
-        lastClickLocation = currentLocation
     }
 
     private func performLongPressZoom(at point: NSPoint) {

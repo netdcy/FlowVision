@@ -3896,6 +3896,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         var largeSize: NSSize
         var originalSize: NSSize? = file.originalSize
+        var rotate = file.rotate
 
         //当文件被修改，列表重新读取但大小还没来得及获取时可能为空，此时需要获取一下
         //或者由于外置卷，使用的默认大小 || VolumeManager.shared.isExternalVolume(url)
@@ -3912,7 +3913,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if var originalSize=originalSize{
             
             //判断旋转
-            if file.rotate%2 == 1 {
+            if rotate%2 == 1 {
                 originalSize=NSSize(width: originalSize.height, height: originalSize.width)
             }
             
@@ -3951,29 +3952,29 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
             
             //但如果是旋转，还是缩放占用更小
-            if file.rotate != 0 {
+            if rotate != 0 {
                 doNotGenResized=false
             }
             log("ori:",originalSize.width,originalSize.height)
             log("dest:",largeSize.width,largeSize.height)
             
             //若上次已经用了原图，这次还用原图，则不重新载入
-            if lastDoNotGenResized && doNotGenResized && lastLargeImageRotate == file.rotate {return}
+            if lastDoNotGenResized && doNotGenResized && lastLargeImageRotate == rotate {return}
             lastDoNotGenResized=doNotGenResized
-            lastLargeImageRotate=file.rotate
+            lastLargeImageRotate=rotate
             
             //检查是否有大图缓存
-            let isImageCached = ImageProcessor.isImageCached(url: url, size: largeSize, rotate: file.rotate)
+            let isImageCached = ImageProcessor.isImageCached(url: url, size: largeSize, rotate: rotate)
             
             //先显示小图
             if firstShowThumb && !isImageCached {
-                largeImageView.imageView.image=file.image?.rotated(by: CGFloat(-90*file.rotate))
+                largeImageView.imageView.image=file.image?.rotated(by: CGFloat(-90*rotate))
             }
             
             //有大图缓存则直接载入
             if isImageCached {
                 log("命中缓存:",url.absoluteString.removingPercentEncoding!)
-                largeImageView.imageView.image=ImageProcessor.getImageCache(url: url, size: largeSize, rotate: file.rotate, useOriginalImage: doNotGenResized)
+                largeImageView.imageView.image=ImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, useOriginalImage: doNotGenResized)
             }else{
                 log("即时载入:",url.absoluteString.removingPercentEncoding!)
             }
@@ -3998,6 +3999,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 return
             }
             
+            //用来对比异步任务是否过期
+            largeImageView.file.largeSize = largeSize
+            
             //开始加载大图
             largeImageLoadTask?.cancel()
             
@@ -4017,14 +4021,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 //按实际目标分辨率绘制效果较差，观察到1080P屏幕双倍插值后绘制与直接使用原图效果才类似，因此即使scale==1，此处size也不除以2
                 var largeImage: NSImage?
                 if resetSize {
-                    largeImage=ImageProcessor.getImageCache(url: url, size: largeSize, rotate: file.rotate, useOriginalImage: doNotGenResized)
+                    largeImage=ImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, useOriginalImage: doNotGenResized)
                 }else{
                     if doNotGenResized {
-                        largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*file.rotate))
+                        largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
                     }else{
-                        largeImage = getResizedImage(url: url, size: largeSize, rotate: file.rotate)
+                        largeImage = getResizedImage(url: url, size: largeSize, rotate: rotate)
                         if largeImage == nil {
-                            largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*file.rotate))
+                            largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
                         }
                     }
                 }
@@ -4041,6 +4045,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     DispatchQueue.main.async { [weak self] in
                         guard let self = self else { return }
                         if pos != currLargeImagePos && !isThisFromFinder {return}
+                        if rotate != largeImageView.file.rotate {return}
+                        if largeSize != largeImageView.file.largeSize {return}
                         largeImageView.imageView.image=largeImage
                         //log("replaced")
                     }

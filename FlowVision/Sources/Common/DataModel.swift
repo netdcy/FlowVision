@@ -271,6 +271,7 @@ class FileModel {
     var type: FileType = .notSet
     
     var originalSize: NSSize?
+    var largeSize: NSSize?
     var isGetImageSizeFail = false
     var thumbSize: NSSize?
     var lineNo: Int = 0
