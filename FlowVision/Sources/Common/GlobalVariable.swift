@@ -23,7 +23,10 @@ func setFileExtensions(){
     if !globalVar.isHideRawFile {
         HandledImageExtensions += ["crw", "cr2", "cr3", "nef", "nrw", "arw", "srf", "sr2", "rw2", "orf", "raf", "pef", "dng", "raw", "rwl", "x3f", "3fr", "fff", "iiq", "mos", "dcr", "erf", "mrw", "gpr", "srw"]
     }
-    HandledVideoExtensions = ["mp4", "mov", "m2ts", "vob", "mpeg", "mpg", "m4v"] + ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
+    HandledVideoExtensions = []
+    if !globalVar.isHideVideoFile {
+        HandledVideoExtensions += ["mp4", "mov", "m2ts", "vob", "mpeg", "mpg", "m4v"] + ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
+    }
     HandledOtherExtensions = [] //["pdf"] //不能为""，否则会把目录异常包含进来
     HandledNotNativeSupportedExtensions = ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
     HandledExternalExtensions = HandledVideoExtensions // + ["pdf"] //外部程序打开的
@@ -62,6 +65,7 @@ class GlobalVar{
     
     var isShowHiddenFile = false
     var isHideRawFile = false
+    var isHideVideoFile = false
     var isGenHdThumb = false
     
     var portableMode = false

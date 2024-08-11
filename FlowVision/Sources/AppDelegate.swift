@@ -99,6 +99,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let savedIsHideRawFile = UserDefaults.standard.value(forKey: "isHideRawFile") as? Bool {
             globalVar.isHideRawFile = savedIsHideRawFile
         }
+        if let savedIsHideVideoFile = UserDefaults.standard.value(forKey: "isHideVideoFile") as? Bool {
+            globalVar.isHideVideoFile = savedIsHideVideoFile
+        }
         if let savedTerminateAfterLastWindowClosed = UserDefaults.standard.value(forKey: "terminateAfterLastWindowClosed") as? Bool {
             globalVar.terminateAfterLastWindowClosed = savedTerminateAfterLastWindowClosed
         }

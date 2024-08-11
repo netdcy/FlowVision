@@ -902,6 +902,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         refreshCollectionView([])
     }
     
+    func toggleIsHideVideoFile(){
+        globalVar.isHideVideoFile.toggle()
+        UserDefaults.standard.set(globalVar.isHideVideoFile, forKey: "isHideVideoFile")
+        setFileExtensions()
+        refreshCollectionView([])
+    }
+    
     func adjustWindowToCenter(animate: Bool = true) {
         if let window = view.window,
            let screen = window.screen {

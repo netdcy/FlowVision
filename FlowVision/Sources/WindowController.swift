@@ -753,9 +753,11 @@ extension WindowController: NSToolbarDelegate {
         actionItemShowHiddenFile.state = (globalVar.isShowHiddenFile) ? .on : .off
         actionItemShowHiddenFile.keyEquivalentModifierMask = [.command, .shift]
         
-        let hideRawFile = menu.addItem(withTitle: NSLocalizedString("Hide Camera RAW Files", comment: "不显示相机RAW文件"), action: #selector(hideRawFileAction), keyEquivalent: "r")
+        let hideRawFile = menu.addItem(withTitle: NSLocalizedString("Hide Camera RAW Files", comment: "不显示相机RAW文件"), action: #selector(hideRawFileAction), keyEquivalent: "")
         hideRawFile.state = (globalVar.isHideRawFile) ? .on : .off
-        hideRawFile.keyEquivalentModifierMask = [.command, .shift]
+        
+        let hideVideoFile = menu.addItem(withTitle: NSLocalizedString("Hide Video Files", comment: "不显示视频文件"), action: #selector(hideVideoFileAction), keyEquivalent: "")
+        hideVideoFile.state = (globalVar.isHideVideoFile) ? .on : .off
         
         menu.addItem(NSMenuItem.separator())
         
@@ -941,6 +943,11 @@ extension WindowController: NSToolbarDelegate {
     @objc func hideRawFileAction(_ sender: NSMenuItem) {
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.toggleIsHideRawFile()
+    }
+    
+    @objc func hideVideoFileAction(_ sender: NSMenuItem) {
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleIsHideVideoFile()
     }
     
     @objc func togglePortableMode(_ sender: NSMenuItem){

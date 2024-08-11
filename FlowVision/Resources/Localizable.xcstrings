@@ -665,6 +665,17 @@
         }
       }
     },
+    "Hide Video Files" : {
+      "comment" : "不显示视频文件",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不显示视频文件"
+          }
+        }
+      }
+    },
     "image" : {
       "extractionState" : "manual",
       "localizations" : {
