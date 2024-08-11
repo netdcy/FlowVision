@@ -2296,10 +2296,15 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             let resourceValues = try? url.resourceValues(forKeys: [.isHiddenKey])
             let isHidden = resourceValues?.isHidden ?? false
             
-            // 保留 /Volumes 和用户的 Library 目录
-            if url.path == "/Volumes" || url.path == NSHomeDirectory() + "/Library" {
+            // 保留 /Volumes 目录
+            if url.path == "/Volumes" {
                 return true
             }
+            
+            // 保留 用户的 Library 目录
+//            if url.path == NSHomeDirectory() + "/Library" {
+//                return true
+//            }
             
             // 过滤掉其他隐藏文件
             return !isHidden || globalVar.isShowHiddenFile
@@ -3303,7 +3308,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
  
     @objc func closeLargeImage(_ sender: Any) {
         
-        if currLargeImagePos == -1 || currLargeImagePos >= collectionView.numberOfItems(inSection: 0) {
+        if currLargeImagePos == -1 {
             return
         }
         
@@ -3380,24 +3385,27 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //                //collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
 //            }
             
+        
+        if currLargeImagePos < collectionView.numberOfItems(inSection: 0) {
             
-        let indexPath=IndexPath(item: currLargeImagePos, section: 0)
-        
-        let visibleRectRaw = mainScrollView.contentView.visibleRect
-        let scrollPos = visibleRectRaw.origin
-        let scrollWidth = visibleRectRaw.width
-        let scrollHeight = visibleRectRaw.height
-        let visibleRect = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight))
-        let itemFrame = collectionView.layoutAttributesForItem(at: indexPath)?.frame ?? .zero
-        
-        if !itemFrame.intersects(visibleRect) {
-            collectionView.scrollToItems(at: [IndexPath(item: currLargeImagePos, section: 0)], scrollPosition: .nearestHorizontalEdge)
-        }
+            let indexPath=IndexPath(item: currLargeImagePos, section: 0)
+            
+            let visibleRectRaw = mainScrollView.contentView.visibleRect
+            let scrollPos = visibleRectRaw.origin
+            let scrollWidth = visibleRectRaw.width
+            let scrollHeight = visibleRectRaw.height
+            let visibleRect = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight))
+            let itemFrame = collectionView.layoutAttributesForItem(at: indexPath)?.frame ?? .zero
+            
+            if !itemFrame.intersects(visibleRect) {
+                collectionView.scrollToItems(at: [IndexPath(item: currLargeImagePos, section: 0)], scrollPosition: .nearestHorizontalEdge)
+            }
 
-        collectionView.reloadData()
-        collectionView.selectItems(at: [indexPath], scrollPosition: [])
-        collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
-        setLoadThumbPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0), ifNeedVisable: false)
+            collectionView.reloadData()
+            collectionView.selectItems(at: [indexPath], scrollPosition: [])
+            collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
+            setLoadThumbPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0), ifNeedVisable: false)
+        }
 
         setWindowTitle()
     }
@@ -3514,7 +3522,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     func previousLargeImage(isShowReachEndPrompt: Bool = true){
         if largeImageView.isHidden {return}
         if publicVar.openFromFinderPath != "" {return}
-        if currLargeImagePos == -1 || currLargeImagePos >= collectionView.numberOfItems(inSection: 0) {
+        if currLargeImagePos == -1 {
             return
         }
         
@@ -3551,10 +3559,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             
             //选中新的项目
             collectionView.deselectAll(nil)
-            let indexPath=IndexPath(item: currLargeImagePos, section: 0)
-            collectionView.selectItems(at: [indexPath], scrollPosition: [])
-            collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
-            setLoadThumbPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0), ifNeedVisable: false)
+            if currLargeImagePos < collectionView.numberOfItems(inSection: 0) {
+                let indexPath=IndexPath(item: currLargeImagePos, section: 0)
+                collectionView.selectItems(at: [indexPath], scrollPosition: [])
+                collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
+                setLoadThumbPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0), ifNeedVisable: false)
+            }
         }else if isShowReachEndPrompt {
             largeImageView.showInfo(NSLocalizedString("already-first", comment: "已经是第一张图片"))
         }
@@ -3564,7 +3574,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //log(currLargeImagePos)
         if largeImageView.isHidden {return}
         if publicVar.openFromFinderPath != "" {return}
-        if currLargeImagePos == -1 || currLargeImagePos >= collectionView.numberOfItems(inSection: 0) {
+        if currLargeImagePos == -1 {
             return
         }
         
@@ -3601,10 +3611,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             
             //选中新的项目
             collectionView.deselectAll(nil)
-            let indexPath=IndexPath(item: currLargeImagePos, section: 0)
-            collectionView.selectItems(at: [indexPath], scrollPosition: [])
-            collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
-            setLoadThumbPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0), ifNeedVisable: false)
+            if currLargeImagePos < collectionView.numberOfItems(inSection: 0) {
+                let indexPath=IndexPath(item: currLargeImagePos, section: 0)
+                collectionView.selectItems(at: [indexPath], scrollPosition: [])
+                collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
+                setLoadThumbPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0), ifNeedVisable: false)
+            }
         }else if isShowReachEndPrompt {
             largeImageView.showInfo(NSLocalizedString("already-last", comment: "已经是最后一张图片"))
         }
@@ -3681,7 +3693,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     func preloadLargeImage(){
         //if !publicVar.isInLargeView {return} //由于第一次打开的顺序问题，此处不能作判断
         if publicVar.openFromFinderPath != "" {return}
-        if currLargeImagePos == -1 || currLargeImagePos >= collectionView.numberOfItems(inSection: 0) {
+        if currLargeImagePos == -1 {
             return
         }
 
