@@ -561,8 +561,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     }
                 }
                 
-                // 检查按键是否是 F2、回车 键
-                if event.keyCode == 120 || event.keyCode == 36 {
+                // 检查按键是否是 F2、回车、小键盘回车 键
+                if event.keyCode == 120 || event.keyCode == 36 || event.keyCode == 76 {
                     //如果焦点在OutlineView
                     if publicVar.isOutlineViewFirstResponder{
                         outlineView.actRename(isByKeyboard: true)
@@ -652,6 +652,15 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     } else {
                         // 处理自定义 Command+V 操作
                         log("Custom Command+V action")
+                        return nil // 事件已处理，返回 nil 以防止传递给下一个响应者
+                    }
+                case "x":
+                    if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.cut(_:))) {
+                        responder.perform(#selector(NSText.cut(_:)), with: nil)
+                        return nil // 事件已处理，返回 nil 以防止传递给下一个响应者
+                    } else {
+                        // 处理自定义 Command+X 操作
+                        log("Custom Command+X action")
                         return nil // 事件已处理，返回 nil 以防止传递给下一个响应者
                     }
                 default:

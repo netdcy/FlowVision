@@ -181,6 +181,24 @@
         }
       }
     },
+    "o1C-Ac-oMz.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"The application has built-in FFmpeg library. If exception occurs while generating video thumbnails, please try disabling this option or check \\\"Do not display video files.\\\"\"; ObjectID = \"o1C-Ac-oMz\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The application has built-in FFmpeg library. If exception occurs while generating video thumbnails, please try disabling this option or check \"Do not display video files.\""
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用已内置FFmpeg库。如果在生成视频缩略图时产生异常，请尝试关闭此选项，或者勾选“不显示视频文件”。"
+          }
+        }
+      }
+    },
     "qvY-7X-FWO.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"8\"; ObjectID = \"qvY-7X-FWO\";",
       "extractionState" : "extracted_with_value",

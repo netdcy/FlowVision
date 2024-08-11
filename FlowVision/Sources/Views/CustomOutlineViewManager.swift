@@ -172,12 +172,20 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
     func outlineView(_ outlineView: NSOutlineView, acceptDrop info: NSDraggingInfo, item: Any?, childIndex index: Int) -> Bool {
         guard let outlineItem = item as? TreeNode else { return false }
 
-        if let targetUrl=URL(string: outlineItem.fullPath) {
-            getViewController(outlineView)?.handleMove(targetURL: targetUrl, pasteboard: info.draggingPasteboard)
+        if let targetUrl = URL(string: outlineItem.fullPath) {
+            let pasteboard = info.draggingPasteboard
+            if let data = pasteboard.data(forType: .fileURL),
+               let pasteboardUrl = URL(dataRepresentation: data, relativeTo: nil),
+               pasteboardUrl == targetUrl {
+                // URLs are identical, do not perform the move
+                return false
+            }
+            
+            getViewController(outlineView)?.handleMove(targetURL: targetUrl, pasteboard: pasteboard)
             getViewController(outlineView)?.refreshTreeView()
             return true
         }
-
+        
         return false
     }
     

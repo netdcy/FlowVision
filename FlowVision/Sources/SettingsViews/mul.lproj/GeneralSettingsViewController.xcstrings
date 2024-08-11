@@ -164,19 +164,19 @@
       }
     },
     "QqU-Xz-7dB.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Restart the application for changes to take effect.\"; ObjectID = \"QqU-Xz-7dB\";",
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"When this option is enabled, the multi-tab bar cannot be used.\\nRestart the application for changes to take effect.\"; ObjectID = \"QqU-Xz-7dB\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Restart the application for changes to take effect."
+            "value" : "When this option is enabled, the multi-tab bar cannot be used.\nRestart the application for changes to take effect."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重启应用以使更改生效。"
+            "value" : "启用此选项时不能使用多标签页栏。重启应用以使更改生效。"
           }
         }
       }

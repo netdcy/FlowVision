@@ -232,23 +232,6 @@
         }
       }
     },
-    "close" : {
-      "comment" : "关闭",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Close"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "关闭"
-          }
-        }
-      }
-    },
     "Close Other Tabs" : {
       "comment" : "关闭其它标签页",
       "localizations" : {
@@ -279,6 +262,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关闭标签页"
+          }
+        }
+      }
+    },
+    "close-large-image" : {
+      "comment" : "关闭（双击）",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close (Double Click)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭（双击）"
           }
         }
       }
@@ -536,7 +536,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "If you check \"Generate high-resolution thumbnails,\" images will be precisely rendered in the thumbnail area based on the current layout. This may lead to slightly slower thumbnail generation speeds and slightly higher energy consumption.\n\nBy default, this option is unchecked, resulting in quickly generating medium-quality thumbnails at 512×512 resolution."
+            "value" : "If you check \"Generate HD thumbnails,\" images will be precisely rendered in the thumbnail area based on the current layout. This may lead to slightly slower thumbnail generation speeds and slightly higher energy consumption.\n\nBy default, this option is unchecked, resulting in quickly generating medium-quality thumbnails at 512×512 resolution."
           }
         },
         "zh-Hans" : {
@@ -1219,7 +1219,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在便携模式下：\n打开图片时窗口会自动调整至图像比例；\n关闭图片时窗口会自动调整至合适比例。"
+            "value" : "在便携模式下：\n打开图片时窗口会自动调整至图像的比例；\n关闭图片时窗口会自动调整至屏幕的比例。"
           }
         }
       }

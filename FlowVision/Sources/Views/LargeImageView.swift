@@ -337,7 +337,7 @@ class LargeImageView: NSView {
             let menu = NSMenu(title: "Custom Menu")
             menu.autoenablesItems = false
             
-            let actionItemClose = menu.addItem(withTitle: NSLocalizedString("close", comment: "关闭"), action: #selector(actClose), keyEquivalent: " ")
+            let actionItemClose = menu.addItem(withTitle: NSLocalizedString("close-large-image", comment: "关闭（双击）"), action: #selector(actClose), keyEquivalent: " ")
             actionItemClose.keyEquivalentModifierMask = []
             
             let actionItemOpenInNewTab = menu.addItem(withTitle: NSLocalizedString("open-in-new-tab", comment: "在新标签页中打开"), action: #selector(actOpenInNewTab), keyEquivalent: "")
