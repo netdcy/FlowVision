@@ -121,7 +121,9 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
                 if child.fullPath == curFolder {
                     if let row = outlineView?.row(forItem: child),
                        row != -1 {
+                        ifActWhenSelected=false
                         outlineView?.selectRowIndexes(IndexSet(integer: row), byExtendingSelection: false)
+                        ifActWhenSelected=true
                         break
                     }
                 }

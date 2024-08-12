@@ -4053,7 +4053,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         guard let self = self else { return }
                         if pos != currLargeImagePos && !isThisFromFinder {return}
                         if rotate != largeImageView.file.rotate {return}
-                        if largeSize != largeImageView.file.largeSize {return}
+                        if largeImageView.file.largeSize != nil && largeSize != largeImageView.file.largeSize {return}
                         largeImageView.imageView.image=largeImage
                         //log("replaced")
                     }
