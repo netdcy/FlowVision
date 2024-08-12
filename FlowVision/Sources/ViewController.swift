@@ -1741,6 +1741,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
             }
         }
+
+        if let root = treeViewData.root {
+            treeViewData.expand(node: root, isLookSub: true)
+        }
         
         if let children = treeViewData.root?.children {
             for item in children {
