@@ -449,7 +449,7 @@ func getImageThumb(url: URL, size: NSSize? = nil, refSize: NSSize? = nil) -> NSI
             //return nil
         }
         
-    }else{ //处理其它缩略图
+    }else if (HandledImageExtensions+["pdf"]).contains(url.pathExtension.lowercased()) { //处理其它缩略图
         //gif特殊处理
         if( "gif" == url.pathExtension.lowercased() ){
             return NSImage(contentsOf: url)
@@ -505,6 +505,9 @@ func getImageThumb(url: URL, size: NSSize? = nil, refSize: NSSize? = nil) -> NSI
         }
         
     }
+    
+    //默认情况
+    return nil
 
 }
 
@@ -769,7 +772,7 @@ func getImageSize(url: URL) -> NSSize? {
     }else if "pdf" == url.pathExtension.lowercased() {
         if let thumb = getImageThumb(url: url) {return thumb.size}
         return nil
-    }else{
+    }else if HandledImageExtensions.contains(url.pathExtension.lowercased()){
         guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
         guard let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as? [String: Any] else { return nil }
         guard let width = imageProperties[kCGImagePropertyPixelWidth as String] as? CGFloat,
@@ -786,8 +789,9 @@ func getImageSize(url: URL) -> NSSize? {
         default:
             return NSSize(width: width, height: height)
         }
+    }else{
+        return nil
     }
-    
 }
 
 func getResizedImageDeprecated1(url: URL, size: NSSize) -> NSImage? {

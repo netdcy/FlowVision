@@ -33,6 +33,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     @IBOutlet weak var togglePortableModeMenuItem: NSMenuItem!
     @IBOutlet weak var toggleIsShowHiddenFileMenuItem: NSMenuItem!
     @IBOutlet weak var toggleIsHideRawFileMenuItem: NSMenuItem!
+    @IBOutlet weak var toggleIsHideVideoFileMenuItem: NSMenuItem!
+    @IBOutlet weak var toggleIsShowAllTypeFileMenuItem: NSMenuItem!
     
     var commonParentPath=""
     
@@ -93,41 +95,44 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         }
         UserDefaults.standard.set(false, forKey: "hasNormalExit")
         
-        if let savedIsShowHiddenFile = UserDefaults.standard.value(forKey: "isShowHiddenFile") as? Bool {
-            globalVar.isShowHiddenFile = savedIsShowHiddenFile
+        if let isShowHiddenFile = UserDefaults.standard.value(forKey: "isShowHiddenFile") as? Bool {
+            globalVar.isShowHiddenFile = isShowHiddenFile
         }
-        if let savedIsHideRawFile = UserDefaults.standard.value(forKey: "isHideRawFile") as? Bool {
-            globalVar.isHideRawFile = savedIsHideRawFile
+        if let isHideRawFile = UserDefaults.standard.value(forKey: "isHideRawFile") as? Bool {
+            globalVar.isHideRawFile = isHideRawFile
         }
-        if let savedIsHideVideoFile = UserDefaults.standard.value(forKey: "isHideVideoFile") as? Bool {
-            globalVar.isHideVideoFile = savedIsHideVideoFile
+        if let isShowAllTypeFile = UserDefaults.standard.value(forKey: "isShowAllTypeFile") as? Bool {
+            globalVar.isShowAllTypeFile = isShowAllTypeFile
         }
-        if let savedTerminateAfterLastWindowClosed = UserDefaults.standard.value(forKey: "terminateAfterLastWindowClosed") as? Bool {
-            globalVar.terminateAfterLastWindowClosed = savedTerminateAfterLastWindowClosed
+        if let isHideVideoFile = UserDefaults.standard.value(forKey: "isHideVideoFile") as? Bool {
+            globalVar.isHideVideoFile = isHideVideoFile
+        }
+        if let terminateAfterLastWindowClosed = UserDefaults.standard.value(forKey: "terminateAfterLastWindowClosed") as? Bool {
+            globalVar.terminateAfterLastWindowClosed = terminateAfterLastWindowClosed
         }
         if let autoHideToolbar = UserDefaults.standard.value(forKey: "autoHideToolbar") as? Bool {
             globalVar.autoHideToolbar = autoHideToolbar
         }
-        if let savedMemUseLimit = UserDefaults.standard.value(forKey: "memUseLimit") as? Int {
-            globalVar.memUseLimit = savedMemUseLimit
+        if let memUseLimit = UserDefaults.standard.value(forKey: "memUseLimit") as? Int {
+            globalVar.memUseLimit = memUseLimit
         }
-        if let savedThumbThreadNum = UserDefaults.standard.value(forKey: "thumbThreadNum") as? Int {
-            globalVar.thumbThreadNum = savedThumbThreadNum
+        if let thumbThreadNum = UserDefaults.standard.value(forKey: "thumbThreadNum") as? Int {
+            globalVar.thumbThreadNum = thumbThreadNum
         }
-        if let savedFolderSearchDepth = UserDefaults.standard.value(forKey: "folderSearchDepth") as? Int {
-            globalVar.folderSearchDepth = savedFolderSearchDepth
+        if let folderSearchDepth = UserDefaults.standard.value(forKey: "folderSearchDepth") as? Int {
+            globalVar.folderSearchDepth = folderSearchDepth
         }
-        if let savedThumbThreadNum_External = UserDefaults.standard.value(forKey: "thumbThreadNum_External") as? Int {
-            globalVar.thumbThreadNum_External = savedThumbThreadNum_External
+        if let thumbThreadNum_External = UserDefaults.standard.value(forKey: "thumbThreadNum_External") as? Int {
+            globalVar.thumbThreadNum_External = thumbThreadNum_External
         }
-        if let savedFolderSearchDepth_External = UserDefaults.standard.value(forKey: "folderSearchDepth_External") as? Int {
-            globalVar.folderSearchDepth_External = savedFolderSearchDepth_External
+        if let folderSearchDepth_External = UserDefaults.standard.value(forKey: "folderSearchDepth_External") as? Int {
+            globalVar.folderSearchDepth_External = folderSearchDepth_External
         }
-        if let savedDoNotUseFFmpeg = UserDefaults.standard.value(forKey: "doNotUseFFmpeg") as? Bool {
-            globalVar.doNotUseFFmpeg = savedDoNotUseFFmpeg
+        if let doNotUseFFmpeg = UserDefaults.standard.value(forKey: "doNotUseFFmpeg") as? Bool {
+            globalVar.doNotUseFFmpeg = doNotUseFFmpeg
         }
-        if let savedPortableMode = UserDefaults.standard.value(forKey: "portableMode") as? Bool {
-            globalVar.portableMode = savedPortableMode
+        if let portableMode = UserDefaults.standard.value(forKey: "portableMode") as? Bool {
+            globalVar.portableMode = portableMode
         }
         if let isGenHdThumb = UserDefaults.standard.value(forKey: "isGenHdThumb") as? Bool {
             globalVar.isGenHdThumb = isGenHdThumb
@@ -449,6 +454,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             onTopMenuItem.keyEquivalentModifierMask=[]
             
             toggleIsShowHiddenFileMenuItem.state = globalVar.isShowHiddenFile ? .on : .off
+            toggleIsShowAllTypeFileMenuItem.state = globalVar.isShowAllTypeFile ? .on : .off
+            toggleIsHideRawFileMenuItem.state = globalVar.isHideRawFile ? .on : .off
+            toggleIsHideVideoFileMenuItem.state = globalVar.isHideVideoFile ? .on : .off
             
             justifiedViewMenuItem.state = (mainViewController.publicVar.layoutType == .justified) ? .on : .off
             waterfallViewModeMenuItem.state = (mainViewController.publicVar.layoutType == .waterfall) ? .on : .off
@@ -654,6 +662,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     
     @IBAction func toggleIsHideRawFile(_ sender: NSMenuItem){
         getMainViewController()?.toggleIsHideRawFile()
+    }
+    
+    @IBAction func toggleIsHideVideoFile(_ sender: NSMenuItem){
+        getMainViewController()?.toggleIsHideVideoFile()
+    }
+    
+    @IBAction func toggleIsShowAllTypeFile(_ sender: NSMenuItem){
+        getMainViewController()?.toggleIsShowAllTypeFile()
     }
     
     @IBAction func switchToSystemTheme(_ sender: NSMenuItem){

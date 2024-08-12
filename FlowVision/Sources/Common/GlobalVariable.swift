@@ -12,7 +12,7 @@ var HandledImageExtensions: [String] = []
 var HandledVideoExtensions: [String] = []
 var HandledOtherExtensions: [String] = []
 var HandledNotNativeSupportedExtensions: [String] = []
-var HandledExternalExtensions: [String] = []
+//var HandledExternalExtensions: [String] = []
 var HandledFileExtensions: [String] = []
 var HandledSearchExtensions: [String] = []
 var HandledFolderThumbExtensions: [String] = []
@@ -29,7 +29,7 @@ func setFileExtensions(){
     }
     HandledOtherExtensions = [] //["pdf"] //不能为""，否则会把目录异常包含进来
     HandledNotNativeSupportedExtensions = ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
-    HandledExternalExtensions = HandledVideoExtensions // + ["pdf"] //外部程序打开的
+    //HandledExternalExtensions = HandledVideoExtensions // + ["pdf"] //外部程序打开的
     HandledFileExtensions = HandledImageExtensions + HandledVideoExtensions + HandledOtherExtensions //文件列表显示的
     HandledSearchExtensions = HandledImageExtensions + HandledVideoExtensions //作为鼠标手势查找的目标
     HandledFolderThumbExtensions = HandledImageExtensions.filter{$0 != "svg"} + HandledVideoExtensions // + ["pdf"] //目录缩略图
@@ -64,6 +64,7 @@ class GlobalVar{
     var folderSearchDepth_External: Int = 0
     
     var isShowHiddenFile = false
+    var isShowAllTypeFile = false
     var isHideRawFile = false
     var isHideVideoFile = false
     var isGenHdThumb = false

@@ -753,6 +753,9 @@ extension WindowController: NSToolbarDelegate {
         actionItemShowHiddenFile.state = (globalVar.isShowHiddenFile) ? .on : .off
         actionItemShowHiddenFile.keyEquivalentModifierMask = [.command, .shift]
         
+        let showAllTypeFile = menu.addItem(withTitle: NSLocalizedString("Show All Types of Files", comment: "显示所有类型文件"), action: #selector(showAllTypeFileAction), keyEquivalent: "")
+        showAllTypeFile.state = (globalVar.isShowAllTypeFile) ? .on : .off
+        
         let hideRawFile = menu.addItem(withTitle: NSLocalizedString("Hide Camera RAW Files", comment: "不显示相机RAW文件"), action: #selector(hideRawFileAction), keyEquivalent: "")
         hideRawFile.state = (globalVar.isHideRawFile) ? .on : .off
         
@@ -938,6 +941,11 @@ extension WindowController: NSToolbarDelegate {
     @objc func showHiddenFileAction(_ sender: NSMenuItem) {
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.toggleIsShowHiddenFile()
+    }
+    
+    @objc func showAllTypeFileAction(_ sender: NSMenuItem) {
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleIsShowAllTypeFile()
     }
     
     @objc func hideRawFileAction(_ sender: NSMenuItem) {

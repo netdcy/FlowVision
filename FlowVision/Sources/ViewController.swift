@@ -895,6 +895,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         refreshAll([])
     }
     
+    func toggleIsShowAllTypeFile(){
+        globalVar.isShowAllTypeFile.toggle()
+        UserDefaults.standard.set(globalVar.isShowAllTypeFile, forKey: "isShowAllTypeFile")
+        refreshAll([])
+    }
+    
     func toggleIsHideRawFile(){
         globalVar.isHideRawFile.toggle()
         UserDefaults.standard.set(globalVar.isHideRawFile, forKey: "isHideRawFile")
@@ -2346,7 +2352,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         var imageCount=0
         var searchCount=0
         for file in contents {
-            if HandledFileExtensions.contains(file.pathExtension.lowercased()) {
+            if HandledFileExtensions.contains(file.pathExtension.lowercased()) || (globalVar.isShowAllTypeFile && file.pathExtension.lowercased() != "") {
                 filesUrlInFolder.append(file)
             }
             if HandledImageExtensions.contains(file.pathExtension.lowercased()) {
@@ -3451,7 +3457,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             if(url.hasDirectoryPath){
                 switchDirByDirection(direction: .zero, dest: item.file.path, stackDeep: 0)
             }
-            else if HandledExternalExtensions.contains(url.pathExtension.lowercased()) {
+            else if !HandledImageExtensions.contains(url.pathExtension.lowercased()) {
                 NSWorkspace.shared.open(url)
             }else{
                 if largeImageView.isHidden {

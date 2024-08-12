@@ -1489,6 +1489,17 @@
         }
       }
     },
+    "Show All Types of Files" : {
+      "comment" : "显示所有类型文件",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示所有类型文件"
+          }
+        }
+      }
+    },
     "Show Hidden Files" : {
       "comment" : "显示隐藏文件",
       "localizations" : {
