@@ -35,7 +35,7 @@
 
  ```
 brew tap netdcy/flowvision
-brew install flowvision
+brew install flowvision --no-quarantine
  ```
 
 ## Instructions:
