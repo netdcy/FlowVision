@@ -31,6 +31,13 @@
  - No Internet connection
  - Provide unsigned official builds
 
+### Homebrew Install
+
+ ```
+brew tap netdcy/flowvision
+brew install flowvision
+ ```
+
 ## Instructions:
 ### In Image View:
  - Hold down the right/left mouse button and scroll the wheel to zoom

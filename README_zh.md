@@ -35,6 +35,13 @@
  - 无网络连接
  - 提供无签名的官方构建，可自行编译
 
+### Homebrew 安装
+
+ ```
+brew tap netdcy/flowvision
+brew install flowvision
+ ```
+
 ## 操作说明
 
 ### 图片浏览:
