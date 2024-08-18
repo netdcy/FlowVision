@@ -132,11 +132,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     var searchFolderRound=0
     
 #if DEBUG
-//    var rootFolder="file://\(homeDirectory)/RepoData/ImageViewerPlus/"
-//    var treeRootFolder="file://\(homeDirectory)/RepoData/ImageViewerPlus/"
+    var rootFolder="file://\(homeDirectory)/RepoData/ImageViewerPlus/"
+    var treeRootFolder="file://\(homeDirectory)/RepoData/ImageViewerPlus/"
     
-    var rootFolder="file:///"
-    var treeRootFolder="root"
+//    var rootFolder="file:///"
+//    var treeRootFolder="root"
     
     let isDeveloper=false
 #else
@@ -277,6 +277,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }else {
             collectionView.collectionViewLayout = publicVar.justifiedLayout
         }
+        changeWaterfallLayoutNumberOfColumns()
         
         let theme=NSApp.effectiveAppearance.name
         if theme == .darkAqua {
