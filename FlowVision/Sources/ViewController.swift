@@ -3421,7 +3421,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             
             var newRange = Array((itemIndexMin...itemIndexMax).reversed())
             if let centerPos=indexPath?.item{
-                newRange.sort(){ abs($0-centerPos) > abs($1-centerPos) }
+                newRange.sort(){
+                    let x = Double($0-centerPos)
+                    let y = Double($1-centerPos)
+                    return (x > 0 ? x/2 : -x) > (y > 0 ? y/2 : -y)
+                }
             }
             
             loadImageTaskPool.lock.lock()
