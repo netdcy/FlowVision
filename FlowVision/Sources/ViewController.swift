@@ -1936,7 +1936,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     let newIndex = max(0, min(THUMB_SIZES.count - 1, currentIndex + direction))
                     publicVar.thumbSize = THUMB_SIZES[newIndex]
                     if currentIndex == newIndex {
-                        return
+                        if currentIndex == THUMB_SIZES.count-1 {
+                            break
+                        }else{
+                            return
+                        }
                     }
                     changeWaterfallLayoutNumberOfColumns()
                 }else{
