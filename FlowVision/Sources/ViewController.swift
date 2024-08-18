@@ -3182,9 +3182,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 }else{
                                     let maxLength = max(revisedSize.width,revisedSize.height)
                                     if !globalVar.isGenHdThumb || maxLength <= 256 { // || publicVar.layoutType == .grid
-                                        image = getImageThumb(url: url, refSize: originalSize)
+                                        image = ThumbImageProcessor.getImageCache(url: url, refSize: originalSize)
                                     }else{
-                                        image = getImageThumb(url: url, size: revisedSize)
+                                        image = ThumbImageProcessor.getImageCache(url: url, size: revisedSize)
                                     }
                                     if image == nil {
                                         image = getFileTypeIcon(url: url)
@@ -3981,7 +3981,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
 
             DispatchQueue.global(qos: .userInitiated).async {
-                _ = ImageProcessor.getImageCache(url: url, size: largeSize, rotate: 0, useOriginalImage: doNotGenResized, needWaitWhenSame: false)
+                _ = LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: 0, useOriginalImage: doNotGenResized, needWaitWhenSame: false)
             }
             
         }
@@ -4106,7 +4106,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             lastLargeImageRotate=rotate
             
             //检查是否有大图缓存
-            let preGetImageCache = ImageProcessor.isImageCachedAndGet(url: url, size: largeSize, rotate: rotate)
+            let preGetImageCache = LargeImageProcessor.isImageCachedAndGet(url: url, size: largeSize, rotate: rotate)
             let isImageCached = preGetImageCache != nil
             
             //先显示小图
@@ -4164,7 +4164,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 //按实际目标分辨率绘制效果较差，观察到1080P屏幕双倍插值后绘制与直接使用原图效果才类似，因此即使scale==1，此处size也不除以2
                 var largeImage: NSImage?
                 if resetSize {
-                    largeImage=ImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, useOriginalImage: doNotGenResized)
+                    largeImage=LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, useOriginalImage: doNotGenResized)
                 }else{
                     if doNotGenResized {
                         largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
