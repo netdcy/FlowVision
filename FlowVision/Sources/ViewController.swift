@@ -127,11 +127,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     var searchFolderRound=0
     
 #if DEBUG
-    var rootFolder="file://\(homeDirectory)/RepoData/ImageViewerPlus/"
-    var treeRootFolder="file://\(homeDirectory)/RepoData/ImageViewerPlus/"
+//    var rootFolder="file://\(homeDirectory)/RepoData/ImageViewerPlus/"
+//    var treeRootFolder="file://\(homeDirectory)/RepoData/ImageViewerPlus/"
     
-//    var rootFolder="file:///"
-//    var treeRootFolder="root"
+    var rootFolder="file:///"
+    var treeRootFolder="root"
     
     let isDeveloper=false
 #else
@@ -2733,15 +2733,16 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         //清空collectionView
         fileDB.lock()
-        fileDB.db[SortKeyDir(path)]?.layoutCalcPos=0
-        fileDB.db[SortKeyDir(path)]?.lastLayoutCalcPosUsed=0
         let lastCurFolder=fileDB.curFolder
         fileDB.curFolder = path
         let fileNum=fileDB.db[SortKeyDir(path)]?.files.count ?? 0
+        let lastLayoutCalcPos=fileDB.db[SortKeyDir(path)]?.layoutCalcPos ?? fileNum
+        fileDB.db[SortKeyDir(path)]?.layoutCalcPos=0
+        fileDB.db[SortKeyDir(path)]?.lastLayoutCalcPosUsed=0
         fileDB.unlock()
         
         //如果是切换目录或者文件数量过多，则清空后再insertItems，否则仅reloadData(保持位置)
-        if lastCurFolder != path || fileNum > 5000 {
+        if lastCurFolder != path || fileNum > 5000 || fileDB.db[SortKeyDir(path)]?.keepScrollPos == false {
             //必须按顺序执行以下两句，否则频繁切换目录时会出现异常
             collectionView.reloadData() //重载清空
             collectionView.numberOfItems(inSection:0)
