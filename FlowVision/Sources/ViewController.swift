@@ -3606,6 +3606,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             setLoadThumbPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0), ifNeedVisable: false)
         }
 
+        largeImageView.updateTextItems([])
         setWindowTitle()
     }
     
@@ -4186,7 +4187,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
             
             //加载Exif
-            if publicVar.isShowExif {
+            if publicVar.isShowExif && resetSize {
                 DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                     guard let self = self else { return }
                     if pos != currLargeImagePos && !isThisFromFinder {return}
@@ -4196,8 +4197,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     DispatchQueue.main.async { [weak self] in
                         guard let self = self else { return }
                         if pos != currLargeImagePos && !isThisFromFinder {return}
-                        if rotate != largeImageView.file.rotate {return}
-                        if largeImageView.file.largeSize != nil && largeSize != largeImageView.file.largeSize {return}
                         
                         largeImageView.updateTextItems(exifData)
                     }
