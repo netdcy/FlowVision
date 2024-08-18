@@ -962,10 +962,20 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             // 获取屏幕的可见区域
             if let screen = window.screen {
                 let visibleFrame = screen.visibleFrame
+                let aspectRatio = screen.frame.width / screen.frame.height
                 
                 // 确定最大比例
-                var ratioWidth = globalVar.portableListWidthRatio
-                var ratioHeight = globalVar.portableListHeightRatio
+                var ratioWidth: Double
+                var ratioHeight: Double
+                
+                if aspectRatio < 16.0/9.0 { //mbp屏幕或者竖屏
+                    ratioWidth = globalVar.portableListWidthRatioHH
+                    ratioHeight = globalVar.portableListHeightRatioHH
+                }else{
+                    ratioWidth = globalVar.portableListWidthRatio
+                    ratioHeight = globalVar.portableListHeightRatio
+                }
+                
                 if refRatio != nil {
                     ratioWidth = refRatio!.0
                     ratioHeight = refRatio!.1
@@ -1940,7 +1950,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //log("recalcLayout:"+String(recalcLayoutTimes))
         
         //var WIDTH_THRESHOLD=6.0/2000
-        var WIDTH_THRESHOLD=6.0/1920*512/Double(publicVar.thumbSize)
+        var WIDTH_THRESHOLD=6.4/1920*512/Double(publicVar.thumbSize)
         
         if publicVar.layoutType == .grid {
             WIDTH_THRESHOLD=10.0/1920*512/Double(publicVar.thumbSize)

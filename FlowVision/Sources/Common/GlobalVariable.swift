@@ -76,6 +76,8 @@ class GlobalVar{
     var portableImageHeightRatio = 0.95
     var portableListWidthRatio = 0.7
     var portableListHeightRatio = 0.84
+    var portableListWidthRatioHH = 0.82
+    var portableListHeightRatioHH = 0.84
     
     var startSpeedUpImageSizeCache: NSSize? = nil
 }
