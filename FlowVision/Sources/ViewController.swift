@@ -53,6 +53,11 @@ class PublicVar{
     var isOutlineViewFirstResponder: Bool = false
     var isShowExif: Bool = false {
         didSet {
+            if let largeImageView = getViewController(refView)?.largeImageView,
+               let url = URL(string: largeImageView.file.path),
+               isShowExif && largeImageView.exifTextView.textItems.isEmpty{
+                largeImageView.updateTextItems(formatExifData(getExifData(from: url) ?? [:]))
+            }
             getViewController(refView)?.largeImageView.exifTextView.isHidden = !isShowExif
             updateToolbar()
         }
@@ -4122,20 +4127,30 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 log("即时载入:",url.absoluteString.removingPercentEncoding!)
             }
             
-            //读取exif信息
-            if let exifData = getExifData(from: url) {
-                let translatedExifData = formatExifData(exifData)
-                largeImageView.updateTextItems(translatedExifData)
-            } else {
-                log("Failed to get EXIF data")
-                largeImageView.updateTextItems([])
-            }
-            
             //显示窗口
             if let windowController = self.view.window?.windowController,
                let window = windowController.window,
                !window.isVisible {
                 windowController.showWindow(nil)
+            }
+            
+            //加载Exif
+            if publicVar.isShowExif {
+                DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                    guard let self = self else { return }
+                    if pos != currLargeImagePos && !isThisFromFinder {return}
+                    
+                    let exifData = formatExifData(getExifData(from: url) ?? [:])
+                    
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        if pos != currLargeImagePos && !isThisFromFinder {return}
+                        if rotate != largeImageView.file.rotate {return}
+                        if largeImageView.file.largeSize != nil && largeSize != largeImageView.file.largeSize {return}
+                        
+                        largeImageView.updateTextItems(exifData)
+                    }
+                }
             }
             
             if isImageCached {
