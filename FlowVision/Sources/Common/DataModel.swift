@@ -310,6 +310,7 @@ class DirModel {
     var videoCount: Int = 0
     var isMemClearedToAvoidRemainingTask: Bool = false
     var keepScrollPos: Bool = false
+    var isRecursiveMode: Bool = false
     var lock: NSLock = NSLock()
     
     func changeSortType(_ sortType: SortType, isSortFolderFirst: Bool){

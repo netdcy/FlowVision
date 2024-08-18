@@ -2508,6 +2508,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         fileDB.db[SortKeyDir(folderURL.absoluteString)]!.imageCount=imageCount
         fileDB.db[SortKeyDir(folderURL.absoluteString)]!.videoCount=videoCount
         fileDB.db[SortKeyDir(folderURL.absoluteString)]!.isMemClearedToAvoidRemainingTask=false
+        let lastIsRecursiveMode=fileDB.db[SortKeyDir(folderURL.absoluteString)]!.isRecursiveMode
+        if lastIsRecursiveMode != publicVar.isRecursiveMode {
+            fileDB.db[SortKeyDir(folderURL.absoluteString)]!.keepScrollPos=false
+        }
+        fileDB.db[SortKeyDir(folderURL.absoluteString)]!.isRecursiveMode=publicVar.isRecursiveMode
         fileDB.unlock()
         
         //往前则后序遍历
