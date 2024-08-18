@@ -68,7 +68,6 @@ class GlobalVar{
     var isHideRawFile = false
     var isHideVideoFile = false
     var isGenHdThumb = false
-    var isRecursiveMode = false
     
     var portableMode = false
     var portableImageUseActualSize = false

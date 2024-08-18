@@ -19,6 +19,7 @@ class PublicVar{
     var sortType: SortType = .pathA
     var isSortFolderFirst: Bool = true
     var isLargeImageFitWindow = true
+    var isRecursiveMode = false
     
     var fullTitle = "FlowVision"
     var isKeyEventEnabled = true
@@ -912,7 +913,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     }
     
     func toggleRecursiveMode(){
-        globalVar.isRecursiveMode.toggle()
+        publicVar.isRecursiveMode.toggle()
         refreshCollectionView([])
     }
     
@@ -2196,6 +2197,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     }
     
     func switchDirByDirection(direction rawdirection: GestureDirection, dest: String = "", doCollapse: Bool = true, expandLast: Bool = true, skip: Bool = false, stackDeep: Int){
+        
+        if publicVar.isRecursiveMode {
+            if rawdirection == .left || rawdirection == .up_left || rawdirection == .down_left
+                || rawdirection == .right || rawdirection == .up_right || rawdirection == .down_right {
+                showAlert(message: NSLocalizedString("recursive-mode-nodirection", comment: "递归模式下不能执行此动作"))
+                return
+            }
+        }
 
         stopWatchingDirectory()
         collectionView.deselectAll(nil)
@@ -2389,7 +2398,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         if !skip {
             do {
-                if globalVar.isRecursiveMode {
+                if publicVar.isRecursiveMode {
                     scanFiles(at: folderURL, contents: &contents, properties: properties)
                 }else{
                     contents = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: properties, options: [])
@@ -2522,10 +2531,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 var fileSortKey:SortKeyFile
                 let isDir:Bool
                 if filePath.hasSuffix("_FolderMark") {
-                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: !globalVar.isRecursiveMode, sortType: publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)
+                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)
                     isDir=true
                 }else{
-                    fileSortKey=SortKeyFile(filePath, isInSameDir: !globalVar.isRecursiveMode, sortType: publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)
+                    fileSortKey=SortKeyFile(filePath, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)
                     isDir=false
                 }
                 //读取文件大小日期

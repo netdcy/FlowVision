@@ -765,7 +765,7 @@ extension WindowController: NSToolbarDelegate {
         menu.addItem(NSMenuItem.separator())
         
         let recursiveMode = menu.addItem(withTitle: NSLocalizedString("Recursive Mode", comment: "递归浏览模式"), action: #selector(toggleRecursiveMode), keyEquivalent: "")
-        recursiveMode.state = (globalVar.isRecursiveMode) ? .on : .off
+        recursiveMode.state = (viewController.publicVar.isRecursiveMode) ? .on : .off
         
         let recursiveModeInfo = menu.addItem(withTitle: NSLocalizedString("Info...", comment: "说明..."), action: #selector(recursiveModeInfo), keyEquivalent: "")
         

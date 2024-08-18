@@ -1410,6 +1410,23 @@
         }
       }
     },
+    "recursive-mode-nodirection" : {
+      "comment" : "递归模式下不能执行此动作",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This action cannot be performed in recursive mode."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "递归浏览模式下不能执行此动作"
+          }
+        }
+      }
+    },
     "Reduce the Thumbnails" : {
       "comment" : "缩小缩略图",
       "localizations" : {
