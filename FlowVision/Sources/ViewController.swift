@@ -817,8 +817,18 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     func handlePrint(){
         if publicVar.isInLargeView {
             printContent(largeImageView.imageView)
-        } else if let selectedContent = outlineView {
-            printContent(collectionView)
+        } else {
+            // 临时隐藏滚动条
+            let originalVerticalScroller = mainScrollView.verticalScroller
+            let originalHorizontalScroller = mainScrollView.horizontalScroller
+            mainScrollView.verticalScroller=nil
+            mainScrollView.horizontalScroller=nil
+            
+            printContent(mainScrollView)
+            
+            // 恢复原始滚动条状态
+            mainScrollView.verticalScroller = originalVerticalScroller
+            mainScrollView.horizontalScroller = originalHorizontalScroller
         }
     }
     
