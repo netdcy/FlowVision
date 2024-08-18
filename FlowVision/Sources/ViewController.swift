@@ -903,6 +903,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
     
+    func toggleRecursiveMode(){
+        globalVar.isRecursiveMode.toggle()
+        refreshCollectionView([])
+    }
+    
     func toggleIsShowHiddenFile(){
         globalVar.isShowHiddenFile.toggle()
         UserDefaults.standard.set(globalVar.isShowHiddenFile, forKey: "isShowHiddenFile")
@@ -2291,6 +2296,53 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         defaults.set(nextFolder, forKey: "lastFolder")
 
     }
+    
+    func showScanAlert(fileCount: Int, imageCount: Int, videoCount: Int) -> Bool {
+        let alert = NSAlert()
+        alert.messageText = NSLocalizedString("Scan Prompt", comment: "扫描提示")
+        alert.informativeText = String(format: NSLocalizedString("scanned-files", comment: "当前已扫描 %d 个文件，其中图像 %d 个，视频 %d 个。是否继续？"), fileCount, imageCount, videoCount)
+        alert.addButton(withTitle: NSLocalizedString("Continue", comment: "继续"))
+        alert.addButton(withTitle: NSLocalizedString("Stop", comment: "停止"))
+        return alert.runModal() == .alertFirstButtonReturn
+    }
+    
+    func scanFiles(at folderURL: URL, contents: inout [URL],  properties: [URLResourceKey]) {
+        let options:FileManager.DirectoryEnumerationOptions = globalVar.isShowHiddenFile ? [] : [.skipsHiddenFiles]
+        let enumerator = FileManager.default.enumerator(at: folderURL, includingPropertiesForKeys: properties, options: options, errorHandler: { (url, error) -> Bool in
+            print("Error enumerating \(url): \(error.localizedDescription)")
+            return true
+        })
+
+        var fileCount = 0
+        var imageCount = 0
+        var videoCount = 0
+        let scanInterval: TimeInterval = 4.0
+        var startDate = Date()
+        
+        while let url = enumerator?.nextObject() as? URL {
+            let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) ?? false
+            if !isDirectory {
+                contents.append(url)
+                fileCount += 1
+                if HandledImageExtensions.contains(url.pathExtension.lowercased()) {
+                    imageCount += 1
+                } else if HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
+                    videoCount += 1
+                }
+            }
+            
+            let elapsedTime = Date().timeIntervalSince(startDate)
+            if elapsedTime >= scanInterval {
+                let shouldContinue = showScanAlert(fileCount: fileCount, imageCount: imageCount, videoCount: videoCount)
+                if !shouldContinue {
+                    break
+                }
+                // Reset the timer
+                startDate = Date()
+            }
+        }
+
+    }
 
     
     func treeTraversal(folderURL: URL, round: Int, initURL: URL, direction: GestureDirection, sameLevel: Bool = false, skip: Bool = false) {
@@ -2313,17 +2365,30 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         
         var contents=[URL]()
-        var properties: [URLResourceKey] = [.isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey, .isUbiquitousItemKey, .ubiquitousItemDownloadingStatusKey]
+        var properties: [URLResourceKey] = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey, .isUbiquitousItemKey, .ubiquitousItemDownloadingStatusKey]
         if VolumeManager.shared.isExternalVolume(folderURL) {
-            properties = [.isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey]
+            properties = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey]
         }
         if !skip {
             do {
-                //读取内容
-                //let folderURL = URL(string: path)!
-                contents = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: properties, options: [])
-                //contents.sort { $0.absoluteString < $1.absoluteString }
-                //contents.sort { $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending }
+                if globalVar.isRecursiveMode {
+                    
+//                    let enumerator = FileManager.default.enumerator(at: folderURL, includingPropertiesForKeys: properties, options: [], errorHandler: { (url, error) -> Bool in
+//                        print("Error enumerating \(url): \(error.localizedDescription)")
+//                        return true
+//                    })
+//                    while let url = enumerator?.nextObject() as? URL {
+//                        let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) ?? false
+//                        if !isDirectory {
+//                            contents.append(url)
+//                        }
+//                    }
+                    scanFiles(at: folderURL, contents: &contents, properties: properties)
+                    
+                }else{
+                    contents = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: properties, options: [])
+                }
+
             }catch{
                 
             }
@@ -2331,7 +2396,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         //过滤隐藏文件
         contents = contents.filter { url in
-            if VolumeManager.shared.isExternalVolume(url) {return true} //外置卷则不获取属性避免频繁请求
+
             // 获取隐藏属性
             let resourceValues = try? url.resourceValues(forKeys: [.isHiddenKey])
             let isHidden = resourceValues?.isHidden ?? false
@@ -2454,10 +2519,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 var fileSortKey:SortKeyFile
                 let isDir:Bool
                 if filePath.hasSuffix("_FolderMark") {
-                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: true, sortType: publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)
+                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: !globalVar.isRecursiveMode, sortType: publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)
                     isDir=true
                 }else{
-                    fileSortKey=SortKeyFile(filePath, isInSameDir: true, sortType: publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)
+                    fileSortKey=SortKeyFile(filePath, isInSameDir: !globalVar.isRecursiveMode, sortType: publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)
                     isDir=false
                 }
                 //读取文件大小日期
@@ -3063,7 +3128,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                             
                             var revisedSize = NSSize(width: thumbSize!.width-12, height: thumbSize!.height-12-18)
                             if publicVar.layoutType == .grid {
-                                revisedSize = AVMakeRect(aspectRatio: originalSize ?? DEFAULT_SIZE, insideRect: CGRect(origin: CGPoint(x: 0, y: 0), size: revisedSize)).size
+                                var size = originalSize ?? DEFAULT_SIZE
+                                if size.width == 0 || size.height == 0 {size=DEFAULT_SIZE}
+                                revisedSize = AVMakeRect(aspectRatio: size, insideRect: CGRect(origin: CGPoint(x: 0, y: 0), size: revisedSize)).size
                             }
                             //log(max(revisedSize.width,revisedSize.height),level: .debug)
                             

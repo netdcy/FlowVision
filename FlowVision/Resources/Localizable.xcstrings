@@ -283,6 +283,17 @@
         }
       }
     },
+    "Continue" : {
+      "comment" : "继续",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "继续"
+          }
+        }
+      }
+    },
     "copy" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1371,6 +1382,34 @@
         }
       }
     },
+    "Recursive Mode" : {
+      "comment" : "递归浏览模式",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "递归浏览模式"
+          }
+        }
+      }
+    },
+    "recursive-mode-info" : {
+      "comment" : "对于递归模式的说明...",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In \"Recursive Mode\", after selecting a folder in the directory tree, the thumbnail area will display all files within the folder and its subdirectories.\nWhen scanning certain system directories or network drives, the program may experience lag."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“递归浏览模式”时，在目录树中选择文件夹后，缩略图区域将显示文件夹及其子目录下的所有文件。\n扫描部分系统目录或网络驱动器时，程序可能产生卡顿。"
+          }
+        }
+      }
+    },
     "Reduce the Thumbnails" : {
       "comment" : "缩小缩略图",
       "localizations" : {
@@ -1497,6 +1536,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "逆时针旋转"
+          }
+        }
+      }
+    },
+    "Scan Prompt" : {
+      "comment" : "扫描提示",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "扫描提示"
+          }
+        }
+      }
+    },
+    "scanned-files" : {
+      "comment" : "当前已扫描 %d 个文件，其中图像 %d 个，视频 %d 个。是否继续？",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Currently scanned %d files, including %d images and %d videos. Do you want to continue?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前已扫描 %d 个文件，其中图像 %d 个，视频 %d 个。是否继续？"
           }
         }
       }
@@ -1881,6 +1948,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "排序方式"
+          }
+        }
+      }
+    },
+    "Stop" : {
+      "comment" : "停止",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止"
           }
         }
       }

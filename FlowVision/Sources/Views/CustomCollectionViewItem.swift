@@ -294,7 +294,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             if let image = file.image {
                 imageViewObj.isDrawBorder=true
                 imageViewObj.layer?.borderWidth = 2.0
-                imageViewObj.frame = AVMakeRect(aspectRatio: image.size, insideRect: imageViewRef.bounds)
+                if image.size.width != 0 && image.size.height != 0{
+                    imageViewObj.frame = AVMakeRect(aspectRatio: image.size, insideRect: imageViewRef.bounds)
+                }
                 imageViewObj.center = imageViewRef.center
             }else{
                 imageViewObj.isDrawBorder=false
@@ -365,7 +367,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             if let image = file.image {
                 imageViewObj.isDrawBorder=true
                 imageViewObj.layer?.borderWidth = 2.0
-                imageViewObj.frame = AVMakeRect(aspectRatio: image.size, insideRect: imageViewRef.bounds)
+                if image.size.width != 0 && image.size.height != 0{
+                    imageViewObj.frame = AVMakeRect(aspectRatio: image.size, insideRect: imageViewRef.bounds)
+                }
                 imageViewObj.center = imageViewRef.center
             }else{
                 imageViewObj.isDrawBorder=false

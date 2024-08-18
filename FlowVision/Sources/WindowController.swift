@@ -764,6 +764,13 @@ extension WindowController: NSToolbarDelegate {
         
         menu.addItem(NSMenuItem.separator())
         
+        let recursiveMode = menu.addItem(withTitle: NSLocalizedString("Recursive Mode", comment: "递归浏览模式"), action: #selector(toggleRecursiveMode), keyEquivalent: "")
+        recursiveMode.state = (globalVar.isRecursiveMode) ? .on : .off
+        
+        let recursiveModeInfo = menu.addItem(withTitle: NSLocalizedString("Info...", comment: "说明..."), action: #selector(recursiveModeInfo), keyEquivalent: "")
+        
+        menu.addItem(NSMenuItem.separator())
+        
         let maximizeWindow = menu.addItem(withTitle: NSLocalizedString("maximizeWindow", comment: "最大化窗口"), action: #selector(maximizeWindow), keyEquivalent: "1")
         maximizeWindow.keyEquivalentModifierMask = []
         
@@ -965,6 +972,15 @@ extension WindowController: NSToolbarDelegate {
     
     @objc func portableModeInfo(_ sender: NSMenuItem){
         showInformation(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("portable-mode-info", comment: "对于便携模式的说明..."))
+    }
+    
+    @objc func toggleRecursiveMode(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleRecursiveMode()
+    }
+    
+    @objc func recursiveModeInfo(_ sender: NSMenuItem){
+        showInformation(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("recursive-mode-info", comment: "对于递归模式的说明..."))
     }
 }
 
