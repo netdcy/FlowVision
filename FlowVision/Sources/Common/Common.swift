@@ -369,3 +369,48 @@ class VolumeManager {
         return externalVolumes
     }
 }
+
+class PrintView: NSView {
+    var contentToPrint: NSView?
+
+    init(content: NSView) {
+        self.contentToPrint = content
+        super.init(frame: content.frame)
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
+        guard let contentToPrint = contentToPrint else { return }
+        
+        // 保存当前图形上下文状态
+        let graphicsContext = NSGraphicsContext.current?.cgContext
+        graphicsContext?.saveGState()
+        
+        // 判断是否需要翻转
+        if !(contentToPrint is NSImageView) {
+            // 翻转和变换坐标系
+            graphicsContext?.translateBy(x: 0, y: contentToPrint.bounds.height)
+            graphicsContext?.scaleBy(x: 1.0, y: -1.0)
+        }
+        
+        // 绘制内容
+        contentToPrint.layer?.render(in: graphicsContext!)
+        
+        // 恢复图形上下文状态
+        graphicsContext?.restoreGState()
+    }
+}
+
+func printContent(_ content: NSView) {
+    let printView = PrintView(content: content)
+    let printInfo = NSPrintInfo.shared
+    printInfo.horizontalPagination = .fit
+    printInfo.verticalPagination = .fit
+
+    let printOperation = NSPrintOperation(view: printView, printInfo: printInfo)
+    printOperation.run()
+}

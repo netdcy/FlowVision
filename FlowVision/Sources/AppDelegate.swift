@@ -677,6 +677,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         getMainViewController()?.handleNewFolder()
     }
     
+    @IBAction func filePrint(_ sender: NSMenuItem){
+        getMainViewController()?.handlePrint()
+    }
+    
+    @IBAction func filePageSetup(_ sender: NSMenuItem){
+        let pageLayout = NSPageLayout()
+        let printInfo = NSPrintInfo.shared
+        
+        pageLayout.runModal(with: printInfo)
+    }
+    
     @IBAction func toggleIsShowHiddenFile(_ sender: NSMenuItem){
         getMainViewController()?.toggleIsShowHiddenFile()
     }

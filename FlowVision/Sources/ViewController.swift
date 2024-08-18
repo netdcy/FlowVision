@@ -807,6 +807,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         startBackgroundTaskThread()
     }
     
+    func handlePrint(){
+        if publicVar.isInLargeView {
+            printContent(largeImageView.imageView)
+        } else if let selectedContent = outlineView {
+            printContent(collectionView)
+        }
+    }
+    
     func changeSortType(_ sortType: SortType){
         fileDB.lock()
         publicVar.sortType = sortType
@@ -2382,26 +2390,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if !skip {
             do {
                 if globalVar.isRecursiveMode {
-                    
-//                    let enumerator = FileManager.default.enumerator(at: folderURL, includingPropertiesForKeys: properties, options: [], errorHandler: { (url, error) -> Bool in
-//                        print("Error enumerating \(url): \(error.localizedDescription)")
-//                        return true
-//                    })
-//                    while let url = enumerator?.nextObject() as? URL {
-//                        let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) ?? false
-//                        if !isDirectory {
-//                            contents.append(url)
-//                        }
-//                    }
                     scanFiles(at: folderURL, contents: &contents, properties: properties)
-                    
                 }else{
                     contents = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: properties, options: [])
                 }
-
-            }catch{
-                
-            }
+            }catch{}
         }
         
         //过滤隐藏文件
