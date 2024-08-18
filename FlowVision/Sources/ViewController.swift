@@ -330,7 +330,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if let scrollView = collectionView.enclosingScrollView {
             // 监听滚动开始和结束的通知
             NotificationCenter.default.addObserver(self, selector: #selector(scrollViewDidScroll(_:)), name: NSScrollView.didLiveScrollNotification, object: scrollView)
-            NotificationCenter.default.addObserver(self, selector: #selector(scrollViewDidScroll(_:)), name: NSScrollView.didEndLiveScrollNotification, object: scrollView)
+            NotificationCenter.default.addObserver(self, selector: #selector(scrollViewScrollEnd(_:)), name: NSScrollView.didEndLiveScrollNotification, object: scrollView)
         }
         
         //监听键盘按键
@@ -3407,15 +3407,33 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
 
+    var scrollDebounceWorkItem: DispatchWorkItem?
+    
     @objc func scrollViewDidScroll(_ notification: Notification) {
+        guard let scrollView = notification.object as? NSScrollView else { return }
+        // 确保是针对我们感兴趣的ScrollView（如果有多个ScrollView）
+        if scrollView == collectionView.enclosingScrollView {
+
+            setLoadThumbPriority(ifNeedVisable: true)
+            
+            scrollDebounceWorkItem?.cancel()
+            scrollDebounceWorkItem = DispatchWorkItem {
+                DispatchQueue.main.async { [weak self] in
+                    self?.setLoadThumbPriority(ifNeedVisable: true)
+                }
+            }
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.1, execute: scrollDebounceWorkItem!)
+        }
+    }
+    
+    @objc func scrollViewScrollEnd(_ notification: Notification) {
         guard let scrollView = notification.object as? NSScrollView else { return }
         // 确保是针对我们感兴趣的ScrollView（如果有多个ScrollView）
         if scrollView == collectionView.enclosingScrollView {
             setLoadThumbPriority(ifNeedVisable: true)
         }
-        
     }
-    
+
     func setLoadThumbPriority(indexPath: IndexPath? = nil, range: (Int,Int) = (-20,20), ifNeedVisable: Bool){
 
         var indexPaths: Set<IndexPath> = Set()
