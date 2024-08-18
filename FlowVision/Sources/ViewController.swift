@@ -2886,8 +2886,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     if ver != dirModel.ver {continue}
                     
                     //外置卷等待到队列全部执行完毕再分配(单线程)
+//                    if VolumeManager.shared.isExternalVolume(key.path) {
+//                        operationQueue.waitUntilAllOperationsAreFinished()
+//                    }
                     if VolumeManager.shared.isExternalVolume(key.path) {
-                        operationQueue.waitUntilAllOperationsAreFinished()
+                        operationQueue.maxConcurrentOperationCount = 1
+                    }else{
+                        operationQueue.maxConcurrentOperationCount = globalVar.thumbThreadNum > 2 ? 2 : 1
                     }
                     
                     //最后一个等待到队列全部执行完毕再分配
@@ -3050,23 +3055,29 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         if ver != dirModel.ver {return}
                         
                         if VolumeManager.shared.isExternalVolume(key.path) {
-                            let dirPath=getDirectoryPath(key.path)
-                            externalVolumeThreadSemaphoresLock.lock()
-                            let semaphore = externalVolumeThreadSemaphores[dirPath, default: DispatchSemaphore(value: globalVar.thumbThreadNum_External)]
-                            externalVolumeThreadSemaphores[dirPath] = semaphore
-                            externalVolumeThreadSemaphoresLock.unlock()
-                            semaphore.wait()
+                            operationQueue.maxConcurrentOperationCount = globalVar.thumbThreadNum_External
+                        }else{
+                            operationQueue.maxConcurrentOperationCount = globalVar.thumbThreadNum
                         }
-                        defer {
-                            if VolumeManager.shared.isExternalVolume(key.path) {
-                                let dirPath=getDirectoryPath(key.path)
-                                externalVolumeThreadSemaphoresLock.lock()
-                                let semaphore = externalVolumeThreadSemaphores[dirPath, default: DispatchSemaphore(value: globalVar.thumbThreadNum_External)]
-                                externalVolumeThreadSemaphores[dirPath] = semaphore
-                                externalVolumeThreadSemaphoresLock.unlock()
-                                semaphore.signal()
-                            }
-                        }
+                        
+//                        if VolumeManager.shared.isExternalVolume(key.path) {
+//                            let dirPath=getDirectoryPath(key.path)
+//                            externalVolumeThreadSemaphoresLock.lock()
+//                            let semaphore = externalVolumeThreadSemaphores[dirPath, default: DispatchSemaphore(value: globalVar.thumbThreadNum_External)]
+//                            externalVolumeThreadSemaphores[dirPath] = semaphore
+//                            externalVolumeThreadSemaphoresLock.unlock()
+//                            semaphore.wait()
+//                        }
+//                        defer {
+//                            if VolumeManager.shared.isExternalVolume(key.path) {
+//                                let dirPath=getDirectoryPath(key.path)
+//                                externalVolumeThreadSemaphoresLock.lock()
+//                                let semaphore = externalVolumeThreadSemaphores[dirPath, default: DispatchSemaphore(value: globalVar.thumbThreadNum_External)]
+//                                externalVolumeThreadSemaphores[dirPath] = semaphore
+//                                externalVolumeThreadSemaphoresLock.unlock()
+//                                semaphore.signal()
+//                            }
+//                        }
                         
                         fileDB.lock()
                         let originalSize:NSSize? = file.originalSize
