@@ -358,34 +358,48 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 if event.keyCode == 0x00 && noModifierKey {
                     closeLargeImage(0)
                     switchDirByDirection(direction: .left, stackDeep: 0)
+                    return nil
                 }
                 // 检查按键是否是 "D" 键
                 if event.keyCode == 0x02 && noModifierKey {
                     closeLargeImage(0)
                     switchDirByDirection(direction: .right, stackDeep: 0)
+                    return nil
                 }
                 // 检查按键是否是 "W" 键
                 if event.keyCode == 0x0D && noModifierKey {
                     closeLargeImage(0)
                     switchDirByDirection(direction: .up, stackDeep: 0)
+                    return nil
                 }
                 // 检查按键是否是 "S" 键
                 if event.keyCode == 0x01 && noModifierKey {
                     closeLargeImage(0)
                     switchDirByDirection(direction: .down, stackDeep: 0)
+                    return nil
                 }
                 // 检查按键是否是 "R" 键
                 if event.keyCode == 15 && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actRefresh()
+                        return nil
                     }else{
                         refreshAll()
+                        return nil
                     }
+                }
+                
+                // 检查按键是否是 Command+⬆️ 键
+                if event.keyCode == 126 && isCommandPressed {
+                    closeLargeImage(0)
+                    switchDirByDirection(direction: .up, stackDeep: 0)
+                    return nil
                 }
                 
                 // 检查按键是否是 Esc 键
                 if event.keyCode == 53 {
                     self.view.window?.close()
+                    return nil
                 }
                 
                 // 检查按键是否是 Delete(117) Backspace(51) 键
@@ -393,11 +407,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     //如果焦点在OutlineView
                     if publicVar.isOutlineViewFirstResponder{
                         outlineView.actDelete(isByKeyboard: true)
-                        
+                        return nil
                     }
                     //如果焦点在CollectionView
                     if publicVar.isCollectionViewFirstResponder{
                         handleDelete()
+                        return nil
                     }
                 }
                 
@@ -405,10 +420,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 if event.keyCode == 49 && noModifierKey {
                     if publicVar.isInLargeView{
                         closeLargeImage(0)
+                        return nil
                     }else{
                         if let indexPath = collectionView.selectionIndexPaths.first {
                             if publicVar.isCollectionViewFirstResponder{
                                 openLargeImage(indexPath)
+                                return nil
                             }
                         }
                     }
@@ -435,16 +452,21 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 if ([18,19,20,21,23,83,84,85,86,87].contains(event.keyCode)) && noModifierKey {
                     if [18,83].contains(event.keyCode) { // 1
                         adjustWindowMaximize()
+                        return nil
                     }else if [19,84].contains(event.keyCode){ // 2
                         adjustWindowSuitable()
+                        return nil
                     }else if ([23,87].contains(event.keyCode)){ // 5
                         //adjustWindowToCenter()
+                        return nil
                     }else{
                         if publicVar.isInLargeView {
                             if ([20,85].contains(event.keyCode)){ // 3
                                 adjustWindowImageActual()
+                                return nil
                             }else if ([21,86].contains(event.keyCode)){ // 4
                                 adjustWindowImageCurrent()
+                                return nil
                             }
                         }
                     }
@@ -453,12 +475,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 // 检查按键是否是 "~"
                 if event.keyCode == 50 && noModifierKey {
                     togglePortableMode()
+                    return nil
                 }
                 
                 // 检查按键是否是 "I"
                 if event.keyCode == 34 && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actShowExif()
+                        return nil
                     }
                 }
                 
@@ -466,6 +490,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 if event.keyCode == 31 && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actOCR()
+                        return nil
                     }
                 }
                 
@@ -473,6 +498,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 if event.keyCode == 35 && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actQRCode()
+                        return nil
                     }
                 }
                 
@@ -480,6 +506,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 if event.keyCode == 14 && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actRotateR()
+                        return nil
                     }
                 }
                 
@@ -487,6 +514,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 if event.keyCode == 12 && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actRotateL()
+                        return nil
                     }
                 }
                 
@@ -494,12 +522,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 if event.keyCode == 124 || event.keyCode == 125 || event.keyCode == 121 {
                     if publicVar.isInLargeView{
                         nextLargeImage()
+                        return nil
                     }
                 }
                 // 检查按键是否是 ⬅️⬆️PageUp 键
                 if event.keyCode == 123 || event.keyCode == 126 || event.keyCode == 116 {
                     if publicVar.isInLargeView{
                         previousLargeImage()
+                        return nil
                     }
                 }
                 
@@ -508,8 +538,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     if !publicVar.isInLargeView{
                         if publicVar.isOutlineViewFirstResponder{
                             view.window?.makeFirstResponder(collectionView)
+                            return nil
                         }else if publicVar.isCollectionViewFirstResponder{
                             view.window?.makeFirstResponder(outlineView)
+                            return nil
                         }
                     }
                 }
@@ -545,6 +577,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                         }
                                     }
                                 }
+                                return nil
                             }
                         }
                         
@@ -578,6 +611,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [newIndexPath])
                                 collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
                             }
+                            return nil
                         }
                     }
                 }
@@ -587,12 +621,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     //如果焦点在OutlineView
                     if publicVar.isOutlineViewFirstResponder{
                         outlineView.actRename(isByKeyboard: true)
+                        return nil
                     }
                     
                     //如果焦点在CollectionView
                     if publicVar.isCollectionViewFirstResponder{
                         if publicVar.selectedUrls().count == 1 {
                             renameAlert(url: publicVar.selectedUrls()[0])
+                            return nil
                         }
                     }
                 }
@@ -601,20 +637,24 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 if event.keyCode == 3 && noModifierKey {
                     if !publicVar.isInLargeView{
                         toggleSidebar()
+                        return nil
                     }
                 }
                 
                 // 检查按键是否是 "T" 键
                 if event.keyCode == 17 && noModifierKey {
                     toggleOnTop()
+                    return nil
                 }
                 
                 // 检查按键是否是 -、-(小键盘) 键
                 if event.keyCode == 27 || event.keyCode == 78 {
                     if publicVar.isInLargeView{
                         largeImageView.zoom(direction: -1)
+                        return nil
                     }else{
                         adjustThumbSizeByDirection(direction: -1)
+                        return nil
                     }
                 }
                 
@@ -622,8 +662,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 if event.keyCode == 24 || event.keyCode == 69 {
                     if publicVar.isInLargeView {
                         largeImageView.zoom(direction: +1)
+                        return nil
                     }else{
                         adjustThumbSizeByDirection(direction: +1)
+                        return nil
                     }
                 }
                 
@@ -631,8 +673,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 if event.keyCode == 29 || event.keyCode == 82 {
                     if publicVar.isInLargeView {
                         changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: true)
+                        return nil
                     }else{
                         adjustThumbSizeByDirection(direction: 0)
+                        return nil
                     }
                 }
                 
@@ -641,6 +685,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     //如果焦点在CollectionView
                     if publicVar.isCollectionViewFirstResponder{
                         handleCopyToDownload()
+                        return nil
                     }
                 }
                 
@@ -649,6 +694,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     //如果焦点在CollectionView
                     if publicVar.isCollectionViewFirstResponder{
                         handleMoveToDownload()
+                        return nil
                     }
                 }
 
