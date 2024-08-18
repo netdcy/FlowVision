@@ -3408,10 +3408,15 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             
             if itemIndexMin >= itemIndexMax {return}
             
+            var newRange = Array((itemIndexMin...itemIndexMax).reversed())
+            if let centerPos=indexPath?.item{
+                newRange.sort(){ abs($0-centerPos) > abs($1-centerPos) }
+            }
+            
             loadImageTaskPool.lock.lock()
             fileDB.lock()
             let curFolder=fileDB.curFolder
-            for itemIndex in (itemIndexMin...itemIndexMax).reversed() {
+            for itemIndex in newRange {
                 if let dirModel = fileDB.db[SortKeyDir(curFolder)],
                    let key = dirModel.files.elementSafe(atOffset: itemIndex)?.0,
                    let file = dirModel.files.elementSafe(atOffset: itemIndex)?.1,
@@ -3692,7 +3697,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 let indexPath=IndexPath(item: currLargeImagePos, section: 0)
                 collectionView.selectItems(at: [indexPath], scrollPosition: [])
                 collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
-                setLoadThumbPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0), ifNeedVisable: false)
             }
         }else if isShowReachEndPrompt {
             largeImageView.showInfo(NSLocalizedString("already-first", comment: "已经是第一张图片"))
@@ -3747,7 +3751,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 let indexPath=IndexPath(item: currLargeImagePos, section: 0)
                 collectionView.selectItems(at: [indexPath], scrollPosition: [])
                 collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
-                setLoadThumbPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0), ifNeedVisable: false)
             }
         }else if isShowReachEndPrompt {
             largeImageView.showInfo(NSLocalizedString("already-last", comment: "已经是最后一张图片"))
@@ -3995,6 +3998,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
             fileDB.unlock()
             
+            setLoadThumbPriority(indexPath: IndexPath(item: pos, section: 0), ifNeedVisable: false)
             if !globalVar.portableMode {
                 // 预载入附近图像（包括本张），此处对于便携模式计算似乎有一像素小数偏差，待完善
                 preloadLargeImage()
