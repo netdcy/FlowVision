@@ -1015,6 +1015,23 @@
         }
       }
     },
+    "ocr-recog-fail" : {
+      "comment" : "OCR功能需要macOS 13.0及以上版本",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The OCR function requires macOS 13.0 or later."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR功能需要macOS 13.0及以上版本"
+          }
+        }
+      }
+    },
     "ok" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1316,6 +1333,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "二维码识别结果"
+          }
+        }
+      }
+    },
+    "recognize-OCR" : {
+      "comment" : "识别文本(OCR)",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recognize Text (OCR)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "识别文本(OCR)"
           }
         }
       }

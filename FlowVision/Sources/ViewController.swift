@@ -455,6 +455,20 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     }
                 }
                 
+                // 检查按键是否是 "O"
+                if event.keyCode == 31 && noModifierKey {
+                    if publicVar.isInLargeView{
+                        largeImageView.actOCR()
+                    }
+                }
+                
+                // 检查按键是否是 "P"
+                if event.keyCode == 35 && noModifierKey {
+                    if publicVar.isInLargeView{
+                        largeImageView.actQRCode()
+                    }
+                }
+                
                 // 检查按键是否是 "E"
                 if event.keyCode == 14 && noModifierKey {
                     if publicVar.isInLargeView{
@@ -633,8 +647,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 
             }
             
-            // 处理弹出重命名对话框时的复制粘贴操作
-            if !publicVar.isKeyEventEnabled && event.modifierFlags.contains(.command) {
+            // 处理弹出重命名对话框、OCR状态的复制粘贴操作
+            if (!publicVar.isKeyEventEnabled || largeImageView.isInOcrState) && event.modifierFlags.contains(.command) {
                 switch event.charactersIgnoringModifiers {
                 case "c":
                     if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.copy(_:))) {
@@ -3347,6 +3361,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //复原旋转
         largeImageView.file.rotate=0
         
+        //取消OCR
+        largeImageView.unSetOcr()
+        
         //需要在reloadData前取消选择，否则不会调用相关函数
         collectionView.deselectAll(nil)
         
@@ -3453,6 +3470,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     func openLargeImage(_ indexPath: IndexPath) {
         if let item = collectionView.item(at: indexPath) as? CustomCollectionViewItem{
             let url=URL(string: item.file.path)!
+            
+            //取消OCR
+            largeImageView.unSetOcr()
             
             if(url.hasDirectoryPath){
                 switchDirByDirection(direction: .zero, dest: item.file.path, stackDeep: 0)
@@ -3574,6 +3594,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             currLargeImagePos=nextLargeImagePos
             lastDoNotGenResized=false
             
+            //取消OCR
+            largeImageView.unSetOcr()
+            
             if globalVar.portableMode {
                 fileDB.lock()
                 let refSize = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.originalSize
@@ -3625,6 +3648,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             
             currLargeImagePos=nextLargeImagePos
             lastDoNotGenResized=false
+            
+            //取消OCR
+            largeImageView.unSetOcr()
             
             if globalVar.portableMode {
                 fileDB.lock()

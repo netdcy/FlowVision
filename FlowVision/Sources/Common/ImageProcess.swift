@@ -8,6 +8,7 @@
 import Foundation
 import Cocoa
 import AVFoundation
+import Vision
 
 extension NSImage {
     func rotated(by degrees: CGFloat) -> NSImage {
@@ -1107,6 +1108,41 @@ func recognizeQRCode(from image: NSImage) -> [String]? {
     }
     
     return qrCodeStrings.isEmpty ? nil : qrCodeStrings
+}
+
+func performLegacyOCR(on image: NSImage, completion: @escaping (Result<[String], Error>) -> Void) {
+    guard let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+        completion(.failure(NSError(domain: "OCR", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to convert NSImage to CGImage"])))
+        return
+    }
+    
+    let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+    
+    let request = VNRecognizeTextRequest { (request, error) in
+        if let error = error {
+            completion(.failure(error))
+            return
+        }
+        
+        guard let observations = request.results as? [VNRecognizedTextObservation] else {
+            completion(.failure(NSError(domain: "OCR", code: -1, userInfo: [NSLocalizedDescriptionKey: "No text recognized"])))
+            return
+        }
+        
+        let recognizedTexts = observations.compactMap { observation -> String? in
+            observation.topCandidates(1).first?.string
+        }
+        
+        completion(.success(recognizedTexts))
+    }
+    
+    request.recognitionLanguages = ["zh-Hans", "en-US"] // 你可以根据需要添加更多的语言
+    
+    do {
+        try requestHandler.perform([request])
+    } catch {
+        completion(.failure(error))
+    }
 }
 
 class ImageProcessor {

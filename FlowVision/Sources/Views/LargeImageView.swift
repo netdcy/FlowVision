@@ -7,6 +7,12 @@
 
 import Foundation
 import Cocoa
+import VisionKit
+
+@available(macOS 13.0, *)
+let analyzer = ImageAnalyzer()
+@available(macOS 13.0, *)
+let overlayView = ImageAnalysisOverlayView()
 
 class LargeImageView: NSView {
 
@@ -33,6 +39,8 @@ class LargeImageView: NSView {
     
     private var doNotPopRightMenu: Bool = false
     
+    var isInOcrState: Bool = false
+    
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         commonInit()
@@ -49,6 +57,13 @@ class LargeImageView: NSView {
         imageView.wantsLayer = true
         imageView.animates=true
         self.addSubview(imageView)
+        
+        if #available(macOS 13.0, *) {
+            overlayView.autoresizingMask = [.width, .height]
+            overlayView.frame = imageView.bounds
+            overlayView.trackingImageView = imageView
+            imageView.addSubview(overlayView)
+        }
         
         exifTextView = ExifTextView(frame: .zero)
         exifTextView.translatesAutoresizingMaskIntoConstraints = false
@@ -198,14 +213,6 @@ class LargeImageView: NSView {
     override func mouseDown(with event: NSEvent) {
         super.mouseDown(with: event)
         getViewController(self)!.publicVar.isLeftMouseDown = true//临时按住左键也能缩放
-        initialPos =  self.convert(event.locationInWindow, from: nil)
-        lastDragLocation = initialPos
-        doNotPopRightMenu = false
-        
-        // 设置定时器实现长按检测
-        longPressZoomTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
-            self?.performLongPressZoom(at: event.locationInWindow)
-        }
         
         // 检测双击
         if !(getViewController(self)!.publicVar.isRightMouseDown) {
@@ -218,6 +225,20 @@ class LargeImageView: NSView {
             lastClickTime = currentTime
             lastClickLocation = currentLocation
         }
+        
+        //如果是OCR则不执行后面操作
+        if isInOcrState && !getViewController(self)!.publicVar.isRightMouseDown {return}
+        
+        initialPos =  self.convert(event.locationInWindow, from: nil)
+        lastDragLocation = initialPos
+        doNotPopRightMenu = false
+        
+        // 设置定时器实现长按检测
+        longPressZoomTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
+            self?.performLongPressZoom(at: event.locationInWindow)
+        }
+        
+        
     }
 
     private func performLongPressZoom(at point: NSPoint) {
@@ -269,6 +290,8 @@ class LargeImageView: NSView {
     
     override func mouseDragged(with event: NSEvent) {
         guard let lastLocation = lastDragLocation else { return }
+        if isInOcrState && !getViewController(self)!.publicVar.isRightMouseDown {return}
+        
         let newLocation = self.convert(event.locationInWindow, from: nil)
         if initialPos != nil{
             if abs(initialPos!.x-newLocation.x) + abs(initialPos!.y-newLocation.y) > 2 {
@@ -385,8 +408,12 @@ class LargeImageView: NSView {
             actionItemShowExif.keyEquivalentModifierMask = []
             actionItemShowExif.state = getViewController(self)!.publicVar.isShowExif ? .on : .off
             
-            let actionItemQRCode = menu.addItem(withTitle: NSLocalizedString("recognize-QRCode", comment: "识别二维码"), action: #selector(actQRCode), keyEquivalent: "")
+            let actionItemOCR = menu.addItem(withTitle: NSLocalizedString("recognize-OCR", comment: "识别文本(OCR)"), action: #selector(actOCR), keyEquivalent: "o")
+            actionItemOCR.keyEquivalentModifierMask = []
             
+            let actionItemQRCode = menu.addItem(withTitle: NSLocalizedString("recognize-QRCode", comment: "识别二维码"), action: #selector(actQRCode), keyEquivalent: "p")
+            actionItemQRCode.keyEquivalentModifierMask = []
+
             menu.addItem(NSMenuItem.separator())
             
             let actionItemRotateR = menu.addItem(withTitle: NSLocalizedString("rotate-clockwise", comment: "顺时针旋转"), action: #selector(actRotateR), keyEquivalent: "e")
@@ -537,7 +564,13 @@ class LargeImageView: NSView {
     }
     
     @objc func actCopy() {
-        getViewController(self)?.handleCopy()
+        if isInOcrState {
+            if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.copy(_:))) {
+                responder.perform(#selector(NSText.copy(_:)), with: nil)
+            }
+        }else{
+            getViewController(self)?.handleCopy()
+        }
     }
     
     @objc func actCopyToDownload() {
@@ -572,12 +605,62 @@ class LargeImageView: NSView {
         }
     }
     
+    @objc func actOCR() {
+        guard let url=URL(string:file.path),
+              let size=imageView.image?.size,
+              var image=ImageProcessor.getImageCache(url: url, size: size, rotate: file.rotate, useOriginalImage: true)
+        else {return}
+        image.size = size
+        
+        if #available(macOS 13.0, *) {
+
+            guard let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+                log("无法从NSImage创建CGImage")
+                return
+            }
+            
+            Task {
+                let configuration = ImageAnalyzer.Configuration([.text])
+                if let analysis = try? await analyzer.analyze(cgImage, orientation: .up, configuration: configuration) {
+                    overlayView.analysis = analysis
+                    overlayView.preferredInteractionTypes = .automatic
+                    isInOcrState = true
+                }
+            }
+            
+        } else {
+            // Fallback
+            showAlert(message: NSLocalizedString("ocr-recog-fail", comment: "OCR功能需要macOS 13.0及以上版本"))
+//            performLegacyOCR(on: image) { result in
+//                switch result {
+//                case .success(let recognizedTexts):
+//                    for text in recognizedTexts {
+//                        print("Recognized text: \(text)")
+//                    }
+//                case .failure(let error):
+//                    print("Error recognizing text: \(error.localizedDescription)")
+//                }
+//            }
+        }
+    }
+    
+    func unSetOcr() {
+        if #available(macOS 13.0, *) {
+            overlayView.analysis = nil
+            overlayView.preferredInteractionTypes = []
+            isInOcrState = false
+        }
+    }
+
+    
     @objc func actRotateR() {
+        unSetOcr()
         file.rotate = (file.rotate+1)%4
         getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
     }
     
     @objc func actRotateL() {
+        unSetOcr()
         file.rotate = (file.rotate+3)%4
         getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
     }
