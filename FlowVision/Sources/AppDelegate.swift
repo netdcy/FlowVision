@@ -30,7 +30,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     @IBOutlet weak var adjustWindowActualMenuItem: NSMenuItem!
     @IBOutlet weak var adjustWindowCurrentMenuItem: NSMenuItem!
     @IBOutlet weak var adjustWindowToCenterMenuItem: NSMenuItem!
-    @IBOutlet weak var togglePortableModeMenuItem: NSMenuItem!
     @IBOutlet weak var toggleIsShowHiddenFileMenuItem: NSMenuItem!
     @IBOutlet weak var toggleIsShowImageFileMenuItem: NSMenuItem!
     @IBOutlet weak var toggleIsShowRawFileMenuItem: NSMenuItem!
@@ -500,10 +499,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             adjustWindowToCenterMenuItem.keyEquivalent="5"
             adjustWindowToCenterMenuItem.keyEquivalentModifierMask=[]
             
-            togglePortableModeMenuItem.state = globalVar.portableMode ? .on : .off
-            togglePortableModeMenuItem.keyEquivalent="~"
-            togglePortableModeMenuItem.keyEquivalentModifierMask=[]
-            
 //            justifiedViewMenuItem.keyEquivalent="1"
 //            justifiedViewMenuItem.keyEquivalentModifierMask=[]
 //            waterfallViewModeMenuItem.keyEquivalent="2"
@@ -786,10 +781,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     
     @IBAction func toggleOnTop(_ sender: NSMenuItem){
         getMainViewController()?.toggleOnTop()
-    }
-    
-    @IBAction func togglePortableMode(_ sender: NSMenuItem){
-        getMainViewController()?.togglePortableMode()
     }
     
     @IBAction func showLogWindow(_ sender: NSMenuItem){

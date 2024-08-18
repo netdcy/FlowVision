@@ -690,13 +690,6 @@ CA
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="BbX-iw-8Fl"/>
-                                        <menuItem title="Portable Browsing Mode" id="oP8-xB-4fx">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="togglePortableMode:" target="Voe-Tx-rLC" id="EQd-9P-pE9"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="7hU-YA-3rk"/>
                                         <menuItem title="Image Default Actual Size" id="pzo-yf-TTx">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
@@ -875,7 +868,6 @@ CA
                         <outlet property="toggleIsShowImageFileMenuItem" destination="3W1-Yw-Gn8" id="h0V-QO-99K"/>
                         <outlet property="toggleIsShowRawFileMenuItem" destination="geW-lc-Njk" id="ewW-Y9-72p"/>
                         <outlet property="toggleIsShowVideoFileMenuItem" destination="UYl-gy-bK8" id="Qvg-J9-LTY"/>
-                        <outlet property="togglePortableModeMenuItem" destination="oP8-xB-4fx" id="edf-9A-uz9"/>
                         <outlet property="toggleSidebarMenuItem" destination="Yr6-zE-34v" id="Jn2-F6-Uei"/>
                         <outlet property="viewMenu" destination="HyV-fh-RgO" id="zTc-o1-rJn"/>
                         <outlet property="waterfallViewModeMenuItem" destination="5Wy-TF-lsK" id="L3c-YC-ydN"/>
