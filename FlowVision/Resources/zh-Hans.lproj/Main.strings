@@ -436,8 +436,9 @@
 
 "Tbh-PX-yFW.title" = "显示隐藏文件";
 "S31-Ni-z5u.title" = "显示所有类型文件";
-"3W1-Yw-Gn8.title" = "不显示相机RAW文件";
-"UYl-gy-bK8.title" = "不显示视频文件";
+"3W1-Yw-Gn8.title" = "显示图像文件";
+"geW-lc-Njk.title" = "显示相机RAW文件";
+"UYl-gy-bK8.title" = "显示视频文件";
 
 "I6E-O3-RVP.title" = "系统主题";
 "iPW-fb-GmX.title" = "浅色模式";

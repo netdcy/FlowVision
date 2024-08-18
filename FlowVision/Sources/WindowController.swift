@@ -756,11 +756,20 @@ extension WindowController: NSToolbarDelegate {
         let showAllTypeFile = menu.addItem(withTitle: NSLocalizedString("Show All Types of Files", comment: "显示所有类型文件"), action: #selector(showAllTypeFileAction), keyEquivalent: "")
         showAllTypeFile.state = (globalVar.isShowAllTypeFile) ? .on : .off
         
-        let hideRawFile = menu.addItem(withTitle: NSLocalizedString("Hide Camera RAW Files", comment: "不显示相机RAW文件"), action: #selector(hideRawFileAction), keyEquivalent: "")
-        hideRawFile.state = (globalVar.isHideRawFile) ? .on : .off
+        let showImageFile = menu.addItem(withTitle: NSLocalizedString("Show Image Files", comment: "显示图像文件"), action: #selector(showImageFileAction), keyEquivalent: "")
+        showImageFile.state = (globalVar.isShowImageFile) ? .on : .off
         
-        let hideVideoFile = menu.addItem(withTitle: NSLocalizedString("Hide Video Files", comment: "不显示视频文件"), action: #selector(hideVideoFileAction), keyEquivalent: "")
-        hideVideoFile.state = (globalVar.isHideVideoFile) ? .on : .off
+        let showRawFile = menu.addItem(withTitle: NSLocalizedString("Show Camera RAW Files", comment: "显示相机RAW文件"), action: #selector(showRawFileAction), keyEquivalent: "")
+        showRawFile.state = (globalVar.isShowRawFile) ? .on : .off
+        
+        let showVideoFile = menu.addItem(withTitle: NSLocalizedString("Show Video Files", comment: "显示视频文件"), action: #selector(showVideoFileAction), keyEquivalent: "")
+        showVideoFile.state = (globalVar.isShowVideoFile) ? .on : .off
+
+        if globalVar.isShowAllTypeFile {
+            showImageFile.isEnabled=false
+            showRawFile.isEnabled=false
+            showVideoFile.isEnabled=false
+        }
         
         menu.addItem(NSMenuItem.separator())
         
@@ -955,14 +964,19 @@ extension WindowController: NSToolbarDelegate {
         viewController.toggleIsShowAllTypeFile()
     }
     
-    @objc func hideRawFileAction(_ sender: NSMenuItem) {
+    @objc func showImageFileAction(_ sender: NSMenuItem) {
         guard let viewController = contentViewController as? ViewController else {return}
-        viewController.toggleIsHideRawFile()
+        viewController.toggleIsShowImageFile()
     }
     
-    @objc func hideVideoFileAction(_ sender: NSMenuItem) {
+    @objc func showRawFileAction(_ sender: NSMenuItem) {
         guard let viewController = contentViewController as? ViewController else {return}
-        viewController.toggleIsHideVideoFile()
+        viewController.toggleIsShowRawFile()
+    }
+    
+    @objc func showVideoFileAction(_ sender: NSMenuItem) {
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleIsShowVideoFile()
     }
     
     @objc func togglePortableMode(_ sender: NSMenuItem){

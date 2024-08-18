@@ -722,16 +722,22 @@ CA
                                                 <action selector="toggleIsShowAllTypeFile:" target="Voe-Tx-rLC" id="85b-hE-Eij"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Hide Camera RAW Files" id="3W1-Yw-Gn8">
+                                        <menuItem title="Show Image Files" id="3W1-Yw-Gn8">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="toggleIsHideRawFile:" target="Voe-Tx-rLC" id="f3u-r3-KmD"/>
+                                                <action selector="toggleIsShowImageFile:" target="Voe-Tx-rLC" id="syI-Zi-Pfz"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Hide Video Files" id="UYl-gy-bK8">
+                                        <menuItem title="Show Camera RAW Files" id="geW-lc-Njk">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="toggleIsHideVideoFile:" target="Voe-Tx-rLC" id="P93-ip-O3J"/>
+                                                <action selector="toggleIsShowRawFile:" target="Voe-Tx-rLC" id="X8N-9P-LLi"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Show Video Files" id="UYl-gy-bK8">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="toggleIsShowVideoFile:" target="Voe-Tx-rLC" id="6oF-pP-Qf9"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="p0a-iP-jCL"/>
@@ -864,10 +870,11 @@ CA
                         <outlet property="switchToActualSizeMenuItem" destination="pzo-yf-TTx" id="DN8-BG-O7v"/>
                         <outlet property="switchToFitToWindowMenuItem" destination="d9h-3l-mAH" id="gda-Df-WtZ"/>
                         <outlet property="systemThemeMenuItem" destination="I6E-O3-RVP" id="AYN-qT-D7o"/>
-                        <outlet property="toggleIsHideRawFileMenuItem" destination="3W1-Yw-Gn8" id="0Xl-oh-wrP"/>
-                        <outlet property="toggleIsHideVideoFileMenuItem" destination="UYl-gy-bK8" id="W0c-o3-Rfz"/>
                         <outlet property="toggleIsShowAllTypeFileMenuItem" destination="S31-Ni-z5u" id="0Tm-OY-l8R"/>
                         <outlet property="toggleIsShowHiddenFileMenuItem" destination="Tbh-PX-yFW" id="YS8-lw-tc2"/>
+                        <outlet property="toggleIsShowImageFileMenuItem" destination="3W1-Yw-Gn8" id="h0V-QO-99K"/>
+                        <outlet property="toggleIsShowRawFileMenuItem" destination="geW-lc-Njk" id="ewW-Y9-72p"/>
+                        <outlet property="toggleIsShowVideoFileMenuItem" destination="UYl-gy-bK8" id="Qvg-J9-LTY"/>
                         <outlet property="togglePortableModeMenuItem" destination="oP8-xB-4fx" id="edf-9A-uz9"/>
                         <outlet property="toggleSidebarMenuItem" destination="Yr6-zE-34v" id="Jn2-F6-Uei"/>
                         <outlet property="viewMenu" destination="HyV-fh-RgO" id="zTc-o1-rJn"/>

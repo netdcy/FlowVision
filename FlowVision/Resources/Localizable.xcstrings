@@ -665,28 +665,6 @@
         }
       }
     },
-    "Hide Camera RAW Files" : {
-      "comment" : "不显示相机RAW文件",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "不显示相机RAW文件"
-          }
-        }
-      }
-    },
-    "Hide Video Files" : {
-      "comment" : "不显示视频文件",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "不显示视频文件"
-          }
-        }
-      }
-    },
     "image" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1618,6 +1596,17 @@
         }
       }
     },
+    "Show Camera RAW Files" : {
+      "comment" : "显示相机RAW文件",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示相机RAW文件"
+          }
+        }
+      }
+    },
     "Show Hidden Files" : {
       "comment" : "显示隐藏文件",
       "localizations" : {
@@ -1625,6 +1614,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示隐藏文件"
+          }
+        }
+      }
+    },
+    "Show Image Files" : {
+      "comment" : "显示图像文件",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示图像文件"
+          }
+        }
+      }
+    },
+    "Show Video Files" : {
+      "comment" : "显示视频文件",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示视频文件"
           }
         }
       }

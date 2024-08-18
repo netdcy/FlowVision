@@ -945,16 +945,23 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         refreshAll([])
     }
     
-    func toggleIsHideRawFile(){
-        globalVar.isHideRawFile.toggle()
-        UserDefaults.standard.set(globalVar.isHideRawFile, forKey: "isHideRawFile")
+    func toggleIsShowImageFile(){
+        globalVar.isShowImageFile.toggle()
+        UserDefaults.standard.set(globalVar.isShowImageFile, forKey: "isShowImageFile")
         setFileExtensions()
         refreshCollectionView([])
     }
     
-    func toggleIsHideVideoFile(){
-        globalVar.isHideVideoFile.toggle()
-        UserDefaults.standard.set(globalVar.isHideVideoFile, forKey: "isHideVideoFile")
+    func toggleIsShowRawFile(){
+        globalVar.isShowRawFile.toggle()
+        UserDefaults.standard.set(globalVar.isShowRawFile, forKey: "isShowRawFile")
+        setFileExtensions()
+        refreshCollectionView([])
+    }
+    
+    func toggleIsShowVideoFile(){
+        globalVar.isShowVideoFile.toggle()
+        UserDefaults.standard.set(globalVar.isShowVideoFile, forKey: "isShowVideoFile")
         setFileExtensions()
         refreshCollectionView([])
     }
@@ -2462,8 +2469,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         var videoCount=0
         var imageCount=0
         var searchCount=0
-        for file in contents {
-            if HandledFileExtensions.contains(file.pathExtension.lowercased()) || (globalVar.isShowAllTypeFile && file.pathExtension.lowercased() != "") {
+        let fileContents = contents.filter { url in
+            guard let isDirectoryResourceValue = try? url.resourceValues(forKeys: [.isDirectoryKey]), let isDirectory = isDirectoryResourceValue.isDirectory else {
+                return false
+            }
+            return !isDirectory
+        }
+        for file in fileContents {
+            if HandledFileExtensions.contains(file.pathExtension.lowercased()) || globalVar.isShowAllTypeFile {
                 filesUrlInFolder.append(file)
             }
             if HandledImageExtensions.contains(file.pathExtension.lowercased()) {

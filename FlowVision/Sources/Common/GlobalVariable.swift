@@ -19,12 +19,15 @@ var HandledFolderThumbExtensions: [String] = []
 //使用个别特殊svg作为文件夹缩略图绘图元素会导致程序异常 'NSGenericException', reason: 'NaN point value'
 
 func setFileExtensions(){
-    HandledImageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "heif", "heic", "hif", "avif", "tif", "tiff", "webp", "jfif", "jp2", "ai", "psd", "ico", "icns", "svg"]
-    if !globalVar.isHideRawFile {
+    HandledImageExtensions = []
+    if globalVar.isShowImageFile{
+        HandledImageExtensions += ["jpg", "jpeg", "png", "gif", "bmp", "heif", "heic", "hif", "avif", "tif", "tiff", "webp", "jfif", "jp2", "ai", "psd", "ico", "icns", "svg"]
+    }
+    if globalVar.isShowRawFile {
         HandledImageExtensions += ["crw", "cr2", "cr3", "nef", "nrw", "arw", "srf", "sr2", "rw2", "orf", "raf", "pef", "dng", "raw", "rwl", "x3f", "3fr", "fff", "iiq", "mos", "dcr", "erf", "mrw", "gpr", "srw"]
     }
     HandledVideoExtensions = []
-    if !globalVar.isHideVideoFile {
+    if globalVar.isShowVideoFile {
         HandledVideoExtensions += ["mp4", "mov", "m2ts", "vob", "mpeg", "mpg", "m4v"] + ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
     }
     HandledOtherExtensions = [] //["pdf"] //不能为""，否则会把目录异常包含进来
@@ -65,8 +68,11 @@ class GlobalVar{
     
     var isShowHiddenFile = false
     var isShowAllTypeFile = false
-    var isHideRawFile = false
-    var isHideVideoFile = false
+    var isShowImageFile = true
+    var isShowRawFile = true
+    var isShowVideoFile = true
+//    var isHideRawFile = false
+//    var isHideVideoFile = false
     var isGenHdThumb = false
     
     var portableMode = false

@@ -32,8 +32,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     @IBOutlet weak var adjustWindowToCenterMenuItem: NSMenuItem!
     @IBOutlet weak var togglePortableModeMenuItem: NSMenuItem!
     @IBOutlet weak var toggleIsShowHiddenFileMenuItem: NSMenuItem!
-    @IBOutlet weak var toggleIsHideRawFileMenuItem: NSMenuItem!
-    @IBOutlet weak var toggleIsHideVideoFileMenuItem: NSMenuItem!
+    @IBOutlet weak var toggleIsShowImageFileMenuItem: NSMenuItem!
+    @IBOutlet weak var toggleIsShowRawFileMenuItem: NSMenuItem!
+    @IBOutlet weak var toggleIsShowVideoFileMenuItem: NSMenuItem!
     @IBOutlet weak var toggleIsShowAllTypeFileMenuItem: NSMenuItem!
     
     var commonParentPath=""
@@ -98,14 +99,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let isShowHiddenFile = UserDefaults.standard.value(forKey: "isShowHiddenFile") as? Bool {
             globalVar.isShowHiddenFile = isShowHiddenFile
         }
-        if let isHideRawFile = UserDefaults.standard.value(forKey: "isHideRawFile") as? Bool {
-            globalVar.isHideRawFile = isHideRawFile
+        if let isShowImageFile = UserDefaults.standard.value(forKey: "isShowImageFile") as? Bool {
+            globalVar.isShowImageFile = isShowImageFile
+        }
+        if let isShowRawFile = UserDefaults.standard.value(forKey: "isShowRawFile") as? Bool {
+            globalVar.isShowRawFile = isShowRawFile
         }
         if let isShowAllTypeFile = UserDefaults.standard.value(forKey: "isShowAllTypeFile") as? Bool {
             globalVar.isShowAllTypeFile = isShowAllTypeFile
         }
-        if let isHideVideoFile = UserDefaults.standard.value(forKey: "isHideVideoFile") as? Bool {
-            globalVar.isHideVideoFile = isHideVideoFile
+        if let isShowVideoFile = UserDefaults.standard.value(forKey: "isShowVideoFile") as? Bool {
+            globalVar.isShowVideoFile = isShowVideoFile
         }
         if let terminateAfterLastWindowClosed = UserDefaults.standard.value(forKey: "terminateAfterLastWindowClosed") as? Bool {
             globalVar.terminateAfterLastWindowClosed = terminateAfterLastWindowClosed
@@ -476,8 +480,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             
             toggleIsShowHiddenFileMenuItem.state = globalVar.isShowHiddenFile ? .on : .off
             toggleIsShowAllTypeFileMenuItem.state = globalVar.isShowAllTypeFile ? .on : .off
-            toggleIsHideRawFileMenuItem.state = globalVar.isHideRawFile ? .on : .off
-            toggleIsHideVideoFileMenuItem.state = globalVar.isHideVideoFile ? .on : .off
+            toggleIsShowImageFileMenuItem.state = globalVar.isShowImageFile ? .on : .off
+            toggleIsShowRawFileMenuItem.state = globalVar.isShowRawFile ? .on : .off
+            toggleIsShowVideoFileMenuItem.state = globalVar.isShowVideoFile ? .on : .off
             
             justifiedViewMenuItem.state = (mainViewController.publicVar.layoutType == .justified) ? .on : .off
             waterfallViewModeMenuItem.state = (mainViewController.publicVar.layoutType == .waterfall) ? .on : .off
@@ -554,6 +559,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             let pasteboard = NSPasteboard.general
             let types = pasteboard.types ?? []
             if !types.contains(.fileURL) {
+                return false
+            }
+        }
+        if menuItem.action == #selector(toggleIsShowImageFile(_:)) || menuItem.action == #selector(toggleIsShowRawFile(_:)) || menuItem.action == #selector(toggleIsShowVideoFile(_:)) {
+            if globalVar.isShowAllTypeFile {
                 return false
             }
         }
@@ -692,12 +702,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         getMainViewController()?.toggleIsShowHiddenFile()
     }
     
-    @IBAction func toggleIsHideRawFile(_ sender: NSMenuItem){
-        getMainViewController()?.toggleIsHideRawFile()
+    @IBAction func toggleIsShowImageFile(_ sender: NSMenuItem){
+        getMainViewController()?.toggleIsShowImageFile()
     }
     
-    @IBAction func toggleIsHideVideoFile(_ sender: NSMenuItem){
-        getMainViewController()?.toggleIsHideVideoFile()
+    @IBAction func toggleIsShowRawFile(_ sender: NSMenuItem){
+        getMainViewController()?.toggleIsShowRawFile()
+    }
+    
+    @IBAction func toggleIsShowVideoFile(_ sender: NSMenuItem){
+        getMainViewController()?.toggleIsShowVideoFile()
     }
     
     @IBAction func toggleIsShowAllTypeFile(_ sender: NSMenuItem){
