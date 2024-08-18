@@ -1146,8 +1146,8 @@ func performLegacyOCR(on image: NSImage, completion: @escaping (Result<[String],
 }
 
 class ImageProcessor {
-    private static let cache: NSCache<NSString, CacheWrapper> = {
-        let cache = NSCache<NSString, CacheWrapper>()
+    private static let cache: CustomCache<NSString, CacheWrapper> = {
+        let cache = CustomCache<NSString, CacheWrapper>()
         cache.countLimit = 12 // 设置缓存容量
         return cache
     }()
@@ -1168,7 +1168,7 @@ class ImageProcessor {
         return getResizedImage(url: url, size: size, rotate: rotate)
     }
     
-    static func getImageCache(url: URL, size: NSSize, rotate: Int = 0, useOriginalImage: Bool) -> NSImage? {
+    static func getImageCache(url: URL, size: NSSize, rotate: Int = 0, useOriginalImage: Bool, needWaitWhenSame: Bool = true) -> NSImage? {
         let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)" as NSString
         //print(cacheKey)
         
@@ -1180,12 +1180,17 @@ class ImageProcessor {
         lock.lock()
         // 检查是否有相同参数的任务正在进行
         if let (semaphore, count) = ongoingTasks[cacheKey as String] {
-            ongoingTasks[cacheKey as String] = (semaphore, count + 1)
-            lock.unlock()
-            // 等待正在进行的任务完成
-            semaphore.wait()
-            // 任务完成后再检查缓存
-            return cache.object(forKey: cacheKey)?.image
+            if needWaitWhenSame {
+                ongoingTasks[cacheKey as String] = (semaphore, count + 1)
+                lock.unlock()
+                // 等待正在进行的任务完成
+                semaphore.wait()
+                // 任务完成后再检查缓存
+                return cache.object(forKey: cacheKey)?.image
+            }else{
+                lock.unlock()
+                return nil
+            }
         } else {
             // 创建新的信号量并标记任务开始
             let semaphore = DispatchSemaphore(value: 0)
@@ -1230,9 +1235,78 @@ class ImageProcessor {
         return false
     }
     
+    // 检查缓存中是否有图像，有的话则返回
+    static func isImageCachedAndGet(url: URL, size: NSSize, rotate: Int = 0) -> NSImage? {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)" as NSString
+        if let cachedWrapper = cache.object(forKey: cacheKey) {
+            return cachedWrapper.image
+        }
+        return nil
+    }
+    
     // 清空缓存
     static func clearCache() {
         cache.removeAllObjects()
     }
 }
 
+class CustomCache<Key: Hashable, Value> {
+    private var cache: [Key: Value] = [:]
+    private var keys: [Key] = []
+    private let lock = NSLock()
+    
+    var countLimit: Int = 0 {
+        didSet {
+            lock.lock()
+            defer { lock.unlock() }
+            trimCache()
+        }
+    }
+    
+    func object(forKey key: Key) -> Value? {
+        lock.lock()
+        defer { lock.unlock() }
+        
+        if let value = cache[key] {
+            updateAccessOrder(forKey: key)
+            return value
+        }
+        return nil
+    }
+    
+    func setObject(_ obj: Value, forKey key: Key) {
+        lock.lock()
+        defer { lock.unlock() }
+        
+        if cache[key] == nil, keys.count >= countLimit {
+            trimCache()
+        }
+        
+        cache[key] = obj
+        updateAccessOrder(forKey: key)
+    }
+    
+    func removeAllObjects() {
+        lock.lock()
+        defer { lock.unlock() }
+        
+        cache.removeAll()
+        keys.removeAll()
+    }
+    
+    private func updateAccessOrder(forKey key: Key) {
+        if let index = keys.firstIndex(of: key) {
+            keys.remove(at: index)
+        }
+        keys.append(key)
+    }
+    
+    private func trimCache() {
+        while keys.count > countLimit {
+            if let keyToRemove = keys.first {
+                cache.removeValue(forKey: keyToRemove)
+                keys.removeFirst()
+            }
+        }
+    }
+}

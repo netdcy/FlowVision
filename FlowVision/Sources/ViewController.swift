@@ -3966,7 +3966,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
 
             DispatchQueue.global(qos: .userInitiated).async {
-                _ = ImageProcessor.getImageCache(url: url, size: largeSize, rotate: 0, useOriginalImage: doNotGenResized)
+                _ = ImageProcessor.getImageCache(url: url, size: largeSize, rotate: 0, useOriginalImage: doNotGenResized, needWaitWhenSame: false)
             }
             
         }
@@ -4091,7 +4091,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             lastLargeImageRotate=rotate
             
             //检查是否有大图缓存
-            let isImageCached = ImageProcessor.isImageCached(url: url, size: largeSize, rotate: rotate)
+            let preGetImageCache = ImageProcessor.isImageCachedAndGet(url: url, size: largeSize, rotate: rotate)
+            let isImageCached = preGetImageCache != nil
             
             //先显示小图
             if firstShowThumb && !isImageCached {
@@ -4101,7 +4102,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             //有大图缓存则直接载入
             if isImageCached {
                 log("命中缓存:",url.absoluteString.removingPercentEncoding!)
-                largeImageView.imageView.image=ImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, useOriginalImage: doNotGenResized)
+                largeImageView.imageView.image=preGetImageCache
             }else{
                 log("即时载入:",url.absoluteString.removingPercentEncoding!)
             }
