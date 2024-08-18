@@ -91,6 +91,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
         let roleMask: LSRolesMask = [.all]
         
         for fileType in fileTypes {
+            if fileType == "public.folder" {continue}
             let status = LSSetDefaultRoleHandlerForContentType(fileType as CFString, roleMask, appBundleID as CFString)
             
             if status != noErr {

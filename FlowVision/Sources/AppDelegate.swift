@@ -280,18 +280,39 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             NSDocumentController.shared.noteNewRecentDocumentURL(url)
         }
         
+        var isDirectoryObj: ObjCBool = false
+        FileManager.default.fileExists(atPath: files[0], isDirectory: &isDirectoryObj)
+        let isDirectory=isDirectoryObj.boolValue
+        
+        var file=getFileStylePath(files[0])
+        if isDirectory && file.last != "/" {file=file+"/"}
+        
         if windowControllers.count == 0 {
-            globalVar.isLaunchFromFile=true
-            _ = createNewWindow(files[0])
+            if isDirectory{
+                _ = createNewWindow(file)
+                return
+            }else{
+                globalVar.isLaunchFromFile=true
+                _ = createNewWindow(file)
+            }
         }
 
-        DispatchQueue.main.async {
-            if let mainWindowController = NSApplication.shared.mainWindow?.windowController {
-                self.openImageInTargetWindow(files[0], windowController: mainWindowController)
-            }else if let windowController = self.windowControllers.first {
-                self.openImageInTargetWindow(files[0], windowController: windowController)
+        if isDirectory{
+            DispatchQueue.main.async {
+                if let mainViewController = NSApplication.shared.mainWindow?.windowController?.contentViewController as? ViewController {
+                    mainViewController.handleDraggedFiles([URL(string: file)!])
+                }else if let viewController = self.windowControllers.first?.contentViewController as? ViewController {
+                    viewController.handleDraggedFiles([URL(string: file)!])
+                }
             }
-            //self.openImageInMainWindow(files[0])
+        }else{
+            DispatchQueue.main.async {
+                if let mainWindowController = NSApplication.shared.mainWindow?.windowController {
+                    self.openImageInTargetWindow(file, windowController: mainWindowController)
+                }else if let windowController = self.windowControllers.first {
+                    self.openImageInTargetWindow(file, windowController: windowController)
+                }
+            }
         }
     }
     
