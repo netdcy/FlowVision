@@ -771,6 +771,14 @@ extension WindowController: NSToolbarDelegate {
         
         menu.addItem(NSMenuItem.separator())
         
+        let portableMode = menu.addItem(withTitle: NSLocalizedString("Portable Browsing Mode", comment: "便携浏览模式"), action: #selector(togglePortableMode), keyEquivalent: "~")
+        portableMode.keyEquivalentModifierMask = []
+        portableMode.state = globalVar.portableMode ? .on : .off
+        
+        let portableModeInfo = menu.addItem(withTitle: NSLocalizedString("Info...", comment: "说明..."), action: #selector(portableModeInfo), keyEquivalent: "")
+        
+        menu.addItem(NSMenuItem.separator())
+        
         let maximizeWindow = menu.addItem(withTitle: NSLocalizedString("maximizeWindow", comment: "最大化窗口"), action: #selector(maximizeWindow), keyEquivalent: "1")
         maximizeWindow.keyEquivalentModifierMask = []
         
@@ -788,14 +796,6 @@ extension WindowController: NSToolbarDelegate {
         
         adjustWindowActual.isEnabled = (viewController.publicVar.isInLargeView)
         adjustWindowCurrent.isEnabled = (viewController.publicVar.isInLargeView)
-        
-        menu.addItem(NSMenuItem.separator())
-        
-        let portableMode = menu.addItem(withTitle: NSLocalizedString("Portable Browsing Mode", comment: "便携浏览模式"), action: #selector(togglePortableMode), keyEquivalent: "~")
-        portableMode.keyEquivalentModifierMask = []
-        portableMode.state = globalVar.portableMode ? .on : .off
-        
-        let portableModeInfo = menu.addItem(withTitle: NSLocalizedString("Info...", comment: "说明..."), action: #selector(portableModeInfo), keyEquivalent: "")
         
         menu.addItem(NSMenuItem.separator())
         
