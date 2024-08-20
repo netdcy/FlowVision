@@ -106,14 +106,14 @@
 		F74636542C5237720086E920 /* ActionsSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionsSettingsViewController.swift; sourceTree = "<group>"; };
 		F74636572C523EFF0086E920 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ActionsSettingsViewController.xib; sourceTree = "<group>"; };
 		F74636592C523EFF0086E920 /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/ActionsSettingsViewController.xcstrings; sourceTree = "<group>"; };
-		F754F3C72C10393700A25D12 /* libavfilter.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavfilter.xcframework; path = "../../ffmpeg-kit/ffmpeg-kit/prebuilt/bundle-apple-xcframework-macos/libavfilter.xcframework"; sourceTree = "<group>"; };
-		F754F3C82C10393700A25D12 /* libavutil.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavutil.xcframework; path = "../../ffmpeg-kit/ffmpeg-kit/prebuilt/bundle-apple-xcframework-macos/libavutil.xcframework"; sourceTree = "<group>"; };
-		F754F3C92C10393700A25D12 /* libavcodec.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavcodec.xcframework; path = "../../ffmpeg-kit/ffmpeg-kit/prebuilt/bundle-apple-xcframework-macos/libavcodec.xcframework"; sourceTree = "<group>"; };
-		F754F3CA2C10393700A25D12 /* libavdevice.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavdevice.xcframework; path = "../../ffmpeg-kit/ffmpeg-kit/prebuilt/bundle-apple-xcframework-macos/libavdevice.xcframework"; sourceTree = "<group>"; };
-		F754F3CB2C10393700A25D12 /* ffmpegkit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ffmpegkit.xcframework; path = "../../ffmpeg-kit/ffmpeg-kit/prebuilt/bundle-apple-xcframework-macos/ffmpegkit.xcframework"; sourceTree = "<group>"; };
-		F754F3CC2C10393700A25D12 /* libswscale.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libswscale.xcframework; path = "../../ffmpeg-kit/ffmpeg-kit/prebuilt/bundle-apple-xcframework-macos/libswscale.xcframework"; sourceTree = "<group>"; };
-		F754F3CD2C10393700A25D12 /* libavformat.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavformat.xcframework; path = "../../ffmpeg-kit/ffmpeg-kit/prebuilt/bundle-apple-xcframework-macos/libavformat.xcframework"; sourceTree = "<group>"; };
-		F754F3CE2C10393700A25D12 /* libswresample.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libswresample.xcframework; path = "../../ffmpeg-kit/ffmpeg-kit/prebuilt/bundle-apple-xcframework-macos/libswresample.xcframework"; sourceTree = "<group>"; };
+		F754F3C72C10393700A25D12 /* libavfilter.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavfilter.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libavfilter.xcframework"; sourceTree = "<group>"; };
+		F754F3C82C10393700A25D12 /* libavutil.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavutil.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libavutil.xcframework"; sourceTree = "<group>"; };
+		F754F3C92C10393700A25D12 /* libavcodec.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavcodec.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libavcodec.xcframework"; sourceTree = "<group>"; };
+		F754F3CA2C10393700A25D12 /* libavdevice.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavdevice.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libavdevice.xcframework"; sourceTree = "<group>"; };
+		F754F3CB2C10393700A25D12 /* ffmpegkit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ffmpegkit.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/ffmpegkit.xcframework"; sourceTree = "<group>"; };
+		F754F3CC2C10393700A25D12 /* libswscale.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libswscale.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libswscale.xcframework"; sourceTree = "<group>"; };
+		F754F3CD2C10393700A25D12 /* libavformat.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavformat.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libavformat.xcframework"; sourceTree = "<group>"; };
+		F754F3CE2C10393700A25D12 /* libswresample.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libswresample.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libswresample.xcframework"; sourceTree = "<group>"; };
 		F76E2EFD2C3B765C0031B0B4 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		F7790ECB2BA5CA9200406D35 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
 		F7790ED52BA5FB6A00406D35 /* CustomCollectionViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewItem.swift; sourceTree = "<group>"; };
@@ -311,8 +311,8 @@
 			);
 			mainGroup = F7A075472BA1D716009C47A6;
 			packageReferences = (
-				F7790ED92BA8581600406D35 /* XCLocalSwiftPackageReference "../BTree-4.1.0" */,
-				F7C2DEB62C4E6AE9003DF765 /* XCLocalSwiftPackageReference "../Settings-3.1.1" */,
+				F7790ED92BA8581600406D35 /* XCLocalSwiftPackageReference "../BTree" */,
+				F7C2DEB62C4E6AE9003DF765 /* XCLocalSwiftPackageReference "../Settings" */,
 			);
 			productRefGroup = F7A075512BA1D716009C47A6 /* Products */;
 			projectDirPath = "";
@@ -621,13 +621,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		F7790ED92BA8581600406D35 /* XCLocalSwiftPackageReference "../BTree-4.1.0" */ = {
+		F7790ED92BA8581600406D35 /* XCLocalSwiftPackageReference "../BTree" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../BTree-4.1.0";
+			relativePath = "../BTree";
 		};
-		F7C2DEB62C4E6AE9003DF765 /* XCLocalSwiftPackageReference "../Settings-3.1.1" */ = {
+		F7C2DEB62C4E6AE9003DF765 /* XCLocalSwiftPackageReference "../Settings" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../Settings-3.1.1";
+			relativePath = "../Settings";
 		};
 /* End XCLocalSwiftPackageReference section */
 
