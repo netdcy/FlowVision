@@ -40,6 +40,8 @@ class WindowController: NSWindowController, NSWindowDelegate {
                 window.acceptsMouseMovedEvents = true
                 window.styleMask.insert(.fullSizeContentView)
                 window.tabbingMode = .disallowed
+            }else{
+                window.tabbingMode = .preferred
             }
         }
         
