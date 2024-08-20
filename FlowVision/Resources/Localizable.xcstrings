@@ -693,17 +693,6 @@
         }
       }
     },
-    "Info..." : {
-      "comment" : "说明...",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "说明..."
-          }
-        }
-      }
-    },
     "input-new-folder-name" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1322,6 +1311,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "二维码识别结果"
+          }
+        }
+      }
+    },
+    "Readme..." : {
+      "comment" : "说明...",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "说明..."
           }
         }
       }

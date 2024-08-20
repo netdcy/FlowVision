@@ -666,7 +666,7 @@ extension WindowController: NSToolbarDelegate {
         let isGenHdThumb = menu.addItem(withTitle: NSLocalizedString("Generate HD Thumbnails", comment: "生成高清缩略图"), action: #selector(genHdThumbAction), keyEquivalent: "")
         isGenHdThumb.state = (globalVar.isGenHdThumb) ? .on : .off
         
-        let actionItemSettings = menu.addItem(withTitle: NSLocalizedString("Info...", comment: "说明..."), action: #selector(genHdThumbInfoAction), keyEquivalent: "")
+        let actionItemSettings = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(genHdThumbInfoAction), keyEquivalent: "")
         
         menu.addItem(NSMenuItem.separator())
         
@@ -778,7 +778,7 @@ extension WindowController: NSToolbarDelegate {
         let recursiveMode = menu.addItem(withTitle: NSLocalizedString("Recursive Mode", comment: "递归浏览模式"), action: #selector(toggleRecursiveMode), keyEquivalent: "")
         recursiveMode.state = (viewController.publicVar.isRecursiveMode) ? .on : .off
         
-        let recursiveModeInfo = menu.addItem(withTitle: NSLocalizedString("Info...", comment: "说明..."), action: #selector(recursiveModeInfo), keyEquivalent: "")
+        let recursiveModeInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(recursiveModeInfo), keyEquivalent: "")
         
         menu.addItem(NSMenuItem.separator())
         
@@ -786,7 +786,7 @@ extension WindowController: NSToolbarDelegate {
         portableMode.keyEquivalentModifierMask = []
         portableMode.state = globalVar.portableMode ? .on : .off
         
-        let portableModeInfo = menu.addItem(withTitle: NSLocalizedString("Info...", comment: "说明..."), action: #selector(portableModeInfo), keyEquivalent: "")
+        let portableModeInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(portableModeInfo), keyEquivalent: "")
         
         menu.addItem(NSMenuItem.separator())
         
