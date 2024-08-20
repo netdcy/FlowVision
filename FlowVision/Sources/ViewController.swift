@@ -3465,7 +3465,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         // 确保是针对我们感兴趣的ScrollView（如果有多个ScrollView）
         if scrollView == collectionView.enclosingScrollView {
 
-            setLoadThumbPriority(ifNeedVisable: true)
+            if publicVar.timer.intervalSafe(name: "scrollViewDidScrollSetLoadThumbPriority", second: 0.1) {
+                setLoadThumbPriority(ifNeedVisable: true)
+            }
             
             scrollDebounceWorkItem?.cancel()
             scrollDebounceWorkItem = DispatchWorkItem {
