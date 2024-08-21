@@ -9,7 +9,11 @@
 
 ## Screenshots
 
-![preview](https://netdcy.github.io/FlowVision/docs/preview.jpg)
+### Light Mode
+![preview](https://netdcy.github.io/FlowVision/docs/preview_2.png)
+
+### Dark Mode
+![preview](https://netdcy.github.io/FlowVision/docs/preview_1.png)
 
 ## Features:
  - Adaptive layout mode, light/dark mode
@@ -67,15 +71,11 @@ brew install flowvision --no-quarantine
 - Select "Open" from the menu.
 - Click "Open" in the dialog that appears.
 
-(ref: https://support.apple.com/102445#openanyway)
+(https://support.apple.com/102445#openanyway)
 
 **Q2: Why isn't the application notarized?**
 
 **A2:** Notarizing an app requires an annual $100 fee to Apple. To keep the software free, we haven't notarized it. If you prefer, you can build the app yourself from the source code.
-
-**Q3: Why doesn't the application have an auto-update feature?**
-
-**A3:** Checking for updates requires a network connection, and the philosophy of this project is to ensure that data privacy remains entirely under the user's control. Using auto-update could lead to scenarios where the developer's account is compromised, and malicious code is distributed through the update channel. To ensure the safety and privacy of your data, we have chosen not to include an auto-update feature.
 
 ## Build
 
