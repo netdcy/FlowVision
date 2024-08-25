@@ -405,8 +405,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 
                 // 检查按键是否是 Esc 键
                 if event.keyCode == 53 {
-                    self.view.window?.close()
-                    return nil
+//                    self.view.window?.close()
+                    if publicVar.isInLargeView{
+                        closeLargeImage(0)
+                        return nil
+                    }
                 }
                 
                 // 检查按键是否是 Delete(117) Backspace(51) 键
