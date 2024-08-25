@@ -704,7 +704,7 @@ extension WindowController: NSToolbarDelegate {
         guard let viewController = contentViewController as? ViewController else {return}
         globalVar.isGenHdThumb.toggle()
         UserDefaults.standard.set(globalVar.isGenHdThumb, forKey: "isGenHdThumb")
-        viewController.refreshCollectionView([])
+        viewController.refreshCollectionView([], dryRun: true)
     }
     
     @objc func genHdThumbInfoAction(_ sender: NSMenuItem){

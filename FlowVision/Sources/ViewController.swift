@@ -893,7 +893,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             dirModel.1.changeSortType(publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)
         }
         fileDB.unlock()
-        refreshCollectionView([])
+        refreshCollectionView([], dryRun: true)
     }
 
     func toggleSidebar(){
@@ -1281,7 +1281,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         defaults.setEnum(LayoutType.justified, forKey: "layoutType")
         publicVar.layoutType = .justified
         publicVar.isNeedChangeLayoutType = true
-        refreshCollectionView([])
+        refreshCollectionView([], dryRun: true)
     }
     
     func switchToGridView(){
@@ -1289,7 +1289,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         defaults.setEnum(LayoutType.grid, forKey: "layoutType")
         publicVar.layoutType = .grid
         publicVar.isNeedChangeLayoutType = true
-        refreshCollectionView([])
+        refreshCollectionView([], dryRun: true)
     }
     
     func switchToWaterfallView(){
@@ -1297,7 +1297,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         defaults.setEnum(LayoutType.waterfall, forKey: "layoutType")
         publicVar.layoutType = .waterfall
         publicVar.isNeedChangeLayoutType = true
-        refreshCollectionView([])
+        refreshCollectionView([], dryRun: true)
     }
     
     func switchToDetailView(){
@@ -1305,13 +1305,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //        defaults.setEnum(LayoutType.detail, forKey: "layoutType")
 //        publicVar.layoutType = .detail
 //        publicVar.isNeedChangeLayoutType = true
-//        refreshCollectionView([])
+//        refreshCollectionView([], dryRun: true)
     }
     
     func changeThumbSize(thumbSize: Int){
         publicVar.thumbSize = thumbSize
         changeWaterfallLayoutNumberOfColumns()
-        refreshCollectionView([])
+        refreshCollectionView([], dryRun: true)
     }
     
     func switchToActualSize(){
@@ -1838,18 +1838,18 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 collectionView.layer?.backgroundColor = hexToNSColor(hex: "#FFFFFF").cgColor
             }
             if(lastTheme != theme){
-                refreshAll([])
+                refreshAll([], dryRun: true)
             }
             lastTheme=theme
         }
     }
     
-    func refreshAll(_ reloadThumbType: [FileType] = [.folder]){
+    func refreshAll(_ reloadThumbType: [FileType] = [.folder], dryRun: Bool = false){
         refreshTreeView()
-        refreshCollectionView(reloadThumbType)
+        refreshCollectionView(reloadThumbType, dryRun: dryRun)
     }
     
-    func refreshCollectionView(_ reloadThumbType: [FileType] = [.folder]){
+    func refreshCollectionView(_ reloadThumbType: [FileType] = [.folder], dryRun: Bool = false){
         fileDB.lock()
         let curFolder = fileDB.curFolder
         if let files = fileDB.db[SortKeyDir(curFolder)]?.files {
@@ -1863,7 +1863,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
         }
         fileDB.unlock()
-        switchDirByDirection(direction: .zero, doCollapse: false, stackDeep: 0)
+        switchDirByDirection(direction: .zero, doCollapse: false, skip: dryRun, stackDeep: 0, dryRun: dryRun)
     }
     
     func refreshTreeView(){
@@ -2294,7 +2294,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         return snapshotView
     }
     
-    func switchDirByDirection(direction rawdirection: GestureDirection, dest: String = "", doCollapse: Bool = true, expandLast: Bool = true, skip: Bool = false, stackDeep: Int){
+    func switchDirByDirection(direction rawdirection: GestureDirection, dest: String = "", doCollapse: Bool = true, expandLast: Bool = true, skip: Bool = false, stackDeep: Int, dryRun: Bool = false){
         
         if rawdirection == .zero {
             publicVar.isInStageOneProgress = true
@@ -2370,8 +2370,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         var startFolder=lastFolder
         if direction == .zero && dest != "" { startFolder = dest }
         
-        treeTraversal(folderURL: URL(string: startFolder)!, round: searchFolderRound, initURL: URL(string: startFolder)!, direction: direction, 
-                      sameLevel: secondDirection == .down, skip: skip)
+        treeTraversal(folderURL: URL(string: startFolder)!, round: searchFolderRound, initURL: URL(string: startFolder)!, direction: direction,
+                          sameLevel: secondDirection == .down, skip: skip, dryRun: dryRun)
+
         //let a=1
         fileDB.lock()
         var curIndex=fileDB.db.index(forKey: SortKeyDir(startFolder))!
@@ -2474,7 +2475,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     }
 
     
-    func treeTraversal(folderURL: URL, round: Int, initURL: URL, direction: GestureDirection, sameLevel: Bool = false, skip: Bool = false) {
+    func treeTraversal(folderURL: URL, round: Int, initURL: URL, direction: GestureDirection, sameLevel: Bool = false, skip: Bool = false, dryRun: Bool = false) {
         //guard let root = root else { return }
         //let aaa=folderURL.absoluteString
         
@@ -2578,10 +2579,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             fileDB.db[SortKeyDir(folderURL.absoluteString)] = DirModel(path: folderURL.absoluteString, ver: fileDB.ver)
         }
         fileDB.db[SortKeyDir(folderURL.absoluteString)]!.ver = fileDB.ver
-        fileDB.db[SortKeyDir(folderURL.absoluteString)]!.folderCount=subFolders.count
-        fileDB.db[SortKeyDir(folderURL.absoluteString)]!.fileCount=fileCount
-        fileDB.db[SortKeyDir(folderURL.absoluteString)]!.imageCount=imageCount
-        fileDB.db[SortKeyDir(folderURL.absoluteString)]!.videoCount=videoCount
+        if !skip {
+            fileDB.db[SortKeyDir(folderURL.absoluteString)]!.folderCount=subFolders.count
+            fileDB.db[SortKeyDir(folderURL.absoluteString)]!.fileCount=fileCount
+            fileDB.db[SortKeyDir(folderURL.absoluteString)]!.imageCount=imageCount
+            fileDB.db[SortKeyDir(folderURL.absoluteString)]!.videoCount=videoCount
+        }
         fileDB.db[SortKeyDir(folderURL.absoluteString)]!.isMemClearedToAvoidRemainingTask=false
         let lastIsRecursiveMode=fileDB.db[SortKeyDir(folderURL.absoluteString)]!.isRecursiveMode
         if lastIsRecursiveMode != publicVar.isRecursiveMode {
@@ -2716,7 +2719,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 //log(fileSortKey.path)
                 if fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] != nil {
                     fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
-                    fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.canBeCalcued=false
                     fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.isDir=isDir
                     //fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.folderImageCount=fileCount
                     fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.doNotActualRead=doNotActualRead
@@ -2736,9 +2738,17 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     fileDB.db[SortKeyDir(folderpath)]!.files.removeValue(forKey: ele.0)
                 }
             }
+            fileDB.unlock()
+        }
+        
+        if dryRun || (!skip && (initURL != folderURL || direction == .zero)) {
+            let folderpath = folderURL.absoluteString
             var id=0
             var idInImage=0
+            fileDB.lock()
             for ele in fileDB.db[SortKeyDir(folderpath)]!.files{
+                ele.1.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
+                ele.1.canBeCalcued = false
                 if !ele.1.isDir{
                     ele.1.ext=URL(string: ele.1.path)!.pathExtension.lowercased()
                     if HandledImageExtensions.contains(ele.1.ext) {
@@ -2758,7 +2768,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
             fileDB.unlock()
         }
-        
         
         //往后则先序遍历
         if direction == .right {

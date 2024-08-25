@@ -47,7 +47,7 @@ class CustomImageView: NSImageView {
             return false
         } else if isFolder && sender.draggingSource is CustomCollectionView {
             getViewController(self)?.handleMove(targetURL: url, pasteboard: sender.draggingPasteboard)
-            getViewController(self)?.refreshAll()
+            //getViewController(self)?.refreshAll()
             return true
         } else {
             return false
