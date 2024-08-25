@@ -632,7 +632,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
 
     @objc func actDelete() {
-        getViewController(collectionView!)?.handleDelete()
+        getViewController(collectionView!)?.handleDelete(isShowPrompt: false)
     }
     
     @objc func actPaste() {

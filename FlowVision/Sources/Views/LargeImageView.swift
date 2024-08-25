@@ -598,7 +598,7 @@ class LargeImageView: NSView {
     }
 
     @objc func actDelete() {
-        getViewController(self)?.handleDelete()
+        getViewController(self)?.handleDelete(isShowPrompt: false)
     }
     
     @objc func actRefresh() {

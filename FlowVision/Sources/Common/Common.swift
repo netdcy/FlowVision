@@ -389,6 +389,35 @@ class VolumeManager {
     }
 }
 
+func requestAppleEventsPermission() -> Bool {
+    let appleEventDescriptor = NSAppleEventDescriptor(bundleIdentifier: "com.apple.finder")
+    let event = NSAppleEventDescriptor(eventClass: AEEventClass(kCoreEventClass), eventID: AEEventID(kAEOpenDocuments), targetDescriptor: appleEventDescriptor, returnID: AEReturnID(kAutoGenerateReturnID), transactionID: AETransactionID(kAnyTransactionID))
+    
+    var error: NSDictionary?
+    
+    // 使用NSAppleScript来执行Apple事件
+    let script = NSAppleScript(source: """
+        tell application "Finder"
+            get name of startup disk
+        end tell
+    """)
+    
+    if let script = script {
+        let result = script.executeAndReturnError(&error)
+        
+        if let error = error {
+            log("请求自动化权限失败: \(error)")
+        } else {
+            log("请求自动化权限成功: \(result.stringValue ?? "")")
+            return true
+        }
+    } else {
+        log("无法创建AppleScript实例")
+    }
+    
+    return false
+}
+
 class PrintView: NSView {
     var contentToPrint: NSView?
 

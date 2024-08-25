@@ -142,6 +142,23 @@
         }
       }
     },
+    "ask-to-delete-nopermission" : {
+      "comment" : "你确定要将这些文件移动到废纸篓吗？(无权限)",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to move these files to the trash?\n\nThe \"Automation\" permission has not been granted to this program. After moving to trash, the \"Restore to Original Location\" function cannot be used."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你确定要将这些文件移动到废纸篓吗？\n\n未授予此程序“自动化”权限。移动到废纸篓后不能使用“还原到原位置”功能。"
+          }
+        }
+      }
+    },
     "Auto" : {
       "comment" : "自动",
       "localizations" : {

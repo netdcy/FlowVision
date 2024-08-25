@@ -230,7 +230,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         }
         guard let url = url else {return}
         
-        let result = getViewController(self)?.handleDelete(fileUrls: [url])
+        let result = getViewController(self)?.handleDelete(fileUrls: [url], isShowPrompt: isByKeyboard)
         
         if result == true && curRightClickedIndex != self.selectedRowIndexes.first {
             refreshTreeView()

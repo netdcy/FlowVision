@@ -1431,28 +1431,37 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         return closestIndexPath
     }
     
-    func handleDelete(fileUrls: [URL] = []) -> Bool {
+    func handleDelete(fileUrls: [URL] = [], isShowPrompt: Bool = true) -> Bool {
         var urls = fileUrls
         if urls.count == 0 {
             urls = publicVar.selectedUrls()
         }
         guard urls.count != 0 else {return false}
         
+        let ifHasPermission = requestAppleEventsPermission()
+        
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("delete", comment: "删除")
         if VolumeManager.shared.isExternalVolume(urls.first!) {
             alert.informativeText = NSLocalizedString("ask-to-delete-external", comment: "此目录不支持移动到废纸篓。将立即删除这些项目，此操作无法撤销。")
         }else{
-            alert.informativeText = NSLocalizedString("ask-to-delete", comment: "你确定要将这些文件移动到废纸篓吗？")
+            if ifHasPermission{
+                alert.informativeText = NSLocalizedString("ask-to-delete", comment: "你确定要将这些文件移动到废纸篓吗？")
+            }else{
+                alert.informativeText = NSLocalizedString("ask-to-delete-nopermission", comment: "你确定要将这些文件移动到废纸篓吗？(无权限)")
+            }
         }
         alert.alertStyle = .warning
         alert.addButton(withTitle: NSLocalizedString("delete", comment: "删除"))
         alert.addButton(withTitle: NSLocalizedString("cancel", comment: "取消"))
         alert.icon = NSImage(named: NSImage.cautionName) // 设置系统警告图标
 
-        publicVar.isKeyEventEnabled=false
-        let response = alert.runModal()
-        publicVar.isKeyEventEnabled=true
+        var response: NSApplication.ModalResponse = .alertFirstButtonReturn
+        if isShowPrompt || !ifHasPermission || VolumeManager.shared.isExternalVolume(urls.first!) {
+            publicVar.isKeyEventEnabled=false
+            response = alert.runModal()
+            publicVar.isKeyEventEnabled=true
+        }
 
         if response == .alertFirstButtonReturn {
             // 用户确认删除
