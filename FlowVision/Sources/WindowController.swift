@@ -54,6 +54,9 @@ class WindowController: NSWindowController, NSWindowDelegate {
             if let frameString = UserDefaults.standard.string(forKey: "windowFrame") {
                 let frame = NSRectFromString(frameString)
                 window?.setFrame(frame, display: true)
+                if let viewController = contentViewController as? ViewController {
+                    viewController.changeWaterfallLayoutNumberOfColumns()
+                }
             }
         }
         
