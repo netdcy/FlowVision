@@ -299,6 +299,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             outlineScrollView.automaticallyAdjustsContentInsets = false
         }
         
+        mainScrollView.scrollerStyle = .legacy
+        outlineScrollView.scrollerStyle = .legacy
+        
         //=========以下是事件监听配置==========
         
         NSApp.addObserver(self, forKeyPath: "effectiveAppearance", options: [.new, .old], context: nil)
