@@ -3017,9 +3017,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         
                         fileDB.lock()
                         var originalSize = file.originalSize
+                        let curFolder=fileDB.curFolder
                         fileDB.unlock() //内存屏障
                         
                         if ver != dirModel.ver {return}
+                        if dir != curFolder {return} // 需要跳过，否则会等上一个目录完全执行完毕后才开始；不过这样就没法预载入其它目录了，待重构任务队列实现
                         
                         publicVar.isInStageTwoProgress = true
                         defer {

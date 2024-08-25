@@ -644,8 +644,11 @@ class TaskPool {
     }
     func removeAllQueue(){
         if pool.count == 0 {return}
-        
+        var keysToRemove: [String] = []
         for (key,_) in priority {
+            keysToRemove.append(key)
+        }
+        for key in keysToRemove {
             removeQueue(queueName: key)
         }
     }
