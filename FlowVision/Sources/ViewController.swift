@@ -1441,7 +1441,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         let ifHasPermission = requestAppleEventsPermission()
         
         let alert = NSAlert()
-        alert.messageText = NSLocalizedString("delete", comment: "删除")
+        alert.messageText = NSLocalizedString("Delete", comment: "删除")
         if VolumeManager.shared.isExternalVolume(urls.first!) {
             alert.informativeText = NSLocalizedString("ask-to-delete-external", comment: "此目录不支持移动到废纸篓。将立即删除这些项目，此操作无法撤销。")
         }else{
@@ -1452,8 +1452,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
         }
         alert.alertStyle = .warning
-        alert.addButton(withTitle: NSLocalizedString("delete", comment: "删除"))
-        alert.addButton(withTitle: NSLocalizedString("cancel", comment: "取消"))
+        alert.addButton(withTitle: NSLocalizedString("Delete", comment: "删除"))
+        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
         alert.icon = NSImage(named: NSImage.cautionName) // 设置系统警告图标
 
         var response: NSApplication.ModalResponse = .alertFirstButtonReturn
@@ -2343,20 +2343,20 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if folderCount+imageCount+videoCount+otherCount > 0 {
             fullTitle += String(format: " (")
             if folderCount != 0 {
-                fullTitle += String(format: "%d %@ ", folderCount, NSLocalizedString("folder", comment: "目录"))
+                fullTitle += String(format: "%d %@ ", folderCount, NSLocalizedString("Folder", comment: "目录"))
             }
             if imageCount != 0 {
-                fullTitle += String(format: "%d %@ ", imageCount, NSLocalizedString("image", comment: "图像"))
+                fullTitle += String(format: "%d %@ ", imageCount, NSLocalizedString("Image", comment: "图像"))
             }
             if videoCount != 0 {
-                fullTitle += String(format: "%d %@ ", videoCount, NSLocalizedString("video", comment: "视频"))
+                fullTitle += String(format: "%d %@ ", videoCount, NSLocalizedString("Video", comment: "视频"))
             }
             if otherCount != 0 {
-                fullTitle += String(format: "%d %@ ", otherCount, NSLocalizedString("other", comment: "其它"))
+                fullTitle += String(format: "%d %@ ", otherCount, NSLocalizedString("Other", comment: "其它"))
             }
             fullTitle=fullTitle.trimmingCharacters(in: .whitespaces)
             //                if folderCount == 0 && imageCount == 0 && videoCount == 0 && otherCount == 0 {
-            //                    windowTitle += NSLocalizedString("empty", comment: "空")
+            //                    windowTitle += NSLocalizedString("Empty", comment: "空")
             //                }
             fullTitle += String(format: ")")
         }
@@ -3485,7 +3485,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     let overTime = (DispatchTime.now().uptimeNanoseconds-LRUqueue.last!.1.uptimeNanoseconds)/1000000000
                     let memUseLimit = globalVar.memUseLimit // ?? (memSizeInGB > 20 ? 4000 : 2000)
                     
-                    if overTime > 3600 || Int(memUse) > memUseLimit {
+                    if overTime > 1800 || Int(memUse) > memUseLimit {
                         fileDB.lock()
                         log("Memory free:")
                         log(LRUqueue.last!.0.removingPercentEncoding)

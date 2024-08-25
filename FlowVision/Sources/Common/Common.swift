@@ -146,7 +146,7 @@ func showAlert(message: String) {
     let alert = NSAlert()
     alert.messageText = message
     alert.alertStyle = .warning
-    alert.addButton(withTitle: NSLocalizedString("ok", comment: "确定"))
+    alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
     alert.icon = NSImage(named: NSImage.cautionName)
     getMainViewController()!.publicVar.isKeyEventEnabled=false
     alert.runModal()
@@ -158,7 +158,7 @@ func showInformation(title: String, message: String) {
     alert.messageText = title
     alert.informativeText = message
     alert.alertStyle = .informational
-    alert.addButton(withTitle: NSLocalizedString("ok", comment: "确定"))
+    alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
     alert.icon = NSImage(named: NSImage.infoName)
     getMainViewController()!.publicVar.isKeyEventEnabled=false
     alert.runModal()
@@ -170,8 +170,8 @@ func showInformationCopy(title: String, message: String) {
     alert.messageText = title
     alert.informativeText = message
     alert.alertStyle = .informational
-    alert.addButton(withTitle: NSLocalizedString("copy", comment: "复制"))
-    alert.addButton(withTitle: NSLocalizedString("cancel", comment: "取消"))
+    alert.addButton(withTitle: NSLocalizedString("Copy", comment: "复制"))
+    alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
     alert.icon = NSImage(named: NSImage.infoName)
     
     getMainViewController()!.publicVar.isKeyEventEnabled = false
@@ -192,11 +192,11 @@ func renameAlert(url: URL) -> Bool {
     
     // 创建一个警告对话框
     let alert = NSAlert()
-    alert.messageText = NSLocalizedString("rename", comment: "重命名")
+    alert.messageText = NSLocalizedString("Rename", comment: "重命名")
     alert.informativeText = NSLocalizedString("new-name-for", comment: "请输入新的名称用于") + " \(originalUrl.lastPathComponent):"
     alert.alertStyle = .informational
-    alert.addButton(withTitle: NSLocalizedString("ok", comment: "确定"))
-    alert.addButton(withTitle: NSLocalizedString("cancel", comment: "取消"))
+    alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
+    alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
     alert.icon = NSImage(named: NSImage.infoName)// 设置系统通知图标
     
     // 添加一个文本输入框到警告对话框中

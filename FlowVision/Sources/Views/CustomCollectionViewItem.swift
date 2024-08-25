@@ -208,7 +208,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         let fileName = (filePath as NSString).lastPathComponent
         
         // 准备局部化字符串
-        let nameLabel = NSLocalizedString("name", comment: "名称")
+        let nameLabel = NSLocalizedString("Name", comment: "名称")
         let sizeLabel = NSLocalizedString("file-size", comment: "文件大小")
         let dimensionsLabel = NSLocalizedString("file-dimensions", comment: "图像尺寸")
         let creationDateLabel = NSLocalizedString("Date Created", comment: "创建日期")
@@ -461,7 +461,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 let menu = NSMenu(title: "Custom Menu")
                 menu.autoenablesItems = false
                 
-                let actionItemOpen = menu.addItem(withTitle: NSLocalizedString("open", comment: "打开"), action: #selector(actOpen), keyEquivalent: " ")
+                let actionItemOpen = menu.addItem(withTitle: NSLocalizedString("Open", comment: "打开"), action: #selector(actOpen), keyEquivalent: " ")
                 actionItemOpen.keyEquivalentModifierMask = []
                 
                 if (file.type == .folder || file.type == .image) {
@@ -481,7 +481,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 menu.addItem(withTitle: NSLocalizedString("show-in-finder", comment: "在Finder中显示"), action: #selector(actShowInFinder), keyEquivalent: "")
                 
-                let actionItemRename = menu.addItem(withTitle: NSLocalizedString("rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
+                let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
                 actionItemRename.keyEquivalentModifierMask = []
                 
                 menu.addItem(NSMenuItem.separator())
@@ -533,10 +533,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 menu.addItem(NSMenuItem.separator())
                 
-                let actionItemCopy = menu.addItem(withTitle: NSLocalizedString("copy", comment: "复制"), action: #selector(actCopy), keyEquivalent: "c")
+                let actionItemCopy = menu.addItem(withTitle: NSLocalizedString("Copy", comment: "复制"), action: #selector(actCopy), keyEquivalent: "c")
                 //actionItemCopy.isEnabled = (items.count>0)
                 
-                let actionItemPaste = menu.addItem(withTitle: NSLocalizedString("paste", comment: "粘贴"), action: #selector(actPaste), keyEquivalent: "v")
+                let actionItemPaste = menu.addItem(withTitle: NSLocalizedString("Paste", comment: "粘贴"), action: #selector(actPaste), keyEquivalent: "v")
                 actionItemPaste.isEnabled = canPasteOrMove
                 
                 let actionItemMove = menu.addItem(withTitle: NSLocalizedString("move-here", comment: "移动到此"), action: #selector(actMove), keyEquivalent: "v")
@@ -560,7 +560,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 menu.addItem(NSMenuItem.separator())
                 
-                let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("refresh", comment: "刷新"), action: #selector(actRefresh), keyEquivalent: "r")
+                let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("Refresh", comment: "刷新"), action: #selector(actRefresh), keyEquivalent: "r")
                 actionItemRefresh.keyEquivalentModifierMask = []
                 
                 menu.items.forEach { $0.target = self }

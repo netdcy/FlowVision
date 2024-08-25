@@ -103,7 +103,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             
             menu.addItem(withTitle: NSLocalizedString("open-in-finder", comment: "在Finder中打开"), action: #selector(actOpenInFinder), keyEquivalent: "")
             
-            let actionItemRename = menu.addItem(withTitle: NSLocalizedString("rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
+            let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
             actionItemRename.keyEquivalentModifierMask = []
             
             menu.addItem(NSMenuItem.separator())
@@ -113,9 +113,9 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             
             menu.addItem(NSMenuItem.separator())
             
-            let actionItemCopy = menu.addItem(withTitle: NSLocalizedString("copy", comment: "复制"), action: #selector(actCopy), keyEquivalent: "c")
+            let actionItemCopy = menu.addItem(withTitle: NSLocalizedString("Copy", comment: "复制"), action: #selector(actCopy), keyEquivalent: "c")
             
-            let actionItemPaste = menu.addItem(withTitle: NSLocalizedString("paste", comment: "粘贴"), action: #selector(actPaste), keyEquivalent: "v")
+            let actionItemPaste = menu.addItem(withTitle: NSLocalizedString("Paste", comment: "粘贴"), action: #selector(actPaste), keyEquivalent: "v")
             actionItemPaste.isEnabled = canPasteOrMove
             
             let actionItemMove = menu.addItem(withTitle: NSLocalizedString("move-here", comment: "移动到此"), action: #selector(actMove), keyEquivalent: "v")
@@ -129,7 +129,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             
             menu.addItem(NSMenuItem.separator())
             
-            let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("refresh", comment: "刷新"), action: #selector(refreshAll), keyEquivalent: "r")
+            let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("Refresh", comment: "刷新"), action: #selector(refreshAll), keyEquivalent: "r")
             actionItemRefresh.keyEquivalentModifierMask = []
 
             // 可以将点击的对象传递给菜单项动作

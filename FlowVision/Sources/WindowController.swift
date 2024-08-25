@@ -252,21 +252,21 @@ extension WindowController: NSToolbarDelegate {
         case .sidebar:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "sidebar.left", accessibilityDescription: "")!, target: self, action: #selector(sidebarAction(_:)))
             setButtonStyle(button)
-            button.toolTip = NSLocalizedString("sidebar", comment: "侧边栏")
+            button.toolTip = NSLocalizedString("Sidebar", comment: "侧边栏")
             button.isEnabled = !viewController.publicVar.isInLargeView
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("sidebar", comment: "侧边栏")
-            toolbarItem.paletteLabel = NSLocalizedString("sidebar", comment: "侧边栏")
+            toolbarItem.label = NSLocalizedString("Sidebar", comment: "侧边栏")
+            toolbarItem.paletteLabel = NSLocalizedString("Sidebar", comment: "侧边栏")
             toolbarItem.isNavigational = true
             toolbarItem.visibilityPriority = .low
             
         case .favorites:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "star", accessibilityDescription: "")!, target: self, action: #selector(favoritesAction(_:)))
             setButtonStyle(button)
-            button.toolTip = NSLocalizedString("favorites", comment: "收藏夹")
+            button.toolTip = NSLocalizedString("Favorites", comment: "收藏夹")
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("favorites", comment: "收藏夹")
-            toolbarItem.paletteLabel = NSLocalizedString("favorites", comment: "收藏夹")
+            toolbarItem.label = NSLocalizedString("Favorites", comment: "收藏夹")
+            toolbarItem.paletteLabel = NSLocalizedString("Favorites", comment: "收藏夹")
             toolbarItem.isNavigational = true
             toolbarItem.visibilityPriority = .low
             
@@ -314,9 +314,9 @@ extension WindowController: NSToolbarDelegate {
             segmentedControl.setToolTip(NSLocalizedString("Waterfall View", comment: "瀑布流视图"), forSegment: 1)
             segmentedControl.setToolTip(NSLocalizedString("Grid View", comment: "网格视图"), forSegment: 2)
             toolbarItem.view = segmentedControl
-            toolbarItem.label = NSLocalizedString("view", comment: "视图")
-            toolbarItem.paletteLabel = NSLocalizedString("view", comment: "视图")
-            //toolbarItem.toolTip = NSLocalizedString("view", comment: "视图")
+            toolbarItem.label = NSLocalizedString("View", comment: "视图")
+            toolbarItem.paletteLabel = NSLocalizedString("View", comment: "视图")
+            //toolbarItem.toolTip = NSLocalizedString("View", comment: "视图")
             toolbarItem.visibilityPriority = .low
             
         case .ontop:
@@ -406,10 +406,10 @@ extension WindowController: NSToolbarDelegate {
         case .more:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "ellipsis.circle", accessibilityDescription: "")!, target: self, action: #selector(showMoreMenu(_:)))
             setButtonStyle(button)
-            button.toolTip = NSLocalizedString("more", comment: "更多")
+            button.toolTip = NSLocalizedString("More", comment: "更多")
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("more", comment: "更多")
-            toolbarItem.paletteLabel = NSLocalizedString("more", comment: "更多")
+            toolbarItem.label = NSLocalizedString("More", comment: "更多")
+            toolbarItem.paletteLabel = NSLocalizedString("More", comment: "更多")
             toolbarItem.visibilityPriority = .user
             
         default:
@@ -605,7 +605,7 @@ extension WindowController: NSToolbarDelegate {
                 
                 // 创建删除项
                 let deleteMenuItem = NSMenuItem(
-                    title: NSLocalizedString("delete", comment: "删除"),
+                    title: NSLocalizedString("Delete", comment: "删除"),
                     action: #selector(deleteFavorite(_:)),
                     keyEquivalent: ""
                 )

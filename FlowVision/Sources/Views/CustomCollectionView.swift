@@ -129,7 +129,7 @@ class CustomCollectionView: NSCollectionView {
                     
                     menu.addItem(NSMenuItem.separator())
 
-                    let actionItemPaste = menu.addItem(withTitle: NSLocalizedString("paste", comment: "粘贴"), action: #selector(actPaste), keyEquivalent: "v")
+                    let actionItemPaste = menu.addItem(withTitle: NSLocalizedString("Paste", comment: "粘贴"), action: #selector(actPaste), keyEquivalent: "v")
                     actionItemPaste.isEnabled = canPasteOrMove
                     
                     let actionItemMove = menu.addItem(withTitle: NSLocalizedString("move-here", comment: "移动到此"), action: #selector(actMove), keyEquivalent: "v")
@@ -143,7 +143,7 @@ class CustomCollectionView: NSCollectionView {
                     
                     menu.addItem(NSMenuItem.separator())
                     
-                    let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("refresh", comment: "刷新"), action: #selector(actRefresh), keyEquivalent: "r")
+                    let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("Refresh", comment: "刷新"), action: #selector(actRefresh), keyEquivalent: "r")
                     actionItemRefresh.keyEquivalentModifierMask = []
                     
                     menu.items.forEach { $0.target = self }

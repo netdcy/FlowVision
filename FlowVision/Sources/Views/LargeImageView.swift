@@ -396,7 +396,7 @@ class LargeImageView: NSView {
             
             menu.addItem(withTitle: NSLocalizedString("show-in-finder", comment: "在Finder中显示"), action: #selector(actShowInFinder), keyEquivalent: "")
             
-            let actionItemRename = menu.addItem(withTitle: NSLocalizedString("rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
+            let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
             actionItemRename.keyEquivalentModifierMask = []
             
             menu.addItem(NSMenuItem.separator())
@@ -406,7 +406,7 @@ class LargeImageView: NSView {
             
             menu.addItem(NSMenuItem.separator())
             
-            let actionItemCopy = menu.addItem(withTitle: NSLocalizedString("copy", comment: "复制"), action: #selector(actCopy), keyEquivalent: "c")
+            let actionItemCopy = menu.addItem(withTitle: NSLocalizedString("Copy", comment: "复制"), action: #selector(actCopy), keyEquivalent: "c")
             
             let actionItemShare = menu.addItem(withTitle: NSLocalizedString("Share...", comment: "共享..."), action: #selector(actShare(_:)), keyEquivalent: "")
             
@@ -440,7 +440,7 @@ class LargeImageView: NSView {
             
             menu.addItem(NSMenuItem.separator())
             
-            let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("refresh", comment: "刷新"), action: #selector(actRefresh), keyEquivalent: "r")
+            let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("Refresh", comment: "刷新"), action: #selector(actRefresh), keyEquivalent: "r")
             actionItemRefresh.keyEquivalentModifierMask = []
             
             menu.items.forEach { $0.target = self }

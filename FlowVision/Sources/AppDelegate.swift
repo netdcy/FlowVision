@@ -375,7 +375,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                     
                     // 创建删除项
                     let deleteMenuItem = NSMenuItem(
-                        title: NSLocalizedString("delete", comment: "删除"),
+                        title: NSLocalizedString("Delete", comment: "删除"),
                         action: #selector(deleteFavorite(_:)),
                         keyEquivalent: ""
                     )
