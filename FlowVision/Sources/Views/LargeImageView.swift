@@ -101,6 +101,22 @@ class LargeImageView: NSView {
         exifTextView.invalidateIntrinsicContentSize()
     }
     
+    override func resizeSubviews(withOldSize oldSize: NSSize) {
+        super.resizeSubviews(withOldSize: oldSize)
+        
+        let newSize = self.bounds.size
+        let imageViewSize = imageView.frame.size
+
+        let deltaX = (newSize.width - oldSize.width) / 2
+        let deltaY = (newSize.height - oldSize.height) / 2
+
+        let newX = imageView.frame.origin.x + deltaX
+        let newY = imageView.frame.origin.y + deltaY
+        
+        //窗口变化时大图随缩放居中
+        imageView.frame = CGRect(x: newX, y: newY, width: imageViewSize.width, height: imageViewSize.height)
+    }
+    
     func zoom(direction: Int = 0){
         //guard let originalSize = getViewController(self)?.getCurrentImageOriginalSizeInScreenScale() else { return }
         //let currentSize = imageView.bounds.size
