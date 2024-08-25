@@ -544,7 +544,7 @@
 				CODE_SIGN_ENTITLEMENTS = FlowVision/FlowVision.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0818;
+				CURRENT_PROJECT_VERSION = 0825;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FlowVision/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
@@ -557,7 +557,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				MERGED_BINARY_TYPE = automatic;
 				PRODUCT_BUNDLE_IDENTIFIER = netdcy.FlowVisionDbg;
 				PRODUCT_NAME = "$(TARGET_NAME)Dbg";
@@ -575,7 +575,7 @@
 				CODE_SIGN_ENTITLEMENTS = FlowVision/FlowVision.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0818;
+				CURRENT_PROJECT_VERSION = 0825;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FlowVision/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
@@ -588,7 +588,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				MERGED_BINARY_TYPE = automatic;
 				PRODUCT_BUNDLE_IDENTIFIER = netdcy.FlowVision;
 				PRODUCT_NAME = "$(TARGET_NAME)";
