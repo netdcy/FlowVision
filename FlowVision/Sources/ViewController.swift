@@ -2639,9 +2639,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         
         //处理当前节点，注意检查skip，否则向上时会清空
+        fileDB.lock()
         if !skip && (initURL != folderURL || direction == .zero) {
             let folderpath = folderURL.absoluteString
-            fileDB.lock()
             //log(filesInFolder.count)
             for (i,filePath) in filesInFolder.enumerated(){
                 var fileSortKey:SortKeyFile
@@ -2738,14 +2738,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     fileDB.db[SortKeyDir(folderpath)]!.files.removeValue(forKey: ele.0)
                 }
             }
-            fileDB.unlock()
         }
         
         if dryRun || (!skip && (initURL != folderURL || direction == .zero)) {
             let folderpath = folderURL.absoluteString
             var id=0
             var idInImage=0
-            fileDB.lock()
             for ele in fileDB.db[SortKeyDir(folderpath)]!.files{
                 ele.1.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
                 ele.1.canBeCalcued = false
@@ -2766,8 +2764,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 ele.1.id = id
                 id += 1
             }
-            fileDB.unlock()
         }
+        fileDB.unlock()
         
         //往后则先序遍历
         if direction == .right {
