@@ -188,7 +188,7 @@
       }
     },
     "cancel" : {
-      "extractionState" : "manual",
+      "comment" : "取消",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -196,6 +196,17 @@
             "value" : "Cancel"
           }
         },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "comment" : "取消",
+      "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -329,7 +340,7 @@
       }
     },
     "copy" : {
-      "extractionState" : "manual",
+      "comment" : "复制",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -407,7 +418,7 @@
       }
     },
     "delete" : {
-      "extractionState" : "manual",
+      "comment" : "删除",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1062,7 +1073,7 @@
       }
     },
     "ok" : {
-      "extractionState" : "manual",
+      "comment" : "确定",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1070,6 +1081,17 @@
             "value" : "OK"
           }
         },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确定"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "comment" : "确定",
+      "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1485,7 +1507,7 @@
       }
     },
     "rename" : {
-      "extractionState" : "manual",
+      "comment" : "重命名",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1518,15 +1540,9 @@
         }
       }
     },
-    "replace" : {
-      "extractionState" : "manual",
+    "Replace" : {
+      "comment" : "替换",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Replace"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1535,15 +1551,9 @@
         }
       }
     },
-    "replace-all" : {
-      "extractionState" : "manual",
+    "Replace All" : {
+      "comment" : "全部替换",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Replace All"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1755,6 +1765,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "侧边栏"
+          }
+        }
+      }
+    },
+    "Skip" : {
+      "comment" : "跳过",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跳过"
+          }
+        }
+      }
+    },
+    "Skip All" : {
+      "comment" : "全部跳过",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部跳过"
           }
         }
       }

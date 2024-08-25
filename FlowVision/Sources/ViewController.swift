@@ -1610,9 +1610,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         let curFolder = fileDB.curFolder
         fileDB.unlock()
         var destinationURL: URL? = nil
-        if targetURL != nil {
+        if let targetURL = targetURL {
             destinationURL = targetURL
-        }else{
+        } else {
             destinationURL = URL(string: curFolder)
         }
         guard let destinationURL = destinationURL else { return }
@@ -1629,8 +1629,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         
         var shouldReplaceAll = false
+        var shouldSkipAll = false
         
-        publicVar.isKeyEventEnabled=false
+        publicVar.isKeyEventEnabled = false
         for item in items {
             guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { continue }
             var destURL = destinationURL.appendingPathComponent(fileURL.lastPathComponent)
@@ -1641,20 +1642,48 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
             
             if FileManager.default.fileExists(atPath: destURL.path) {
-                // 文件已存在，弹出对话框询问用户是否覆盖
-                if shouldReplaceAll || showReplaceDialog(for: destURL, shouldReplaceAll: &shouldReplaceAll) {
+                if shouldReplaceAll {
                     do {
-                        // 文件更改计数
                         publicVar.fileChangedCount += 1
                         try FileManager.default.removeItem(at: destURL)
                         try FileManager.default.copyItem(at: fileURL, to: destURL)
                     } catch {
                         log("粘贴失败 \(fileURL): \(error)")
                     }
+                } else if shouldSkipAll {
+                    continue
+                } else {
+                    let userChoice = showReplaceDialog(for: destURL)
+                    switch userChoice {
+                    case .replace:
+                        do {
+                            publicVar.fileChangedCount += 1
+                            try FileManager.default.removeItem(at: destURL)
+                            try FileManager.default.copyItem(at: fileURL, to: destURL)
+                        } catch {
+                            log("粘贴失败 \(fileURL): \(error)")
+                        }
+                    case .replaceAll:
+                        shouldReplaceAll = true
+                        do {
+                            publicVar.fileChangedCount += 1
+                            try FileManager.default.removeItem(at: destURL)
+                            try FileManager.default.copyItem(at: fileURL, to: destURL)
+                        } catch {
+                            log("粘贴失败 \(fileURL): \(error)")
+                        }
+                    case .skip:
+                        continue
+                    case .skipAll:
+                        shouldSkipAll = true
+                        continue
+                    case .cancel:
+                        publicVar.isKeyEventEnabled = true
+                        return
+                    }
                 }
             } else {
                 do {
-                    // 文件更改计数
                     publicVar.fileChangedCount += 1
                     try FileManager.default.copyItem(at: fileURL, to: destURL)
                 } catch {
@@ -1662,7 +1691,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
             }
         }
-        publicVar.isKeyEventEnabled=true
+        publicVar.isKeyEventEnabled = true
     }
     
     func handleMoveToDownload() {
@@ -1677,16 +1706,15 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     }
 
     func handleMove(targetURL: URL? = nil, pasteboard: NSPasteboard = NSPasteboard.general) {
-        //let pasteboard = NSPasteboard.general
         guard let items = pasteboard.pasteboardItems else { return }
         
         fileDB.lock()
         let curFolder = fileDB.curFolder
         fileDB.unlock()
         var destinationURL: URL? = nil
-        if targetURL != nil {
+        if let targetURL = targetURL {
             destinationURL = targetURL
-        }else{
+        } else {
             destinationURL = URL(string: curFolder)
         }
         guard let destinationURL = destinationURL else { return }
@@ -1703,8 +1731,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         
         var shouldReplaceAll = false
+        var shouldSkipAll = false
         
-        publicVar.isKeyEventEnabled=false
+        publicVar.isKeyEventEnabled = false
         for item in items {
             guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { continue }
             let destURL = destinationURL.appendingPathComponent(fileURL.lastPathComponent)
@@ -1716,20 +1745,48 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
 
             if FileManager.default.fileExists(atPath: destURL.path) {
-                // 文件已存在，弹出对话框询问用户是否覆盖
-                if shouldReplaceAll || showReplaceDialog(for: destURL, shouldReplaceAll: &shouldReplaceAll) {
+                if shouldReplaceAll {
                     do {
-                        // 文件更改计数
                         publicVar.fileChangedCount += 1
                         try FileManager.default.removeItem(at: destURL)
                         try FileManager.default.moveItem(at: fileURL, to: destURL)
                     } catch {
                         log("移动失败 \(fileURL): \(error)")
                     }
+                } else if shouldSkipAll {
+                    continue
+                } else {
+                    let userChoice = showReplaceDialog(for: destURL)
+                    switch userChoice {
+                    case .replace:
+                        do {
+                            publicVar.fileChangedCount += 1
+                            try FileManager.default.removeItem(at: destURL)
+                            try FileManager.default.moveItem(at: fileURL, to: destURL)
+                        } catch {
+                            log("移动失败 \(fileURL): \(error)")
+                        }
+                    case .replaceAll:
+                        shouldReplaceAll = true
+                        do {
+                            publicVar.fileChangedCount += 1
+                            try FileManager.default.removeItem(at: destURL)
+                            try FileManager.default.moveItem(at: fileURL, to: destURL)
+                        } catch {
+                            log("移动失败 \(fileURL): \(error)")
+                        }
+                    case .skip:
+                        continue
+                    case .skipAll:
+                        shouldSkipAll = true
+                        continue
+                    case .cancel:
+                        publicVar.isKeyEventEnabled = true
+                        return
+                    }
                 }
             } else {
                 do {
-                    // 文件更改计数
                     publicVar.fileChangedCount += 1
                     try FileManager.default.moveItem(at: fileURL, to: destURL)
                 } catch {
@@ -1737,7 +1794,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
             }
         }
-        publicVar.isKeyEventEnabled=true
+        publicVar.isKeyEventEnabled = true
     }
 
     func getUniqueDestinationURL(for url: URL) -> URL {
@@ -1756,32 +1813,41 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         return newURL
     }
 
-    func showReplaceDialog(for destinationURL: URL, shouldReplaceAll: inout Bool) -> Bool {
+    enum UserChoice {
+        case replace
+        case replaceAll
+        case skip
+        case skipAll
+        case cancel
+    }
+
+    func showReplaceDialog(for url: URL) -> UserChoice {
         let alert = NSAlert()
-        alert.messageText = NSLocalizedString("has-exist-in-dest1", comment: "目标文件夹中已存在名为") + destinationURL.lastPathComponent
+        alert.messageText = NSLocalizedString("has-exist-in-dest1", comment: "目标文件夹中已存在名为") + url.lastPathComponent
                             + NSLocalizedString("has-exist-in-dest2", comment: "的文件。")
         alert.informativeText = NSLocalizedString("do-you-want-replace", comment: "你要用正在粘贴或移动的文件替换它吗？")
         alert.alertStyle = .warning
-        alert.addButton(withTitle: NSLocalizedString("replace", comment: "替换"))
-        alert.addButton(withTitle: NSLocalizedString("replace-all", comment: "全部替换"))
-        alert.addButton(withTitle: NSLocalizedString("cancel", comment: "取消"))
-        alert.icon = NSImage(named: NSImage.infoName)// 设置系统通知图标
+        alert.addButton(withTitle: NSLocalizedString("Replace", comment: "替换"))
+        alert.addButton(withTitle: NSLocalizedString("Replace All", comment: "全部替换"))
+        alert.addButton(withTitle: NSLocalizedString("Skip", comment: "跳过"))
+        alert.addButton(withTitle: NSLocalizedString("Skip All", comment: "全部跳过"))
+        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
         
-        publicVar.isKeyEventEnabled=false
         let response = alert.runModal()
-        publicVar.isKeyEventEnabled=true
         
         switch response {
         case .alertFirstButtonReturn:
-            // 用户选择“替换”
-            return true
+            return .replace
         case .alertSecondButtonReturn:
-            // 用户选择“全部替换”
-            shouldReplaceAll = true
-            return true
+            return .replaceAll
+        case .alertThirdButtonReturn:
+            return .skip
+        case NSApplication.ModalResponse(rawValue: 1003):
+            return .skipAll
+        case NSApplication.ModalResponse(rawValue: 1004):
+            return .cancel
         default:
-            // 用户选择“取消”
-            return false
+            return .cancel
         }
     }
     
@@ -1801,8 +1867,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         alert.accessoryView = inputTextField
         
-        alert.addButton(withTitle: NSLocalizedString("ok", comment: "确定"))
-        alert.addButton(withTitle: NSLocalizedString("cancel", comment: "取消"))
+        alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
+        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
         
         publicVar.isKeyEventEnabled=false
         DispatchQueue.main.async {
@@ -4683,9 +4749,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     }
     
     func getSelectedURLs() -> [URL] {
-        let selectedIndexes = collectionView.selectionIndexPaths.map { indexPath in
+        var selectedIndexes = collectionView.selectionIndexPaths.map { indexPath in
             return indexPath.item
         }
+        selectedIndexes.sort()
         var urls = [URL]()
         fileDB.lock()
         for i in selectedIndexes {
