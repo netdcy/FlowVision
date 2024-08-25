@@ -38,10 +38,16 @@
 
 ### Homebrew Install
 
- ```
+Initial Installation
+```
 brew tap netdcy/flowvision
 brew install flowvision --no-quarantine
- ```
+```
+Upgrade ('--no-quarantine' must be added when upgrading or reinstalling)
+```
+brew update
+brew upgrade flowvision --no-quarantine
+```
 
 ## Instructions:
 ### In Image View:

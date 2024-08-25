@@ -39,12 +39,18 @@
  - 无网络连接
  - 提供无签名的官方构建，可自行编译
 
-### Homebrew 安装
+### Homebrew 方式安装
 
- ```
+首次安装
+```
 brew tap netdcy/flowvision
 brew install flowvision --no-quarantine
- ```
+```
+版本升级 (必须添加'--no-quarantine'参数)
+```
+brew update
+brew upgrade flowvision --no-quarantine
+```
 
 ## 操作说明
 
