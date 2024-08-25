@@ -230,70 +230,10 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         }
         guard let url = url else {return}
         
-        let alert = NSAlert()
-        alert.messageText = NSLocalizedString("delete", comment: "删除")
-        if VolumeManager.shared.isExternalVolume(url) {
-            alert.informativeText = NSLocalizedString("ask-to-delete-external", comment: "此目录不支持移动到废纸篓。将立即删除这些项目，此操作无法撤销。")
-        }else{
-            alert.informativeText = NSLocalizedString("ask-to-delete", comment: "你确定要将这些文件移动到废纸篓吗？")
-        }
-        alert.alertStyle = .warning
-        alert.addButton(withTitle: NSLocalizedString("delete", comment: "删除"))
-        alert.addButton(withTitle: NSLocalizedString("cancel", comment: "取消"))
-        alert.icon = NSImage(named: NSImage.cautionName) // 设置系统警告图标
-
-        getViewController(self)!.publicVar.isKeyEventEnabled=false
-        let response = alert.runModal()
-        getViewController(self)!.publicVar.isKeyEventEnabled=true
-
-        if response == .alertFirstButtonReturn {
-            // 用户确认删除
-            let fileManager = FileManager.default
-
-            // 检查文件是否存在
-            if fileManager.fileExists(atPath: url.path) {
-                let script = """
-                                tell application "Finder"
-                                    move POSIX file "\(url.path)" to trash
-                                end tell
-                                """
-                var error: NSDictionary?
-                var success = false
-                if let scriptObject = NSAppleScript(source: script) {
-                    //更改计数
-                    getViewController(self)?.publicVar.fileChangedCount += 1
-                    
-                    scriptObject.executeAndReturnError(&error)
-                    if let error = error, let errorCode = error[NSAppleScript.errorNumber] as? Int, errorCode == -1743 {
-                        // AppleScript 无权限，回退到 NSWorkspace.shared.recycle
-                        NSWorkspace.shared.recycle([url], completionHandler: { (newURLs, error) in
-                            if let error = error {
-                                log("删除失败: \(url.path), 错误: \(error)")
-                            } else {
-                                log("文件已移动到废纸篓: \(url.path)")
-                                success=true
-                            }
-                        })
-                    } else if let error = error {
-                        log("删除失败: \(url.path), 错误: \(error)")
-                    } else {
-                        log("文件已移动到废纸篓: \(url.path)")
-                        success=true
-                    }
-                }
-                //刷新视图
-                if success{
-                    if curRightClickedIndex != self.selectedRowIndexes.first {
-                        refreshTreeView()
-                    }
-                }
-            } else {
-                log("文件不存在: \(url.path)")
-            }
-            
-        } else {
-            // 用户取消操作
-            log("删除操作已取消")
+        let result = getViewController(self)?.handleDelete(fileUrls: [url])
+        
+        if result == true && curRightClickedIndex != self.selectedRowIndexes.first {
+            refreshTreeView()
         }
     }
     

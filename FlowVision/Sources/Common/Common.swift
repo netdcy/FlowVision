@@ -211,6 +211,21 @@ func renameAlert(url: URL) -> Bool {
     
     // 显示对话框
     getMainViewController()!.publicVar.isKeyEventEnabled=false
+    DispatchQueue.main.async {
+        // 判断是否是文件夹
+        var isDirectory: ObjCBool = false
+        FileManager.default.fileExists(atPath: originalUrl.path, isDirectory: &isDirectory)
+        
+        _ = inputTextField.becomeFirstResponder()
+        if isDirectory.boolValue {
+            // 如果是文件夹，选中全部内容
+            inputTextField.selectText(nil)
+        } else {
+            // 如果是文件，选中文件名不包含扩展名的部分
+            let fileName = originalUrl.deletingPathExtension().lastPathComponent
+            inputTextField.currentEditor()?.selectedRange = NSRange(location: 0, length: fileName.count)
+        }
+    }
     let response = alert.runModal()
     getMainViewController()!.publicVar.isKeyEventEnabled=true
     
@@ -224,7 +239,9 @@ func renameAlert(url: URL) -> Bool {
             
             // 检查是否存在同名文件
             if FileManager.default.fileExists(atPath: newUrl.path) {
-                showAlert(message: NSLocalizedString("renaming-conflict", comment: "该名称的文件已存在，请选择其他名称。"))
+                if originalUrl.path != newUrl.path {
+                    showAlert(message: NSLocalizedString("renaming-conflict", comment: "该名称的文件已存在，请选择其他名称。"))
+                }
             }else{
                 // 执行重命名操作
                 do {

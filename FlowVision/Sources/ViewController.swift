@@ -1428,12 +1428,16 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         return closestIndexPath
     }
     
-    func handleDelete() {
-        if publicVar.selectedUrls().count == 0 {return}
+    func handleDelete(fileUrls: [URL] = []) -> Bool {
+        var urls = fileUrls
+        if urls.count == 0 {
+            urls = publicVar.selectedUrls()
+        }
+        guard urls.count != 0 else {return false}
         
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("delete", comment: "删除")
-        if VolumeManager.shared.isExternalVolume(publicVar.selectedUrls().first!) {
+        if VolumeManager.shared.isExternalVolume(urls.first!) {
             alert.informativeText = NSLocalizedString("ask-to-delete-external", comment: "此目录不支持移动到废纸篓。将立即删除这些项目，此操作无法撤销。")
         }else{
             alert.informativeText = NSLocalizedString("ask-to-delete", comment: "你确定要将这些文件移动到废纸篓吗？")
@@ -1452,7 +1456,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             let fileManager = FileManager.default
             var urlsToDelete = [URL]()
             
-            for url in publicVar.selectedUrls() {
+            for url in urls {
                 if fileManager.fileExists(atPath: url.path) {
                     urlsToDelete.append(url)
                 } else {
@@ -1501,12 +1505,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     }
                 }
             } else {
-                log("没有需要删除的文件")
+                log("要删除的文件不存在")
             }
-            
+            return true
         } else {
             // 用户取消操作
             log("删除操作已取消")
+            return false
         }
     }
     
@@ -1788,6 +1793,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         alert.addButton(withTitle: NSLocalizedString("cancel", comment: "取消"))
         
         publicVar.isKeyEventEnabled=false
+        DispatchQueue.main.async {
+            _ = inputTextField.becomeFirstResponder()
+        }
         let response = alert.runModal()
         publicVar.isKeyEventEnabled=true
         
