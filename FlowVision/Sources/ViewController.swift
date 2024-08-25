@@ -3170,10 +3170,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         let doNotActualRead = file.doNotActualRead
                         let i=file.id
                         let ver=firstTask.4
+                        let curFolder=fileDB.curFolder
                         fileDB.unlock() //内存屏障
                         
                         if i == -1 {return}
                         if ver != dirModel.ver {return}
+                        if dir != curFolder {return} // 暂时跳过，以降低网络驱动器单线程的载入延迟
                         
                         publicVar.isInStageThreeProgress = true
                         defer {
@@ -3210,7 +3212,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         let thumbSize:NSSize? = file.thumbSize
                         let count = dirModel.files.count
                         let isMemClearedToAvoidRemainingTask=dirModel.isMemClearedToAvoidRemainingTask
-                        let curFolder=fileDB.curFolder
                         fileDB.unlock()
                         //loadImageTaskPool.lock.unlock()//此处解锁是因为防止8个线程与主线程排队争fileDB.lock
                         if isMemClearedToAvoidRemainingTask {return}
