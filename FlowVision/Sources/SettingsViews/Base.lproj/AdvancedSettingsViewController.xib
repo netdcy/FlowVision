@@ -99,7 +99,7 @@
                                 <rect key="frame" x="144" y="560" width="308" height="42"/>
                                 <textFieldCell key="cell" selectable="YES" id="o1C-Ac-oMz">
                                     <font key="font" metaFont="message" size="11"/>
-                                    <string key="title">The application has built-in FFmpeg library. If exception occurs while generating video thumbnails, please try disabling this option or check "Do not display video files."</string>
+                                    <string key="title">The application has built-in FFmpeg library. If exception occurs while generating video thumbnails, please try disabling this option or uncheck "Show Video Files".</string>
                                     <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>

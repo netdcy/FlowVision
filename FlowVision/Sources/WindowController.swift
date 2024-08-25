@@ -819,7 +819,7 @@ extension WindowController: NSToolbarDelegate {
 
         menu.addItem(NSMenuItem.separator())
         
-        let switchToSystemTheme = menu.addItem(withTitle: NSLocalizedString("switchToSystemTheme", comment: "系统主题"), action: #selector(switchToSystemTheme), keyEquivalent: "")
+        let switchToSystemTheme = menu.addItem(withTitle: NSLocalizedString("switchToSystemTheme", comment: "跟随系统主题"), action: #selector(switchToSystemTheme), keyEquivalent: "")
         let switchToLightMode = menu.addItem(withTitle: NSLocalizedString("switchToLightMode", comment: "浅色模式"), action: #selector(switchToLightMode), keyEquivalent: "")
         let switchToDarkMode = menu.addItem(withTitle: NSLocalizedString("switchToDarkMode", comment: "黑暗模式"), action: #selector(switchToDarkMode), keyEquivalent: "")
         let theme=NSApp.effectiveAppearance.name

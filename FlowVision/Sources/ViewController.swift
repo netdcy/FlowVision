@@ -1430,7 +1430,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("delete", comment: "删除")
-        alert.informativeText = NSLocalizedString("ask-to-delete", comment: "你确定要将这些文件移动到废纸篓吗？")
+        if VolumeManager.shared.isExternalVolume(publicVar.selectedUrls().first!) {
+            alert.informativeText = NSLocalizedString("ask-to-delete-external", comment: "此目录不支持移动到废纸篓。将立即删除这些项目，此操作无法撤销。")
+        }else{
+            alert.informativeText = NSLocalizedString("ask-to-delete", comment: "你确定要将这些文件移动到废纸篓吗？")
+        }
         alert.alertStyle = .warning
         alert.addButton(withTitle: NSLocalizedString("delete", comment: "删除"))
         alert.addButton(withTitle: NSLocalizedString("cancel", comment: "取消"))

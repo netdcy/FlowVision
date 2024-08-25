@@ -125,6 +125,23 @@
         }
       }
     },
+    "ask-to-delete-external" : {
+      "comment" : "此目录不支持移动到废纸篓。将立即删除这些项目，此操作无法撤销。",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This directory does not support moving to the trash. These items will be deleted immediately and this action cannot be undone."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此目录不支持移动到废纸篓。将立即删除这些项目，此操作无法撤销。"
+          }
+        }
+      }
+    },
     "Auto" : {
       "comment" : "自动",
       "localizations" : {
@@ -547,13 +564,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "If you check \"Generate HD thumbnails,\" images will be precisely rendered in the thumbnail area based on the current layout. This may lead to slightly slower thumbnail generation speeds and slightly higher energy consumption.\n\nBy default, this option is unchecked, resulting in quickly generating medium-quality thumbnails at 512×512 resolution."
+            "value" : "If you check \"Generate HD thumbnails,\" images will be precisely rendered in the thumbnail area based on the current layout. It is recommended to enable this option when thumbnail size is set larger than the default.\n\nBy default, this option is unchecked, resulting in quickly generating medium-quality thumbnails at 512×512 resolution."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "若选择“生成高清缩略图”，则会在缩略图区域精确绘制图片，此过程可能速度稍慢且能耗略高。\n\n默认不选择此选项，快速生成尺寸为512×512的中等质量缩略图。"
+            "value" : "若选择“生成高清缩略图”，则会在缩略图区域精确绘制图片，建议缩略图大小大于默认时开启此选项。\n\n默认不选择此选项，快速生成尺寸为512×512的中等质量缩略图。"
           }
         }
       }
@@ -2071,7 +2088,7 @@
       }
     },
     "switchToSystemTheme" : {
-      "comment" : "系统主题",
+      "comment" : "跟随系统主题",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2082,7 +2099,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "系统主题"
+            "value" : "跟随系统主题"
           }
         }
       }
