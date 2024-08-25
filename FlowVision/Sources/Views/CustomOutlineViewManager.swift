@@ -259,10 +259,12 @@ class CustomTableRowView: NSTableRowView {
         
         if theme == .darkAqua {
             // 暗模式下的颜色
-            hexToNSColor(hex: "#333333").setFill()
+            //hexToNSColor(hex: "#333333").setFill()
+            NSColor(named: NSColor.Name("OutlineViewBgColor"))?.setFill()
         }else {
             // 光模式下的颜色
-            hexToNSColor(hex: "#F4F5F5").setFill()
+            //hexToNSColor(hex: "#F4F5F5").setFill()
+            NSColor(named: NSColor.Name("OutlineViewBgColor"))?.setFill()
         }
 
         __NSRectFillUsingOperation(dirtyRect, .sourceOver)

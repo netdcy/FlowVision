@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22505"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="System colors introduced in macOS 10.14" minToolsVersion="10.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -926,7 +927,7 @@ CA
                                                     <scrollView fixedFrame="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="28" horizontalPageScroll="10" verticalLineScroll="28" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M7J-0g-BMV">
                                                         <rect key="frame" x="0.0" y="0.0" width="279" height="720"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                        <clipView key="contentView" id="eGU-7a-G6h">
+                                                        <clipView key="contentView" drawsBackground="NO" id="eGU-7a-G6h">
                                                             <rect key="frame" x="0.0" y="0.0" width="279" height="720"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
@@ -934,7 +935,7 @@ CA
                                                                     <rect key="frame" x="0.0" y="0.0" width="279" height="720"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <size key="intercellSpacing" width="25" height="10"/>
-                                                                    <color key="backgroundColor" name="alternatingContentBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="OutlineViewBgColor"/>
                                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                     <tableColumns>
                                                                         <tableColumn identifier="DataCell" width="247" minWidth="40" maxWidth="1000" id="gLW-SH-d7T">
@@ -1175,4 +1176,9 @@ CA
             <point key="canvasLocation" x="-990" y="1261"/>
         </scene>
     </scenes>
+    <resources>
+        <namedColor name="OutlineViewBgColor">
+            <color red="0.95686274509803926" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
 </document>
