@@ -422,6 +422,40 @@
         }
       }
     },
+    "do-you-want-replace(move)" : {
+      "comment" : "你要用正在移动的文件替换它吗？",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do you want to replace it with the file you are moving?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你要用正在移动的文件替换它吗？"
+          }
+        }
+      }
+    },
+    "do-you-want-replace(paste)" : {
+      "comment" : "你要用正在粘贴的文件替换它吗？",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do you want to replace it with the file you are pasting?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你要用正在粘贴的文件替换它吗？"
+          }
+        }
+      }
+    },
     "Empty" : {
       "comment" : "空",
       "localizations" : {

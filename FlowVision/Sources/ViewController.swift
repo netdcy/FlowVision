@@ -1653,7 +1653,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 } else if shouldSkipAll {
                     continue
                 } else {
-                    let userChoice = showReplaceDialog(for: destURL)
+                    let userChoice = showReplaceDialog(for: destURL, isSingle: items.count == 1, isMove: false)
                     switch userChoice {
                     case .replace:
                         do {
@@ -1756,7 +1756,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 } else if shouldSkipAll {
                     continue
                 } else {
-                    let userChoice = showReplaceDialog(for: destURL)
+                    let userChoice = showReplaceDialog(for: destURL, isSingle: items.count == 1, isMove: true)
                     switch userChoice {
                     case .replace:
                         do {
@@ -1821,16 +1821,22 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         case cancel
     }
 
-    func showReplaceDialog(for url: URL) -> UserChoice {
+    func showReplaceDialog(for url: URL, isSingle: Bool, isMove: Bool) -> UserChoice {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("has-exist-in-dest1", comment: "目标文件夹中已存在名为") + url.lastPathComponent
                             + NSLocalizedString("has-exist-in-dest2", comment: "的文件。")
-        alert.informativeText = NSLocalizedString("do-you-want-replace", comment: "你要用正在粘贴或移动的文件替换它吗？")
+        if isMove {
+            alert.informativeText = NSLocalizedString("do-you-want-replace(move)", comment: "你要用正在移动的文件替换它吗？")
+        }else{
+            alert.informativeText = NSLocalizedString("do-you-want-replace(paste)", comment: "你要用正在粘贴的文件替换它吗？")
+        }
         alert.alertStyle = .warning
         alert.addButton(withTitle: NSLocalizedString("Replace", comment: "替换"))
-        alert.addButton(withTitle: NSLocalizedString("Replace All", comment: "全部替换"))
-        alert.addButton(withTitle: NSLocalizedString("Skip", comment: "跳过"))
-        alert.addButton(withTitle: NSLocalizedString("Skip All", comment: "全部跳过"))
+        if !isSingle {
+            alert.addButton(withTitle: NSLocalizedString("Replace All", comment: "全部替换"))
+            alert.addButton(withTitle: NSLocalizedString("Skip", comment: "跳过"))
+            alert.addButton(withTitle: NSLocalizedString("Skip All", comment: "全部跳过"))
+        }
         alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
         
         let response = alert.runModal()
