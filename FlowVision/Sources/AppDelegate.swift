@@ -95,6 +95,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         }
         UserDefaults.standard.set(false, forKey: "hasNormalExit")
         
+        if let isFirstTimeUse = UserDefaults.standard.value(forKey: "isFirstTimeUse") as? Bool {
+            globalVar.isFirstTimeUse = isFirstTimeUse
+        }
         if let isShowHiddenFile = UserDefaults.standard.value(forKey: "isShowHiddenFile") as? Bool {
             globalVar.isShowHiddenFile = isShowHiddenFile
         }

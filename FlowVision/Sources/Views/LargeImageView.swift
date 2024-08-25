@@ -214,8 +214,8 @@ class LargeImageView: NSView {
         ratioView.showInfo(text: NSLocalizedString("zoom", comment: "缩放")+": "+ratio+"%")
     }
     
-    func showInfo(_ info: String) {
-        infoView.showInfo(text: info, timeOut: 1.0)
+    func showInfo(_ info: String, timeOut: Double = 1.0) {
+        infoView.showInfo(text: info, timeOut: timeOut)
     }
     
     func customZoomSize() -> NSSize {

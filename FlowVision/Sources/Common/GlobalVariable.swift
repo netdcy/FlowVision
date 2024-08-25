@@ -75,6 +75,8 @@ class GlobalVar{
 //    var isHideVideoFile = false
     var isGenHdThumb = false
     
+    var isFirstTimeUse = true
+    
     var portableMode = false
     var portableImageUseActualSize = false
     var portableImageWidthRatio = 0.8

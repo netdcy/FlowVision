@@ -3614,6 +3614,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         view.window?.makeFirstResponder(collectionView)
         
+        //隐藏首次使用提示
+        coreAreaView.hideInfo()
+        globalVar.isFirstTimeUse = false
+        UserDefaults.standard.set(false, forKey: "isFirstTimeUse")
+        
         //复原旋转
         largeImageView.file.rotate=0
         
@@ -3738,6 +3743,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 NSWorkspace.shared.open(url)
             }else{
                 if largeImageView.isHidden {
+                    
+                    //显示首次使用提示
+                    if globalVar.isFirstTimeUse{
+                        coreAreaView.showInfo(NSLocalizedString("first-time-use-prompt", comment: "首次使用提示..."), timeOut: 60)
+                    }
+                    
                     currLargeImagePos=indexPath.item
                     initLargeImagePos=indexPath.item
                     lastDoNotGenResized=false

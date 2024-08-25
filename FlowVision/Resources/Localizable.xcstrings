@@ -541,6 +541,23 @@
         }
       }
     },
+    "first-time-use-prompt" : {
+      "comment" : "首次使用提示...",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double-click the left button to close the image.\nHold the right or left button and scroll the wheel to zoom in or out."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "双击左键关闭图片。\n按住右键或左键滚动滚轮可以缩放。"
+          }
+        }
+      }
+    },
     "folder" : {
       "extractionState" : "manual",
       "localizations" : {
