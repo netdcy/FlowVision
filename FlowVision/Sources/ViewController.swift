@@ -68,6 +68,10 @@ class PublicVar{
     var waterfallLayout = WaterfallLayout()
     //weak var viewController:ViewController?
     var timer = MyTimer()
+    var fileChangedCount = 0
+    var isInStageOneProgress = false
+    var isInStageTwoProgress = false
+    var isInStageThreeProgress = false
     
     var selectedUrls2 = [URL]()
     func selectedUrls() -> [URL] {
@@ -1468,6 +1472,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 
                 var error: NSDictionary?
                 if let scriptObject = NSAppleScript(source: script) {
+                    // 文件更改计数
+                    publicVar.fileChangedCount += 1
+                    
                     scriptObject.executeAndReturnError(&error)
                     if let error = error, let errorCode = error[NSAppleScript.errorNumber] as? Int, errorCode == -1743 {
                         // AppleScript 无权限，回退到 NSWorkspace.shared.recycle
@@ -1613,6 +1620,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 // 文件已存在，弹出对话框询问用户是否覆盖
                 if shouldReplaceAll || showReplaceDialog(for: destURL, shouldReplaceAll: &shouldReplaceAll) {
                     do {
+                        // 文件更改计数
+                        publicVar.fileChangedCount += 1
                         try FileManager.default.removeItem(at: destURL)
                         try FileManager.default.copyItem(at: fileURL, to: destURL)
                     } catch {
@@ -1621,6 +1630,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
             } else {
                 do {
+                    // 文件更改计数
+                    publicVar.fileChangedCount += 1
                     try FileManager.default.copyItem(at: fileURL, to: destURL)
                 } catch {
                     log("粘贴失败 \(fileURL): \(error)")
@@ -1684,6 +1695,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 // 文件已存在，弹出对话框询问用户是否覆盖
                 if shouldReplaceAll || showReplaceDialog(for: destURL, shouldReplaceAll: &shouldReplaceAll) {
                     do {
+                        // 文件更改计数
+                        publicVar.fileChangedCount += 1
                         try FileManager.default.removeItem(at: destURL)
                         try FileManager.default.moveItem(at: fileURL, to: destURL)
                     } catch {
@@ -1692,6 +1705,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
             } else {
                 do {
+                    // 文件更改计数
+                    publicVar.fileChangedCount += 1
                     try FileManager.default.moveItem(at: fileURL, to: destURL)
                 } catch {
                     log("移动失败 \(fileURL): \(error)")
@@ -1789,6 +1804,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }else{
                     // 执行新建操作
                     do {
+                        // 文件更改计数
+                        publicVar.fileChangedCount += 1
+                        
                         try FileManager.default.createDirectory(at: newFolderURL, withIntermediateDirectories: true, attributes: nil)
                         log("新建文件夹成功: \(newFolderURL.path)")
                         return true
@@ -2270,6 +2288,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     }
     
     func switchDirByDirection(direction rawdirection: GestureDirection, dest: String = "", doCollapse: Bool = true, expandLast: Bool = true, skip: Bool = false, stackDeep: Int){
+        
+        if rawdirection == .zero {
+            publicVar.isInStageOneProgress = true
+        }
         
         if publicVar.isRecursiveMode {
             if rawdirection == .left || rawdirection == .up_left || rawdirection == .down_left
@@ -2861,6 +2883,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 readInfoTaskPoolSemaphore.signal()
             }
             readInfoTaskPoolLock.unlock()
+            publicVar.isInStageOneProgress = false
             
             //对于空文件夹，播放渐变动画（因为没有分派任务，所以在任务里的渐变调用不到）
             if keys.isEmpty {
@@ -2993,6 +3016,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         fileDB.unlock() //内存屏障
                         
                         if ver != dirModel.ver {return}
+                        
+                        publicVar.isInStageTwoProgress = true
+                        defer {
+                            publicVar.isInStageTwoProgress = false
+                        }
                         
                         var isGetImageSizeFail = false
                         
@@ -3137,6 +3165,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         
                         if i == -1 {return}
                         if ver != dirModel.ver {return}
+                        
+                        publicVar.isInStageThreeProgress = true
+                        defer {
+                            publicVar.isInStageThreeProgress = false
+                        }
                         
                         if VolumeManager.shared.isExternalVolume(key.path) {
                             operationQueue.maxConcurrentOperationCount = globalVar.thumbThreadNum_External
@@ -4326,17 +4359,32 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         
         let queue = DispatchQueue.global()
-        watchDispatchSource = DispatchSource.makeFileSystemObjectSource(fileDescriptor: watchFileDescriptor, eventMask: .all, queue: queue)
-        watchDispatchSource?.setEventHandler {
-            //log("Directory at path \(path) changed.")
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                folderMonitorTimer?.invalidate()
-                folderMonitorTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { timer in
-                    //self.switchDirByDirection(direction: .zero, doCollapse: false, expandLast: true)
-                    self.refreshAll([])
-                }
+        watchDispatchSource = DispatchSource.makeFileSystemObjectSource(fileDescriptor: watchFileDescriptor, eventMask: [.write,.link,.delete,.rename], queue: queue)
+        watchDispatchSource?.setEventHandler { [weak self] in
+            guard let self = self else { return }
+            
+            // 打印事件类型
+            let event = watchDispatchSource!.data
+            //logFileSystemEvent(event)
+            
+            // 计划刷新
+            readInfoTaskPoolLock.lock()
+            let isReadInfoFinish = (readInfoTaskPool.count == 0)
+            readInfoTaskPoolLock.unlock()
+            loadImageTaskPool.lock.lock()
+            let isLoadThumbFinish = (loadImageTaskPool.getTaskNum() == 0)
+            loadImageTaskPool.lock.unlock()
+            let isInProgress = (publicVar.isInStageOneProgress || publicVar.isInStageTwoProgress || publicVar.isInStageThreeProgress
+                                || !isReadInfoFinish || !isLoadThumbFinish)
+            //log(publicVar.isInStageOneProgress,publicVar.isInStageTwoProgress,publicVar.isInStageThreeProgress,!isReadInfoFinish,!isLoadThumbFinish,level: .debug)
+            if VolumeManager.shared.isExternalVolume(path) && isInProgress && publicVar.fileChangedCount == 0 {
+                // samba的smb读取时会改变atime，产生write和attrib事件
+                //log("ExternalVol FileSystemEvent DoNot Refresh.",level: .debug)
+            }else{
+                //log("FileSystemEvent Refreshd",level: .debug)
+                scheduledRefresh()
             }
+            
         }
         
         watchDispatchSource?.setCancelHandler {
@@ -4349,6 +4397,41 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     func stopWatchingDirectory() {
         watchDispatchSource?.cancel()
         watchDispatchSource = nil
+    }
+    
+    func scheduledRefresh(){
+        publicVar.fileChangedCount = 0
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            folderMonitorTimer?.invalidate()
+            folderMonitorTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { timer in
+                self.refreshAll([])
+            }
+        }
+    }
+    
+    private func logFileSystemEvent(_ event: DispatchSource.FileSystemEvent) {
+        if event.contains(.delete) {
+            log("File system event: delete")
+        }
+        if event.contains(.write) {
+            log("File system event: write")
+        }
+        if event.contains(.extend) {
+            log("File system event: extend")
+        }
+        if event.contains(.attrib) {
+            log("File system event: attrib")
+        }
+        if event.contains(.link) {
+            log("File system event: link")
+        }
+        if event.contains(.rename) {
+            log("File system event: rename")
+        }
+        if event.contains(.revoke) {
+            log("File system event: revoke")
+        }
     }
 
     enum GestureState {

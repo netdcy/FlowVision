@@ -228,9 +228,11 @@ func renameAlert(url: URL) -> Bool {
             }else{
                 // 执行重命名操作
                 do {
+                    // 文件更改计数
+                    getMainViewController()?.publicVar.fileChangedCount += 1
+                    
                     try FileManager.default.moveItem(at: originalUrl, to: newUrl)
                     log("File renamed to \(newName)")
-                    getMainViewController()?.refreshAll([])
                     return true
                 } catch {
                     log("Failed to rename file: \(error)")

@@ -186,11 +186,10 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         guard let url = url else {return}
         
         renameAlert(url: url)
-        
-        //上面函数包含全部刷新
-//        if curRightClickedIndex != self.selectedRowIndexes.first {
-//            refreshTreeView()
-//        }
+
+        if curRightClickedIndex != self.selectedRowIndexes.first {
+            refreshTreeView()
+        }
     }
     
     @objc func actNewFolder() {
@@ -257,6 +256,9 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
                 var error: NSDictionary?
                 var success = false
                 if let scriptObject = NSAppleScript(source: script) {
+                    //更改计数
+                    getViewController(self)?.publicVar.fileChangedCount += 1
+                    
                     scriptObject.executeAndReturnError(&error)
                     if let error = error, let errorCode = error[NSAppleScript.errorNumber] as? Int, errorCode == -1743 {
                         // AppleScript 无权限，回退到 NSWorkspace.shared.recycle
@@ -277,7 +279,6 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
                 }
                 //刷新视图
                 if success{
-                    //getViewController(self)?.refreshAll([])
                     if curRightClickedIndex != self.selectedRowIndexes.first {
                         refreshTreeView()
                     }

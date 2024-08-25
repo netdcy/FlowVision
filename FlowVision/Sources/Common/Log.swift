@@ -50,6 +50,10 @@ class LogViewController: NSViewController {
         }
 
         logTextView.string = filteredMessages.map { $0.0 }.joined(separator: "\n")
+        
+        // Scroll to bottom
+        let range = NSRange(location: logTextView.string.count, length: 0)
+        logTextView.scrollRangeToVisible(range)
     }
 
     @IBAction func checkBoxChanged(_ sender: NSButton) {

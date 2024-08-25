@@ -635,6 +635,13 @@ class TaskPool {
             }
         }
     }
+    func getTaskNum() -> Int {
+        var count = 0
+        for (_,aPool) in pool {
+            count += aPool.count
+        }
+        return count
+    }
     func removeAllQueue(){
         if pool.count == 0 {return}
         
