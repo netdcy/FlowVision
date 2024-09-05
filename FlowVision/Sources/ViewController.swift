@@ -361,32 +361,35 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 
                 let noModifierKey = !isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
                 
+                let characters = event.charactersIgnoringModifiers ?? ""
+                let specialKey = event.specialKey ?? .f30
+                
                 // 检查按键是否是 "A" 键
-                if event.keyCode == 0x00 && noModifierKey {
+                if characters == "a" && noModifierKey {
                     closeLargeImage(0)
                     switchDirByDirection(direction: .left, stackDeep: 0)
                     return nil
                 }
                 // 检查按键是否是 "D" 键
-                if event.keyCode == 0x02 && noModifierKey {
+                if characters == "d" && noModifierKey {
                     closeLargeImage(0)
                     switchDirByDirection(direction: .right, stackDeep: 0)
                     return nil
                 }
                 // 检查按键是否是 "W" 键
-                if event.keyCode == 0x0D && noModifierKey {
+                if characters == "w" && noModifierKey {
                     closeLargeImage(0)
                     switchDirByDirection(direction: .up, stackDeep: 0)
                     return nil
                 }
                 // 检查按键是否是 "S" 键
-                if event.keyCode == 0x01 && noModifierKey {
+                if characters == "s" && noModifierKey {
                     closeLargeImage(0)
                     switchDirByDirection(direction: .down, stackDeep: 0)
                     return nil
                 }
                 // 检查按键是否是 "R" 键
-                if event.keyCode == 15 && noModifierKey {
+                if characters == "r" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actRefresh()
                         return nil
@@ -397,7 +400,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 Command+⬆️ 键
-                if event.keyCode == 126 && isCommandPressed {
+                if specialKey == .upArrow && isCommandPressed {
                     closeLargeImage(0)
                     switchDirByDirection(direction: .up, stackDeep: 0)
                     return nil
@@ -413,7 +416,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 Delete(117) Backspace(51) 键
-                if event.keyCode == 117 || event.keyCode == 51 {
+                if specialKey == .delete || specialKey == .backspace || specialKey == .deleteForward {
                     //如果焦点在OutlineView
                     if publicVar.isOutlineViewFirstResponder{
                         outlineView.actDelete(isByKeyboard: true)
@@ -427,7 +430,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 空格 键
-                if event.keyCode == 49 && noModifierKey {
+                if characters == " " && noModifierKey {
                     if publicVar.isInLargeView{
                         closeLargeImage(0)
                         return nil
@@ -459,22 +462,22 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //                }
                 
                 // 检查按键是否是 12345 12345(小键盘) 键
-                if ([18,19,20,21,23,83,84,85,86,87].contains(event.keyCode)) && noModifierKey {
-                    if [18,83].contains(event.keyCode) { // 1
+                if (["1","2","3","4","5"].contains(characters)) && noModifierKey {
+                    if characters == "1" { // 1
                         adjustWindowMaximize()
                         return nil
-                    }else if [19,84].contains(event.keyCode){ // 2
+                    }else if characters == "2"{ // 2
                         adjustWindowSuitable()
                         return nil
-                    }else if ([23,87].contains(event.keyCode)){ // 5
+                    }else if characters == "5"{ // 5
                         //adjustWindowToCenter()
                         return nil
                     }else{
                         if publicVar.isInLargeView {
-                            if ([20,85].contains(event.keyCode)){ // 3
+                            if characters == "3"{ // 3
                                 adjustWindowImageActual()
                                 return nil
-                            }else if ([21,86].contains(event.keyCode)){ // 4
+                            }else if characters == "4"{ // 4
                                 adjustWindowImageCurrent()
                                 return nil
                             }
@@ -489,7 +492,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 "I"
-                if event.keyCode == 34 && noModifierKey {
+                if characters == "i" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actShowExif()
                         return nil
@@ -497,7 +500,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 "O"
-                if event.keyCode == 31 && noModifierKey {
+                if characters == "o" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actOCR()
                         return nil
@@ -505,7 +508,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 "P"
-                if event.keyCode == 35 && noModifierKey {
+                if characters == "p" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actQRCode()
                         return nil
@@ -513,7 +516,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 "E"
-                if event.keyCode == 14 && noModifierKey {
+                if characters == "e" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actRotateR()
                         return nil
@@ -521,7 +524,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 "Q"
-                if event.keyCode == 12 && noModifierKey {
+                if characters == "q" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actRotateL()
                         return nil
@@ -529,14 +532,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 ➡️⬇️PageDown 键
-                if event.keyCode == 124 || event.keyCode == 125 || event.keyCode == 121 {
+                if (specialKey == .rightArrow || specialKey == .downArrow || specialKey == .pageDown || specialKey == .next) && noModifierKey {
                     if publicVar.isInLargeView{
                         nextLargeImage()
                         return nil
                     }
                 }
                 // 检查按键是否是 ⬅️⬆️PageUp 键
-                if event.keyCode == 123 || event.keyCode == 126 || event.keyCode == 116 {
+                if (specialKey == .leftArrow || specialKey == .upArrow || specialKey == .pageUp || specialKey == .prev) && noModifierKey {
                     if publicVar.isInLargeView{
                         previousLargeImage()
                         return nil
@@ -544,7 +547,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 Tab 键
-                if event.keyCode == 48 && noModifierKey {
+                if specialKey == .tab && noModifierKey {
                     if !publicVar.isInLargeView{
                         if publicVar.isOutlineViewFirstResponder{
                             view.window?.makeFirstResponder(collectionView)
@@ -557,27 +560,27 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
 
                 // 检查按键是否是 "⬅️➡️⬆️⬇️" 键
-                if event.keyCode == 123 || event.keyCode == 124 || event.keyCode == 125 || event.keyCode == 126 {
+                if (specialKey == .leftArrow || specialKey == .rightArrow || specialKey == .upArrow || specialKey == .downArrow) && noModifierKey {
                     if !publicVar.isInLargeView{
                         //如果焦点在OutlineView
                         if publicVar.isOutlineViewFirstResponder{
                             if let outlineView = outlineView {
                                 let selectedRow=outlineView.selectedRow
-                                if event.keyCode == 126 {//⬆️
+                                if specialKey == .upArrow {//⬆️
                                     if selectedRow > 0 {
                                         let previousRow = selectedRow - 1
                                         outlineView.selectRowIndexes(IndexSet(integer: previousRow), byExtendingSelection: false)
                                         outlineView.scrollRowToVisible(previousRow) // 可选：滚动视图以确保选中的项可见
                                     }
                                 }
-                                if event.keyCode == 125 {//⬇️
+                                if specialKey == .downArrow {//⬇️
                                     if selectedRow != -1 && selectedRow < outlineView.numberOfRows - 1 {
                                         let nextRow = selectedRow + 1
                                         outlineView.selectRowIndexes(IndexSet(integer: nextRow), byExtendingSelection: false)
                                         outlineView.scrollRowToVisible(nextRow) // 可选：滚动视图以确保选中的项可见
                                     }
                                 }
-                                if event.keyCode == 124 || event.keyCode == 123 {//⬅️➡️
+                                if specialKey == .leftArrow || specialKey == .rightArrow {//⬅️➡️
                                     // 获取行对应的条目
                                     if let item = outlineView.item(atRow: selectedRow) {
                                         if outlineView.isItemExpanded(item) {
@@ -602,7 +605,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 let savedContentOffset = scrollView.contentView.bounds.origin
                                 
                                 var newIndexPath: IndexPath?
-                                newIndexPath = findClosestItem(currentItem: currentItem, direction: event.keyCode)
+                                newIndexPath = findClosestItem(currentItem: currentItem, direction: specialKey)
                                 
                                 // 还原滚动位置
                                 scrollView.contentView.setBoundsOrigin(savedContentOffset)
@@ -627,7 +630,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 F2、回车、小键盘回车 键
-                if event.keyCode == 120 || event.keyCode == 36 || event.keyCode == 76 {
+                if specialKey == .f2 || specialKey == .enter || specialKey == .carriageReturn || specialKey == .newline {
                     //如果焦点在OutlineView
                     if publicVar.isOutlineViewFirstResponder{
                         outlineView.actRename(isByKeyboard: true)
@@ -644,7 +647,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 "F" 键
-                if event.keyCode == 3 && noModifierKey {
+                if characters == "f" && noModifierKey {
                     if !publicVar.isInLargeView{
                         toggleSidebar()
                         return nil
@@ -652,13 +655,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 "T" 键
-                if event.keyCode == 17 && noModifierKey {
+                if characters == "t" && noModifierKey {
                     toggleOnTop()
                     return nil
                 }
                 
                 // 检查按键是否是 -、-(小键盘) 键
-                if event.keyCode == 27 || event.keyCode == 78 {
+                if characters == "-" {
                     if publicVar.isInLargeView{
                         largeImageView.zoom(direction: -1)
                         return nil
@@ -669,7 +672,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 +(=)、+(小键盘) 键
-                if event.keyCode == 24 || event.keyCode == 69 {
+                if characters == "=" || characters == "+" {
                     if publicVar.isInLargeView {
                         largeImageView.zoom(direction: +1)
                         return nil
@@ -680,7 +683,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 0、0(小键盘) 键
-                if event.keyCode == 29 || event.keyCode == 82 {
+                if characters == "0" {
                     if publicVar.isInLargeView {
                         changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: true)
                         return nil
@@ -691,7 +694,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 "N" 键
-                if event.keyCode == 45 && noModifierKey {
+                if characters == "n" && noModifierKey {
                     //如果焦点在CollectionView
                     if publicVar.isCollectionViewFirstResponder{
                         handleCopyToDownload()
@@ -700,7 +703,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 "M" 键
-                if event.keyCode == 46 && noModifierKey {
+                if characters == "m" && noModifierKey {
                     //如果焦点在CollectionView
                     if publicVar.isCollectionViewFirstResponder{
                         handleMoveToDownload()
@@ -1364,7 +1367,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         return expandedIndexPaths
     }
     
-    func findClosestItem(currentItem: NSCollectionViewItem, direction: UInt16) -> IndexPath? {
+    func findClosestItem(currentItem: NSCollectionViewItem, direction: NSEvent.SpecialKey) -> IndexPath? {
         //let indexPaths = collectionView.indexPathsForVisibleItems()
         let indexPaths = nearbyIndexPaths(around: collectionView.indexPathsForVisibleItems(), range: (-20,20))
         //log(indexPaths.map{$0.item})
@@ -1398,22 +1401,22 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             var distance = CGFloat.greatestFiniteMagnitude
             
             switch direction {
-            case 123: // Left arrow key
+            case .leftArrow: // Left arrow key
                 if itemCenter.x < currentCenter.x && (itemCenter.y == currentCenter.y || publicVar.layoutType == .waterfall) {
                     distance = hypot(currentCenter.x - itemCenter.x, itemCenter.y - currentCenter.y)
                     valid = true
                 }
-            case 124: // Right arrow key
+            case .rightArrow: // Right arrow key
                 if itemCenter.x > currentCenter.x && (itemCenter.y == currentCenter.y || publicVar.layoutType == .waterfall) {
                     distance = hypot(currentCenter.x - itemCenter.x, itemCenter.y - currentCenter.y)
                     valid = true
                 }
-            case 125: // Up arrow key (Adjusted to move up)
+            case .downArrow: // Up arrow key (Adjusted to move up)
                 if itemCenter.y > currentCenter.y && (itemCenter.x == currentCenter.x || publicVar.layoutType != .waterfall) {
                     distance = hypot(currentCenter.x - itemCenter.x, itemCenter.y - currentCenter.y)
                     valid = true
                 }
-            case 126: // Down arrow key (Adjusted to move down)
+            case .upArrow: // Down arrow key (Adjusted to move down)
                 if itemCenter.y < currentCenter.y && (itemCenter.x == currentCenter.x || publicVar.layoutType != .waterfall) {
                     distance = hypot(currentCenter.x - itemCenter.x, currentCenter.y - itemCenter.y)
                     valid = true
