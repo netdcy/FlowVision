@@ -1848,7 +1848,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         case .alertFirstButtonReturn:
             return .replace
         case .alertSecondButtonReturn:
-            return .replaceAll
+            if isSingle {
+                return .cancel
+            }else{
+                return .replaceAll
+            }
         case .alertThirdButtonReturn:
             return .skip
         case NSApplication.ModalResponse(rawValue: 1003):
