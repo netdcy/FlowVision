@@ -405,11 +405,14 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             distanceBetweenPoints(lastClickLocation, currentLocation) < positionThreshold {
             if let collectionView = collectionView,
                let selfIndexPath=collectionView.indexPath(for: self),
-               let selectedIndexPath=collectionView.selectionIndexPaths.first,
                let viewController=getViewController(collectionView){
                 
                 if !viewController.publicVar.isInLargeView && !viewController.publicVar.isInLargeViewAfterAnimate {
-                    viewController.openLargeImageFromIndexPath(selfIndexPath)
+                    if event.modifierFlags.contains(.command) || event.modifierFlags.contains(.shift) {
+                        actOpenInNewTab()
+                    }else{
+                        viewController.openLargeImageFromIndexPath(selfIndexPath)
+                    }
                 }else if viewController.publicVar.isInLargeView && viewController.publicVar.isInLargeViewAfterAnimate {
                     viewController.closeLargeImage([])
                 }
