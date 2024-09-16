@@ -379,6 +379,7 @@ class TreeNode: NSObject {
 
 class TreeViewModel {
     var root: TreeNode?
+    weak var viewController: ViewController!
     
     func initData(path: String) {
         root = TreeNode(name: "Root", fullPath: path)
@@ -397,7 +398,7 @@ class TreeViewModel {
     func hasSubdirectory(at folderURL: URL) -> Bool {
         let fileManager = FileManager.default
         var options: FileManager.DirectoryEnumerationOptions
-        if globalVar.isShowHiddenFile {
+        if viewController.publicVar.isShowHiddenFile {
             options = [.skipsSubdirectoryDescendants]
         }else{
             options = [.skipsHiddenFiles, .skipsSubdirectoryDescendants]
@@ -474,7 +475,7 @@ class TreeViewModel {
 //                }
                 
                 // 过滤掉其他隐藏文件
-                return !isHidden || globalVar.isShowHiddenFile
+                return !isHidden || viewController.publicVar.isShowHiddenFile
             }
             
             //过滤出目录列表

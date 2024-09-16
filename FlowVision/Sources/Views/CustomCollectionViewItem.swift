@@ -340,7 +340,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             if theme == .darkAqua {
                 imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#404040").cgColor //填充
                 if let url=URL(string:file.path),
-                   HandledVideoExtensions.contains(url.pathExtension.lowercased())
+                   globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased())
                 {
                     imageNameField.textColor = hexToNSColor(hex: "#7E7E7E") //视频文字
                     view.layer?.backgroundColor = hexToNSColor(hex: "#DDDDDD").cgColor //视频边框
@@ -351,7 +351,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             }else{//浅色模式
                 imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#DDDDDD").cgColor //填充
                 if let url=URL(string:file.path),
-                   HandledVideoExtensions.contains(url.pathExtension.lowercased())
+                   globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased())
                 {
                     imageNameField.textColor = hexToNSColor(hex: "#7E7E7E") //视频文字
                     view.layer?.backgroundColor = hexToNSColor(hex: "#404040").cgColor //视频边框

@@ -98,21 +98,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let isFirstTimeUse = UserDefaults.standard.value(forKey: "isFirstTimeUse") as? Bool {
             globalVar.isFirstTimeUse = isFirstTimeUse
         }
-        if let isShowHiddenFile = UserDefaults.standard.value(forKey: "isShowHiddenFile") as? Bool {
-            globalVar.isShowHiddenFile = isShowHiddenFile
-        }
-        if let isShowImageFile = UserDefaults.standard.value(forKey: "isShowImageFile") as? Bool {
-            globalVar.isShowImageFile = isShowImageFile
-        }
-        if let isShowRawFile = UserDefaults.standard.value(forKey: "isShowRawFile") as? Bool {
-            globalVar.isShowRawFile = isShowRawFile
-        }
-        if let isShowAllTypeFile = UserDefaults.standard.value(forKey: "isShowAllTypeFile") as? Bool {
-            globalVar.isShowAllTypeFile = isShowAllTypeFile
-        }
-        if let isShowVideoFile = UserDefaults.standard.value(forKey: "isShowVideoFile") as? Bool {
-            globalVar.isShowVideoFile = isShowVideoFile
-        }
         if let terminateAfterLastWindowClosed = UserDefaults.standard.value(forKey: "terminateAfterLastWindowClosed") as? Bool {
             globalVar.terminateAfterLastWindowClosed = terminateAfterLastWindowClosed
         }
@@ -140,13 +125,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let portableMode = UserDefaults.standard.value(forKey: "portableMode") as? Bool {
             globalVar.portableMode = portableMode
         }
-        if let isGenHdThumb = UserDefaults.standard.value(forKey: "isGenHdThumb") as? Bool {
-            globalVar.isGenHdThumb = isGenHdThumb
-        }
         
         globalVar.myFavoritesArray = defaults.array(forKey: "globalVar.myFavoritesArray") as? [String] ?? [String]()
-        
-        setFileExtensions()
         
         //requestAppleEventsPermission()
         
@@ -330,7 +310,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         dialog.showsHiddenFiles        = false
         dialog.allowsMultipleSelection = false
         dialog.canChooseDirectories    = true
-        dialog.allowedFileTypes        = HandledImageExtensions
+        dialog.allowedFileTypes        = globalVar.HandledImageExtensions
         
         if (dialog.runModal() == NSApplication.ModalResponse.OK) {
             if let result = dialog.url {
@@ -454,11 +434,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             onTopMenuItem.keyEquivalent="t"
             onTopMenuItem.keyEquivalentModifierMask=[]
             
-            toggleIsShowHiddenFileMenuItem.state = globalVar.isShowHiddenFile ? .on : .off
-            toggleIsShowAllTypeFileMenuItem.state = globalVar.isShowAllTypeFile ? .on : .off
-            toggleIsShowImageFileMenuItem.state = globalVar.isShowImageFile ? .on : .off
-            toggleIsShowRawFileMenuItem.state = globalVar.isShowRawFile ? .on : .off
-            toggleIsShowVideoFileMenuItem.state = globalVar.isShowVideoFile ? .on : .off
+            toggleIsShowHiddenFileMenuItem.state = mainViewController.publicVar.isShowHiddenFile ? .on : .off
+            toggleIsShowAllTypeFileMenuItem.state = mainViewController.publicVar.isShowAllTypeFile ? .on : .off
+            toggleIsShowImageFileMenuItem.state = mainViewController.publicVar.isShowImageFile ? .on : .off
+            toggleIsShowRawFileMenuItem.state = mainViewController.publicVar.isShowRawFile ? .on : .off
+            toggleIsShowVideoFileMenuItem.state = mainViewController.publicVar.isShowVideoFile ? .on : .off
             
             justifiedViewMenuItem.state = (mainViewController.publicVar.layoutType == .justified) ? .on : .off
             waterfallViewModeMenuItem.state = (mainViewController.publicVar.layoutType == .waterfall) ? .on : .off
@@ -535,7 +515,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             }
         }
         if menuItem.action == #selector(toggleIsShowImageFile(_:)) || menuItem.action == #selector(toggleIsShowRawFile(_:)) || menuItem.action == #selector(toggleIsShowVideoFile(_:)) {
-            if globalVar.isShowAllTypeFile {
+            if mainViewController.publicVar.isShowAllTypeFile {
                 return false
             }
         }

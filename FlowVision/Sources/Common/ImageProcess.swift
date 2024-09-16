@@ -133,7 +133,7 @@ func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, timeout:
     let fileManager = FileManager.default
     //要不扫描子目录在下面添加Option: .skipsSubdirectoryDescendants
     let options: FileManager.DirectoryEnumerationOptions = [.skipsHiddenFiles]
-    let validExtensions = HandledFolderThumbExtensions  // 支持缩略图的格式
+    let validExtensions = globalVar.HandledFolderThumbExtensions  // 支持缩略图的格式
     var imageUrls: [URL] = []
     
     let startTime = Date()
@@ -403,7 +403,7 @@ func getImageThumb(url: URL, size: NSSize? = nil, refSize: NSSize? = nil) -> NSI
                     img = getFileTypeIcon(url: url)
                 }
                 imgs.append(img!)
-                isVideos.append(HandledVideoExtensions.contains(url.pathExtension.lowercased()))
+                isVideos.append(globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()))
             }
             if imgs.count>0 {
                 let finalImg=createCompositeImage(background: NSImage(named: NSImage.folderName)!, images: imgs, isVideos: isVideos, scale: 0.68, rotationAngles: [15.0, -15.0, 0], borderWidth: 3.0, borderColor: NSColor(white: 1.0, alpha: 1.0), shadowOffset: CGSize(width: 5.0, height: -5.0), shadowBlurRadius: 10.0, shadowColor: NSColor(white: 0.3, alpha: 1.0), cornerRadius: 4.0)
@@ -415,8 +415,8 @@ func getImageThumb(url: URL, size: NSSize? = nil, refSize: NSSize? = nil) -> NSI
     }
     
     //处理不支持的缩略图
-    if HandledNotNativeSupportedExtensions.contains(url.pathExtension.lowercased()) {
-        if HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
+    if globalVar.HandledNotNativeSupportedExtensions.contains(url.pathExtension.lowercased()) {
+        if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
             return getVideoThumbnailFFmpeg(for: url)
         }
         //return getFileTypeIcon(url: url)
@@ -424,7 +424,7 @@ func getImageThumb(url: URL, size: NSSize? = nil, refSize: NSSize? = nil) -> NSI
     }
 
     //处理视频缩略图
-    if HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
+    if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
         let asset = AVAsset(url: url)
         let imageGenerator = AVAssetImageGenerator(asset: asset)
         imageGenerator.appliesPreferredTrackTransform = true  // 保证图像的正确方向
@@ -450,7 +450,7 @@ func getImageThumb(url: URL, size: NSSize? = nil, refSize: NSSize? = nil) -> NSI
             //return nil
         }
         
-    }else if (HandledImageExtensions+["pdf"]).contains(url.pathExtension.lowercased()) { //处理其它缩略图
+    }else if (globalVar.HandledImageExtensions+["pdf"]).contains(url.pathExtension.lowercased()) { //处理其它缩略图
         //gif特殊处理
         if( "gif" == url.pathExtension.lowercased() ){
             return NSImage(contentsOf: url)
@@ -491,7 +491,7 @@ func getImageThumb(url: URL, size: NSSize? = nil, refSize: NSSize? = nil) -> NSI
             let img = NSImage(cgImage: scaledImage, size: NSSize(width: scaledImage.width, height: scaledImage.height))
             
             //对于缩略图旋转异常的情况
-            if refSize != nil && HandledImageExtensions.contains(url.pathExtension.lowercased()) {
+            if refSize != nil && globalVar.HandledImageExtensions.contains(url.pathExtension.lowercased()) {
                 let ratio1 = Double(scaledImage.width) / Double(scaledImage.height) / refSize!.width * refSize!.height
                 let ratio2 = Double(scaledImage.height) / Double(scaledImage.width) / refSize!.width * refSize!.height
                 if ratio1 > 1.05 || ratio1 < 0.95 {
@@ -744,8 +744,8 @@ func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
 
 func getImageSize(url: URL) -> NSSize? {
     //let defaultSize = DEFAULT_SIZE
-    if HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
-        if HandledNotNativeSupportedExtensions.contains(url.pathExtension.lowercased()){
+    if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
+        if globalVar.HandledNotNativeSupportedExtensions.contains(url.pathExtension.lowercased()){
             if let sizeUseFFmpeg = getVideoResolutionFFmpeg(for: url){
                 return sizeUseFFmpeg
             }else{
@@ -773,7 +773,7 @@ func getImageSize(url: URL) -> NSSize? {
     }else if "pdf" == url.pathExtension.lowercased() {
         if let thumb = getImageThumb(url: url) {return thumb.size}
         return nil
-    }else if HandledImageExtensions.contains(url.pathExtension.lowercased()){
+    }else if globalVar.HandledImageExtensions.contains(url.pathExtension.lowercased()){
         guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
         guard let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as? [String: Any] else { return nil }
         guard let width = imageProperties[kCGImagePropertyPixelWidth as String] as? CGFloat,

@@ -12,6 +12,7 @@ import DiskArbitration
 
 class PublicVar{
     weak var refView: NSView!
+    weak var viewController: ViewController!
 
     var layoutType: LayoutType = .justified {
         didSet {updateToolbar()}
@@ -20,6 +21,12 @@ class PublicVar{
     var isSortFolderFirst: Bool = true
     var isLargeImageFitWindow = true
     var isRecursiveMode = false
+    var isShowHiddenFile = false
+    var isShowAllTypeFile = false
+    var isShowImageFile = true
+    var isShowRawFile = true
+    var isShowVideoFile = true
+    var isGenHdThumb = false
     
     var fullTitle = "FlowVision"
     var isKeyEventEnabled = true
@@ -72,6 +79,37 @@ class PublicVar{
     var isInStageOneProgress = false
     var isInStageTwoProgress = false
     var isInStageThreeProgress = false
+    
+    var HandledImageExtensions: [String] = []
+    var HandledVideoExtensions: [String] = []
+    var HandledOtherExtensions: [String] = []
+    var HandledNotNativeSupportedExtensions: [String] = []
+    //var HandledExternalExtensions: [String] = []
+    var HandledFileExtensions: [String] = []
+    var HandledSearchExtensions: [String] = []
+    var HandledFolderThumbExtensions: [String] = []
+    //使用个别特殊svg作为文件夹缩略图绘图元素会导致程序异常 'NSGenericException', reason: 'NaN point value'
+
+    func setFileExtensions(){
+        HandledImageExtensions = []
+        if self.isShowImageFile{
+            HandledImageExtensions += ["jpg", "jpeg", "png", "gif", "bmp", "heif", "heic", "hif", "avif", "tif", "tiff", "webp", "jfif", "jp2", "ai", "psd", "ico", "icns", "svg"]
+        }
+        if self.isShowRawFile {
+            HandledImageExtensions += ["crw", "cr2", "cr3", "nef", "nrw", "arw", "srf", "sr2", "rw2", "orf", "raf", "pef", "dng", "raw", "rwl", "x3f", "3fr", "fff", "iiq", "mos", "dcr", "erf", "mrw", "gpr", "srw"]
+        }
+        HandledVideoExtensions = []
+        if self.isShowVideoFile {
+            HandledVideoExtensions += ["mp4", "mov", "m2ts", "vob", "mpeg", "mpg", "m4v"] + ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
+        }
+        HandledOtherExtensions = [] //["pdf"] //不能为""，否则会把目录异常包含进来
+        HandledNotNativeSupportedExtensions = ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
+        //HandledExternalExtensions = HandledVideoExtensions // + ["pdf"] //外部程序打开的
+        HandledFileExtensions = HandledImageExtensions + HandledVideoExtensions + HandledOtherExtensions //文件列表显示的
+        HandledSearchExtensions = HandledImageExtensions + HandledVideoExtensions //作为鼠标手势查找的目标
+        HandledFolderThumbExtensions = HandledImageExtensions.filter{$0 != "svg"} + HandledVideoExtensions // + ["pdf"] //目录缩略图
+        //使用个别特殊svg作为文件夹缩略图绘图元素会导致程序异常 'NSGenericException', reason: 'NaN point value'
+    }
     
     var selectedUrls2 = [URL]()
     func selectedUrls() -> [URL] {
@@ -193,7 +231,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         log("开始viewDidLoad")
         
         publicVar.refView=collectionView
-        //publicVar.viewController=self
+        publicVar.viewController=self
+        treeViewData.viewController=self
         
         //初始化大图
         if globalVar.isLaunchFromFile {
@@ -253,29 +292,48 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         drawingView?.autoresizingMask = [.width, .height]  // 使视图随父视图改变大小而改变大小
         self.view.addSubview(drawingView!)
         
-        //读取用户配置
-        let defaults = UserDefaults.standard
+        //-----开始读取配置-----
         
         if let thumbSize = UserDefaults.standard.value(forKey: "thumbSize") as? Int {
             publicVar.thumbSize = thumbSize
         }
-        
         //TODO: 没有工具栏时，载入时折叠且divider宽度设为0会造成菜单栏变白
-        if let savedIsDirTreeHidden = UserDefaults.standard.value(forKey: "isDirTreeHidden") as? Bool {
-            publicVar.isDirTreeHidden=savedIsDirTreeHidden
+        if let isDirTreeHidden = UserDefaults.standard.value(forKey: "isDirTreeHidden") as? Bool {
+            publicVar.isDirTreeHidden=isDirTreeHidden
         }
+        if let isLargeImageFitWindow = UserDefaults.standard.value(forKey: "isLargeImageFitWindow") as? Bool {
+            publicVar.isLargeImageFitWindow=isLargeImageFitWindow
+        }
+        if let layoutType: LayoutType = UserDefaults.standard.enumValue(forKey: "layoutType"){
+            publicVar.layoutType=layoutType
+        }
+        if let isShowHiddenFile = UserDefaults.standard.value(forKey: "isShowHiddenFile") as? Bool {
+            publicVar.isShowHiddenFile = isShowHiddenFile
+        }
+        if let isShowImageFile = UserDefaults.standard.value(forKey: "isShowImageFile") as? Bool {
+            publicVar.isShowImageFile = isShowImageFile
+        }
+        if let isShowRawFile = UserDefaults.standard.value(forKey: "isShowRawFile") as? Bool {
+            publicVar.isShowRawFile = isShowRawFile
+        }
+        if let isShowAllTypeFile = UserDefaults.standard.value(forKey: "isShowAllTypeFile") as? Bool {
+            publicVar.isShowAllTypeFile = isShowAllTypeFile
+        }
+        if let isShowVideoFile = UserDefaults.standard.value(forKey: "isShowVideoFile") as? Bool {
+            publicVar.isShowVideoFile = isShowVideoFile
+        }
+        if let isGenHdThumb = UserDefaults.standard.value(forKey: "isGenHdThumb") as? Bool {
+            publicVar.isGenHdThumb = isGenHdThumb
+        }
+        
+        //-----结束读取配置------
+        
+        publicVar.setFileExtensions()
+        
         if publicVar.isDirTreeHidden{
             splitView.setPosition(0, ofDividerAt: 0)
         }
 
-        if let savedIsLargeImageFitWindow = UserDefaults.standard.value(forKey: "isLargeImageFitWindow") as? Bool {
-            publicVar.isLargeImageFitWindow=savedIsLargeImageFitWindow
-        }
-        
-        if let layoutType: LayoutType = defaults.enumValue(forKey: "layoutType"){
-            publicVar.layoutType=layoutType
-        }
-        //collectionView.collectionViewLayout=LeftAlignedCollectionViewFlowLayout()
         if publicVar.layoutType == .waterfall {
             collectionView.collectionViewLayout = publicVar.waterfallLayout
         }else if publicVar.layoutType == .justified {
@@ -997,35 +1055,35 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     }
     
     func toggleIsShowHiddenFile(){
-        globalVar.isShowHiddenFile.toggle()
-        UserDefaults.standard.set(globalVar.isShowHiddenFile, forKey: "isShowHiddenFile")
+        publicVar.isShowHiddenFile.toggle()
+        UserDefaults.standard.set(publicVar.isShowHiddenFile, forKey: "isShowHiddenFile")
         refreshAll([])
     }
     
     func toggleIsShowAllTypeFile(){
-        globalVar.isShowAllTypeFile.toggle()
-        UserDefaults.standard.set(globalVar.isShowAllTypeFile, forKey: "isShowAllTypeFile")
+        publicVar.isShowAllTypeFile.toggle()
+        UserDefaults.standard.set(publicVar.isShowAllTypeFile, forKey: "isShowAllTypeFile")
         refreshAll([])
     }
     
     func toggleIsShowImageFile(){
-        globalVar.isShowImageFile.toggle()
-        UserDefaults.standard.set(globalVar.isShowImageFile, forKey: "isShowImageFile")
-        setFileExtensions()
+        publicVar.isShowImageFile.toggle()
+        UserDefaults.standard.set(publicVar.isShowImageFile, forKey: "isShowImageFile")
+        publicVar.setFileExtensions()
         refreshCollectionView([])
     }
     
     func toggleIsShowRawFile(){
-        globalVar.isShowRawFile.toggle()
-        UserDefaults.standard.set(globalVar.isShowRawFile, forKey: "isShowRawFile")
-        setFileExtensions()
+        publicVar.isShowRawFile.toggle()
+        UserDefaults.standard.set(publicVar.isShowRawFile, forKey: "isShowRawFile")
+        publicVar.setFileExtensions()
         refreshCollectionView([])
     }
     
     func toggleIsShowVideoFile(){
-        globalVar.isShowVideoFile.toggle()
-        UserDefaults.standard.set(globalVar.isShowVideoFile, forKey: "isShowVideoFile")
-        setFileExtensions()
+        publicVar.isShowVideoFile.toggle()
+        UserDefaults.standard.set(publicVar.isShowVideoFile, forKey: "isShowVideoFile")
+        publicVar.setFileExtensions()
         refreshCollectionView([])
     }
     
@@ -2541,7 +2599,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     }
     
     func scanFiles(at folderURL: URL, contents: inout [URL],  properties: [URLResourceKey]) {
-        let options:FileManager.DirectoryEnumerationOptions = globalVar.isShowHiddenFile ? [] : [.skipsHiddenFiles]
+        let options:FileManager.DirectoryEnumerationOptions = publicVar.isShowHiddenFile ? [] : [.skipsHiddenFiles]
         let enumerator = FileManager.default.enumerator(at: folderURL, includingPropertiesForKeys: properties, options: options, errorHandler: { (url, error) -> Bool in
             print("Error enumerating \(url): \(error.localizedDescription)")
             return true
@@ -2558,9 +2616,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             if !isDirectory {
                 contents.append(url)
                 fileCount += 1
-                if HandledImageExtensions.contains(url.pathExtension.lowercased()) {
+                if globalVar.HandledImageExtensions.contains(url.pathExtension.lowercased()) {
                     imageCount += 1
-                } else if HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
+                } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
                     videoCount += 1
                 }
             }
@@ -2631,7 +2689,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //            }
             
             // 过滤掉其他隐藏文件
-            return !isHidden || globalVar.isShowHiddenFile
+            return !isHidden || publicVar.isShowHiddenFile
         }
         
         //过滤出目录列表
@@ -2656,16 +2714,16 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             return !isDirectory
         }
         for file in fileContents {
-            if HandledFileExtensions.contains(file.pathExtension.lowercased()) || globalVar.isShowAllTypeFile {
+            if publicVar.HandledFileExtensions.contains(file.pathExtension.lowercased()) || publicVar.isShowAllTypeFile {
                 filesUrlInFolder.append(file)
             }
-            if HandledImageExtensions.contains(file.pathExtension.lowercased()) {
+            if publicVar.HandledImageExtensions.contains(file.pathExtension.lowercased()) {
                 imageCount+=1
             }
-            if HandledVideoExtensions.contains(file.pathExtension.lowercased()) {
+            if publicVar.HandledVideoExtensions.contains(file.pathExtension.lowercased()) {
                 videoCount+=1
             }
-            if HandledSearchExtensions.contains(file.pathExtension.lowercased()) {
+            if publicVar.HandledSearchExtensions.contains(file.pathExtension.lowercased()) {
                 searchCount+=1
             }
         }
@@ -2853,11 +2911,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 ele.1.canBeCalcued = false
                 if !ele.1.isDir{
                     ele.1.ext=URL(string: ele.1.path)!.pathExtension.lowercased()
-                    if HandledImageExtensions.contains(ele.1.ext) {
+                    if globalVar.HandledImageExtensions.contains(ele.1.ext) {
                         ele.1.type = .image
                         ele.1.idInImage = idInImage
                         idInImage += 1
-                    }else if HandledVideoExtensions.contains(ele.1.ext) {
+                    }else if globalVar.HandledVideoExtensions.contains(ele.1.ext) {
                         ele.1.type = .video
                     }else{
                         ele.1.type = .other
@@ -3401,7 +3459,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                             fileDB.lock()
                             if let thumbImage = file.image {
                                 imageExist=true
-                                if globalVar.isGenHdThumb && file.type == .image { //&& publicVar.layoutType != .grid
+                                if publicVar.isGenHdThumb && file.type == .image { //&& publicVar.layoutType != .grid
                                     let maxLength = max(revisedSize.width,revisedSize.height)
                                     if thumbImage.size.width != revisedSize.width && maxLength > 256 {
                                         imageExist=false
@@ -3419,7 +3477,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                     image = getFileTypeIcon(url: url)
                                 }else{
                                     let maxLength = max(revisedSize.width,revisedSize.height)
-                                    if !globalVar.isGenHdThumb || maxLength <= 256 { // || publicVar.layoutType == .grid
+                                    if !publicVar.isGenHdThumb || maxLength <= 256 { // || publicVar.layoutType == .grid
                                         image = ThumbImageProcessor.getImageCache(url: url, refSize: originalSize)
                                     }else{
                                         image = ThumbImageProcessor.getImageCache(url: url, size: revisedSize)
@@ -3706,9 +3764,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
  
     @objc func closeLargeImage(_ sender: Any) {
         
-        if currLargeImagePos == -1 {
-            return
-        }
+//        if currLargeImagePos == -1 {
+//            return
+//        }
         
         if !publicVar.isInLargeView || !publicVar.isInLargeViewAfterAnimate {
             return
@@ -3792,7 +3850,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //            }
             
         
-        if currLargeImagePos < collectionView.numberOfItems(inSection: 0) {
+        if currLargeImagePos >= 0 && currLargeImagePos < collectionView.numberOfItems(inSection: 0) {
             
             let indexPath=IndexPath(item: currLargeImagePos, section: 0)
             
@@ -3841,7 +3899,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             if(url.hasDirectoryPath){
                 switchDirByDirection(direction: .zero, dest: item.file.path, stackDeep: 0)
             }
-            else if !HandledImageExtensions.contains(url.pathExtension.lowercased()) {
+            else if !globalVar.HandledImageExtensions.contains(url.pathExtension.lowercased()) {
                 NSWorkspace.shared.open(url)
             }else{
                 if largeImageView.isHidden {
@@ -4848,7 +4906,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     viewController.closeLargeImage(0)
                 }
             }else{
-                if !HandledImageExtensions.contains(urls[0].pathExtension) {return} //限制文件类型
+                if !globalVar.HandledImageExtensions.contains(urls[0].pathExtension) {return} //限制文件类型
                 folderPath=""+urls[0].deletingLastPathComponent().absoluteString
                 path=""+urls[0].absoluteString
                 viewController.publicVar.openFromFinderPath=path

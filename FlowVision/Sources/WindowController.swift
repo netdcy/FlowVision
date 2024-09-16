@@ -706,7 +706,7 @@ extension WindowController: NSToolbarDelegate {
         menu.autoenablesItems = false
 
         let isGenHdThumb = menu.addItem(withTitle: NSLocalizedString("Generate HD Thumbnails", comment: "生成高清缩略图"), action: #selector(genHdThumbAction), keyEquivalent: "")
-        isGenHdThumb.state = (globalVar.isGenHdThumb) ? .on : .off
+        isGenHdThumb.state = (viewController.publicVar.isGenHdThumb) ? .on : .off
         
         let actionItemSettings = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(genHdThumbInfoAction), keyEquivalent: "")
         
@@ -744,8 +744,8 @@ extension WindowController: NSToolbarDelegate {
     
     @objc func genHdThumbAction(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
-        globalVar.isGenHdThumb.toggle()
-        UserDefaults.standard.set(globalVar.isGenHdThumb, forKey: "isGenHdThumb")
+        viewController.publicVar.isGenHdThumb.toggle()
+        UserDefaults.standard.set(viewController.publicVar.isGenHdThumb, forKey: "isGenHdThumb")
         viewController.refreshCollectionView([], dryRun: true)
     }
     
@@ -794,22 +794,22 @@ extension WindowController: NSToolbarDelegate {
         menu.addItem(NSMenuItem.separator())
         
         let actionItemShowHiddenFile = menu.addItem(withTitle: NSLocalizedString("Show Hidden Files", comment: "显示隐藏文件"), action: #selector(showHiddenFileAction), keyEquivalent: ".")
-        actionItemShowHiddenFile.state = (globalVar.isShowHiddenFile) ? .on : .off
+        actionItemShowHiddenFile.state = (viewController.publicVar.isShowHiddenFile) ? .on : .off
         actionItemShowHiddenFile.keyEquivalentModifierMask = [.command, .shift]
         
         let showAllTypeFile = menu.addItem(withTitle: NSLocalizedString("Show All Types of Files", comment: "显示所有类型文件"), action: #selector(showAllTypeFileAction), keyEquivalent: "")
-        showAllTypeFile.state = (globalVar.isShowAllTypeFile) ? .on : .off
+        showAllTypeFile.state = (viewController.publicVar.isShowAllTypeFile) ? .on : .off
         
         let showImageFile = menu.addItem(withTitle: NSLocalizedString("Show Image Files", comment: "显示图像文件"), action: #selector(showImageFileAction), keyEquivalent: "")
-        showImageFile.state = (globalVar.isShowImageFile) ? .on : .off
+        showImageFile.state = (viewController.publicVar.isShowImageFile) ? .on : .off
         
         let showRawFile = menu.addItem(withTitle: NSLocalizedString("Show Camera RAW Files", comment: "显示相机RAW文件"), action: #selector(showRawFileAction), keyEquivalent: "")
-        showRawFile.state = (globalVar.isShowRawFile) ? .on : .off
+        showRawFile.state = (viewController.publicVar.isShowRawFile) ? .on : .off
         
         let showVideoFile = menu.addItem(withTitle: NSLocalizedString("Show Video Files", comment: "显示视频文件"), action: #selector(showVideoFileAction), keyEquivalent: "")
-        showVideoFile.state = (globalVar.isShowVideoFile) ? .on : .off
+        showVideoFile.state = (viewController.publicVar.isShowVideoFile) ? .on : .off
 
-        if globalVar.isShowAllTypeFile {
+        if viewController.publicVar.isShowAllTypeFile {
             showImageFile.isEnabled=false
             showRawFile.isEnabled=false
             showVideoFile.isEnabled=false
