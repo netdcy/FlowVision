@@ -175,8 +175,15 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 // 动画完成后的操作（如果有）
             })
         }else{
-            imageViewObj.image=file.image
-            //imageViewObj.sd_setImage(with: URL(string: path), placeholderImage: nil)
+            if file.image != nil {
+                imageViewObj.image=file.image
+            }else{
+                if file.isDir {
+                    imageViewObj.image=NSImage(named: NSImage.folderName)
+                }else{
+                    imageViewObj.image=nil
+                }
+            }
             
 //            if file.folderImages.count>0{
 //                folderViews[0].isHidden=false
