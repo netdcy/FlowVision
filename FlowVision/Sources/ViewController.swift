@@ -256,6 +256,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //读取用户配置
         let defaults = UserDefaults.standard
         
+        if let thumbSize = UserDefaults.standard.value(forKey: "thumbSize") as? Int {
+            publicVar.thumbSize = thumbSize
+        }
+        
         //TODO: 没有工具栏时，载入时折叠且divider宽度设为0会造成菜单栏变白
         if let savedIsDirTreeHidden = UserDefaults.standard.value(forKey: "isDirTreeHidden") as? Bool {
             publicVar.isDirTreeHidden=savedIsDirTreeHidden
@@ -1316,6 +1320,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     
     func changeThumbSize(thumbSize: Int){
         publicVar.thumbSize = thumbSize
+        UserDefaults.standard.set(thumbSize, forKey: "thumbSize")
         changeWaterfallLayoutNumberOfColumns()
         refreshCollectionView([], dryRun: true)
     }
