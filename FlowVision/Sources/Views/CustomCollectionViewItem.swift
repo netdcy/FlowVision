@@ -409,7 +409,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                let viewController=getViewController(collectionView){
                 
                 if !viewController.publicVar.isInLargeView && !viewController.publicVar.isInLargeViewAfterAnimate {
-                    viewController.openLargeImageFromIndexPath(selectedIndexPath)
+                    viewController.openLargeImageFromIndexPath(selfIndexPath)
                 }else if viewController.publicVar.isInLargeView && viewController.publicVar.isInLargeViewAfterAnimate {
                     viewController.closeLargeImage([])
                 }
