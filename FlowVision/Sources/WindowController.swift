@@ -60,6 +60,11 @@ class WindowController: NSWindowController, NSWindowDelegate {
             }
         }
         
+        //设置焦点
+        if let viewController = contentViewController as? ViewController {
+            window?.makeFirstResponder(viewController.collectionView)
+        }
+        
         log("结束windowDidLoad")
     }
     
