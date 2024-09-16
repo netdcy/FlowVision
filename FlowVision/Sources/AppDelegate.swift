@@ -247,16 +247,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         var file=getFileStylePath(files[0])
         if isDirectory && file.last != "/" {file=file+"/"}
         
-        if windowControllers.count == 0 {
+        //新窗口打开（暂时统一新窗口打开）
+        if true || windowControllers.count == 0 {
             if isDirectory{
                 _ = createNewWindow(file)
                 return
             }else{
                 globalVar.isLaunchFromFile=true
-                _ = createNewWindow(file)
+                if let targetWindowController = createNewWindow(file) {
+                    openImageInTargetWindow(file, windowController: targetWindowController)
+                }
+                return
             }
         }
-
+        
+        //本窗口打开
         if isDirectory{
             DispatchQueue.main.async {
                 if let mainViewController = NSApplication.shared.mainWindow?.windowController?.contentViewController as? ViewController {
@@ -318,7 +323,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 NSDocumentController.shared.noteNewRecentDocumentURL(result)
                 
                 log("Selected file: \(result.path)")
-                getMainViewController()?.handleDraggedFiles([result])
+                
+                //本窗口打开
+                //getMainViewController()?.handleDraggedFiles([result])
+                
+                //新窗口打开
+                var isDirectoryObj: ObjCBool = false
+                FileManager.default.fileExists(atPath: result.path, isDirectory: &isDirectoryObj)
+                let isDirectory=isDirectoryObj.boolValue
+                if isDirectory {
+                    _ = createNewWindow(result.path)
+                }else{
+                    globalVar.isLaunchFromFile=true
+                    if let windowController = createNewWindow(result.path) {
+                        openImageInTargetWindow(result.path, windowController: windowController)
+                    }
+                }
             }
         } else {
             // User clicked on "Cancel"
