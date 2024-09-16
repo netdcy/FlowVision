@@ -307,6 +307,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if let layoutType: LayoutType = UserDefaults.standard.enumValue(forKey: "layoutType"){
             publicVar.layoutType=layoutType
         }
+        if let sortType: SortType = UserDefaults.standard.enumValue(forKey: "sortType"){
+            publicVar.sortType=sortType
+        }
+        if let isSortFolderFirst = UserDefaults.standard.value(forKey: "isSortFolderFirst") as? Bool {
+            publicVar.isSortFolderFirst = isSortFolderFirst
+        }
         if let isShowHiddenFile = UserDefaults.standard.value(forKey: "isShowHiddenFile") as? Bool {
             publicVar.isShowHiddenFile = isShowHiddenFile
         }
@@ -956,6 +962,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     func changeSortType(_ sortType: SortType){
         fileDB.lock()
         publicVar.sortType = sortType
+        UserDefaults.standard.setEnum(publicVar.sortType, forKey: "sortType")
+        UserDefaults.standard.set(publicVar.isSortFolderFirst, forKey: "isSortFolderFirst")
         globalVar.randomSeed = Int.random(in: 0...Int.max)
         for dirModel in fileDB.db {
             dirModel.1.changeSortType(publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)
