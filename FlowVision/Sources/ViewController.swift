@@ -1430,7 +1430,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         return CGPoint(x: frame.midX, y: frame.midY)
     }
     
-    func nearbyIndexPaths(around indexPaths: Set<IndexPath>, range: (Int,Int)) -> Set<IndexPath> {
+    func nearbyIndexPaths(around indexPaths: Set<IndexPath>, range: (Int,Int), needValid: Bool) -> Set<IndexPath> {
         guard let dataSource = collectionView.dataSource else { return [] }
         
         var expandedIndexPaths = Set<IndexPath>()
@@ -1440,7 +1440,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             let item = indexPath.item
             
             for i in max(0, item + range.0)...(item + range.1) {
-                if i < dataSource.collectionView(collectionView, numberOfItemsInSection: section) {
+                if !needValid || i < dataSource.collectionView(collectionView, numberOfItemsInSection: section) {
                     expandedIndexPaths.insert(IndexPath(item: i, section: section))
                 }
             }
@@ -1451,7 +1451,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     
     func findClosestItem(currentItem: NSCollectionViewItem, direction: NSEvent.SpecialKey) -> IndexPath? {
         //let indexPaths = collectionView.indexPathsForVisibleItems()
-        let indexPaths = nearbyIndexPaths(around: collectionView.indexPathsForVisibleItems(), range: (-20,20))
+        let indexPaths = nearbyIndexPaths(around: collectionView.indexPathsForVisibleItems(), range: (-20,20), needValid: true)
         //log(indexPaths.map{$0.item})
         guard let currentIndexPath = collectionView.selectionIndexPaths.first else { return nil }
         guard let currentItem = collectionView.item(at: currentIndexPath) else { return nil }
@@ -3105,6 +3105,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 largeImageView.file=file
                 
                 setWindowTitleOfLargeImage(file: file)
+                setLoadThumbPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0), ifNeedVisable: false)
             }else{
                 fileDB.unlock()
             }
@@ -3485,8 +3486,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //                        }
                         
                         fileDB.lock()
-                        let originalSize:NSSize? = file.originalSize
-                        let thumbSize:NSSize? = file.thumbSize
+                        var originalSize:NSSize? = file.originalSize
+                        var thumbSize:NSSize? = file.thumbSize
                         let count = dirModel.files.count
                         let isMemClearedToAvoidRemainingTask=dirModel.isMemClearedToAvoidRemainingTask
                         fileDB.unlock()
@@ -3544,6 +3545,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                     }
                                 }
                             }
+                        }
+                        
+                        //如果因为优先级调度未能预先计算到目标大小，则此时计算粗略大小
+                        if thumbSize == nil && otherTaskInfo.isPriorityScheduled {
+                            //originalSize = getImageSize(url: URL(string: key.path)!)
+                            thumbSize = NSSize(width: 64, height: 64) //通过设置过小值使后面使用简单缩略图方法
                         }
                         
                         if thumbSize != nil {
@@ -3813,7 +3820,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 
         var indexPaths: Set<IndexPath> = Set()
         if indexPath != nil {
-            indexPaths=nearbyIndexPaths(around: [indexPath!], range: range)
+            indexPaths=nearbyIndexPaths(around: [indexPath!], range: range, needValid: false)
         }else{
             indexPaths=collectionView.indexPathsForVisibleItems()
         }
@@ -3857,12 +3864,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             loadImageTaskPool.lock.lock()
             fileDB.lock()
             let curFolder=fileDB.curFolder
+            loadImageTaskPool.makeQueue(curFolder)
             for itemIndex in newRange {
                 if let dirModel = fileDB.db[SortKeyDir(curFolder)],
                    let key = dirModel.files.elementSafe(atOffset: itemIndex)?.0,
                    let file = dirModel.files.elementSafe(atOffset: itemIndex)?.1,
                    file.image == nil {
-                    loadImageTaskPool.pool[curFolder]?.insert((curFolder,dirModel,key,file,dirModel.ver,OtherTaskInfo(isFromScroll: true)), at: 0)
+                    loadImageTaskPool.pool[curFolder]?.insert((curFolder,dirModel,key,file,dirModel.ver,OtherTaskInfo(isFromScroll: true, isPriorityScheduled: true)), at: 0)
                     loadImageTaskPoolSemaphore.signal()
                 }
             }

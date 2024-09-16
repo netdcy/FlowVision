@@ -577,9 +577,11 @@ typealias TaskType = (String, DirModel, SortKeyFile, FileModel, Int, OtherTaskIn
 
 struct OtherTaskInfo {
     var isFromScroll: Bool
+    var isPriorityScheduled: Bool
     
-    init(isFromScroll: Bool = false) {
+    init(isFromScroll: Bool = false, isPriorityScheduled: Bool = false) {
         self.isFromScroll = isFromScroll
+        self.isPriorityScheduled = isPriorityScheduled
     }
 }
 
@@ -587,6 +589,12 @@ class TaskPool {
     var pool = Dictionary<String,[TaskType]>()
     var priority = Dictionary<String,Double>()
     var lock = NSLock()
+    func makeQueue(_ queueName: String){
+        if pool[queueName] == nil {
+            pool[queueName]=[TaskType]()
+            priority[queueName]=10.0
+        }
+    }
     func push(_ queueName: String, _ ele: TaskType){
         if pool[queueName] != nil {
             pool[queueName]?.append(ele)
