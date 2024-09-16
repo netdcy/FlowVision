@@ -18,7 +18,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <gridView xPlacement="center" yPlacement="center" rowAlignment="none" rowSpacing="8" columnSpacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Rch-Bu-Q2t">
-                    <rect key="frame" x="30" y="120" width="450" height="352"/>
+                    <rect key="frame" x="30" y="134" width="450" height="338"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="450" id="HFK-ed-9Rg"/>
                     </constraints>
@@ -36,7 +36,7 @@
                     <gridCells>
                         <gridCell row="tyX-xi-JUH" column="X7r-A5-zjQ" id="zcw-4m-fRz">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fwn-dW-cfy">
-                                <rect key="frame" x="30" y="336" width="96" height="16"/>
+                                <rect key="frame" x="30" y="322" width="96" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Image Viewing:" id="p6V-rJ-gwR">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -46,7 +46,7 @@
                         </gridCell>
                         <gridCell row="tyX-xi-JUH" column="oNd-Vu-470" id="3ip-Hj-cEn">
                             <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="yxf-H0-SOm">
-                                <rect key="frame" x="132" y="240" width="320" height="112"/>
+                                <rect key="frame" x="132" y="226" width="320" height="112"/>
                                 <textFieldCell key="cell" selectable="YES" id="jjU-gf-0lm">
                                     <font key="font" metaFont="message" size="11"/>
                                     <string key="title">Double-click to open/close the image. 
@@ -61,13 +61,13 @@ Long press the right mouse button to fit the image to the view.</string>
                         </gridCell>
                         <gridCell row="1ju-7T-mfc" column="X7r-A5-zjQ" headOfMergedCell="Kui-HA-yYz" xPlacement="fill" id="Kui-HA-yYz">
                             <box key="contentView" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="vND-Ga-SGQ">
-                                <rect key="frame" x="0.0" y="220" width="450" height="5"/>
+                                <rect key="frame" x="0.0" y="206" width="450" height="5"/>
                             </box>
                         </gridCell>
                         <gridCell row="1ju-7T-mfc" column="oNd-Vu-470" headOfMergedCell="Kui-HA-yYz" id="QUv-cn-RhQ"/>
                         <gridCell row="Z7f-hg-6RQ" column="X7r-A5-zjQ" id="vVd-Xc-v9G">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0yA-K6-8F3">
-                                <rect key="frame" x="-2" y="188" width="128" height="16"/>
+                                <rect key="frame" x="-2" y="174" width="128" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Right-Click Gestures:" id="qK4-Oc-vMt">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -77,14 +77,14 @@ Long press the right mouse button to fit the image to the view.</string>
                         </gridCell>
                         <gridCell row="Z7f-hg-6RQ" column="oNd-Vu-470" id="tFS-5a-2PQ">
                             <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="QOg-90-uPD">
-                                <rect key="frame" x="132" y="78" width="320" height="126"/>
+                                <rect key="frame" x="132" y="78" width="320" height="112"/>
                                 <textFieldCell key="cell" selectable="YES" id="xau-nf-fbD">
                                     <font key="font" metaFont="message" size="11"/>
                                     <string key="title">Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk).
 Up: Switch to the parent directory.
 Down: Return to the previous directory.
-Down-Right/Down-Left: Switch to the next/previous folder with images at the same level as the current folder.
-Up-Right/Up-Left: Switch to the parent directory, then perform the Down-Right/Down-Left action.</string>
+Up-Right/Up-Left: Switch to the next/previous folder with images at the same level as the current folder.
+Down-Right: Close the tab/window.</string>
                                     <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>

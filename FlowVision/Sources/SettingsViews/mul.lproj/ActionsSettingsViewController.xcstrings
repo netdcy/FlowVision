@@ -92,19 +92,19 @@
       }
     },
     "xau-nf-fbD.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk).\\nUp: Switch to the parent directory.\\nDown: Return to the previous directory.\\nDown-Right/Down-Left: Switch to the next/previous folder with images at the same level as the current folder.\\nUp-Right/Up-Left: Switch to the parent directory, then perform the Down-Right/Down-Left action.\"; ObjectID = \"xau-nf-fbD\";",
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk).\\nUp: Switch to the parent directory.\\nDown: Return to the previous directory.\\nUp-Right/Up-Left: Switch to the next/previous folder with images at the same level as the current folder.\\nDown-Right: Close the tab/window.\"; ObjectID = \"xau-nf-fbD\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk).\nUp: Switch to the parent directory.\nDown: Return to the previous directory.\nDown-Right/Down-Left: Switch to the next/previous folder with images at the same level as the current folder.\nUp-Right/Up-Left: Switch to the parent directory, then perform the Down-Right/Down-Left action."
+            "value" : "Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk).\nUp: Switch to the parent directory.\nDown: Return to the previous directory.\nUp-Right/Up-Left: Switch to the next/previous folder with images at the same level as the current folder.\nDown-Right: Close the tab/window."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "向右/左：切换到下一个/上一个有图片/视频的文件夹(逻辑上等同于将整个磁盘中的文件夹排序后的下一个)。\n向上：切换到上级目录。\n向下：返回到上一次的目录。\n向下右/下左：切换到与当前文件夹平级的下一个/上一个有图片的文件夹。\n向上右/上左：切换到上级目录后，再执行向下右/下左的操作。"
+            "value" : "向右/左：切换到下一个/上一个有图片/视频的文件夹(逻辑上等同于将整个磁盘中的文件夹排序后的下一个)。\n向上：切换到上级目录。\n向下：返回到上一次的目录。\n向上右/上左：切换到与当前文件夹平级的下一个/上一个有图片的文件夹。\n向下右：关闭当前标签页/窗口。"
           }
         }
       }

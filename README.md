@@ -60,8 +60,8 @@ brew upgrade flowvision --no-quarantine
  - Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk)
  - Up: Switch to the parent directory
  - Down: Return to the previous directory
- - Down-Right/Down-Left: Switch to the next/previous folder with images at the same level as the current folder
- - Up-Right/Up-Left: Switch to the parent directory, then perform the Down-Right/Down-Left action
+ - Up-Right/Up-Left: Switch to the next/previous folder with images at the same level as the current folder
+ - Down-Right: Close the tab/window
 ### Keyboard Shortcuts:
  - W: Same as the right-click gesture Up
  - A/D: Same as the right-click gesture Left/Right

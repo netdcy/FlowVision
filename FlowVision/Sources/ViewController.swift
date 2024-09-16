@@ -4892,20 +4892,26 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         switch (first, second) {
         case (.up, .right):
             //log("Gesture: ⬆️ ➡️")
-            if doAction {switchDirByDirection(direction: .up_right, stackDeep: 0)}
-            else{drawingView?.statusLabel.stringValue=NSLocalizedString("next-sibling-of-parent", comment: "上级的平级下一个目录")}
-        case (.up, .left):
-            //log("Gesture: ⬆️ ⬅️")
-            if doAction {switchDirByDirection(direction: .up_left, stackDeep: 0)}
-            else{drawingView?.statusLabel.stringValue=NSLocalizedString("previous-sibling-of-parent", comment: "上级的平级上一个目录")}
-        case (.down, .right):
-            //log("Gesture: ⬇️ ➡️")
+            //if doAction {switchDirByDirection(direction: .up_right, stackDeep: 0)}
+            //else{drawingView?.statusLabel.stringValue=NSLocalizedString("next-sibling-of-parent", comment: "上级的平级下一个目录")}
             if doAction {switchDirByDirection(direction: .down_right, stackDeep: 0)}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("next-sibling", comment: "平级的下一个目录")}
-        case (.down, .left):
-            //log("Gesture: ⬇️ ⬅️")
+        case (.up, .left):
+            //log("Gesture: ⬆️ ⬅️")
+            //if doAction {switchDirByDirection(direction: .up_left, stackDeep: 0)}
+            //else{drawingView?.statusLabel.stringValue=NSLocalizedString("previous-sibling-of-parent", comment: "上级的平级上一个目录")}
             if doAction {switchDirByDirection(direction: .down_left, stackDeep: 0)}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("previous-sibling", comment: "平级的上一个目录")}
+        case (.down, .right):
+            //log("Gesture: ⬇️ ➡️")
+//            if doAction {switchDirByDirection(direction: .down_right, stackDeep: 0)}
+//            else{drawingView?.statusLabel.stringValue=NSLocalizedString("next-sibling", comment: "平级的下一个目录")}
+            if doAction {self.view.window?.performClose(nil)}
+            else{drawingView?.statusLabel.stringValue=NSLocalizedString("Close Tab", comment: "关闭标签页")}
+//        case (.down, .left):
+//            //log("Gesture: ⬇️ ⬅️")
+//            if doAction {switchDirByDirection(direction: .down_left, stackDeep: 0)}
+//            else{drawingView?.statusLabel.stringValue=NSLocalizedString("previous-sibling", comment: "平级的上一个目录")}
         default:
             drawingView?.statusLabel.stringValue=""
             break
