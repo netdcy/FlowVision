@@ -178,7 +178,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     func applicationWillTerminate(_ aNotification: Notification) {
         log("App EXIT")
         log("-----------------------------------------------------------")
-        Logger.shared.clearLogFile()
+        //Logger.shared.clearLogFile()
         UserDefaults.standard.set(true, forKey: "hasNormalExit")
         UserDefaults.standard.synchronize()
     }

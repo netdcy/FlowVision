@@ -29,8 +29,13 @@ class LogViewController: NSViewController {
     }
 
     func addLogMessage(_ message: String, level: LogLevel) {
+        if logMessages.count > 1000 {
+            logMessages.removeFirst()
+        }
         logMessages.append((message, level))
-        refreshLogView()
+        if let window = self.view.window, window.isVisible {
+            refreshLogView()
+        }
     }
 
     private func refreshLogView() {
@@ -104,7 +109,7 @@ class Logger {
     private var logWindowController: LogWindowController?
     private let logQueue = DispatchQueue(label: "com.example.LoggerQueue")
     var logLevel: LogLevel = .debug
-    var isFileLoggingEnabled = true
+    var isFileLoggingEnabled = false
 
     private init() {
         setupLogFile()
