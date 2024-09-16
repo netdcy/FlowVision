@@ -573,7 +573,15 @@ class TreeViewModel {
     }
 }
 
-typealias TaskType = (String, DirModel, SortKeyFile, FileModel, Int)
+typealias TaskType = (String, DirModel, SortKeyFile, FileModel, Int, OtherTaskInfo)
+
+struct OtherTaskInfo {
+    var isFromScroll: Bool
+    
+    init(isFromScroll: Bool = false) {
+        self.isFromScroll = isFromScroll
+    }
+}
 
 class TaskPool {
     var pool = Dictionary<String,[TaskType]>()

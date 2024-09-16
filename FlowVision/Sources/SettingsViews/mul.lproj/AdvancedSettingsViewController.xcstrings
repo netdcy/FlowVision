@@ -164,19 +164,19 @@
       }
     },
     "lIW-EQ-tyL.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"The application will attempt to free thumbnail cache of historical directories to meet the limit, but the current directory's usage might exceed the specified value.\"; ObjectID = \"lIW-EQ-tyL\";",
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"When the application's memory usage exceeds the limit, the thumbnail rendering cache in each directory will be cleared sequentially based on the last accessed time.\"; ObjectID = \"lIW-EQ-tyL\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "The application will attempt to free thumbnail cache of historical directories to meet the limit, but the current directory's usage might exceed the specified value."
+            "value" : "When the application's memory usage exceeds the limit, the thumbnail rendering cache in each directory will be cleared sequentially based on the last accessed time."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "程序会尝试释放历史目录的缩略图缓存以符合限制，但当前目录的占用量可能会超过指定值。"
+            "value" : "当程序内存使用量超过限制后，将按最后浏览时间依次清理各目录的缩略图渲染缓存。"
           }
         }
       }

@@ -66,6 +66,25 @@ class MyTimer{
 //    }
 }
 
+class ExecutionTimer {
+    private var startTime: CFAbsoluteTime?
+    
+    func start() {
+        startTime = CFAbsoluteTimeGetCurrent()
+    }
+    
+    func stop() -> TimeInterval? {
+        guard let startTime = startTime else {
+            log("Timer was not started.")
+            return nil
+        }
+        
+        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        self.startTime = nil // Reset start time
+        return timeElapsed
+    }
+}
+
 extension UserDefaults {
 //    // 存储 String 类型的 RawRepresentable 枚举
 //    func setEnum<T: RawRepresentable>(_ value: T, forKey key: String) where T.RawValue == String {

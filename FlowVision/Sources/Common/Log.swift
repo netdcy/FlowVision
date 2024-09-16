@@ -38,7 +38,7 @@ class LogViewController: NSViewController {
         }
     }
 
-    private func refreshLogView() {
+    func refreshLogView() {
         var filteredMessages = logMessages
 
         if debugCheckBox.state == .off {
@@ -147,6 +147,7 @@ class Logger {
     }
     
     func showLogWindow() {
+        logWindowController?.logViewController?.refreshLogView()
         logWindowController?.showWindow(nil)
     }
     

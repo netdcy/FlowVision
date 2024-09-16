@@ -3002,6 +3002,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             for ele in fileDB.db[SortKeyDir(folderpath)]!.files{
                 //log(ele.0.path.removingPercentEncoding)
                 if ele.1.ver != fileDB.db[SortKeyDir(folderpath)]!.ver {
+                    ele.1.image=nil
+                    ele.1.folderImages=[]
                     fileDB.db[SortKeyDir(folderpath)]!.files.removeValue(forKey: ele.0)
                 }
             }
@@ -3160,7 +3162,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             fileDB.unlock()
             readInfoTaskPoolLock.lock()
             for (i, key) in keys.enumerated(){
-                readInfoTaskPool.append((path,dirModel,key.0,key.1,dirModel.ver))
+                readInfoTaskPool.append((path,dirModel,key.0,key.1,dirModel.ver,OtherTaskInfo()))
                 readInfoTaskPoolSemaphore.signal()
             }
             readInfoTaskPoolLock.unlock()
@@ -3398,7 +3400,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                         fileDB.unlock()
                                         guard let curKey=curKey,let file=file else{continue}
                                         loadImageTaskPool.lock.lock()
-                                        loadImageTaskPool.push(dir,(dir,dirModel,curKey,file,dirModel.ver))
+                                        loadImageTaskPool.push(dir,(dir,dirModel,curKey,file,dirModel.ver,OtherTaskInfo()))
                                         loadImageTaskPoolSemaphore.signal()
                                         loadImageTaskPool.lock.unlock()
                                         if x == 0 {
@@ -3444,6 +3446,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         let doNotActualRead = file.doNotActualRead
                         let i=file.id
                         let ver=firstTask.4
+                        let otherTaskInfo=firstTask.5
                         let curFolder=fileDB.curFolder
                         fileDB.unlock() //内存屏障
                         
@@ -3488,7 +3491,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         let isMemClearedToAvoidRemainingTask=dirModel.isMemClearedToAvoidRemainingTask
                         fileDB.unlock()
                         //loadImageTaskPool.lock.unlock()//此处解锁是因为防止8个线程与主线程排队争fileDB.lock
-                        if isMemClearedToAvoidRemainingTask {return}
+                        if isMemClearedToAvoidRemainingTask && !otherTaskInfo.isFromScroll {return}
                         
 //                        if(true){
 //                            let curTime = DispatchTime.now()
@@ -3654,31 +3657,33 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             let memSizeInGB = getSystemMemorySize()
             while true {
                 if willTerminate {break}
-                Thread.sleep(forTimeInterval: 1)
-                
-//                log("Memory usage:")
-//                log(reportPhyMemoryUsage())
-//                log(reportTotalMemoryUsage())
+                Thread.sleep(forTimeInterval: 2)
                 
                 let memUse = reportTotalMemoryUsage()
+                //let memPhyUse = reportPhyMemoryUsage()
                 
-                if LRUqueue.count >= 2 {
+                //log("Memory usage: "+String(memUse))
+                
+                if LRUqueue.count >= 1 {
                     let overTime = (DispatchTime.now().uptimeNanoseconds-LRUqueue.last!.1.uptimeNanoseconds)/1000000000
                     let memUseLimit = globalVar.memUseLimit // ?? (memSizeInGB > 20 ? 4000 : 2000)
                     
-                    if overTime > 1800 || Int(memUse) > memUseLimit {
-                        fileDB.lock()
+                    if (overTime > 1800 && LRUqueue.count >= 2) || Int(memUse) > memUseLimit {
                         log("Memory free:")
                         log(LRUqueue.last!.0.removingPercentEncoding)
                         //由于先置目录再请求缩略图，所以此处可保证安全
+                        fileDB.lock()
+                        fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.isMemClearedToAvoidRemainingTask=true
+                        for fileModel in fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.files {
+                            fileModel.1.image=nil
+                            fileModel.1.folderImages=[NSImage]()
+                        }
                         if(LRUqueue.last!.0 != fileDB.curFolder){
-                            fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.isMemClearedToAvoidRemainingTask=true
-                            for fileModel in fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.files {
-                                fileModel.1.image=nil
-                                fileModel.1.folderImages=[NSImage]()
-                            }
+                            //不是当前目录
                             LRUcount-=fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.fileCount
                             LRUqueue.removeLast()
+                        }else{
+                            //是当前目录
                         }
                         fileDB.unlock()
                     }
@@ -3836,7 +3841,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 
             //序号最大最小值
             let itemIndexMin=itemSorted[0]
-            let itemIndexMax=itemSorted.last! + 20
+            let itemIndexMax=itemSorted.last! + 40
             
             if itemIndexMin >= itemIndexMax {return}
             
@@ -3857,7 +3862,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                    let key = dirModel.files.elementSafe(atOffset: itemIndex)?.0,
                    let file = dirModel.files.elementSafe(atOffset: itemIndex)?.1,
                    file.image == nil {
-                    loadImageTaskPool.pool[curFolder]?.insert((curFolder,dirModel,key,file,dirModel.ver), at: 0)
+                    loadImageTaskPool.pool[curFolder]?.insert((curFolder,dirModel,key,file,dirModel.ver,OtherTaskInfo(isFromScroll: true)), at: 0)
                     loadImageTaskPoolSemaphore.signal()
                 }
             }
@@ -4052,8 +4057,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     var cumulativeScroll: CGFloat = 0 //累积滚动量
     
     func handleScrollWheel(_ event: NSEvent) {
-        log("触控板:",event.scrollingDeltaY,event.scrollingDeltaX)
-        log("滚轮的:",event.deltaY)
+        //log("触控板:",event.scrollingDeltaY,event.scrollingDeltaX)
+        //log("滚轮的:",event.deltaY)
         if largeImageView.isHidden {return}
         if event.momentumPhase == .changed {return}
         
