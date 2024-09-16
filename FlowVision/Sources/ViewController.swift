@@ -4243,7 +4243,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         
         fileDB.lock()
-        let folderPath=url.deletingLastPathComponent().absoluteString
+        let folderPath=fileDB.curFolder
         let imageCount=fileDB.db[SortKeyDir(folderPath)]?.imageCount ?? 0
         if imageCount != 0{
             if let idInImage=fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)]?.idInImage {
