@@ -430,13 +430,12 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     override func otherMouseDown(with event: NSEvent) {
         if event.buttonNumber == 2 { // 检查是否按下了鼠标中键
             middleMouseLastLocation = event.locationInWindow
-        } else {
-            super.otherMouseDown(with: event)
         }
+        super.otherMouseDown(with: event)
     }
 
     override func otherMouseUp(with event: NSEvent) {
-        if event.buttonNumber == 2 {
+        if event.buttonNumber == 2 && !globalVar.isInMiddleMouseDrag {
             if distanceBetweenPoints(middleMouseLastLocation, event.locationInWindow) < positionThreshold {
                 if let collectionView = collectionView,
                    let selfIndexPath=collectionView.indexPath(for: self),
@@ -449,13 +448,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                             actOpenInNewTab()
                         }
                     }
-                    
-                    return
                 }
             }
-        } else {
-            super.otherMouseUp(with: event)
         }
+        super.otherMouseUp(with: event)
     }
     
     override func rightMouseDown(with event: NSEvent) {

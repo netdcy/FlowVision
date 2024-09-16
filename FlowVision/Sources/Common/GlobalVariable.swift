@@ -48,6 +48,8 @@ class GlobalVar{
     
     var startSpeedUpImageSizeCache: NSSize? = nil
     
+    var isInMiddleMouseDrag = false
+    
     var HandledImageExtensions: [String] = []
     var HandledVideoExtensions: [String] = []
     var HandledOtherExtensions: [String] = []

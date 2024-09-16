@@ -40,6 +40,7 @@ class CustomSplitView: NSSplitView {
                 frame.origin.y += deltaY
                 window.setFrame(frame, display: true)
             }
+            globalVar.isInMiddleMouseDrag = true
         } else {
             super.otherMouseDragged(with: event)
         }
@@ -48,6 +49,7 @@ class CustomSplitView: NSSplitView {
     override func otherMouseUp(with event: NSEvent) {
         if event.buttonNumber == 2 {
             middleMouseInitialLocation = nil
+            globalVar.isInMiddleMouseDrag = false
         } else {
             super.otherMouseUp(with: event)
         }
