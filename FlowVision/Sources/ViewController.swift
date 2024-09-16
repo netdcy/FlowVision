@@ -4050,9 +4050,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     var cumulativeScroll: CGFloat = 0 //累积滚动量
     
     func handleScrollWheel(_ event: NSEvent) {
-        //log("触控板:",event.scrollingDeltaY)
-        //log("滚轮的:",event.deltaY)
+        log("触控板:",event.scrollingDeltaY,event.scrollingDeltaX)
+        log("滚轮的:",event.deltaY)
         if largeImageView.isHidden {return}
+        if event.momentumPhase == .changed {return}
         
         //以下是防止按住鼠标缩放后松开，滚轮惯性滚动造成切换
         if publicVar.isRightMouseDown || publicVar.isLeftMouseDown {
@@ -4065,11 +4066,19 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
 
         var deltaY=0.0
-        if abs(event.scrollingDeltaY) > abs(event.deltaY) {
+        if abs(event.scrollingDeltaY)+abs(event.scrollingDeltaX) > abs(event.deltaY) {
             //通常是触控板事件
-            let sign = event.scrollingDeltaY >= 0 ? 1.0 : -1.0
-            let abs=abs(event.scrollingDeltaY)
-            deltaY=sign*pow(abs,1.0/1.4)/5
+            var sign = 1.0
+            var absv = 1.0
+            if abs(event.scrollingDeltaY) >= abs(event.scrollingDeltaX) {
+                sign = event.scrollingDeltaY >= 0 ? 1.0 : -1.0
+                absv=abs(event.scrollingDeltaY)
+            }else{
+                sign = event.scrollingDeltaX >= 0 ? 1.0 : -1.0
+                absv=abs(event.scrollingDeltaX)
+            }
+            if absv == 1.0 {absv=0.1}
+            deltaY=sign*pow(absv,1.0/1.2)
         }else{
             //通常是滚轮事件
             deltaY=event.deltaY
