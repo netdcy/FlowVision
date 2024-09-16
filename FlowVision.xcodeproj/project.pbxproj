@@ -623,11 +623,11 @@
 /* Begin XCLocalSwiftPackageReference section */
 		F7790ED92BA8581600406D35 /* XCLocalSwiftPackageReference "../BTree" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../BTree";
+			relativePath = ../BTree;
 		};
 		F7C2DEB62C4E6AE9003DF765 /* XCLocalSwiftPackageReference "../Settings" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../Settings";
+			relativePath = ../Settings;
 		};
 /* End XCLocalSwiftPackageReference section */
 
