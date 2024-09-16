@@ -4101,13 +4101,19 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
     
-    var cumulativeScroll: CGFloat = 0 //累积滚动量
+    private var cumulativeScroll: CGFloat = 0 //累积滚动量
+    private var lastScrollSwitchLargeImageTime: TimeInterval = 0
     
     func handleScrollWheel(_ event: NSEvent) {
         //log("触控板:",event.scrollingDeltaY,event.scrollingDeltaX)
         //log("滚轮的:",event.deltaY)
+        
         if largeImageView.isHidden {return}
-        if event.momentumPhase == .changed {return}
+        if event.momentumPhase == .changed
+            && event.timestamp - lastScrollSwitchLargeImageTime > 0.2
+        {
+            return
+        }
         
         //以下是防止按住鼠标缩放后松开，滚轮惯性滚动造成切换
         if publicVar.isRightMouseDown || publicVar.isLeftMouseDown {
@@ -4132,7 +4138,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 absv=abs(event.scrollingDeltaX)
             }
             if absv == 1.0 {absv=0.1}
-            deltaY=sign*pow(absv,1.0/1.2)
+            deltaY=sign*pow(absv,1.0/1.4)/3
         }else{
             //通常是滚轮事件
             deltaY=event.deltaY
@@ -4157,6 +4163,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             nextLargeImage()
         }
         cumulativeScroll=0
+        lastScrollSwitchLargeImageTime=event.timestamp
     }
     
     func previousLargeImage(isShowReachEndPrompt: Bool = true){
