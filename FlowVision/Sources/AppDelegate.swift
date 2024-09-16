@@ -173,7 +173,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     
     func createNewWindow(_ path: String? = nil) -> WindowController? {
         log("开始createNewWindow")
-        if isWindowNumMax() {return nil}
+        if isWindowNumMax() {
+            showAlert(message: NSLocalizedString("window-num-max", comment: "窗口数量超过限制"))
+            return nil
+        }
         
         var openFolder: String? = nil
 

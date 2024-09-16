@@ -218,19 +218,19 @@
       }
     },
     "Tb5-5a-q2X.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"The number of subfolder levels to search when generating folder thumbnails. If set to 0, folder thumbnails will not be generated, and the left-side directory tree will not indicate whether subfolders exist.\"; ObjectID = \"Tb5-5a-q2X\";",
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"The number of subfolder levels to search when generating folder thumbnails. If set to 0, folder thumbnails will not be generated, and the directory tree will not indicate whether subfolders exist by left-side arrow.\"; ObjectID = \"Tb5-5a-q2X\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "The number of subfolder levels to search when generating folder thumbnails. If set to 0, folder thumbnails will not be generated, and the left-side directory tree will not indicate whether subfolders exist."
+            "value" : "The number of subfolder levels to search when generating folder thumbnails. If set to 0, folder thumbnails will not be generated, and the directory tree will not indicate whether subfolders exist by left-side arrow."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "生成文件夹缩略图时，搜索子文件夹的层数。设置为0时，不生成文件夹缩略图，且左侧目录树中将不能区分是否有子文件夹。"
+            "value" : "生成文件夹缩略图时，搜索子文件夹的层数。设置为0时，不生成文件夹缩略图，且目录树中将不能通过左侧箭头区分是否有子文件夹。"
           }
         }
       }

@@ -2334,6 +2334,23 @@
         }
       }
     },
+    "window-num-max" : {
+      "comment" : "窗口数量超过限制",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The number of windows exceeds the limit."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窗口数量超过限制"
+          }
+        }
+      }
+    },
     "window-title" : {
       "comment" : "窗口标题",
       "localizations" : {
