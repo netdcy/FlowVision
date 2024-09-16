@@ -210,8 +210,8 @@ extension WindowController: NSToolbarDelegate {
                     identifiers.append(.isRecursiveMode)
                 }
                 identifiers.append(.viewToggle)
-                identifiers.append(.sort)
                 identifiers.append(.thumbSize)
+                identifiers.append(.sort)
             }
         }
         
@@ -427,7 +427,7 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.visibilityPriority = .low
             
         case .thumbSize:
-            let button = NSButton(title: "", image: NSImage(systemSymbolName: "photo", accessibilityDescription: "")!, target: self, action: #selector(showThumbSizeMenu(_:)))
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "photo.on.rectangle", accessibilityDescription: "")!, target: self, action: #selector(showThumbSizeMenu(_:)))
             setButtonStyle(button)
             button.toolTip = NSLocalizedString("thumb-size", comment: "缩略图大小")
             toolbarItem.view = button
