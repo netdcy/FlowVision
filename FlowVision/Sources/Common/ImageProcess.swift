@@ -415,7 +415,7 @@ func getImageThumb(url: URL, size: NSSize? = nil, refSize: NSSize? = nil) -> NSI
     }
     
     //处理不支持的缩略图
-    if globalVar.HandledNotNativeSupportedExtensions.contains(url.pathExtension.lowercased()) {
+    if globalVar.HandledNotNativeSupportedVideoExtensions.contains(url.pathExtension.lowercased()) {
         if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
             return getVideoThumbnailFFmpeg(for: url)
         }
@@ -745,7 +745,7 @@ func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
 func getImageSize(url: URL) -> NSSize? {
     //let defaultSize = DEFAULT_SIZE
     if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
-        if globalVar.HandledNotNativeSupportedExtensions.contains(url.pathExtension.lowercased()){
+        if globalVar.HandledNotNativeSupportedVideoExtensions.contains(url.pathExtension.lowercased()){
             if let sizeUseFFmpeg = getVideoResolutionFFmpeg(for: url){
                 return sizeUseFFmpeg
             }else{

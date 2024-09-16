@@ -24,6 +24,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     private var lastClickLocation: NSPoint = NSPoint.zero
     private let positionThreshold: CGFloat = 4.0 // 双击位置阈值，可以根据需要调整
     
+    private var middleMouseLastLocation: NSPoint = NSPoint.zero
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do view setup here.
@@ -423,6 +425,37 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
         lastClickTime = currentTime
         lastClickLocation = currentLocation
+    }
+    
+    override func otherMouseDown(with event: NSEvent) {
+        if event.buttonNumber == 2 { // 检查是否按下了鼠标中键
+            middleMouseLastLocation = event.locationInWindow
+        } else {
+            super.otherMouseDown(with: event)
+        }
+    }
+
+    override func otherMouseUp(with event: NSEvent) {
+        if event.buttonNumber == 2 {
+            if distanceBetweenPoints(middleMouseLastLocation, event.locationInWindow) < positionThreshold {
+                if let collectionView = collectionView,
+                   let selfIndexPath=collectionView.indexPath(for: self),
+                   let viewController=getViewController(collectionView){
+                    
+                    if !viewController.publicVar.isInLargeView && !viewController.publicVar.isInLargeViewAfterAnimate {
+                        if !file.isDir && !globalVar.HandledNonExternalExtensions.contains(file.ext.lowercased()) {
+                            viewController.openLargeImageFromIndexPath(selfIndexPath)
+                        }else{
+                            actOpenInNewTab()
+                        }
+                    }
+                    
+                    return
+                }
+            }
+        } else {
+            super.otherMouseUp(with: event)
+        }
     }
     
     override func rightMouseDown(with event: NSEvent) {

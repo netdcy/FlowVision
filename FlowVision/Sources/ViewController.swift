@@ -83,7 +83,8 @@ class PublicVar{
     var HandledImageExtensions: [String] = []
     var HandledVideoExtensions: [String] = []
     var HandledOtherExtensions: [String] = []
-    var HandledNotNativeSupportedExtensions: [String] = []
+    var HandledNonExternalExtensions: [String] = []
+    var HandledNotNativeSupportedVideoExtensions: [String] = []
     //var HandledExternalExtensions: [String] = []
     var HandledFileExtensions: [String] = []
     var HandledSearchExtensions: [String] = []
@@ -103,7 +104,8 @@ class PublicVar{
             HandledVideoExtensions += ["mp4", "mov", "m2ts", "vob", "mpeg", "mpg", "m4v"] + ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
         }
         HandledOtherExtensions = [] //["pdf"] //不能为""，否则会把目录异常包含进来
-        HandledNotNativeSupportedExtensions = ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
+        HandledNonExternalExtensions = HandledImageExtensions
+        HandledNotNativeSupportedVideoExtensions = ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
         //HandledExternalExtensions = HandledVideoExtensions // + ["pdf"] //外部程序打开的
         HandledFileExtensions = HandledImageExtensions + HandledVideoExtensions + HandledOtherExtensions //文件列表显示的
         HandledSearchExtensions = HandledImageExtensions + HandledVideoExtensions //作为鼠标手势查找的目标
