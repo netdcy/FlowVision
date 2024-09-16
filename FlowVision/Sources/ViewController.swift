@@ -3845,9 +3845,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         itemSorted.sort()
         
         if(itemSorted.count>0){
+            
+            let originalMin=itemSorted.first!
+            let originalMax=itemSorted.last!
 
             //序号最大最小值
-            let itemIndexMin=itemSorted[0]
+            let itemIndexMin=max(itemSorted.first! - 20, 0)
             let itemIndexMax=itemSorted.last! + 40
             
             if itemIndexMin >= itemIndexMax {return}
@@ -3858,6 +3861,25 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     let x = Double($0-centerPos)
                     let y = Double($1-centerPos)
                     return (x > 0 ? x/2 : -x) > (y > 0 ? y/2 : -y)
+                }
+            }else{
+                let centerPos=(originalMin+originalMax)/2
+                newRange.sort(){
+                    let x = Double($0-centerPos)
+                    let y = Double($1-centerPos)
+                    var xIsVisible = false
+                    var yIsVisible = false
+                    if $0 >= originalMin && $0 <= originalMax {xIsVisible=true}
+                    if $1 >= originalMin && $1 <= originalMax {yIsVisible=true}
+                    if xIsVisible && yIsVisible {
+                        return x > y
+                    }else if xIsVisible && !yIsVisible {
+                        return false
+                    }else if !xIsVisible && yIsVisible {
+                        return true
+                    }else{
+                        return (x > 0 ? x/2 : -x) > (y > 0 ? y/2 : -y)
+                    }
                 }
             }
             
