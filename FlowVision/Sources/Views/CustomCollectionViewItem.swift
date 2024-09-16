@@ -450,6 +450,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     }
                 }
                 
+                var selectedCount = 0
+                if let collectionView = collectionView {
+                    selectedCount=collectionView.selectionIndexPaths.count
+                }
+                
                 var canPasteOrMove=true
                 let pasteboard = NSPasteboard.general
                 let types = pasteboard.types ?? []
@@ -461,11 +466,25 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 let menu = NSMenu(title: "Custom Menu")
                 menu.autoenablesItems = false
                 
-                let actionItemOpen = menu.addItem(withTitle: NSLocalizedString("Open", comment: "打开"), action: #selector(actOpen), keyEquivalent: " ")
-                actionItemOpen.keyEquivalentModifierMask = []
+                if selectedCount > 1 {
+                    let title = String(format: NSLocalizedString("(Multiselect)", comment: "(多选)"), selectedCount)
+                    let actionItemMultiselect = menu.addItem(withTitle: title, action: nil, keyEquivalent: "")
+                    actionItemMultiselect.isEnabled = false
+                    
+                    menu.addItem(NSMenuItem.separator())
+                }
+                
+                if selectedCount == 1 {
+                    let actionItemOpen = menu.addItem(withTitle: NSLocalizedString("Open", comment: "打开"), action: #selector(actOpen), keyEquivalent: " ")
+                    actionItemOpen.keyEquivalentModifierMask = []
+                }
                 
                 if (file.type == .folder || file.type == .image) {
-                    let actionItemOpenInNewTab = menu.addItem(withTitle: NSLocalizedString("open-in-new-tab", comment: "在新标签页中打开"), action: #selector(actOpenInNewTab), keyEquivalent: "")
+                    var titleTmp = NSLocalizedString("open-in-new-tab", comment: "在新标签页中打开")
+                    if selectedCount > 1 {
+                        titleTmp = NSLocalizedString("open-in-new-tab-this", comment: "在新标签页中打开此项")
+                    }
+                    let actionItemOpenInNewTab = menu.addItem(withTitle: titleTmp, action: #selector(actOpenInNewTab), keyEquivalent: "")
                     if isWindowNumMax() {
                         actionItemOpenInNewTab.isEnabled=false
                     }else{
@@ -475,19 +494,25 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 menu.addItem(NSMenuItem.separator())
                 
-                if URL(string: file.path)!.hasDirectoryPath == false {
-                    addOpenWithSubMenu(to: menu, for: URL(string: file.path)!)
+                if selectedCount == 1 {
+                    if URL(string: file.path)!.hasDirectoryPath == false {
+                        addOpenWithSubMenu(to: menu, for: URL(string: file.path)!)
+                    }
                 }
                 
                 menu.addItem(withTitle: NSLocalizedString("show-in-finder", comment: "在Finder中显示"), action: #selector(actShowInFinder), keyEquivalent: "")
                 
-                let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
-                actionItemRename.keyEquivalentModifierMask = []
+                var getInfoTitle = NSLocalizedString("file-rightmenu-get-info", comment: "显示简介")
+                if selectedCount > 1 {
+                    getInfoTitle = NSLocalizedString("file-rightmenu-get-statistic", comment: "显示统计")
+                }
+                let actionItemGetInfo = menu.addItem(withTitle: getInfoTitle, action: #selector(actGetInfo), keyEquivalent: "i")
+                actionItemGetInfo.keyEquivalentModifierMask = []
                 
                 menu.addItem(NSMenuItem.separator())
                 
                 // 定义排序项
-                do{
+                if selectedCount == 1 {
                     let sortTypes: [(SortType, String)] = [
                         (.pathA, NSLocalizedString("sort-pathA", comment: "文件名")),
                         (.pathZ, NSLocalizedString("sort-pathZ", comment: "文件名(倒序)")),
@@ -532,6 +557,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 //actionItemDelete.isEnabled = (items.count>0)
                 
                 menu.addItem(NSMenuItem.separator())
+                
+                if selectedCount == 1 {
+                    let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
+                    actionItemRename.keyEquivalentModifierMask = []
+                }
                 
                 let actionItemCopy = menu.addItem(withTitle: NSLocalizedString("Copy", comment: "复制"), action: #selector(actCopy), keyEquivalent: "c")
                 //actionItemCopy.isEnabled = (items.count>0)
@@ -606,9 +636,15 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
 
     @objc func actShowInFinder() {
-        let folderPath = (file.path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding! as NSString).deletingLastPathComponent
-        // 使用NSWorkspace的实例来显示文件
-        NSWorkspace.shared.selectFile(file.path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!, inFileViewerRootedAtPath: folderPath)
+//        let folderPath = (file.path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding! as NSString).deletingLastPathComponent
+//        NSWorkspace.shared.selectFile(file.path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!, inFileViewerRootedAtPath: folderPath)
+        
+        guard let urls = getViewController(collectionView!)?.getSelectedURLs() else { return }
+        NSWorkspace.shared.activateFileViewerSelecting(urls)
+    }
+    
+    @objc func actGetInfo() {
+        getViewController(collectionView!)?.handleGetInfo()
     }
     
     @objc func actRename() {
@@ -681,8 +717,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     @objc func actShare(_ sender: NSMenuItem) {
-        guard let fileUrl = URL(string: file.path) else { return }
-        let sharingServicePicker = NSSharingServicePicker(items: [fileUrl])
+        guard let urls = getViewController(collectionView!)?.getSelectedURLs() else { return }
+        let sharingServicePicker = NSSharingServicePicker(items: urls)
         sharingServicePicker.show(relativeTo: view.bounds, of: self.view, preferredEdge: .maxX)
     }
 

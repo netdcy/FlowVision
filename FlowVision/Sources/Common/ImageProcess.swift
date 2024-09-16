@@ -874,18 +874,25 @@ func formatDateToCurrentTimeZone(_ date: Date) -> String {
 }
 
 func readableFileSize(_ bytes: Int) -> String {
-    let kilobyte = 1024
-    let megabyte = 1024 * kilobyte
+    let kilobyte = 1024.0
+    let megabyte = kilobyte * 1024
+    let gigabyte = megabyte * 1024
+    let terabyte = gigabyte * 1024
 
-    if bytes < megabyte {
-        return "\(bytes / kilobyte) KB"
+    if bytes < Int(kilobyte) {
+        return "\(bytes) B"
+    } else if bytes < Int(megabyte) {
+        let kbSize = Double(bytes) / kilobyte
+        return String(format: "%.1f KB", kbSize)
+    } else if bytes < Int(gigabyte) {
+        let mbSize = Double(bytes) / megabyte
+        return String(format: "%.1f MB", mbSize)
+    } else if bytes < Int(terabyte) {
+        let gbSize = Double(bytes) / gigabyte
+        return String(format: "%.1f GB", gbSize)
     } else {
-        let mbSize = Double(bytes) / Double(megabyte)
-        if mbSize < 10 {
-            return String(format: "%.1f MB", mbSize)
-        } else {
-            return "\(Int(mbSize)) MB"
-        }
+        let tbSize = Double(bytes) / terabyte
+        return String(format: "%.1f TB", tbSize)
     }
 }
 

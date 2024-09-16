@@ -564,6 +564,15 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     if publicVar.isInLargeView{
                         largeImageView.actShowExif()
                         return nil
+                    }else{
+                        if publicVar.isOutlineViewFirstResponder{
+                            outlineView.actGetInfo(isByKeyboard: true)
+                            return nil
+                        }
+                        if publicVar.isCollectionViewFirstResponder{
+                            handleGetInfo()
+                            return nil
+                        }
                     }
                 }
                 
@@ -1598,6 +1607,92 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             // 用户取消操作
             log("删除操作已取消")
             return false
+        }
+    }
+    
+    struct StatisticInfo {
+        var folderCount = 0
+        var fileCount = 0
+        var imageCount = 0
+        var videoCount = 0
+        var totalSize = 0
+        
+        var description: String {
+            let text = String(format: NSLocalizedString("statistic-content", comment: "(统计内容)"),folderCount,fileCount,imageCount,videoCount,readableFileSize(totalSize))
+            return text
+        }
+    }
+    
+    func handleGetInfo(_ providedUrls: [URL] = []) {
+        var urls = providedUrls
+        if providedUrls.isEmpty {
+            urls = publicVar.selectedUrls()
+        }
+        if urls.isEmpty {return}
+        
+        var result = StatisticInfo()
+        
+        for url in urls {
+            var isDirectory: ObjCBool = false
+            if FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) {
+                if isDirectory.boolValue {
+                    result.folderCount += 1
+                    getFolderStatistic(url, result: &result)
+                }else{
+                    result.fileCount += 1
+                    if globalVar.HandledImageExtensions.contains(url.pathExtension.lowercased()) {
+                        result.imageCount += 1
+                    } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
+                        result.videoCount += 1
+                    }
+                    let fileSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+                    result.totalSize += fileSize
+                }
+            }
+        }
+        
+        showInformation(title: NSLocalizedString("Statistic", comment: "统计信息"), message: result.description)
+        
+    }
+    
+    func getFolderStatistic(_ folderURL: URL, result: inout StatisticInfo) {
+        let properties: [URLResourceKey] = [.isHiddenKey, .isDirectoryKey, .fileSizeKey]
+        let options:FileManager.DirectoryEnumerationOptions = [] // [.skipsHiddenFiles]
+        
+        let enumerator = FileManager.default.enumerator(at: folderURL, includingPropertiesForKeys: properties, options: options, errorHandler: { (url, error) -> Bool in
+            print("Error enumerating \(url): \(error.localizedDescription)")
+            return true
+        })
+
+        //var result = StatisticInfo()
+        let scanInterval: TimeInterval = 4.0
+        var startDate = Date()
+        
+        while let url = enumerator?.nextObject() as? URL {
+            let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) ?? false
+            let fileSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+            
+            if !isDirectory {
+                result.fileCount += 1
+                if globalVar.HandledImageExtensions.contains(url.pathExtension.lowercased()) {
+                    result.imageCount += 1
+                } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
+                    result.videoCount += 1
+                }
+                result.totalSize += fileSize
+            }else{
+                result.folderCount += 1
+            }
+            
+            let elapsedTime = Date().timeIntervalSince(startDate)
+            if elapsedTime >= scanInterval {
+                let shouldContinue = showScanAlert(fileCount: result.fileCount, imageCount: result.imageCount, videoCount: result.videoCount)
+                if !shouldContinue {
+                    break
+                }
+                // Reset the timer
+                startDate = Date()
+            }
         }
     }
     

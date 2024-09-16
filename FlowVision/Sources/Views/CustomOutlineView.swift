@@ -101,10 +101,12 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
                 actionItemOpenInNewTab.isEnabled=true
             }
             
-            menu.addItem(withTitle: NSLocalizedString("open-in-finder", comment: "在Finder中打开"), action: #selector(actOpenInFinder), keyEquivalent: "")
+            menu.addItem(NSMenuItem.separator())
             
-            let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
-            actionItemRename.keyEquivalentModifierMask = []
+            menu.addItem(withTitle: NSLocalizedString("show-in-finder", comment: "在Finder中显示"), action: #selector(actShowInFinder), keyEquivalent: "")
+            
+            let actionItemGetInfo = menu.addItem(withTitle: NSLocalizedString("file-rightmenu-get-info", comment: "显示简介"), action: #selector(actGetInfo), keyEquivalent: "i")
+            actionItemGetInfo.keyEquivalentModifierMask = []
             
             menu.addItem(NSMenuItem.separator())
             
@@ -112,6 +114,9 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             actionItemDelete.keyEquivalentModifierMask = []
             
             menu.addItem(NSMenuItem.separator())
+            
+            let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
+            actionItemRename.keyEquivalentModifierMask = []
             
             let actionItemCopy = menu.addItem(withTitle: NSLocalizedString("Copy", comment: "复制"), action: #selector(actCopy), keyEquivalent: "c")
             
@@ -171,9 +176,27 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
     }
 
     @objc func actOpenInFinder() {
-        log(curRightClickedPath)
         guard let url=URL(string: curRightClickedPath) else{return}
         NSWorkspace.shared.open(url)
+    }
+    
+    @objc func actShowInFinder() {
+        guard let file=URL(string: curRightClickedPath) else{return}
+//        let folderPath = (file.path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding! as NSString).deletingLastPathComponent
+//        NSWorkspace.shared.selectFile(file.path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!, inFileViewerRootedAtPath: folderPath)
+        NSWorkspace.shared.activateFileViewerSelecting([file])
+    }
+    
+    @objc func actGetInfo(isByKeyboard: Bool = false) {
+        var url: URL?
+        if isByKeyboard {
+            url = getFirstSelectedUrl()
+        }else{
+            url=URL(string: curRightClickedPath)
+        }
+        guard let url = url else {return}
+        
+        getViewController(self)?.handleGetInfo([url])
     }
     
     @objc func actRename(isByKeyboard: Bool = false) {

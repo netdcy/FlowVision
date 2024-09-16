@@ -1,6 +1,23 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "(Multiselect)" : {
+      "comment" : "(多选)",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(%d Items Selected)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(%d个对象已被选中)"
+          }
+        }
+      }
+    },
     "Actions" : {
       "comment" : "操作（设置里的面板）",
       "localizations" : {
@@ -541,6 +558,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "图像尺寸"
+          }
+        }
+      }
+    },
+    "file-rightmenu-get-info" : {
+      "comment" : "显示简介",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get Info"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示简介"
+          }
+        }
+      }
+    },
+    "file-rightmenu-get-statistic" : {
+      "comment" : "显示统计",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get Statistic"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示统计"
           }
         }
       }
@@ -1093,6 +1144,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在新标签页中打开"
+          }
+        }
+      }
+    },
+    "open-in-new-tab-this" : {
+      "comment" : "在新标签页中打开此项",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open 'This' in New Tab"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在新标签页中打开\"此项\""
           }
         }
       }
@@ -2060,6 +2128,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "排序方式"
+          }
+        }
+      }
+    },
+    "Statistic" : {
+      "comment" : "统计信息",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "统计信息"
+          }
+        }
+      }
+    },
+    "statistic-content" : {
+      "comment" : "(统计内容)",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folder Count: %d\nFile Count: %d\nImage Count: %d\nVideo Count: %d\nTotal Size: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目录：%d\n文件：%d\n图像：%d\n视频：%d\n总大小：%@"
           }
         }
       }
