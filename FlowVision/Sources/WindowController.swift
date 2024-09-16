@@ -95,9 +95,21 @@ class WindowController: NSWindowController, NSWindowDelegate {
         if let viewController = contentViewController as? ViewController {
             //供其它线程参考的终止状态
             viewController.willTerminate=true
-            //产生空任务，防止等待信号量导致窗口无法销毁/
+            //产生空任务，防止等待信号量导致窗口无法销毁
             viewController.readInfoTaskPoolSemaphore.signal()
             viewController.loadImageTaskPoolSemaphore.signal()
+            //清空数据库
+            let fileDB = viewController.fileDB
+            fileDB.lock()
+            for (_,dirModel) in fileDB.db {
+                for (_,fileModel) in dirModel.files {
+                    fileModel.image=nil
+                    fileModel.folderImages=[NSImage]()
+                }
+                //dirModel.files.removeAll()
+            }
+            //fileDB.db.removeAll()
+            fileDB.unlock()
         }
         
         globalVar.windowNum -= 1
