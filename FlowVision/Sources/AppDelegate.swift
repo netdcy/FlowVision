@@ -179,8 +179,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
 
         if let path = path,
            let url = URL(string: path){
-            if url.hasDirectoryPath { //如果打开目录
-                openFolder=path
+            
+            var isDirectoryObj: ObjCBool = false
+            FileManager.default.fileExists(atPath: path, isDirectory: &isDirectoryObj)
+            let isDirectory=isDirectoryObj.boolValue
+
+            if isDirectory || path.hasSuffix("/") { //如果打开目录
+                var tmp = url.absoluteString
+                if !tmp.hasSuffix("/"){
+                    tmp += "/"
+                }
+                openFolder=getFileStyleFolderPath(tmp+"xxx")
             }else{ //如果打开文件
                 openFolder=getFileStyleFolderPath(path)
                 if globalVar.portableMode,
