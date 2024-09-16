@@ -51,7 +51,7 @@ brew upgrade flowvision --no-quarantine
 
 ## Instructions:
 ### In Image View:
- - Double-click to open/close the image. 
+ - Double-click to open/close the image
  - Hold down the right/left mouse button and scroll the wheel to zoom
  - Hold down the middle mouse button and drag to move the window
  - Long press the left mouse button to switch to 100% zoom
