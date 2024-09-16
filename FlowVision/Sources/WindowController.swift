@@ -182,6 +182,7 @@ extension NSToolbarItem.Identifier {
     static let more = NSToolbarItem.Identifier("com.example.more")
     static let favorites = NSToolbarItem.Identifier("com.example.favorites")
     static let thumbSize = NSToolbarItem.Identifier("com.example.thumbSize")
+    static let isRecursiveMode = NSToolbarItem.Identifier("com.example.isRecursiveMode")
 }
 
 extension WindowController: NSToolbarDelegate {
@@ -205,6 +206,9 @@ extension WindowController: NSToolbarDelegate {
                 identifiers.append(.rotateR)
                 identifiers.append(.showinfo)
             }else{
+                if viewController.publicVar.isRecursiveMode {
+                    identifiers.append(.isRecursiveMode)
+                }
                 identifiers.append(.viewToggle)
                 identifiers.append(.sort)
                 identifiers.append(.thumbSize)
@@ -389,7 +393,32 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.visibilityPriority = .low
             
         case .sort:
-            let button = NSButton(title: "", image: NSImage(systemSymbolName: "arrow.up.arrow.down", accessibilityDescription: "")!, target: self, action: #selector(showSortMenu(_:)))
+            var title = ""
+            var image = NSImage(systemSymbolName: "arrow.up.arrow.down", accessibilityDescription: "")!
+            if let viewController = contentViewController as? ViewController {
+                switch viewController.publicVar.sortType {
+                case .pathA,.pathZ:
+                    title = NSLocalizedString("sort-label-name", comment: "名称")
+                case .extA,.extZ:
+                    title = NSLocalizedString("sort-label-ext", comment: "类型")
+                case .sizeA,.sizeZ:
+                    title = NSLocalizedString("sort-label-size", comment: "大小")
+                case .createDateA,.createDateZ,.modDateA,.modDateZ,.addDateA,.addDateZ:
+                    title = NSLocalizedString("sort-label-date", comment: "日期")
+                case .random:
+                    title = NSLocalizedString("sort-label-random", comment: "随机")
+                }
+                switch viewController.publicVar.sortType {
+                case .pathA,.extA,.sizeA,.createDateA,.modDateA,.addDateA:
+                    image = NSImage(systemSymbolName: "arrow.up", accessibilityDescription: "")!
+                case .pathZ,.extZ,.sizeZ,.createDateZ,.modDateZ,.addDateZ:
+                    image = NSImage(systemSymbolName: "arrow.down", accessibilityDescription: "")!
+                case .random:
+                    image = NSImage(systemSymbolName: "arrow.up.arrow.down", accessibilityDescription: "")!
+                }
+            }
+            
+            let button = NSButton(title: title, image: image, target: self, action: #selector(showSortMenu(_:)))
             setButtonStyle(button)
             button.toolTip = NSLocalizedString("sort-type", comment: "排序方式")
             toolbarItem.view = button
@@ -398,12 +427,22 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.visibilityPriority = .low
             
         case .thumbSize:
-            let button = NSButton(title: "", image: NSImage(systemSymbolName: "textformat.size", accessibilityDescription: "")!, target: self, action: #selector(showThumbSizeMenu(_:)))
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "photo", accessibilityDescription: "")!, target: self, action: #selector(showThumbSizeMenu(_:)))
             setButtonStyle(button)
             button.toolTip = NSLocalizedString("thumb-size", comment: "缩略图大小")
             toolbarItem.view = button
             toolbarItem.label = NSLocalizedString("thumb-size", comment: "缩略图大小")
             toolbarItem.paletteLabel = NSLocalizedString("thumb-size", comment: "缩略图大小")
+            toolbarItem.visibilityPriority = .low
+            
+        case .isRecursiveMode:
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "r.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleRecursiveMode(_:)))
+            setButtonStyle(button)
+            //button.showsBorderOnlyWhileMouseInside = false
+            button.toolTip = NSLocalizedString("Recursive Mode", comment: "递归浏览模式")
+            toolbarItem.view = button
+            toolbarItem.label = NSLocalizedString("Recursive Mode", comment: "递归浏览模式")
+            toolbarItem.paletteLabel = NSLocalizedString("Recursive Mode", comment: "递归浏览模式")
             toolbarItem.visibilityPriority = .low
             
         case .more:
