@@ -4575,6 +4575,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                !window.isVisible {
                 windowController.showWindow(nil)
             }
+            globalVar.useCreateWindowShowDelay = false
             
             //加载Exif
             if publicVar.isShowExif && resetSize {

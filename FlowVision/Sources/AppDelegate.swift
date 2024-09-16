@@ -215,7 +215,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         globalVar.windowNum += 1
         
         // 显示窗口
-        if !globalVar.isLaunchFromFile {
+        if !globalVar.isLaunchFromFile || !globalVar.useCreateWindowShowDelay {
             windowController.showWindow(self)
         }
         
@@ -266,6 +266,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 return
             }else{
                 globalVar.isLaunchFromFile=true
+                if windowControllers.count == 0 || globalVar.autoHideToolbar {
+                    //直到大图加载完毕后才显示窗口，用来减少首次启动的画面闪动
+                    //对于多标签页情况的第二个标签页，使用此会导致大图的缩放是按上次记忆而不是当前窗口实际大小，因此除这两种情况外不适合使用
+                    globalVar.useCreateWindowShowDelay=true
+                }
                 if let targetWindowController = createNewWindow(file) {
                     openImageInTargetWindow(file, windowController: targetWindowController)
                 }
