@@ -3369,7 +3369,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 //                                fileDB.db[SortKeyDir(dir)]!.layoutCalcPos=nowLayoutCalcPos
                                 //                                fileDB.unlock()
                                 //                            }
-                                if(nowLayoutCalcPos > lastLayoutCalcPosUsed && (publicVar.timer.intervalSafe(name: "insertItems", second: 0.02+Double(i)*0.0001) || nowLayoutCalcPos == count)){
+                                if(nowLayoutCalcPos > lastLayoutCalcPosUsed && (publicVar.timer.intervalSafe(name: "insertItems", second: min(0.02+Double(i)*0.0001,5.0)) || nowLayoutCalcPos == count)){
                                     var indexPaths = [IndexPath]()
                                     for x in lastLayoutCalcPosUsed...nowLayoutCalcPos-1{
                                         indexPaths.append(IndexPath(item: x, section: 0))
