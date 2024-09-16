@@ -3673,26 +3673,43 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 
                 if LRUqueue.count >= 1 {
                     let overTime = (DispatchTime.now().uptimeNanoseconds-LRUqueue.last!.1.uptimeNanoseconds)/1000000000
-                    let memUseLimit = globalVar.memUseLimit // ?? (memSizeInGB > 20 ? 4000 : 2000)
+                    let memUseLimit = globalVar.memUseLimit
                     
                     if (overTime > 1800 && LRUqueue.count >= 2) || Int(memUse) > memUseLimit {
                         log("Memory free:")
                         log(LRUqueue.last!.0.removingPercentEncoding)
                         //由于先置目录再请求缩略图，所以此处可保证安全
-                        fileDB.lock()
-                        fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.isMemClearedToAvoidRemainingTask=true
-                        for fileModel in fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.files {
-                            fileModel.1.image=nil
-                            fileModel.1.folderImages=[NSImage]()
-                        }
+                        
                         if(LRUqueue.last!.0 != fileDB.curFolder){
                             //不是当前目录
+                            fileDB.lock()
+                            fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.isMemClearedToAvoidRemainingTask=true
+                            for fileModel in fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.files {
+                                fileModel.1.image=nil
+                                fileModel.1.folderImages=[NSImage]()
+                            }
                             LRUcount-=fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.fileCount
                             LRUqueue.removeLast()
+                            fileDB.unlock()
                         }else{
                             //是当前目录
+                            let visibleIndexPaths=collectionView.indexPathsForVisibleItems()
+                            var itemArray: [Int] = visibleIndexPaths.map { $0.item }
+                            itemArray.sort()
+                            let indexMin = (itemArray.first ?? 0) - PRELOAD_THUMB_RANGE_PRE
+                            let indexMax = (itemArray.last ?? 0) + PRELOAD_THUMB_RANGE_NEXT
+                            
+                            fileDB.lock()
+                            fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.isMemClearedToAvoidRemainingTask=true
+                            for fileModel in fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.files {
+                                if fileModel.1.id < indexMin || fileModel.1.id > indexMax {
+                                    fileModel.1.image=nil
+                                    fileModel.1.folderImages=[NSImage]()
+                                }
+                            }
+                            fileDB.unlock()
                         }
-                        fileDB.unlock()
+                        
                     }
                 }
                 
@@ -3850,8 +3867,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             let originalMax=itemSorted.last!
 
             //序号最大最小值
-            let itemIndexMin=max(itemSorted.first! - 20, 0)
-            let itemIndexMax=itemSorted.last! + 40
+            let itemIndexMin=max(itemSorted.first! - PRELOAD_THUMB_RANGE_PRE, 0)
+            let itemIndexMax=itemSorted.last! + PRELOAD_THUMB_RANGE_NEXT
             
             if itemIndexMin >= itemIndexMax {return}
             
