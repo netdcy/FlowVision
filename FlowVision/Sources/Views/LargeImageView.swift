@@ -9,11 +9,6 @@ import Foundation
 import Cocoa
 import VisionKit
 
-@available(macOS 13.0, *)
-let analyzer = ImageAnalyzer()
-@available(macOS 13.0, *)
-let overlayView = ImageAnalysisOverlayView()
-
 class LargeImageView: NSView {
 
     var imageView: InterpolatedImageView!
@@ -57,13 +52,6 @@ class LargeImageView: NSView {
         imageView.wantsLayer = true
         imageView.animates=true
         self.addSubview(imageView)
-        
-        if #available(macOS 13.0, *) {
-            overlayView.autoresizingMask = [.width, .height]
-            overlayView.frame = imageView.bounds
-            overlayView.trackingImageView = imageView
-            imageView.addSubview(overlayView)
-        }
         
         exifTextView = ExifTextView(frame: .zero)
         exifTextView.translatesAutoresizingMaskIntoConstraints = false
@@ -635,11 +623,21 @@ class LargeImageView: NSView {
                 return
             }
             
+            unSetOcr()
+            
+            let analyzer = ImageAnalyzer()
+            let overlayView = ImageAnalysisOverlayView()
+            
+            overlayView.autoresizingMask = [.width, .height]
+            overlayView.frame = imageView.bounds
+            overlayView.trackingImageView = imageView
+            imageView.addSubview(overlayView)
+            
             Task {
                 let configuration = ImageAnalyzer.Configuration([.text])
                 if let analysis = try? await analyzer.analyze(cgImage, orientation: .up, configuration: configuration) {
-                    overlayView.analysis = analysis
                     overlayView.preferredInteractionTypes = .automatic
+                    overlayView.analysis = analysis
                     isInOcrState = true
                 }
             }
@@ -662,8 +660,12 @@ class LargeImageView: NSView {
     
     func unSetOcr() {
         if #available(macOS 13.0, *) {
-            overlayView.analysis = nil
-            overlayView.preferredInteractionTypes = []
+            for subview in imageView.subviews {
+                if let overlayView = subview as? ImageAnalysisOverlayView {
+                    overlayView.analysis = nil
+                    overlayView.removeFromSuperview()
+                }
+            }
             isInOcrState = false
         }
     }
