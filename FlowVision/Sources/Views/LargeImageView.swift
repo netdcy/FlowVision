@@ -361,7 +361,7 @@ class LargeImageView: NSView {
         getViewController(self)!.publicVar.isRightMouseDown = false
         mouseUp(with: event)
         
-        if !doNotPopRightMenu{
+        if !doNotPopRightMenu && event.locationInWindow.y < getViewController(self)!.mainScrollView.bounds.height {
             //弹出菜单
             let menu = NSMenu(title: "Custom Menu")
             menu.autoenablesItems = false
