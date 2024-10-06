@@ -3675,7 +3675,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     let overTime = (DispatchTime.now().uptimeNanoseconds-LRUqueue.last!.1.uptimeNanoseconds)/1000000000
                     let memUseLimit = globalVar.memUseLimit
                     
-                    if (overTime > 1800 && LRUqueue.count >= 2) || Int(memUse) > memUseLimit {
+                    if (overTime > 1800 && LRUqueue.count >= 2) || (Int(memUse) > memUseLimit && LRUcount > 500) {
                         log("Memory free:")
                         log(LRUqueue.last!.0.removingPercentEncoding)
                         //由于先置目录再请求缩略图，所以此处可保证安全
