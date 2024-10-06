@@ -981,6 +981,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         fileDB.unlock()
         refreshCollectionView([], dryRun: true)
+        setLoadThumbPriority(ifNeedVisable: true)
     }
 
     func toggleSidebar(){
