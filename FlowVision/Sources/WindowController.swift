@@ -486,7 +486,7 @@ extension WindowController: NSToolbarDelegate {
     private func createWindowTitleLabel() -> NSTextField {
         var fullTitle = (contentViewController as? ViewController)?.publicVar.fullTitle
         let titleLabel = NonClickableTextField(labelWithString: fullTitle ?? "FlowVision")
-        titleLabel.font = NSFont.systemFont(ofSize: 14, weight: .regular)
+        titleLabel.font = NSFont.systemFont(ofSize: 14, weight: .medium)
         titleLabel.alignment = .center
         titleLabel.isBezeled = false
         titleLabel.drawsBackground = false
