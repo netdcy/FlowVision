@@ -1625,6 +1625,25 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
     
+    func handleNewFolderWithSelection() {
+        var urls = publicVar.selectedUrls()
+        if urls.isEmpty {return}
+        
+        let (ifSuccess,newFolderURL) = handleNewFolder()
+        
+        if ifSuccess {
+            // 备份剪贴板内容
+            let backupItems = backupPasteboard()
+            
+            handleCopy()
+            handleMove(targetURL: newFolderURL)
+            
+            // 还原剪贴板内容
+            restorePasteboard(items: backupItems)
+        }
+        
+    }
+    
     func handleGetInfo(_ providedUrls: [URL] = []) {
         var urls = providedUrls
         if providedUrls.isEmpty {
@@ -2032,7 +2051,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
     
-    func handleNewFolder(targetURL: URL? = nil) -> Bool {
+    func handleNewFolder(targetURL: URL? = nil) -> (Bool,URL?) {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("new-folder", comment: "新建文件夹")
         alert.informativeText = NSLocalizedString("input-new-folder-name", comment: "请输入文件夹名称：")
@@ -2068,7 +2087,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 
                 var destinationURL = URL(string: curFolder)
                 if targetURL != nil {destinationURL=targetURL}
-                guard let destinationURL=destinationURL else {return false}
+                guard let destinationURL=destinationURL else {return (false,nil)}
                 
                 let newFolderURL = destinationURL.appendingPathComponent(folderName)
                 
@@ -2083,14 +2102,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         
                         try FileManager.default.createDirectory(at: newFolderURL, withIntermediateDirectories: true, attributes: nil)
                         log("新建文件夹成功: \(newFolderURL.path)")
-                        return true
+                        return (true,newFolderURL)
                     } catch {
                         log("新建文件夹失败: \(error)")
                     }
                 }
             }
         }
-        return false
+        return (false,nil)
     }
     
     // 系统主题变化时会触发此方法

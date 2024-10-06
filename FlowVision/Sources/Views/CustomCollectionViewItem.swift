@@ -507,8 +507,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 if selectedCount > 1 {
                     let title = String(format: NSLocalizedString("(Multiselect)", comment: "(多选)"), selectedCount)
-                    let actionItemMultiselect = menu.addItem(withTitle: title, action: nil, keyEquivalent: "")
-                    actionItemMultiselect.isEnabled = false
+                    let actionItemMultiselect = menu.addItem(withTitle: title, action: #selector(actNewFolderWithSelection), keyEquivalent: "")
                     
                     menu.addItem(NSMenuItem.separator())
                 }
@@ -680,6 +679,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         guard let urls = getViewController(collectionView!)?.getSelectedURLs() else { return }
         NSWorkspace.shared.activateFileViewerSelecting(urls)
+    }
+    
+    @objc func actNewFolderWithSelection() {
+        getViewController(collectionView!)?.handleNewFolderWithSelection()
     }
     
     @objc func actGetInfo() {

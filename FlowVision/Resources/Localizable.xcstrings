@@ -7,13 +7,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "(%d Items Selected)"
+            "value" : "New Folder with Selection (%d Items)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "(%d个对象已被选中)"
+            "value" : "用所选项目新建文件夹 (%d个项目)"
           }
         }
       }

@@ -219,7 +219,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         guard let url=URL(string: curRightClickedPath) else{return}
         guard let viewController = getViewController(self) else{return}
         
-        if viewController.handleNewFolder(targetURL: url) {
+        if viewController.handleNewFolder(targetURL: url).0 {
             if curRightClickedIndex != self.selectedRowIndexes.first {
                 refreshTreeView()
             }
