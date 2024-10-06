@@ -1155,7 +1155,7 @@ func performLegacyOCR(on image: NSImage, completion: @escaping (Result<[String],
 class LargeImageProcessor {
     private static let cache: CustomCache<NSString, CacheWrapper> = {
         let cache = CustomCache<NSString, CacheWrapper>()
-        cache.countLimit = 1 // 设置缓存容量
+        cache.countLimit = 16 // 设置缓存容量
         return cache
     }()
     
@@ -1321,7 +1321,7 @@ class CustomCache<Key: Hashable, Value> {
 class ThumbImageProcessor {
     private static let cache: CustomCache<NSString, CacheWrapper> = {
         let cache = CustomCache<NSString, CacheWrapper>()
-        cache.countLimit = 16 // 设置缓存容量
+        cache.countLimit = 1 // 设置缓存容量
         return cache
     }()
     

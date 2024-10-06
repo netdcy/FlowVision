@@ -204,8 +204,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     var watchFileDescriptor: Int32 = -1
     var watchDispatchSource: DispatchSourceFileSystemObject?
     
-    var LRUqueue = [(String,DispatchTime)]()
-    var LRUcount = 0
+    var LRUqueue = [(String,DispatchTime,Int)]()
     
     var largeImageLoadTask: DispatchWorkItem?
     var largeImageLoadQueueLock = NSLock()
@@ -459,7 +458,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     return nil
                 }
                 // 检查按键是否是 "R" 键
-                if characters == "r" && noModifierKey {
+                if (characters == "r" || specialKey == .f5) && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actRefresh()
                         return nil
@@ -2686,6 +2685,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
         }
         let nextFolder = fileDB.db[curIndex].0.path
+        let fileCount = fileDB.db[curIndex].1.files.count
         //log(fileDB.db[curIndex].1.files.count)
         fileDB.unlock()
         //testTmpFolder=fileDB.db[curIndex].0
@@ -2707,7 +2707,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         switchFolder(path: nextFolder)
         startWatchingDirectory(atPath: nextFolder.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!)
         if !publicVar.isInLargeView {setWindowTitle()}
-        LRUMemRecord(path: nextFolder)
+        LRUMemRecord(path: nextFolder, count: fileCount)
         
         let defaults = UserDefaults.standard
         defaults.set(nextFolder, forKey: "lastFolder")
@@ -3415,6 +3415,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                         
                                     }
                                     for x in lastLayoutCalcPosUsed...nowLayoutCalcPos-1{
+                                        //TODO: 大量读取文件时造成系统内存不足
+                                        let memUseLimit = globalVar.memUseLimit
+                                        if x > memUseLimit {
+                                            break
+                                        }
                                         fileDB.lock()
                                         let curKey = dirModel.files.elementSafe(atOffset: x)?.0
                                         let file = dirModel.files.elementSafe(atOffset: x)?.1
@@ -3695,7 +3700,23 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     let overTime = (DispatchTime.now().uptimeNanoseconds-LRUqueue.last!.1.uptimeNanoseconds)/1000000000
                     let memUseLimit = globalVar.memUseLimit
                     
-                    if (overTime > 1800 && LRUqueue.count >= 2) || (Int(memUse) > memUseLimit && LRUcount > 500) {
+                    fileDB.lock()
+                    let curFolder=fileDB.curFolder
+                    let curFolderFileCount = fileDB.db[SortKeyDir(curFolder)]!.fileCount
+                    fileDB.unlock()
+                    
+                    var totalCount = 0
+                    for (_,_,count) in LRUqueue {
+                        totalCount += count
+                    }
+                    
+                    var ifCantDetectMemUse = false
+                    if #available(macOS 15, *) {
+                        //有时在macos 15上观察到，图片占用的内存变成了与WindowServer的共享内存，此时无法直接获取大小
+                        ifCantDetectMemUse = totalCount > memUseLimit * 2
+                    }
+                    
+                    if (overTime > 600 && LRUqueue.count >= 2) || (Int(memUse) > memUseLimit) {
                         log("Memory free:")
                         log(LRUqueue.last!.0.removingPercentEncoding)
                         //由于先置目录再请求缩略图，所以此处可保证安全
@@ -3708,7 +3729,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 fileModel.1.image=nil
                                 fileModel.1.folderImages=[NSImage]()
                             }
-                            LRUcount-=fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.fileCount
                             LRUqueue.removeLast()
                             fileDB.unlock()
                         }else{
@@ -3752,14 +3772,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         
     }
-    func LRUMemRecord(path: String){
+    func LRUMemRecord(path: String, count: Int){
         fileDB.lock()
         var index: Int?
         if LRUqueue.count > 0 {
             //之前队首的最后访问时间记录为当前时间
             LRUqueue[0].1=DispatchTime.now()
             //查找队列中是否有path
-            for (i,(lruPath,_)) in LRUqueue.enumerated() {
+            for (i,(lruPath,_,_)) in LRUqueue.enumerated() {
                 if lruPath == path {
                     index=i
                     break
@@ -3769,10 +3789,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         if index != nil {
             LRUqueue.remove(at: index!)
-        }else{
-            LRUcount+=fileDB.db[SortKeyDir(path)]!.fileCount
         }
-        LRUqueue.insert((path,DispatchTime.now()), at: 0)
+        LRUqueue.insert((path,DispatchTime.now(),count), at: 0)
         fileDB.unlock()
     }
     func reportPhyMemoryUsage() -> Double {
