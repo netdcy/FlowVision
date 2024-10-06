@@ -4788,7 +4788,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             guard let self = self else { return }
             folderMonitorTimer?.invalidate()
             folderMonitorTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { timer in
-                self.refreshAll([])
+                self.refreshAll()
             }
         }
     }
