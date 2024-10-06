@@ -75,13 +75,7 @@ brew upgrade flowvision --no-quarantine
 
 **Q1: 为什么我无法打开这个应用？系统提示应用程序不受信任。**
 
-**A1:** 这是因为该应用程序没有经过Apple的公证。要打开它，请按以下步骤操作：
-- 在Finder中找到应用程序
-- 右键点击应用程序文件
-- 从菜单中选择“打开”
-- 在出现的对话框中再次点击“打开”
-
-(https://support.apple.com/102445#openanyway)
+**A1:** 这是因为该应用程序没有经过Apple的公证。要打开它，请按照 [Apple 支持文档](https://support.apple.com/102445#openanyway) 中的指示进行操作。
 
 **Q2: 为什么应用程序没有经过公证？**
 

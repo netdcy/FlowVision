@@ -71,13 +71,7 @@ brew upgrade flowvision --no-quarantine
 
 **Q1: Why can't I open the application? I see a warning saying the app is not trusted.**
 
-**A1:** This happens because the app is not notarized by Apple. To open it:
-- Find the app in the Finder.
-- Right-click the app file.
-- Select "Open" from the menu.
-- Click "Open" in the dialog that appears.
-
-(https://support.apple.com/102445#openanyway)
+**A1:** This happens because the app is not notarized by Apple. Please follow the instructions provided in [Apple support article](https://support.apple.com/102445#openanyway) to open the app.
 
 **Q2: Why isn't the application notarized?**
 
