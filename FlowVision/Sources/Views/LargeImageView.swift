@@ -488,7 +488,9 @@ class LargeImageView: NSView {
             }
             //log(imageView.frame.size,imageView.frame.origin)
             
-            showRatio()
+            if abs(event.deltaY) > 0 {
+                showRatio()
+            }
         }
     }
     

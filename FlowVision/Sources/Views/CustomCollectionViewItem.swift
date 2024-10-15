@@ -741,6 +741,15 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             openWithMenu.addItem(appMenuItem)
         }
         
+        if commonAppURLs.isEmpty {
+            let emptyMenuItem = NSMenuItem(
+                title: NSLocalizedString("empty-enclose", comment: "菜单当内容为空时显示的东西"),
+                action: nil,
+                keyEquivalent: ""
+            )
+            openWithMenu.addItem(emptyMenuItem)
+        }
+        
         // 添加到主菜单
         menu.addItem(openWithMenuItem)
     }
@@ -774,19 +783,24 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     private func calculateCommonApplications(for representativeUrls: [URL]) -> [URL] {
         guard !representativeUrls.isEmpty else { return [] }
         
-        var appURLSets: [Set<URL>] = []
+        // 获取每个代表 URL 的应用程序列表
+        var appURLLists: [[URL]] = []
         
         for fileUrl in representativeUrls {
             let cfFileUrl = fileUrl as CFURL
             let appURLs = LSCopyApplicationURLsForURL(cfFileUrl, .all)?.takeRetainedValue() as? [URL] ?? []
-            appURLSets.append(Set(appURLs))
+            appURLLists.append(appURLs)
         }
         
-        // 计算交集
-        guard let firstSet = appURLSets.first else { return [] }
-        let commonApps = appURLSets.reduce(firstSet) { $0.intersection($1) }
+        // 计算交集并保留顺序
+        guard let firstList = appURLLists.first else { return [] }
         
-        return Array(commonApps)
+        // 从第一个列表开始，过滤出在所有列表中都存在的应用程序
+        let commonApps = firstList.filter { appURL in
+            appURLLists.dropFirst().allSatisfy { $0.contains(appURL) }
+        }
+        
+        return commonApps
     }
 
     @objc func openFileWithApp(_ sender: NSMenuItem) {

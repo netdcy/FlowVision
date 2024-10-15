@@ -583,7 +583,7 @@ extension WindowController: NSToolbarDelegate {
         }
     }
     
-    @objc func showSortMenu(_ sender: NSButton) {
+    @objc func showSortMenu(_ sender: Any?) {
         guard let viewController = contentViewController as? ViewController else {return}
         let sortTypes: [(SortType, String)] = [
             (.pathA, NSLocalizedString("sort-pathA", comment: "文件名")),
@@ -618,9 +618,14 @@ extension WindowController: NSToolbarDelegate {
             menu.addItem(menuItem)
         }
         
-        let buttonFrame = sender.convert(sender.bounds, to: nil)
-        let menuLocation = NSPoint(x: 0, y: buttonFrame.height + 4)
-        menu.popUp(positioning: nil, at: menuLocation, in: sender)
+        if let button = sender as? NSButton {
+            let buttonFrame = button.convert(button.bounds, to: nil)
+            let menuLocation = NSPoint(x: 0, y: buttonFrame.height + 4)
+            menu.popUp(positioning: nil, at: menuLocation, in: button)
+        } else {
+            let menuLocation = NSEvent.mouseLocation
+            menu.popUp(positioning: nil, at: menuLocation, in: nil)
+        }
     }
     
     @objc func sortFolderFirst(_ sender: NSMenuItem) {
@@ -635,7 +640,7 @@ extension WindowController: NSToolbarDelegate {
         viewController.changeSortType(sortType)
     }
     
-    @objc func favoritesAction(_ sender: NSButton) {
+    @objc func favoritesAction(_ sender: Any?) {
         guard let viewController = contentViewController as? ViewController else {return}
         
         let favoritesMenu = NSMenu()
@@ -709,12 +714,17 @@ extension WindowController: NSToolbarDelegate {
             favoritesMenu.addItem(emptyMenuItem)
         }
         
-        let buttonFrame = sender.convert(sender.bounds, to: nil)
-        let menuLocation = NSPoint(x: 0, y: buttonFrame.height + 4)
-        favoritesMenu.popUp(positioning: nil, at: menuLocation, in: sender)
+        if let button = sender as? NSButton {
+            let buttonFrame = button.convert(button.bounds, to: nil)
+            let menuLocation = NSPoint(x: 0, y: buttonFrame.height + 4)
+            favoritesMenu.popUp(positioning: nil, at: menuLocation, in: button)
+        } else {
+            let menuLocation = NSEvent.mouseLocation
+            favoritesMenu.popUp(positioning: nil, at: menuLocation, in: nil)
+        }
     }
     
-    @objc func showThumbSizeMenu(_ sender: NSButton) {
+    @objc func showThumbSizeMenu(_ sender: Any?) {
         guard let viewController = contentViewController as? ViewController else {return}
 
         let thumbSizeOptions = THUMB_SIZES.map { ($0, "\($0) × \($0)") }
@@ -754,9 +764,14 @@ extension WindowController: NSToolbarDelegate {
 //        }
         
         
-        let buttonFrame = sender.convert(sender.bounds, to: nil)
-        let menuLocation = NSPoint(x: 0, y: buttonFrame.height + 4)
-        menu.popUp(positioning: nil, at: menuLocation, in: sender)
+        if let button = sender as? NSButton {
+            let buttonFrame = button.convert(button.bounds, to: nil)
+            let menuLocation = NSPoint(x: 0, y: buttonFrame.height + 4)
+            menu.popUp(positioning: nil, at: menuLocation, in: button)
+        } else {
+            let menuLocation = NSEvent.mouseLocation
+            menu.popUp(positioning: nil, at: menuLocation, in: nil)
+        }
     }
     
     @objc func genHdThumbAction(_ sender: NSMenuItem){
@@ -791,7 +806,7 @@ extension WindowController: NSToolbarDelegate {
         viewController.changeThumbSize(thumbSize: thumbSize)
     }
     
-    @objc func showMoreMenu(_ sender: NSButton) {
+    @objc func showMoreMenu(_ sender: Any?) {
         guard let viewController = contentViewController as? ViewController else {return}
         
         let menu = NSMenu()
@@ -892,9 +907,14 @@ extension WindowController: NSToolbarDelegate {
             switchToDarkMode.state = (theme == .darkAqua) ? .on : .off
         }
         
-        let buttonFrame = sender.convert(sender.bounds, to: nil)
-        let menuLocation = NSPoint(x: 0, y: buttonFrame.height + 4)
-        menu.popUp(positioning: nil, at: menuLocation, in: sender)
+        if let button = sender as? NSButton {
+            let buttonFrame = button.convert(button.bounds, to: nil)
+            let menuLocation = NSPoint(x: 0, y: buttonFrame.height + 4)
+            menu.popUp(positioning: nil, at: menuLocation, in: button)
+        } else {
+            let menuLocation = NSEvent.mouseLocation
+            menu.popUp(positioning: nil, at: menuLocation, in: nil)
+        }
     }
     
     @objc func maximizeWindow(_ sender: NSMenuItem){
