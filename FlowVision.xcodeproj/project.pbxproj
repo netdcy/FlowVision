@@ -549,7 +549,7 @@
 				INFOPLIST_FILE = FlowVision/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2024 netdcy. Licensed under GPL-3.0.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2024 netdcy";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -580,7 +580,7 @@
 				INFOPLIST_FILE = FlowVision/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2024 netdcy. Licensed under GPL-3.0.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2024 netdcy";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (

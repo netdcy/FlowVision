@@ -532,11 +532,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 menu.addItem(NSMenuItem.separator())
                 
-                if selectedCount == 1 {
-                    if URL(string: file.path)!.hasDirectoryPath == false {
-                        addOpenWithSubMenu(to: menu, for: URL(string: file.path)!)
-                    }
-                }
+                addOpenWithSubMenu(to: menu)
                 
                 menu.addItem(withTitle: NSLocalizedString("show-in-finder", comment: "在Finder中显示"), action: #selector(actShowInFinder), keyEquivalent: "")
                 
@@ -721,16 +717,20 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         getViewController(collectionView!)?.handleMove()
     }
     
-    func addOpenWithSubMenu(to menu: NSMenu, for fileUrl: URL) {
+    func addOpenWithSubMenu(to menu: NSMenu) {
+        guard let fileUrls = getViewController(collectionView!)?.getSelectedURLs() else { return }
+
         let openWithMenu = NSMenu(title: "openWith")
         let openWithMenuItem = NSMenuItem(title: NSLocalizedString("open-with", comment: "打开方式"), action: nil, keyEquivalent: "")
         openWithMenuItem.submenu = openWithMenu
         
-        // 获取可以打开文件的应用程序列表
-        let cfFileUrl = fileUrl as CFURL
-        let appURLs = LSCopyApplicationURLsForURL(cfFileUrl, .all)?.takeRetainedValue() as? [URL] ?? []
+        // 获取每种文件类型的一个代表 URL
+        let representativeUrls = getRepresentativeUrls(for: fileUrls)
         
-        for appURL in appURLs {
+        // 获取代表 URL 的可用应用程序并计算交集
+        let commonAppURLs = calculateCommonApplications(for: representativeUrls)
+        
+        for appURL in commonAppURLs {
             let appName = FileManager.default.displayName(atPath: appURL.path)
             let appIcon = NSWorkspace.shared.icon(forFile: appURL.path)
             let appMenuItem = NSMenuItem(title: appName.replacingOccurrences(of: ".app", with: " "), action: #selector(openFileWithApp(_:)), keyEquivalent: "")
@@ -744,12 +744,56 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         // 添加到主菜单
         menu.addItem(openWithMenuItem)
     }
+    
+    @objc private func selectApplication(_ sender: NSMenuItem) {
+        guard let fileUrls = getViewController(collectionView!)?.getSelectedURLs() else { return }
+        if let appURL = sender.representedObject as? URL {
+            NSWorkspace.shared.open(fileUrls, withApplicationAt: appURL, configuration: NSWorkspace.OpenConfiguration(), completionHandler: { (app, error) in
+                if let error = error {
+                    log("Error opening file: \(error.localizedDescription)")
+                } else if let app = app {
+                    log("Application \(app.localizedName ?? "Unknown") opened")
+                }
+            })
+        }
+    }
+    
+    private func getRepresentativeUrls(for fileUrls: [URL]) -> [URL] {
+        var representativeUrls: [String: URL] = [:]
+        
+        for fileUrl in fileUrls {
+            let fileExtension = fileUrl.pathExtension.lowercased()
+            if representativeUrls[fileExtension] == nil {
+                representativeUrls[fileExtension] = fileUrl
+            }
+        }
+        
+        return Array(representativeUrls.values)
+    }
+    
+    private func calculateCommonApplications(for representativeUrls: [URL]) -> [URL] {
+        guard !representativeUrls.isEmpty else { return [] }
+        
+        var appURLSets: [Set<URL>] = []
+        
+        for fileUrl in representativeUrls {
+            let cfFileUrl = fileUrl as CFURL
+            let appURLs = LSCopyApplicationURLsForURL(cfFileUrl, .all)?.takeRetainedValue() as? [URL] ?? []
+            appURLSets.append(Set(appURLs))
+        }
+        
+        // 计算交集
+        guard let firstSet = appURLSets.first else { return [] }
+        let commonApps = appURLSets.reduce(firstSet) { $0.intersection($1) }
+        
+        return Array(commonApps)
+    }
 
     @objc func openFileWithApp(_ sender: NSMenuItem) {
-        guard let appURL = sender.representedObject as? URL, let fileUrl = URL(string: file.path)
-            else { return }
+        guard let appURL = sender.representedObject as? URL else { return }
+        guard let fileUrls = getViewController(collectionView!)?.getSelectedURLs() else { return }
         
-        NSWorkspace.shared.open([fileUrl], withApplicationAt: appURL, configuration: NSWorkspace.OpenConfiguration(), completionHandler: { (app, error) in
+        NSWorkspace.shared.open(fileUrls, withApplicationAt: appURL, configuration: NSWorkspace.OpenConfiguration(), completionHandler: { (app, error) in
             if let error = error {
                 log("Error opening file: \(error.localizedDescription)")
             } else if let app = app {
