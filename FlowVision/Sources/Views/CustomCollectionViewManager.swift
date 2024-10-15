@@ -11,6 +11,7 @@ import Cocoa
 class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout {
     
     var fileDB: DatabaseModel
+    var lastSelectedIndexPath: IndexPath?
     
     init(fileDB: DatabaseModel) {
         self.fileDB = fileDB
@@ -87,6 +88,26 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
             pasteboardItem.setString(url.absoluteString, forType: .fileURL)
         }
         return pasteboardItem
+    }
+    
+    func collectionView(_ collectionView: NSCollectionView, shouldSelectItemsAt indexPaths: Set<IndexPath>) -> Set<IndexPath> {
+        guard let indexPath = indexPaths.first else { return [] }
+        
+        // Check if the Shift key is pressed or no selection
+        if NSEvent.modifierFlags.contains(.shift), let lastIndexPath = lastSelectedIndexPath, collectionView.selectionIndexPaths.count >= 1 {
+            // Calculate the range of items to select
+            let startIndex = min(lastIndexPath.item, indexPath.item)
+            let endIndex = max(lastIndexPath.item, indexPath.item)
+            let indexSet = IndexSet(startIndex...endIndex)
+            
+            // Create new index paths for the range
+            let newSelectedIndexPaths = indexSet.map { IndexPath(item: $0, section: indexPath.section) }
+            return Set(newSelectedIndexPaths)
+        } else {
+            // Update the last selected index path for non-shift selection
+            lastSelectedIndexPath = indexPath
+            return indexPaths
+        }
     }
 
 }
