@@ -337,24 +337,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         //-----开始读取配置-----
         
-        if let thumbSize = UserDefaults.standard.value(forKey: "thumbSize") as? Int {
-            publicVar.profile.thumbSize = thumbSize
-        }
         //TODO: 没有工具栏时，载入时折叠且divider宽度设为0会造成菜单栏变白
-        if let isDirTreeHidden = UserDefaults.standard.value(forKey: "isDirTreeHidden") as? Bool {
-            publicVar.profile.isDirTreeHidden=isDirTreeHidden
-        }
+
         if let isLargeImageFitWindow = UserDefaults.standard.value(forKey: "isLargeImageFitWindow") as? Bool {
             publicVar.isLargeImageFitWindow=isLargeImageFitWindow
         }
         if let layoutType: LayoutType = UserDefaults.standard.enumValue(forKey: "layoutType"){
             publicVar.layoutType=layoutType
-        }
-        if let sortType: SortType = UserDefaults.standard.enumValue(forKey: "sortType"){
-            publicVar.profile.sortType=sortType
-        }
-        if let isSortFolderFirst = UserDefaults.standard.value(forKey: "isSortFolderFirst") as? Bool {
-            publicVar.profile.isSortFolderFirst = isSortFolderFirst
         }
         if let isShowHiddenFile = UserDefaults.standard.value(forKey: "isShowHiddenFile") as? Bool {
             publicVar.isShowHiddenFile = isShowHiddenFile
@@ -374,6 +363,18 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if let isGenHdThumb = UserDefaults.standard.value(forKey: "isGenHdThumb") as? Bool {
             publicVar.isGenHdThumb = isGenHdThumb
         }
+//        if let thumbSize = UserDefaults.standard.value(forKey: "thumbSize") as? Int {
+//            publicVar.profile.thumbSize = thumbSize
+//        }
+//        if let isDirTreeHidden = UserDefaults.standard.value(forKey: "isDirTreeHidden") as? Bool {
+//            publicVar.profile.isDirTreeHidden=isDirTreeHidden
+//        }
+//        if let sortType: SortType = UserDefaults.standard.enumValue(forKey: "sortType"){
+//            publicVar.profile.sortType=sortType
+//        }
+//        if let isSortFolderFirst = UserDefaults.standard.value(forKey: "isSortFolderFirst") as? Bool {
+//            publicVar.profile.isSortFolderFirst = isSortFolderFirst
+//        }
         publicVar.profile = CustomProfile.loadFromUserDefaults(withKey: "CustomStyle_v1_current")
         
         //-----结束读取配置------
@@ -1122,8 +1123,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         fileDB.lock()
         publicVar.profile.sortType = sortType
         publicVar.profile.isSortFolderFirst = isSortFolderFirst
-        UserDefaults.standard.setEnum(publicVar.profile.sortType, forKey: "sortType")
-        UserDefaults.standard.set(publicVar.profile.isSortFolderFirst, forKey: "isSortFolderFirst")
+//        UserDefaults.standard.setEnum(publicVar.profile.sortType, forKey: "sortType")
+//        UserDefaults.standard.set(publicVar.profile.isSortFolderFirst, forKey: "isSortFolderFirst")
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
         globalVar.randomSeed = Int.random(in: 0...Int.max)
         for dirModel in fileDB.db {
             dirModel.1.changeSortType(publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst)
@@ -1147,8 +1149,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             splitView.setPosition(0, ofDividerAt: 0)
         }
 
-        let defaults = UserDefaults.standard
-        defaults.set(publicVar.profile.isDirTreeHidden, forKey: "isDirTreeHidden")
+//        let defaults = UserDefaults.standard
+//        defaults.set(publicVar.profile.isDirTreeHidden, forKey: "isDirTreeHidden")
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
     }
     
     func toggleOnTop(){
@@ -1552,7 +1555,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     
     func changeThumbSize(thumbSize: Int, doNotRefresh: Bool = false){
         publicVar.profile.thumbSize = thumbSize
-        UserDefaults.standard.set(thumbSize, forKey: "thumbSize")
+        //UserDefaults.standard.set(thumbSize, forKey: "thumbSize")
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
         changeWaterfallLayoutNumberOfColumns()
         if !doNotRefresh {
             refreshCollectionView([], dryRun: true)
@@ -2753,7 +2757,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         
         //停止自动滚动
-        stopAutoScroll()
+        //stopAutoScroll()
         
         //停止自动播放
         stopAutoPlay()
