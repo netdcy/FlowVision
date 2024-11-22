@@ -2018,6 +2018,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
         }
         
+        //播放提示音
+        triggerFinderSound()
+        
         var shouldReplaceAll = false
         var shouldSkipAll = false
         
@@ -2119,6 +2122,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 return
             }
         }
+        
+        //播放提示音
+        triggerFinderSound()
         
         var shouldReplaceAll = false
         var shouldSkipAll = false

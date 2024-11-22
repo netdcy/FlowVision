@@ -697,3 +697,53 @@ func showThumbnailOptionsPanel(on parentWindow: NSWindow, completion: @escaping 
         }
     }
 }
+
+func triggerFinderSound() {
+    let fileManager = FileManager.default
+    
+    do {
+        // 获取应用支持目录路径
+        let appSupportDirectory = try fileManager.url(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: true
+        )
+        
+        // 创建应用专用目录
+        let appDirectory = appSupportDirectory.appendingPathComponent("FlowVision", isDirectory: true)
+        if !fileManager.fileExists(atPath: appDirectory.path) {
+            try fileManager.createDirectory(at: appDirectory, withIntermediateDirectories: true, attributes: nil)
+        }
+        
+        // 创建临时文件路径
+        let tempFilePath = appDirectory.appendingPathComponent("tempFileForSound.txt")
+        
+        // 创建临时文件
+        if !fileManager.fileExists(atPath: tempFilePath.path) {
+            fileManager.createFile(atPath: tempFilePath.path, contents: nil, attributes: nil)
+        }
+        
+        // 使用 AppleScript 移动文件以触发 Finder 提示音
+        let script = """
+        tell application "Finder"
+            try
+                set tempFile to POSIX file "\(tempFilePath.path)" as alias
+                -- 移动文件到自身位置以触发提示音
+                move tempFile to container of tempFile
+            end try
+        end tell
+        """
+        
+        // 执行 AppleScript
+        var error: NSDictionary?
+        if let scriptObject = NSAppleScript(source: script) {
+            scriptObject.executeAndReturnError(&error)
+            if let error = error {
+                log("AppleScript Error: \(error)")
+            }
+        }
+    } catch {
+        log("Error setting up directories: \(error)")
+    }
+}
