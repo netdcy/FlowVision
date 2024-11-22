@@ -13,7 +13,7 @@ class CustomSplitView: NSSplitView {
     private var middleMouseInitialLocation: NSPoint?
     
     override var dividerThickness: CGFloat {
-        if getViewController(self)!.publicVar.style.isDirTreeHidden {
+        if getViewController(self)!.publicVar.profile.isDirTreeHidden {
             return 0
         }else{
             return 10

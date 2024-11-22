@@ -502,12 +502,12 @@ class ThumbnailOptionsWindow: NSWindow {
         let windowRect = NSRect(origin: .zero, size: windowSize)
         
         // Get current values
-        let mainViewController = getMainViewController()!.publicVar.style
-        isShowThumbnailFilename = mainViewController.isShowThumbnailFilename
-        thumbnailBorderThickness = mainViewController.ThumbnailBorderThickness
-        thumbnailCellPadding = mainViewController.ThumbnailCellPadding
-        thumbnailBorderRadius = mainViewController.ThumbnailBorderRadius
-        thumbnailFilenameSize = mainViewController.ThumbnailFilenameSize // Retrieve current ThumbnailFilenameSize
+        let profile = getMainViewController()!.publicVar.profile
+        isShowThumbnailFilename = profile.isShowThumbnailFilename
+        thumbnailBorderThickness = profile.ThumbnailBorderThickness
+        thumbnailCellPadding = profile.ThumbnailCellPadding
+        thumbnailBorderRadius = profile.ThumbnailBorderRadius
+        thumbnailFilenameSize = profile.ThumbnailFilenameSize // Retrieve current ThumbnailFilenameSize
         
         super.init(contentRect: windowRect, styleMask: [.titled, .closable], backing: .buffered, defer: false)
         self.title = NSLocalizedString("Thumbnail Options", comment: "缩略图选项")

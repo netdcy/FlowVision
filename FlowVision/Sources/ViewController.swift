@@ -10,7 +10,7 @@ import Cocoa
 import AVFoundation
 import DiskArbitration
 
-class CustomStyle: Codable {
+class CustomProfile: Codable {
     
     //侧边栏
     var isDirTreeHidden = false
@@ -41,14 +41,14 @@ class CustomStyle: Codable {
         }
     }
     
-    static func loadFromUserDefaults(withKey key: String) -> CustomStyle {
+    static func loadFromUserDefaults(withKey key: String) -> CustomProfile {
         if let savedData = UserDefaults.standard.data(forKey: key) {
             let decoder = JSONDecoder()
-            if let loadedStyle = try? decoder.decode(CustomStyle.self, from: savedData) {
+            if let loadedStyle = try? decoder.decode(CustomProfile.self, from: savedData) {
                 return loadedStyle
             }
         }
-        return CustomStyle() //读取异常时返回默认值
+        return CustomProfile() //读取异常时返回默认值
     }
 }
 
@@ -69,8 +69,8 @@ class PublicVar{
     var isShowVideoFile = true
     var isGenHdThumb = false
     
-    //可一键切换的样式
-    var style = CustomStyle()
+    //可一键切换的配置
+    var profile = CustomProfile()
     
     var fullTitle = "FlowVision"
     var isKeyEventEnabled = true
@@ -338,11 +338,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //-----开始读取配置-----
         
         if let thumbSize = UserDefaults.standard.value(forKey: "thumbSize") as? Int {
-            publicVar.style.thumbSize = thumbSize
+            publicVar.profile.thumbSize = thumbSize
         }
         //TODO: 没有工具栏时，载入时折叠且divider宽度设为0会造成菜单栏变白
         if let isDirTreeHidden = UserDefaults.standard.value(forKey: "isDirTreeHidden") as? Bool {
-            publicVar.style.isDirTreeHidden=isDirTreeHidden
+            publicVar.profile.isDirTreeHidden=isDirTreeHidden
         }
         if let isLargeImageFitWindow = UserDefaults.standard.value(forKey: "isLargeImageFitWindow") as? Bool {
             publicVar.isLargeImageFitWindow=isLargeImageFitWindow
@@ -351,10 +351,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             publicVar.layoutType=layoutType
         }
         if let sortType: SortType = UserDefaults.standard.enumValue(forKey: "sortType"){
-            publicVar.style.sortType=sortType
+            publicVar.profile.sortType=sortType
         }
         if let isSortFolderFirst = UserDefaults.standard.value(forKey: "isSortFolderFirst") as? Bool {
-            publicVar.style.isSortFolderFirst = isSortFolderFirst
+            publicVar.profile.isSortFolderFirst = isSortFolderFirst
         }
         if let isShowHiddenFile = UserDefaults.standard.value(forKey: "isShowHiddenFile") as? Bool {
             publicVar.isShowHiddenFile = isShowHiddenFile
@@ -374,13 +374,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if let isGenHdThumb = UserDefaults.standard.value(forKey: "isGenHdThumb") as? Bool {
             publicVar.isGenHdThumb = isGenHdThumb
         }
-        publicVar.style = CustomStyle.loadFromUserDefaults(withKey: "CustomStyle_v1_current")
+        publicVar.profile = CustomProfile.loadFromUserDefaults(withKey: "CustomStyle_v1_current")
         
         //-----结束读取配置------
         
         publicVar.setFileExtensions()
         
-        if publicVar.style.isDirTreeHidden{
+        if publicVar.profile.isDirTreeHidden{
             splitView.setPosition(0, ofDividerAt: 0)
         }
 
@@ -1120,13 +1120,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     
     func changeSortType(sortType: SortType, isSortFolderFirst: Bool, doNotRefresh: Bool = false){
         fileDB.lock()
-        publicVar.style.sortType = sortType
-        publicVar.style.isSortFolderFirst = isSortFolderFirst
-        UserDefaults.standard.setEnum(publicVar.style.sortType, forKey: "sortType")
-        UserDefaults.standard.set(publicVar.style.isSortFolderFirst, forKey: "isSortFolderFirst")
+        publicVar.profile.sortType = sortType
+        publicVar.profile.isSortFolderFirst = isSortFolderFirst
+        UserDefaults.standard.setEnum(publicVar.profile.sortType, forKey: "sortType")
+        UserDefaults.standard.set(publicVar.profile.isSortFolderFirst, forKey: "isSortFolderFirst")
         globalVar.randomSeed = Int.random(in: 0...Int.max)
         for dirModel in fileDB.db {
-            dirModel.1.changeSortType(publicVar.style.sortType, isSortFolderFirst: publicVar.style.isSortFolderFirst)
+            dirModel.1.changeSortType(publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst)
         }
         fileDB.unlock()
         if !doNotRefresh {
@@ -1140,15 +1140,15 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 
     func toggleSidebar(){
         hasManualToggleSidebar=true
-        publicVar.style.isDirTreeHidden.toggle()
-        if !publicVar.style.isDirTreeHidden{
+        publicVar.profile.isDirTreeHidden.toggle()
+        if !publicVar.profile.isDirTreeHidden{
             splitView.setPosition(270, ofDividerAt: 0)
         }else{
             splitView.setPosition(0, ofDividerAt: 0)
         }
 
         let defaults = UserDefaults.standard
-        defaults.set(publicVar.style.isDirTreeHidden, forKey: "isDirTreeHidden")
+        defaults.set(publicVar.profile.isDirTreeHidden, forKey: "isDirTreeHidden")
     }
     
     func toggleOnTop(){
@@ -1551,7 +1551,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     }
     
     func changeThumbSize(thumbSize: Int, doNotRefresh: Bool = false){
-        publicVar.style.thumbSize = thumbSize
+        publicVar.profile.thumbSize = thumbSize
         UserDefaults.standard.set(thumbSize, forKey: "thumbSize")
         changeWaterfallLayoutNumberOfColumns()
         if !doNotRefresh {
@@ -2460,13 +2460,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //        }
         
         if direction == 0 {
-            publicVar.style.thumbSize = 512
+            publicVar.profile.thumbSize = 512
         }else{
             let lastWaterFallNumberOfColumns = publicVar.waterfallLayout.numberOfColumns
             while lastWaterFallNumberOfColumns == publicVar.waterfallLayout.numberOfColumns {
-                if let currentIndex = THUMB_SIZES.firstIndex(of: publicVar.style.thumbSize) {
+                if let currentIndex = THUMB_SIZES.firstIndex(of: publicVar.profile.thumbSize) {
                     let newIndex = max(0, min(THUMB_SIZES.count - 1, currentIndex + direction))
-                    publicVar.style.thumbSize = THUMB_SIZES[newIndex]
+                    publicVar.profile.thumbSize = THUMB_SIZES[newIndex]
                     if currentIndex == newIndex {
                         if currentIndex == THUMB_SIZES.count-1 {
                             break
@@ -2480,14 +2480,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
             }
         }
-        changeThumbSize(thumbSize: publicVar.style.thumbSize)
+        changeThumbSize(thumbSize: publicVar.profile.thumbSize)
     }
     
     func changeWaterfallLayoutNumberOfColumns(){
-        var singleWidth = Double(publicVar.style.thumbSize) / 512 * 300
+        var singleWidth = Double(publicVar.profile.thumbSize) / 512 * 300
         
-        let scrollbarWidth = publicVar.style.ThumbnailScrollbarWidth
-        var totalWidth=self.mainScrollView.bounds.width - scrollbarWidth - 2 * publicVar.style.ThumbnailCellPadding
+        let scrollbarWidth = publicVar.profile.ThumbnailScrollbarWidth
+        var totalWidth=self.mainScrollView.bounds.width - scrollbarWidth - 2 * publicVar.profile.ThumbnailCellPadding
         if totalWidth < 25 {totalWidth = 25}
         if publicVar.isInLargeView && globalVar.portableMode {totalWidth = 1000}
         
@@ -2501,14 +2501,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //log("recalcLayout:"+String(recalcLayoutTimes))
         
         //var WIDTH_THRESHOLD=6.0/2000
-        var WIDTH_THRESHOLD=6.4/1920*512/Double(publicVar.style.thumbSize)
+        var WIDTH_THRESHOLD=6.4/1920*512/Double(publicVar.profile.thumbSize)
         
         if publicVar.layoutType == .grid {
-            WIDTH_THRESHOLD=10.0/1920*512/Double(publicVar.style.thumbSize)
+            WIDTH_THRESHOLD=10.0/1920*512/Double(publicVar.profile.thumbSize)
         }
         
-        let scrollbarWidth = publicVar.style.ThumbnailScrollbarWidth
-        var totalWidth = self.mainScrollView.bounds.width - scrollbarWidth - 2 * publicVar.style.ThumbnailCellPadding
+        let scrollbarWidth = publicVar.profile.ThumbnailScrollbarWidth
+        var totalWidth = self.mainScrollView.bounds.width - scrollbarWidth - 2 * publicVar.profile.ThumbnailCellPadding
         if totalWidth < 25 {totalWidth = 25}
         if publicVar.isInLargeView && globalVar.portableMode {totalWidth = 1000}
         
@@ -2531,7 +2531,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //let startKey = fileDB.db[targetFolder]!.files.elementSafe(atOffset: layoutCalcPos).0
         if layoutCalcPos>0 {
             if let thumbSize=fileDB.db[SortKeyDir(targetFolder)]!.files.elementSafe(atOffset: layoutCalcPos-1)?.1.thumbSize {
-                lastSingleHeight = thumbSize.height - (2*publicVar.style.ThumbnailBorderThickness+publicVar.style.ThumbnailFilenamePadding)
+                lastSingleHeight = thumbSize.height - (2*publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailFilenamePadding)
             }
         }
         if layoutCalcPos < count {
@@ -2545,7 +2545,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 singleIds.append(key)
                 if sum>=actualThreshold || i==fileDB.db[SortKeyDir(targetFolder)]!.files.count-1 {
                     sum=max(sum,actualThreshold)
-                    var singleHeight = floor((totalWidth - 2 * (publicVar.style.ThumbnailBorderThickness+publicVar.style.ThumbnailCellPadding) * Double(singleIds.count))/sum)
+                    var singleHeight = floor((totalWidth - 2 * (publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailCellPadding) * Double(singleIds.count))/sum)
                     if publicVar.layoutType == .grid && lastSingleHeight != nil { singleHeight=lastSingleHeight! } //防止最后一行不一样大小
                     lastSingleHeight=singleHeight
                     for singleId in singleIds{
@@ -2557,11 +2557,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         
                         if publicVar.layoutType == .waterfall {
                             let numberOfColumns=Double(publicVar.waterfallLayout.numberOfColumns)
-                            singleWidth = floor(totalWidth/numberOfColumns-2*(publicVar.style.ThumbnailBorderThickness+publicVar.style.ThumbnailCellPadding))
+                            singleWidth = floor(totalWidth/numberOfColumns-2*(publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailCellPadding))
                             singleHeight = round(originalSizeSingle.height/originalSizeSingle.width*singleWidth)
                         }
                         
-                        let size=NSSize(width: singleWidth+2*publicVar.style.ThumbnailBorderThickness, height: singleHeight+2*publicVar.style.ThumbnailBorderThickness+publicVar.style.ThumbnailFilenamePadding)
+                        let size=NSSize(width: singleWidth+2*publicVar.profile.ThumbnailBorderThickness, height: singleHeight+2*publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailFilenamePadding)
                         fileDB.db[SortKeyDir(targetFolder)]!.files[singleId]!.thumbSize=size
                         fileDB.db[SortKeyDir(targetFolder)]!.files[singleId]!.lineNo=lineCount
                     }
@@ -3098,10 +3098,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 var fileSortKey:SortKeyFile
                 let isDir:Bool
                 if filePath.hasSuffix("_FolderMark") {
-                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.style.sortType, isSortFolderFirst: publicVar.style.isSortFolderFirst)
+                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst)
                     isDir=true
                 }else{
-                    fileSortKey=SortKeyFile(filePath, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.style.sortType, isSortFolderFirst: publicVar.style.isSortFolderFirst)
+                    fileSortKey=SortKeyFile(filePath, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst)
                     isDir=false
                 }
                 //读取文件大小日期
@@ -3267,9 +3267,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             let filename=publicVar.openFromFinderPath
             //log(filename)
             fileDB.lock()
-            if let index=fileDB.db[SortKeyDir(path)]?.files.index(forKey: SortKeyFile(filename, needGetProperties: true, sortType: publicVar.style.sortType, isSortFolderFirst: publicVar.style.isSortFolderFirst)),
+            if let index=fileDB.db[SortKeyDir(path)]?.files.index(forKey: SortKeyFile(filename, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst)),
                let offset=fileDB.db[SortKeyDir(path)]?.files.offset(of: index),
-               let file=fileDB.db[SortKeyDir(path)]?.files[SortKeyFile(filename, needGetProperties: true, sortType: publicVar.style.sortType, isSortFolderFirst: publicVar.style.isSortFolderFirst)],
+               let file=fileDB.db[SortKeyDir(path)]?.files[SortKeyFile(filename, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst)],
                let url=URL(string: file.path),
                let totalCount=fileDB.db[SortKeyDir(path)]?.files.count,
                let fileCount=fileDB.db[SortKeyDir(path)]?.fileCount
@@ -3750,7 +3750,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 log("第一张图片开始载入耗时: \(timeInterval) seconds")
                             }
                             
-                            var revisedSize = NSSize(width: thumbSize!.width-2*publicVar.style.ThumbnailBorderThickness, height: thumbSize!.height-2*publicVar.style.ThumbnailBorderThickness-publicVar.style.ThumbnailFilenamePadding)
+                            var revisedSize = NSSize(width: thumbSize!.width-2*publicVar.profile.ThumbnailBorderThickness, height: thumbSize!.height-2*publicVar.profile.ThumbnailBorderThickness-publicVar.profile.ThumbnailFilenamePadding)
                             if publicVar.layoutType == .grid {
                                 var size = originalSize ?? DEFAULT_SIZE
                                 if size.width == 0 || size.height == 0 {size=DEFAULT_SIZE}
@@ -4524,7 +4524,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         let folderPath=fileDB.curFolder
         let imageCount=fileDB.db[SortKeyDir(folderPath)]?.imageCount ?? 0
         if imageCount != 0{
-            if let idInImage=fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.style.sortType, isSortFolderFirst: publicVar.style.isSortFolderFirst)]?.idInImage {
+            if let idInImage=fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst)]?.idInImage {
                 //fullTitle += " | " + String(format: "(%d/%d)",idInImage+1,imageCount)
                 fullTitle += " " + String(format: "(%d/%d)",idInImage+1,imageCount)
                 publicVar.lastLargeImageIdInImage=idInImage
@@ -5471,20 +5471,20 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
 
-    func configLayoutStyle(newStyle: CustomStyle ,doNotRefresh: Bool = false){
-        publicVar.style.isShowThumbnailFilename = newStyle.isShowThumbnailFilename
-        publicVar.style.ThumbnailBorderThickness = newStyle.ThumbnailBorderThickness
-        publicVar.style.ThumbnailCellPadding = newStyle.ThumbnailCellPadding
-        publicVar.style.ThumbnailBorderRadius = newStyle.ThumbnailBorderRadius
-        publicVar.style.ThumbnailFilenameSize = newStyle.ThumbnailFilenameSize
+    func configLayoutStyle(newStyle: CustomProfile ,doNotRefresh: Bool = false){
+        publicVar.profile.isShowThumbnailFilename = newStyle.isShowThumbnailFilename
+        publicVar.profile.ThumbnailBorderThickness = newStyle.ThumbnailBorderThickness
+        publicVar.profile.ThumbnailCellPadding = newStyle.ThumbnailCellPadding
+        publicVar.profile.ThumbnailBorderRadius = newStyle.ThumbnailBorderRadius
+        publicVar.profile.ThumbnailFilenameSize = newStyle.ThumbnailFilenameSize
         
-        if publicVar.style.isShowThumbnailFilename {
-            publicVar.style.ThumbnailFilenamePadding = round(publicVar.style.ThumbnailFilenameSize*1.3) + 2
+        if publicVar.profile.isShowThumbnailFilename {
+            publicVar.profile.ThumbnailFilenamePadding = round(publicVar.profile.ThumbnailFilenameSize*1.3) + 2
         }else{
-            publicVar.style.ThumbnailFilenamePadding = 0
+            publicVar.profile.ThumbnailFilenamePadding = 0
         }
         
-        publicVar.style.saveToUserDefaults(withKey: "CustomStyle_v1_current")
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
         
         changeWaterfallLayoutNumberOfColumns()
         if !doNotRefresh {
@@ -5497,7 +5497,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             showThumbnailOptionsPanel(on: mainWindow) { [weak self] isShowFilename, borderThickness, cellPadding, borderRadius, filenameSize in
                 guard let self = self else { return }
                 
-                let newStyle = CustomStyle()
+                let newStyle = CustomProfile()
                 newStyle.isShowThumbnailFilename = isShowFilename
                 newStyle.ThumbnailBorderThickness = borderThickness
                 newStyle.ThumbnailCellPadding = cellPadding
@@ -5513,23 +5513,23 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     //以下是切换自定义配置
     func setCustomProfileTo(_ styleName: String){
         coreAreaView.showInfo(String(format: NSLocalizedString("save-to-custom-profile", comment: "保存到自定义配置"), styleName), timeOut: 1)
-        publicVar.style.saveToUserDefaults(withKey: "CustomStyle_v1_"+styleName)
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_"+styleName)
     }
     
     func useCustomProfile(_ styleName: String){
         coreAreaView.showInfo(String(format: NSLocalizedString("switch-to-custom-profile", comment: "切换至自定义配置"), styleName), timeOut: 1)
-        let newStyle = CustomStyle.loadFromUserDefaults(withKey: "CustomStyle_v1_"+styleName)
+        let newStyle = CustomProfile.loadFromUserDefaults(withKey: "CustomStyle_v1_"+styleName)
         
         //边栏
-        if newStyle.isDirTreeHidden != publicVar.style.isDirTreeHidden {
+        if newStyle.isDirTreeHidden != publicVar.profile.isDirTreeHidden {
             toggleSidebar()
         }
         //排序
-        if newStyle.sortType != publicVar.style.sortType || newStyle.isSortFolderFirst != publicVar.style.isSortFolderFirst || newStyle.sortType == .random {
+        if newStyle.sortType != publicVar.profile.sortType || newStyle.isSortFolderFirst != publicVar.profile.isSortFolderFirst || newStyle.sortType == .random {
             changeSortType(sortType: newStyle.sortType, isSortFolderFirst: newStyle.isSortFolderFirst, doNotRefresh: true)
         }
         //缩略图大小
-        if newStyle.thumbSize != publicVar.style.thumbSize {
+        if newStyle.thumbSize != publicVar.profile.thumbSize {
             changeThumbSize(thumbSize: newStyle.thumbSize, doNotRefresh: true)
         }
         //样式

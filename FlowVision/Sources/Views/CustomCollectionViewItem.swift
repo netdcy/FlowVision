@@ -145,7 +145,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             imageViewObj.isFolder = false
         }
         
-        imageNameField.stringValue=getViewController(collectionView!)!.publicVar.style.isShowThumbnailFilename ? URL(string:file.path)!.lastPathComponent : ""
+        imageNameField.stringValue=getViewController(collectionView!)!.publicVar.profile.isShowThumbnailFilename ? URL(string:file.path)!.lastPathComponent : ""
         
         if(playAnimation){
             NSAnimationContext.runAnimationGroup({ context in
@@ -315,7 +315,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         setCustomFrameSize()
         
         //边框为0时使用图像高亮-选中
-        guard let style = getViewController(collectionView!)?.publicVar.style else {return}
+        guard let style = getViewController(collectionView!)?.publicVar.profile else {return}
         if style.ThumbnailBorderThickness <= 1 && !file.isDir {
             let overlayLayerName = "highlightOverlay"
             imageViewObj.layer?.sublayers?.forEach { sublayer in
@@ -400,7 +400,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     func setCustomFrameSize(){
-        guard let style = getViewController(collectionView!)?.publicVar.style else {return}
+        guard let style = getViewController(collectionView!)?.publicVar.profile else {return}
         let newX = style.ThumbnailBorderThickness
         let newY = style.ThumbnailBorderThickness + style.ThumbnailFilenamePadding
         let newWidth = imageViewRef.frame.width + 12.0 - 2*style.ThumbnailBorderThickness
@@ -611,7 +611,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     let sortSubMenu = NSMenu()
                     
                     let folderFirstItem = NSMenuItem(title: NSLocalizedString("Sort Folders First", comment: "文件夹优先排序"), action: #selector(sortFolderFirst(_:)), keyEquivalent: "")
-                    folderFirstItem.state = (getViewController(collectionView!)?.publicVar.style.isSortFolderFirst == false) ? .off : .on
+                    folderFirstItem.state = (getViewController(collectionView!)?.publicVar.profile.isSortFolderFirst == false) ? .off : .on
                     sortSubMenu.addItem(folderFirstItem)
                     
                     sortSubMenu.addItem(NSMenuItem.separator())
@@ -620,7 +620,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                         let menuItem = NSMenuItem(title: title, action: #selector(sortItems(_:)), keyEquivalent: "")
                         menuItem.target = self
                         menuItem.representedObject = sortType
-                        let curSortType=getViewController(collectionView!)?.publicVar.style.sortType
+                        let curSortType=getViewController(collectionView!)?.publicVar.profile.sortType
                         menuItem.state = curSortType == sortType ? .on : .off
                         sortSubMenu.addItem(menuItem)
                     }
@@ -681,13 +681,13 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     @objc func sortItems(_ sender: NSMenuItem) {
         guard let viewController = getViewController(collectionView!) else {return}
         guard let sortType = sender.representedObject as? SortType else { return }
-        getViewController(collectionView!)?.changeSortType(sortType: sortType, isSortFolderFirst: viewController.publicVar.style.isSortFolderFirst)
+        getViewController(collectionView!)?.changeSortType(sortType: sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst)
     }
     
     @objc func sortFolderFirst(_ sender: NSMenuItem) {
         guard let viewController = getViewController(collectionView!) else {return}
-        viewController.publicVar.style.isSortFolderFirst.toggle()
-        viewController.changeSortType(sortType: viewController.publicVar.style.sortType, isSortFolderFirst: viewController.publicVar.style.isSortFolderFirst)
+        viewController.publicVar.profile.isSortFolderFirst.toggle()
+        viewController.changeSortType(sortType: viewController.publicVar.profile.sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst)
     }
     
     @objc func actRefresh() {
