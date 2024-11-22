@@ -1707,19 +1707,19 @@
         }
       }
     },
-    "save-custom-layout" : {
-      "comment" : "保存到自定义布局",
+    "save-to-custom-profile" : {
+      "comment" : "保存到自定义配置",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Save to Custom Layout %@"
+            "value" : "Save to Custom Profile %@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保存到自定义布局%@"
+            "value" : "保存到自定义配置%@"
           }
         }
       }
@@ -2353,19 +2353,19 @@
         }
       }
     },
-    "switch-to-custom-layout" : {
-      "comment" : "切换至自定义布局",
+    "switch-to-custom-profile" : {
+      "comment" : "切换至自定义配置",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Switch to Custom Layout %@"
+            "value" : "Switch to Custom Profile %@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "切换至自定义布局%@"
+            "value" : "切换至自定义配置%@"
           }
         }
       }

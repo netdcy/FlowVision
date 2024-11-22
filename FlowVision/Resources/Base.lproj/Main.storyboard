@@ -191,6 +191,15 @@ CA
                                                 <action selector="selectAll:" target="Ady-hI-5gd" id="VNm-Mi-diN"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Deselect" id="MFt-GP-W33">
+                                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="deselectAll:" target="Voe-Tx-rLC" id="9cI-o1-OoL"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="uyl-h8-XO2"/>
                                         <menuItem title="Find" hidden="YES" id="4EN-yA-p0u">
                                             <modifierMask key="keyEquivalentModifierMask"/>
@@ -646,64 +655,27 @@ CA
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="7XG-6M-HCO"/>
-                                        <menuItem title="Sidebar" id="Yr6-zE-34v">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleSidebar:" target="Voe-Tx-rLC" id="NhX-Zy-mzD"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="Zhg-cS-a8X"/>
                                         <menuItem title="Keep Current Window on Top" id="aEU-QL-iYf">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleOnTop:" target="Voe-Tx-rLC" id="27y-MO-y85"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="35R-4z-Fbc"/>
-                                        <menuItem title="Maximize Window" id="HOx-iw-zko">
+                                        <menuItem isSeparatorItem="YES" id="Zhg-cS-a8X"/>
+                                        <menuItem title="Sidebar" id="Yr6-zE-34v">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="maximizeWindow:" target="Voe-Tx-rLC" id="o3c-fl-YE5"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Optimal Window Size" id="tmG-gn-Pce">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="optimizeWindow:" target="Voe-Tx-rLC" id="HYd-1O-dS0"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Adjust Window to Actual Image Size" id="6gk-QR-1IE">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="adjustWindowActual:" target="Voe-Tx-rLC" id="vG4-h0-mjv"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Adjust Window to Current Image Size" id="9zb-jY-FJF">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="adjustWindowCurrent:" target="Voe-Tx-rLC" id="6sZ-qJ-ZP5"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Center the Window" id="6W0-Wg-Cpn">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="adjustWindowToCenter:" target="Voe-Tx-rLC" id="zBG-Sm-BfV"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="BbX-iw-8Fl"/>
-                                        <menuItem title="Image Default Actual Size" id="pzo-yf-TTx">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="switchToActualSize:" target="Voe-Tx-rLC" id="gSi-lM-3BW"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Image Default Fit to Window" id="d9h-3l-mAH">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="switchToFitToWindow:" target="Voe-Tx-rLC" id="iyt-Tv-NyG"/>
+                                                <action selector="toggleSidebar:" target="Voe-Tx-rLC" id="NhX-Zy-mzD"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="IQM-Ub-ajO"/>
+                                        <menuItem title="Custom Layout Style..." id="EGa-rJ-Y1T">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="customLayoutStyle:" target="Voe-Tx-rLC" id="Ehw-fZ-DPS"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="2Mq-tp-wyX"/>
                                         <menuItem title="Show Hidden Files" keyEquivalent="." id="Tbh-PX-yFW">
                                             <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                             <connections>
@@ -735,6 +707,50 @@ CA
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="p0a-iP-jCL"/>
+                                        <menuItem title="Maximize Window" id="HOx-iw-zko">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="maximizeWindow:" target="Voe-Tx-rLC" id="o3c-fl-YE5"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Optimal Window Size" id="tmG-gn-Pce">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="optimizeWindow:" target="Voe-Tx-rLC" id="HYd-1O-dS0"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Adjust Window to Actual Image Size" id="6gk-QR-1IE">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="adjustWindowActual:" target="Voe-Tx-rLC" id="vG4-h0-mjv"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Adjust Window to Current Image Size" id="9zb-jY-FJF">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="adjustWindowCurrent:" target="Voe-Tx-rLC" id="6sZ-qJ-ZP5"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Center the Window" id="6W0-Wg-Cpn">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="adjustWindowToCenter:" target="Voe-Tx-rLC" id="zBG-Sm-BfV"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="1xu-Ro-cM9"/>
+                                        <menuItem title="Image Default Actual Size" id="pzo-yf-TTx">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="switchToActualSize:" target="Voe-Tx-rLC" id="gSi-lM-3BW"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Image Default Fit to Window" id="d9h-3l-mAH">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="switchToFitToWindow:" target="Voe-Tx-rLC" id="iyt-Tv-NyG"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="RXp-tl-oug"/>
                                         <menuItem title="Justified View" keyEquivalent="1" id="rIE-So-qGu">
                                             <connections>
                                                 <action selector="switchToJustifiedView:" target="Voe-Tx-rLC" id="CIx-MD-oRV"/>

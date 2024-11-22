@@ -786,5 +786,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             NSWorkspace.shared.open(url)
         }
     }
+    
+    @IBAction func customLayoutStyle(_ sender: NSMenuItem){
+        getMainViewController()?.customLayoutStylePrompt()
+    }
+    
+    @IBAction func deselectAll(_ sender: NSMenuItem){
+        getMainViewController()?.deselectAll()
+    }
 }
 

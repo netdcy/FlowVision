@@ -416,6 +416,8 @@
 /* Class = "NSMenuItem"; title = "Show Substitutions"; ObjectID = "z6F-FW-3nz"; */
 "z6F-FW-3nz.title" = "Show Substitutions";
 
+"MFt-GP-W33.title" = "取消选择";
+
 "fDm-Nj-S0c.title" = "收藏夹";
 "wPC-H1-Utm.title" = "历史记录";
 
@@ -433,6 +435,8 @@
 "6W0-Wg-Cpn.title" = "将窗口居中";
 
 "oP8-xB-4fx.title" = "便携浏览模式";
+
+"EGa-rJ-Y1T.title" = "自定义布局样式...";
 
 "Tbh-PX-yFW.title" = "显示隐藏文件";
 "S31-Ni-z5u.title" = "显示所有类型文件";

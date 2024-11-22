@@ -28,8 +28,8 @@ class CustomStyle: Codable {
     var ThumbnailBorderRadius: Double = 5
     var ThumbnailCellPadding: Double = 5
     //以下暂时为内部使用
-    var ThumbnailFilenameSize: Double = 18
-    //var ThumbnailFilenamePaddingInternal: Double = 24
+    var ThumbnailFilenameSize: Double = 12
+    //var ThumbnailFilenamePaddingInternal: Double = 18
     var ThumbnailFilenamePadding: Double = 18
     var ThumbnailScrollbarWidth: Double = 16
     var isGridViewNotAffectedByCustomStyle = true
@@ -596,6 +596,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     if publicVar.isInLargeView{
                         closeLargeImage(0)
                         return nil
+                    }else{
+                        deselectAll()
+                        return nil
                     }
                 }
                 
@@ -672,7 +675,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 // 检查按键是否是 Alt+12345 键
                 if (["1","2","3","4","5"].contains(characters)) && isOnlyAltPressed {
                     if !publicVar.isInLargeView {
-                        useCustomStyle(characters)
+                        useCustomProfile(characters)
                         return nil
                     }
                 }
@@ -680,7 +683,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 // 检查按键是否是 Cmd+Alt+12345 键
                 if (["1","2","3","4","5"].contains(characters)) && isCommandPressed && isAltPressed && !isCtrlPressed && !isShiftPressed {
                     if !publicVar.isInLargeView {
-                        setCustomStyleTo(characters)
+                        setCustomProfileTo(characters)
                         return nil
                     }
                 }
@@ -828,10 +831,25 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 }
 
                             }else if let collectionView = collectionView {
-                                var newIndexPath = IndexPath(item: 0, section: 0)
-                                collectionView.selectItems(at: [newIndexPath], scrollPosition: [])
-                                collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [newIndexPath])
-                                collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
+                                
+                                var indexPaths = collectionView.indexPathsForVisibleItems()
+
+                                let visibleRectRaw = mainScrollView.contentView.visibleRect
+                                let scrollPos = visibleRectRaw.origin
+                                let scrollWidth = visibleRectRaw.width
+                                let scrollHeight = visibleRectRaw.height
+                                let visibleRect = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight*1)) //注意这里乘了1
+                                indexPaths = indexPaths.filter { indexPath in
+                                    let itemFrame = collectionView.layoutAttributesForItem(at: indexPath)?.frame ?? .zero
+                                    return itemFrame.intersects(visibleRect)
+                                }
+                                let sortedIndexPaths = indexPaths.sorted { $0.item < $1.item }
+                                
+                                if let newIndexPath = sortedIndexPaths.first{
+                                    collectionView.selectItems(at: [newIndexPath], scrollPosition: [])
+                                    collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [newIndexPath])
+                                    collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
+                                }
                             }
                             return nil
                         }
@@ -3764,8 +3782,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 }else{
                                     let maxLength = max(revisedSize.width,revisedSize.height)
                                     if !publicVar.isGenHdThumb || maxLength <= 256 { // || publicVar.layoutType == .grid
+                                        //image = getImageThumb(url: url, refSize: originalSize)
                                         image = ThumbImageProcessor.getImageCache(url: url, refSize: originalSize)
                                     }else{
+                                        //image = getImageThumb(url: url, size: revisedSize)
                                         image = ThumbImageProcessor.getImageCache(url: url, size: revisedSize)
                                     }
                                     if image == nil {
@@ -4292,6 +4312,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
             }
         }
+    }
+    
+    func deselectAll(){
+        collectionView.deselectAll(nil)
     }
     
     private var cumulativeScroll: CGFloat = 0 //累积滚动量
@@ -5486,13 +5510,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     }
     
     
-    //以下是切换设置自定义布局
-    func setCustomStyleTo(_ styleName: String){
-        coreAreaView.showInfo(String(format: NSLocalizedString("save-custom-layout", comment: "保存到自定义布局"), styleName), timeOut: 1)
+    //以下是切换自定义配置
+    func setCustomProfileTo(_ styleName: String){
+        coreAreaView.showInfo(String(format: NSLocalizedString("save-to-custom-profile", comment: "保存到自定义配置"), styleName), timeOut: 1)
         publicVar.style.saveToUserDefaults(withKey: "CustomStyle_v1_"+styleName)
     }
     
-    func useCustomStyle(_ styleName: String){
+    func useCustomProfile(_ styleName: String){
+        coreAreaView.showInfo(String(format: NSLocalizedString("switch-to-custom-profile", comment: "切换至自定义配置"), styleName), timeOut: 1)
         let newStyle = CustomStyle.loadFromUserDefaults(withKey: "CustomStyle_v1_"+styleName)
         
         //边栏
@@ -5500,7 +5525,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             toggleSidebar()
         }
         //排序
-        if newStyle.sortType != publicVar.style.sortType || newStyle.isSortFolderFirst != publicVar.style.isSortFolderFirst {
+        if newStyle.sortType != publicVar.style.sortType || newStyle.isSortFolderFirst != publicVar.style.isSortFolderFirst || newStyle.sortType == .random {
             changeSortType(sortType: newStyle.sortType, isSortFolderFirst: newStyle.isSortFolderFirst, doNotRefresh: true)
         }
         //缩略图大小
@@ -5511,10 +5536,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         configLayoutStyle(newStyle: newStyle, doNotRefresh: true)
         
         refreshCollectionView([], dryRun: true)
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            coreAreaView.showInfo(String(format: NSLocalizedString("switch-to-custom-layout", comment: "切换至自定义布局"), styleName), timeOut: 1)
-        }
     }
     
 }
