@@ -48,7 +48,7 @@ class LargeImageView: NSView {
     
     private func commonInit() {
         imageView = CustomLargeImageView(frame: self.bounds)
-        imageView.imageScaling = .scaleProportionallyUpOrDown
+        imageView.imageScaling = .scaleAxesIndependently
         imageView.wantsLayer = true
         imageView.animates=true
         self.addSubview(imageView)

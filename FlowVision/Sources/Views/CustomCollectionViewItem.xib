@@ -20,12 +20,12 @@
             <rect key="frame" x="0.0" y="0.0" width="312" height="330"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bgk-cS-MXG" userLabel="Ref Image View" customClass="BorderedImageView" customModule="FlowVision" customModuleProvider="target">
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bgk-cS-MXG" userLabel="Ref Image View" customClass="CustomThumbImageView" customModule="FlowVision" customModuleProvider="target">
                     <rect key="frame" x="6" y="24" width="300" height="300"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="axesIndependently" id="awg-nb-2L9"/>
                 </imageView>
-                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mLA-jB-nbi" customClass="BorderedImageView" customModule="FlowVision" customModuleProvider="target">
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mLA-jB-nbi" userLabel="Main Image View" customClass="CustomThumbImageView" customModule="FlowVision" customModuleProvider="target">
                     <rect key="frame" x="6" y="24" width="300" height="300"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="axesIndependently" id="xXe-fa-Vub"/>

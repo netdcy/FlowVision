@@ -383,7 +383,9 @@ func getFileTypeIcon(url: URL) -> NSImage {
     return NSWorkspace.shared.icon(forFile: url.absoluteString.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!)
 }
 
-func getImageThumb(url: URL, size: NSSize? = nil, refSize: NSSize? = nil) -> NSImage? {
+func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil) -> NSImage? {
+    
+    let size: NSSize? = oriSize != nil ? NSSize(width: round(oriSize!.width), height: round(oriSize!.height)) : nil
     
     if(url.hasDirectoryPath){
         
@@ -562,7 +564,10 @@ func newOrientation(currentOrientation: Int, rotate: Int) -> Int {
     
     return currentOrientation // Return the same orientation if no match found
 }
-func getResizedImage(url: URL, size: NSSize, rotate: Int = 0) -> NSImage? {
+func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0) -> NSImage? {
+    
+    let size: NSSize = NSSize(width: round(oriSize.width), height: round(oriSize.height))
+    
     guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil),
           let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
     else {

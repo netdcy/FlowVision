@@ -67,7 +67,7 @@ class CustomImageView: NSImageView {
     }
 }
 
-class BorderedImageView: CustomImageView {
+class BorderedImageView: IntegerImageView {
     
     var isDrawBorder=false
     
@@ -135,27 +135,38 @@ class InterpolatedImageView: CustomImageView {
 //    }
 }
 
-class CustomLargeImageView: CustomImageView {
-    // 使用浮点数来存储位置
+class IntegerImageView: CustomImageView {
+    // Use floating-point numbers to store the precise position and size
     private var internalOrigin: CGPoint = .zero
-    
-    // 重载 frame 属性
+    private var internalSize: CGSize = .zero
+
+    // Override frame property
     override var frame: NSRect {
         get {
-            // 返回包含浮点 origin 的 frame
-            return NSRect(origin: internalOrigin, size: super.frame.size)
+            // Return the frame with precise origin and size
+            return NSRect(origin: internalOrigin, size: internalSize)
         }
         set {
-            // 更新内部浮点 origin
+            // Update internal floating-point origin and size
             internalOrigin = newValue.origin
+            internalSize = newValue.size
             
-            // 计算四舍五入后的 origin
+            // Calculate rounded origin and size
             let newRoundedOrigin = CGPoint(x: round(newValue.origin.x), y: round(newValue.origin.y))
+            let newRoundedSize = CGSize(width: round(newValue.size.width), height: round(newValue.size.height))
             
-            // 仅在 frame 实际需要改变时更新
-            if super.frame.origin != newRoundedOrigin || super.frame.size != newValue.size {
-                super.frame = NSRect(origin: newRoundedOrigin, size: newValue.size)
+            // Only update the frame if it actually needs to change
+            if super.frame.origin != newRoundedOrigin || super.frame.size != newRoundedSize {
+                super.frame = NSRect(origin: newRoundedOrigin, size: newRoundedSize)
             }
         }
     }
+}
+
+class CustomThumbImageView: BorderedImageView {
+    
+}
+
+class CustomLargeImageView: IntegerImageView {
+    
 }

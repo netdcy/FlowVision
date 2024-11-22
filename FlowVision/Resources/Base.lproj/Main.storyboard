@@ -927,11 +927,6 @@ Gw
                                 <rect key="frame" x="0.0" y="0.0" width="1280" height="720"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <imageView hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bvv-VN-gLj">
-                                        <rect key="frame" x="0.0" y="0.0" width="1280" height="720"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" id="DwP-2q-nng"/>
-                                    </imageView>
                                     <splitView fixedFrame="YES" arrangesAllSubviews="NO" dividerStyle="paneSplitter" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="w1O-va-xrK" customClass="CustomSplitView" customModule="FlowVision" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="1280" height="720"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

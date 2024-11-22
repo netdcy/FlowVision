@@ -10,8 +10,8 @@ import AVFoundation
 
 class CustomCollectionViewItem: NSCollectionViewItem {
     
-    @IBOutlet weak var imageViewObj: BorderedImageView!
-    @IBOutlet weak var imageViewRef: BorderedImageView!
+    @IBOutlet weak var imageViewObj: CustomThumbImageView!
+    @IBOutlet weak var imageViewRef: CustomThumbImageView!
     @IBOutlet weak var imageNameField: NSTextField!
     
     var folderViews=[NSView]()
@@ -34,6 +34,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         view.layer?.cornerRadius = 5.0
         view.layer?.masksToBounds = true
         
+        imageViewObj.imageScaling = .scaleAxesIndependently
         imageViewObj.wantsLayer = true
         imageViewObj.layer?.borderWidth = 0.0
         imageViewObj.layer?.borderColor = NSColor.gray.cgColor
@@ -67,7 +68,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 //            contentView.layer?.cornerRadius = 4.0
 //            contentView.layer?.masksToBounds = true
 //            //contentView.layer?.backgroundColor = NSColor.white.cgColor // 背景颜色，对于透明png？
-//            contentView.imageScaling = .scaleProportionallyUpOrDown
+//            contentView.imageScaling = .scaleAxesIndependently
 //            
 //            shadowView.autoresizingMask=[.width, .height, .minXMargin, .minYMargin, .maxXMargin, .maxXMargin]
 //            shadowView.autoresizesSubviews=true
@@ -130,12 +131,6 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         } else {
             // 未选中状态的处理代码
             deselectedColor()
-        }
-        
-        if getViewController(collectionView!)!.publicVar.layoutType == .grid {
-            imageViewObj.imageScaling = .scaleProportionallyUpOrDown
-        }else{
-            imageViewObj.imageScaling = .scaleAxesIndependently
         }
         
         imageViewObj.url = URL(string: file.path)
