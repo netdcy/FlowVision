@@ -897,8 +897,8 @@ extension WindowController: NSToolbarDelegate {
         let adjustWindowCurrent = menu.addItem(withTitle: NSLocalizedString("adjustWindowCurrent", comment: "调整窗口至图片当前大小"), action: #selector(adjustWindowCurrent), keyEquivalent: "4")
         adjustWindowCurrent.keyEquivalentModifierMask = []
         
-//        let adjustWindowToCenter = menu.addItem(withTitle: NSLocalizedString("Center the Window", comment: "将窗口居中"), action: #selector(adjustWindowToCenter), keyEquivalent: "5")
-//        adjustWindowToCenter.keyEquivalentModifierMask = []
+        let adjustWindowToCenter = menu.addItem(withTitle: NSLocalizedString("Center the Window", comment: "将窗口居中"), action: #selector(adjustWindowToCenter), keyEquivalent: "5")
+        adjustWindowToCenter.keyEquivalentModifierMask = []
         
         adjustWindowActual.isEnabled = (viewController.publicVar.isInLargeView)
         adjustWindowCurrent.isEnabled = (viewController.publicVar.isInLargeView)

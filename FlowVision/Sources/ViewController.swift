@@ -620,7 +620,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         adjustWindowSuitable()
                         return nil
                     }else if characters == "5"{ // 5
-                        //adjustWindowToCenter()
+                        adjustWindowToCenter()
                         return nil
                     }else{
                         if publicVar.isInLargeView {
