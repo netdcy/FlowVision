@@ -828,6 +828,7 @@ class InfoView: NSView {
         
         translatesAutoresizingMaskIntoConstraints = false
         alphaValue = 0
+        isHidden = true
     }
     
     func showInfo(text: String, timeOut: Double = 2.0) {
@@ -837,9 +838,21 @@ class InfoView: NSView {
         // Invalidate previous timer
         hideTimer?.invalidate()
         
-        // Show the view with fade-in animation
+        // Stop any ongoing hide animation
+        if isAnimating {
+            layer?.removeAllAnimations() // Stop all animations
+            isAnimating = false
+        }
+        
+        isHidden = false
+        
+        // Calculate the remaining duration based on the current alpha value
+        let currentAlpha = self.alphaValue
+        let remainingDuration = 0.3 * Double(1.0 - currentAlpha)
+        
+        // Show the view with fade-in animation from the current alpha value
         NSAnimationContext.runAnimationGroup({ context in
-            context.duration = 0.3
+            context.duration = remainingDuration
             self.animator().alphaValue = 1.0
         })
         
@@ -862,7 +875,10 @@ class InfoView: NSView {
             self.animator().alphaValue = 0.0
         }) {
             // Animation completion handler
-            self.isAnimating = false
+            if self.isAnimating {
+                self.isAnimating = false
+                self.isHidden = true
+            }
         }
     }
 }
