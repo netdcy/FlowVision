@@ -545,23 +545,6 @@
         }
       }
     },
-    "file-dimensions" : {
-      "comment" : "图像尺寸",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dimensions"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "图像尺寸"
-          }
-        }
-      }
-    },
     "file-rightmenu-get-info" : {
       "comment" : "显示简介",
       "localizations" : {
@@ -772,6 +755,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "图像"
+          }
+        }
+      }
+    },
+    "image-dimensions" : {
+      "comment" : "图像尺寸",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dimensions"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图像尺寸"
           }
         }
       }
@@ -2302,6 +2302,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "视频"
+          }
+        }
+      }
+    },
+    "video-dimensions" : {
+      "comment" : "视频尺寸",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dimensions"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "视频尺寸"
           }
         }
       }

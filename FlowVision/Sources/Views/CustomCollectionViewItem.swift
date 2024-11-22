@@ -200,11 +200,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     func setTooltip(){
         if !getViewController(collectionView!)!.publicVar.isInLargeView {
             if file.isDir {
-                self.view.toolTip = generateTooltip(filePath: file.path.removingPercentEncoding!, fileSize: nil, imageSize: nil, creationDate: file.createDate, modificationDate: file.modDate, addDate: file.addDate)
+                self.view.toolTip = generateTooltip(filePath: file.path.removingPercentEncoding!, type: file.type, fileSize: nil, imageSize: nil, creationDate: file.createDate, modificationDate: file.modDate, addDate: file.addDate)
             }else{
                 var imageSize = file.isGetImageSizeFail ? nil : file.originalSize
                 if file.type == .other { imageSize = nil }
-                self.view.toolTip = generateTooltip(filePath: file.path.removingPercentEncoding!, fileSize: file.fileSize, imageSize: imageSize, creationDate: file.createDate, modificationDate: file.modDate, addDate: file.addDate)
+                self.view.toolTip = generateTooltip(filePath: file.path.removingPercentEncoding!, type: file.type, fileSize: file.fileSize, imageSize: imageSize, creationDate: file.createDate, modificationDate: file.modDate, addDate: file.addDate)
             }
         }else{
             self.view.toolTip = nil
@@ -212,14 +212,19 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
     }
     
-    func generateTooltip(filePath: String, fileSize: Int?, imageSize: NSSize?, creationDate: Date?, modificationDate: Date?, addDate: Date?) -> String {
+    func generateTooltip(filePath: String, type: FileType, fileSize: Int?, imageSize: NSSize?, creationDate: Date?, modificationDate: Date?, addDate: Date?) -> String {
         // 获取文件名
         let fileName = (filePath as NSString).lastPathComponent
         
         // 准备局部化字符串
         let nameLabel = NSLocalizedString("Name", comment: "名称")
         let sizeLabel = NSLocalizedString("file-size", comment: "文件大小")
-        let dimensionsLabel = NSLocalizedString("file-dimensions", comment: "图像尺寸")
+        var dimensionsLabel = ""
+        if type == .video {
+            dimensionsLabel = NSLocalizedString("video-dimensions", comment: "视频尺寸")
+        }else{
+            dimensionsLabel = NSLocalizedString("image-dimensions", comment: "图像尺寸")
+        }
         let creationDateLabel = NSLocalizedString("Date Created", comment: "创建日期")
         let modificationDateLabel = NSLocalizedString("Date Modified", comment: "修改日期")
         let addDateLabel = NSLocalizedString("Date Added", comment: "添加日期")
