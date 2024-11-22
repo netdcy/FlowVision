@@ -134,3 +134,28 @@ class InterpolatedImageView: CustomImageView {
 //        super.draw(dirtyRect)
 //    }
 }
+
+class CustomLargeImageView: CustomImageView {
+    // 使用浮点数来存储位置
+    private var internalOrigin: CGPoint = .zero
+    
+    // 重载 frame 属性
+    override var frame: NSRect {
+        get {
+            // 返回包含浮点 origin 的 frame
+            return NSRect(origin: internalOrigin, size: super.frame.size)
+        }
+        set {
+            // 更新内部浮点 origin
+            internalOrigin = newValue.origin
+            
+            // 计算四舍五入后的 origin
+            let newRoundedOrigin = CGPoint(x: round(newValue.origin.x), y: round(newValue.origin.y))
+            
+            // 仅在 frame 实际需要改变时更新
+            if super.frame.origin != newRoundedOrigin || super.frame.size != newValue.size {
+                super.frame = NSRect(origin: newRoundedOrigin, size: newValue.size)
+            }
+        }
+    }
+}

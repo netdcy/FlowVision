@@ -11,7 +11,7 @@ import VisionKit
 
 class LargeImageView: NSView {
 
-    var imageView: InterpolatedImageView!
+    var imageView: CustomLargeImageView!
     var exifTextView: ExifTextView!
     var ratioView: InfoView!
     var infoView: InfoView!
@@ -47,7 +47,7 @@ class LargeImageView: NSView {
     }
     
     private func commonInit() {
-        imageView = InterpolatedImageView(frame: self.bounds)
+        imageView = CustomLargeImageView(frame: self.bounds)
         imageView.imageScaling = .scaleProportionallyUpOrDown
         imageView.wantsLayer = true
         imageView.animates=true
