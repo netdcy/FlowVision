@@ -110,7 +110,7 @@ class CustomCollectionView: NSCollectionView {
                         let sortSubMenu = NSMenu()
                         
                         let folderFirstItem = NSMenuItem(title: NSLocalizedString("Sort Folders First", comment: "文件夹优先排序"), action: #selector(sortFolderFirst(_:)), keyEquivalent: "")
-                        folderFirstItem.state = (getViewController(self)?.publicVar.isSortFolderFirst == false) ? .off : .on
+                        folderFirstItem.state = (getViewController(self)?.publicVar.style.isSortFolderFirst == false) ? .off : .on
                         sortSubMenu.addItem(folderFirstItem)
                         
                         sortSubMenu.addItem(NSMenuItem.separator())
@@ -119,7 +119,7 @@ class CustomCollectionView: NSCollectionView {
                             let menuItem = NSMenuItem(title: title, action: #selector(sortItems(_:)), keyEquivalent: "")
                             menuItem.target = self
                             menuItem.representedObject = sortType
-                            let curSortType=getViewController(self)?.publicVar.sortType
+                            let curSortType=getViewController(self)?.publicVar.style.sortType
                             menuItem.state = curSortType == sortType ? .on : .off
                             sortSubMenu.addItem(menuItem)
                         }
@@ -161,14 +161,15 @@ class CustomCollectionView: NSCollectionView {
     }
     
     @objc func sortItems(_ sender: NSMenuItem) {
+        guard let viewController = getViewController(self) else {return}
         guard let sortType = sender.representedObject as? SortType else { return }
-        getViewController(self)?.changeSortType(sortType)
+        getViewController(self)?.changeSortType(sortType: sortType, isSortFolderFirst: viewController.publicVar.style.isSortFolderFirst)
     }
     
     @objc func sortFolderFirst(_ sender: NSMenuItem) {
         guard let viewController = getViewController(self) else {return}
-        viewController.publicVar.isSortFolderFirst.toggle()
-        viewController.changeSortType(viewController.publicVar.sortType)
+        viewController.publicVar.style.isSortFolderFirst.toggle()
+        viewController.changeSortType(sortType: viewController.publicVar.style.sortType, isSortFolderFirst: viewController.publicVar.style.isSortFolderFirst)
     }
     
     @objc func actNewFolder() {

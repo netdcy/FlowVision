@@ -413,7 +413,7 @@ extension WindowController: NSToolbarDelegate {
             var title = ""
             var image = NSImage(systemSymbolName: "arrow.up.arrow.down", accessibilityDescription: "")!
             if let viewController = contentViewController as? ViewController {
-                switch viewController.publicVar.sortType {
+                switch viewController.publicVar.style.sortType {
                 case .pathA,.pathZ:
                     title = NSLocalizedString("sort-label-name", comment: "名称")
                 case .extA,.extZ:
@@ -425,7 +425,7 @@ extension WindowController: NSToolbarDelegate {
                 case .random:
                     title = NSLocalizedString("sort-label-random", comment: "随机")
                 }
-                switch viewController.publicVar.sortType {
+                switch viewController.publicVar.style.sortType {
                 case .pathA,.extA,.sizeA,.createDateA,.modDateA,.addDateA:
                     image = NSImage(systemSymbolName: "arrow.up", accessibilityDescription: "")!
                 case .pathZ,.extZ,.sizeZ,.createDateZ,.modDateZ,.addDateZ:
@@ -604,7 +604,7 @@ extension WindowController: NSToolbarDelegate {
         let menu = NSMenu()
         
         let folderFirstItem = NSMenuItem(title: NSLocalizedString("Sort Folders First", comment: "文件夹优先排序"), action: #selector(sortFolderFirst(_:)), keyEquivalent: "")
-        folderFirstItem.state = viewController.publicVar.isSortFolderFirst ? .on : .off
+        folderFirstItem.state = viewController.publicVar.style.isSortFolderFirst ? .on : .off
         menu.addItem(folderFirstItem)
         
         menu.addItem(NSMenuItem.separator())
@@ -613,7 +613,7 @@ extension WindowController: NSToolbarDelegate {
             let menuItem = NSMenuItem(title: title, action: #selector(sortItems(_:)), keyEquivalent: "")
             menuItem.target = self
             menuItem.representedObject = sortType
-            let curSortType = viewController.publicVar.sortType
+            let curSortType = viewController.publicVar.style.sortType
             menuItem.state = curSortType == sortType ? .on : .off
             menu.addItem(menuItem)
         }
@@ -630,14 +630,14 @@ extension WindowController: NSToolbarDelegate {
     
     @objc func sortFolderFirst(_ sender: NSMenuItem) {
         guard let viewController = contentViewController as? ViewController else {return}
-        viewController.publicVar.isSortFolderFirst.toggle()
-        viewController.changeSortType(viewController.publicVar.sortType)
+        viewController.publicVar.style.isSortFolderFirst.toggle()
+        viewController.changeSortType(sortType: viewController.publicVar.style.sortType, isSortFolderFirst: viewController.publicVar.style.isSortFolderFirst)
     }
     
     @objc func sortItems(_ sender: NSMenuItem) {
         guard let sortType = sender.representedObject as? SortType else { return }
         guard let viewController = contentViewController as? ViewController else {return}
-        viewController.changeSortType(sortType)
+        viewController.changeSortType(sortType: sortType, isSortFolderFirst: viewController.publicVar.style.isSortFolderFirst)
     }
     
     @objc func favoritesAction(_ sender: Any?) {
@@ -826,7 +826,7 @@ extension WindowController: NSToolbarDelegate {
         menu.addItem(NSMenuItem.separator())
         
         let showFilename = menu.addItem(withTitle: NSLocalizedString("Show Filename", comment: "显示文件名称"), action: #selector(toggleShowFilename), keyEquivalent: "")
-        showFilename.state = (viewController.publicVar.isShowThumbnailFilename) ? .on : .off
+        showFilename.state = (viewController.publicVar.style.isShowThumbnailFilename) ? .on : .off
 
         menu.addItem(NSMenuItem.separator())
         

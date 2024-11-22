@@ -10,23 +10,14 @@ import Cocoa
 import AVFoundation
 import DiskArbitration
 
-class PublicVar{
-    weak var refView: NSView!
-    weak var viewController: ViewController!
-
-    var layoutType: LayoutType = .justified {
-        didSet {updateToolbar()}
-    }
+class CustomStyle: Codable {
+    
+    var isDirTreeHidden = false
+    
     var sortType: SortType = .pathA
     var isSortFolderFirst: Bool = true
-    var isLargeImageFitWindow = true
-    var isRecursiveMode = false
-    var isShowHiddenFile = false
-    var isShowAllTypeFile = false
-    var isShowImageFile = true
-    var isShowRawFile = true
-    var isShowVideoFile = true
-    var isGenHdThumb = false
+    
+    var thumbSize = 512
     
     var ThumbnailBorderThickness: Double = 6
     var ThumbnailBorderRadius: Double = 5
@@ -36,6 +27,44 @@ class PublicVar{
     var ThumbnailScrollbarWidth: Double = 16
     var isShowThumbnailFilename = true
     var isGridViewNotAffectedByCustomStyle = true
+    
+    func saveToUserDefaults(withKey key: String) {
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(self) {
+            UserDefaults.standard.set(encoded, forKey: key)
+        }
+    }
+    
+    static func loadFromUserDefaults(withKey key: String) -> CustomStyle? {
+        if let savedData = UserDefaults.standard.data(forKey: key) {
+            let decoder = JSONDecoder()
+            if let loadedStyle = try? decoder.decode(CustomStyle.self, from: savedData) {
+                return loadedStyle
+            }
+        }
+        return nil
+    }
+}
+
+class PublicVar{
+    weak var refView: NSView!
+    weak var viewController: ViewController!
+
+    var layoutType: LayoutType = .justified {
+        didSet {updateToolbar()}
+    }
+    
+    var isLargeImageFitWindow = true
+    var isRecursiveMode = false
+    var isShowHiddenFile = false
+    var isShowAllTypeFile = false
+    var isShowImageFile = true
+    var isShowRawFile = true
+    var isShowVideoFile = true
+    var isGenHdThumb = false
+    
+    //可一键切换的样式
+    var style = CustomStyle()
     
     var fullTitle = "FlowVision"
     var isKeyEventEnabled = true
@@ -63,7 +92,6 @@ class PublicVar{
     var isInLargeViewAfterAnimate: Bool = false
     var openFromFinderPath = ""
     var isColllectionViewItemRightClicked = false
-    var isDirTreeHidden = false
     var lastLargeImageIdInImage: Int = 0
     var isCollectionViewFirstResponder: Bool = false
     var isOutlineViewFirstResponder: Bool = false
@@ -78,7 +106,6 @@ class PublicVar{
             updateToolbar()
         }
     }
-    var thumbSize = 512
     var isNeedChangeLayoutType = false
     var justifiedLayout = CustomFlowLayout() //JQCollectionViewAlignLayout()
     var waterfallLayout = WaterfallLayout()
@@ -305,11 +332,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //-----开始读取配置-----
         
         if let thumbSize = UserDefaults.standard.value(forKey: "thumbSize") as? Int {
-            publicVar.thumbSize = thumbSize
+            publicVar.style.thumbSize = thumbSize
         }
         //TODO: 没有工具栏时，载入时折叠且divider宽度设为0会造成菜单栏变白
         if let isDirTreeHidden = UserDefaults.standard.value(forKey: "isDirTreeHidden") as? Bool {
-            publicVar.isDirTreeHidden=isDirTreeHidden
+            publicVar.style.isDirTreeHidden=isDirTreeHidden
         }
         if let isLargeImageFitWindow = UserDefaults.standard.value(forKey: "isLargeImageFitWindow") as? Bool {
             publicVar.isLargeImageFitWindow=isLargeImageFitWindow
@@ -318,10 +345,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             publicVar.layoutType=layoutType
         }
         if let sortType: SortType = UserDefaults.standard.enumValue(forKey: "sortType"){
-            publicVar.sortType=sortType
+            publicVar.style.sortType=sortType
         }
         if let isSortFolderFirst = UserDefaults.standard.value(forKey: "isSortFolderFirst") as? Bool {
-            publicVar.isSortFolderFirst = isSortFolderFirst
+            publicVar.style.isSortFolderFirst = isSortFolderFirst
         }
         if let isShowHiddenFile = UserDefaults.standard.value(forKey: "isShowHiddenFile") as? Bool {
             publicVar.isShowHiddenFile = isShowHiddenFile
@@ -342,7 +369,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             publicVar.isGenHdThumb = isGenHdThumb
         }
         if let isShowThumbnailFilename = UserDefaults.standard.value(forKey: "isShowThumbnailFilename") as? Bool {
-            publicVar.isShowThumbnailFilename = isShowThumbnailFilename
+            publicVar.style.isShowThumbnailFilename = isShowThumbnailFilename
             configShowFilename()
         }
         
@@ -350,7 +377,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         publicVar.setFileExtensions()
         
-        if publicVar.isDirTreeHidden{
+        if publicVar.style.isDirTreeHidden{
             splitView.setPosition(0, ofDividerAt: 0)
         }
 
@@ -442,6 +469,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 let isShiftPressed = modifierFlags.contains(.shift)
                 
                 let noModifierKey = !isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
+                let isOnlyCommandPressed = isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
+                let isOnlyAltPressed = !isCommandPressed && isAltPressed && !isCtrlPressed && !isShiftPressed
+                let isOnlyCtrlPressed = !isCommandPressed && !isAltPressed && isCtrlPressed && !isShiftPressed
+                let isOnlyShiftPressed = !isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed
                 
                 let characters = event.charactersIgnoringModifiers ?? ""
                 let specialKey = event.specialKey ?? .f30
@@ -489,7 +520,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //                }
                 
                 // 检查按键是否是 Command+⬆️ 键
-                if specialKey == .upArrow && isCommandPressed {
+                if specialKey == .upArrow && isOnlyCommandPressed {
                     if let scrollView = collectionView.enclosingScrollView {
                         scrollView.contentView.scroll(to: NSPoint(x: 0, y: 0))
                         scrollView.reflectScrolledClipView(scrollView.contentView)
@@ -501,7 +532,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 Command+⬇️ 键
-                if specialKey == .downArrow && isCommandPressed {
+                if specialKey == .downArrow && isOnlyCommandPressed {
                     if let scrollView = collectionView.enclosingScrollView {
                         let newOrigin = NSPoint(x: 0, y: collectionView.bounds.height - scrollView.contentSize.height)
                         scrollView.contentView.scroll(to: newOrigin)
@@ -514,7 +545,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 Alt+⬆️ 键
-                if specialKey == .upArrow && isAltPressed {
+                if specialKey == .upArrow && isOnlyAltPressed {
                     if let scrollView = collectionView.enclosingScrollView {
                         let currentOrigin = scrollView.contentView.bounds.origin
                         let pageHeight = scrollView.contentSize.height
@@ -536,7 +567,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 
                 
                 // 检查按键是否是 Alt+⬇️ 键
-                if specialKey == .downArrow && isAltPressed {
+                if specialKey == .downArrow && isOnlyAltPressed {
                     if let scrollView = collectionView.enclosingScrollView {
                         let currentOrigin = scrollView.contentView.bounds.origin
                         let pageHeight = scrollView.contentSize.height
@@ -611,7 +642,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //                    switchToDetailView()
 //                }
                 
-                // 检查按键是否是 12345 12345(小键盘) 键
+                // 检查按键是否是 12345 键
                 if (["1","2","3","4","5"].contains(characters)) && noModifierKey {
                     if characters == "1" { // 1
                         adjustWindowMaximize()
@@ -632,6 +663,22 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 return nil
                             }
                         }
+                    }
+                }
+                
+                // 检查按键是否是 Alt+12345 键
+                if (["1","2","3","4","5"].contains(characters)) && isOnlyAltPressed {
+                    if !publicVar.isInLargeView {
+                        useCustomStyle(characters)
+                        return nil
+                    }
+                }
+                
+                // 检查按键是否是 Cmd+Alt+12345 键
+                if (["1","2","3","4","5"].contains(characters)) && isCommandPressed && isAltPressed && !isCtrlPressed && !isShiftPressed {
+                    if !publicVar.isInLargeView {
+                        setCustomStyleTo(characters)
+                        return nil
                     }
                 }
                 
@@ -820,7 +867,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 -、-(小键盘) 键
-                if characters == "-" {
+                if characters == "-" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.zoom(direction: -1)
                         return nil
@@ -831,7 +878,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 +(=)、+(小键盘) 键
-                if characters == "=" || characters == "+" {
+                if (characters == "=" || characters == "+") && noModifierKey {
                     if publicVar.isInLargeView {
                         largeImageView.zoom(direction: +1)
                         return nil
@@ -842,7 +889,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 0、0(小键盘) 键
-                if characters == "0" {
+                if characters == "0" && noModifierKey {
                     if publicVar.isInLargeView {
                         changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: true)
                         return nil
@@ -1050,31 +1097,37 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
     
-    func changeSortType(_ sortType: SortType){
+    func changeSortType(sortType: SortType, isSortFolderFirst: Bool, doNotRefresh: Bool = false){
         fileDB.lock()
-        publicVar.sortType = sortType
-        UserDefaults.standard.setEnum(publicVar.sortType, forKey: "sortType")
-        UserDefaults.standard.set(publicVar.isSortFolderFirst, forKey: "isSortFolderFirst")
+        publicVar.style.sortType = sortType
+        publicVar.style.isSortFolderFirst = isSortFolderFirst
+        UserDefaults.standard.setEnum(publicVar.style.sortType, forKey: "sortType")
+        UserDefaults.standard.set(publicVar.style.isSortFolderFirst, forKey: "isSortFolderFirst")
         globalVar.randomSeed = Int.random(in: 0...Int.max)
         for dirModel in fileDB.db {
-            dirModel.1.changeSortType(publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)
+            dirModel.1.changeSortType(publicVar.style.sortType, isSortFolderFirst: publicVar.style.isSortFolderFirst)
         }
         fileDB.unlock()
-        refreshCollectionView([], dryRun: true)
-        setLoadThumbPriority(ifNeedVisable: true)
+        if !doNotRefresh {
+            refreshCollectionView([], dryRun: true)
+        }
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            setLoadThumbPriority(ifNeedVisable: true)
+        }
     }
 
     func toggleSidebar(){
         hasManualToggleSidebar=true
-        publicVar.isDirTreeHidden.toggle()
-        if !publicVar.isDirTreeHidden{
+        publicVar.style.isDirTreeHidden.toggle()
+        if !publicVar.style.isDirTreeHidden{
             splitView.setPosition(270, ofDividerAt: 0)
         }else{
             splitView.setPosition(0, ofDividerAt: 0)
         }
 
         let defaults = UserDefaults.standard
-        defaults.set(publicVar.isDirTreeHidden, forKey: "isDirTreeHidden")
+        defaults.set(publicVar.style.isDirTreeHidden, forKey: "isDirTreeHidden")
     }
     
     func toggleOnTop(){
@@ -1476,11 +1529,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //        refreshCollectionView([], dryRun: true)
     }
     
-    func changeThumbSize(thumbSize: Int){
-        publicVar.thumbSize = thumbSize
+    func changeThumbSize(thumbSize: Int, doNotRefresh: Bool = false){
+        publicVar.style.thumbSize = thumbSize
         UserDefaults.standard.set(thumbSize, forKey: "thumbSize")
         changeWaterfallLayoutNumberOfColumns()
-        refreshCollectionView([], dryRun: true)
+        if !doNotRefresh {
+            refreshCollectionView([], dryRun: true)
+        }
     }
     
     func switchToActualSize(){
@@ -2384,13 +2439,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //        }
         
         if direction == 0 {
-            publicVar.thumbSize = 512
+            publicVar.style.thumbSize = 512
         }else{
             let lastWaterFallNumberOfColumns = publicVar.waterfallLayout.numberOfColumns
             while lastWaterFallNumberOfColumns == publicVar.waterfallLayout.numberOfColumns {
-                if let currentIndex = THUMB_SIZES.firstIndex(of: publicVar.thumbSize) {
+                if let currentIndex = THUMB_SIZES.firstIndex(of: publicVar.style.thumbSize) {
                     let newIndex = max(0, min(THUMB_SIZES.count - 1, currentIndex + direction))
-                    publicVar.thumbSize = THUMB_SIZES[newIndex]
+                    publicVar.style.thumbSize = THUMB_SIZES[newIndex]
                     if currentIndex == newIndex {
                         if currentIndex == THUMB_SIZES.count-1 {
                             break
@@ -2404,13 +2459,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
             }
         }
-        changeThumbSize(thumbSize: publicVar.thumbSize)
+        changeThumbSize(thumbSize: publicVar.style.thumbSize)
     }
     
     func changeWaterfallLayoutNumberOfColumns(){
-        var singleWidth = Double(publicVar.thumbSize) / 512 * 300
+        var singleWidth = Double(publicVar.style.thumbSize) / 512 * 300
         
-        var totalWidth=self.mainScrollView.bounds.width-16-10
+        let scrollbarWidth = publicVar.style.ThumbnailScrollbarWidth
+        var totalWidth=self.mainScrollView.bounds.width - scrollbarWidth - 2 * publicVar.style.ThumbnailCellPadding
         if totalWidth < 25 {totalWidth = 25}
         if publicVar.isInLargeView && globalVar.portableMode {totalWidth = 1000}
         
@@ -2424,14 +2480,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //log("recalcLayout:"+String(recalcLayoutTimes))
         
         //var WIDTH_THRESHOLD=6.0/2000
-        var WIDTH_THRESHOLD=6.4/1920*512/Double(publicVar.thumbSize)
+        var WIDTH_THRESHOLD=6.4/1920*512/Double(publicVar.style.thumbSize)
         
         if publicVar.layoutType == .grid {
-            WIDTH_THRESHOLD=10.0/1920*512/Double(publicVar.thumbSize)
+            WIDTH_THRESHOLD=10.0/1920*512/Double(publicVar.style.thumbSize)
         }
         
-        let scrollbarWidth = publicVar.ThumbnailScrollbarWidth
-        var totalWidth = self.mainScrollView.bounds.width - scrollbarWidth - 2 * publicVar.ThumbnailCellPadding
+        let scrollbarWidth = publicVar.style.ThumbnailScrollbarWidth
+        var totalWidth = self.mainScrollView.bounds.width - scrollbarWidth - 2 * publicVar.style.ThumbnailCellPadding
         if totalWidth < 25 {totalWidth = 25}
         if publicVar.isInLargeView && globalVar.portableMode {totalWidth = 1000}
         
@@ -2454,7 +2510,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //let startKey = fileDB.db[targetFolder]!.files.elementSafe(atOffset: layoutCalcPos).0
         if layoutCalcPos>0 {
             if let thumbSize=fileDB.db[SortKeyDir(targetFolder)]!.files.elementSafe(atOffset: layoutCalcPos-1)?.1.thumbSize {
-                lastSingleHeight = thumbSize.height - (2*publicVar.ThumbnailBorderThickness+publicVar.ThumbnailFilenamePadding)
+                lastSingleHeight = thumbSize.height - (2*publicVar.style.ThumbnailBorderThickness+publicVar.style.ThumbnailFilenamePadding)
             }
         }
         if layoutCalcPos < count {
@@ -2468,7 +2524,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 singleIds.append(key)
                 if sum>=actualThreshold || i==fileDB.db[SortKeyDir(targetFolder)]!.files.count-1 {
                     sum=max(sum,actualThreshold)
-                    var singleHeight = floor((totalWidth - 2 * (publicVar.ThumbnailBorderThickness+publicVar.ThumbnailCellPadding) * Double(singleIds.count))/sum)
+                    var singleHeight = floor((totalWidth - 2 * (publicVar.style.ThumbnailBorderThickness+publicVar.style.ThumbnailCellPadding) * Double(singleIds.count))/sum)
                     if publicVar.layoutType == .grid && lastSingleHeight != nil { singleHeight=lastSingleHeight! } //防止最后一行不一样大小
                     lastSingleHeight=singleHeight
                     for singleId in singleIds{
@@ -2480,11 +2536,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         
                         if publicVar.layoutType == .waterfall {
                             let numberOfColumns=Double(publicVar.waterfallLayout.numberOfColumns)
-                            singleWidth = floor(totalWidth/numberOfColumns-2*(publicVar.ThumbnailBorderThickness+publicVar.ThumbnailCellPadding))
+                            singleWidth = floor(totalWidth/numberOfColumns-2*(publicVar.style.ThumbnailBorderThickness+publicVar.style.ThumbnailCellPadding))
                             singleHeight = round(originalSizeSingle.height/originalSizeSingle.width*singleWidth)
                         }
                         
-                        let size=NSSize(width: singleWidth+2*publicVar.ThumbnailBorderThickness, height: singleHeight+2*publicVar.ThumbnailBorderThickness+publicVar.ThumbnailFilenamePadding)
+                        let size=NSSize(width: singleWidth+2*publicVar.style.ThumbnailBorderThickness, height: singleHeight+2*publicVar.style.ThumbnailBorderThickness+publicVar.style.ThumbnailFilenamePadding)
                         fileDB.db[SortKeyDir(targetFolder)]!.files[singleId]!.thumbSize=size
                         fileDB.db[SortKeyDir(targetFolder)]!.files[singleId]!.lineNo=lineCount
                     }
@@ -3021,10 +3077,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 var fileSortKey:SortKeyFile
                 let isDir:Bool
                 if filePath.hasSuffix("_FolderMark") {
-                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)
+                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.style.sortType, isSortFolderFirst: publicVar.style.isSortFolderFirst)
                     isDir=true
                 }else{
-                    fileSortKey=SortKeyFile(filePath, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)
+                    fileSortKey=SortKeyFile(filePath, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.style.sortType, isSortFolderFirst: publicVar.style.isSortFolderFirst)
                     isDir=false
                 }
                 //读取文件大小日期
@@ -3190,9 +3246,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             let filename=publicVar.openFromFinderPath
             //log(filename)
             fileDB.lock()
-            if let index=fileDB.db[SortKeyDir(path)]?.files.index(forKey: SortKeyFile(filename, needGetProperties: true, sortType: publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)),
+            if let index=fileDB.db[SortKeyDir(path)]?.files.index(forKey: SortKeyFile(filename, needGetProperties: true, sortType: publicVar.style.sortType, isSortFolderFirst: publicVar.style.isSortFolderFirst)),
                let offset=fileDB.db[SortKeyDir(path)]?.files.offset(of: index),
-               let file=fileDB.db[SortKeyDir(path)]?.files[SortKeyFile(filename, needGetProperties: true, sortType: publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)],
+               let file=fileDB.db[SortKeyDir(path)]?.files[SortKeyFile(filename, needGetProperties: true, sortType: publicVar.style.sortType, isSortFolderFirst: publicVar.style.isSortFolderFirst)],
                let url=URL(string: file.path),
                let totalCount=fileDB.db[SortKeyDir(path)]?.files.count,
                let fileCount=fileDB.db[SortKeyDir(path)]?.fileCount
@@ -3673,7 +3729,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 log("第一张图片开始载入耗时: \(timeInterval) seconds")
                             }
                             
-                            var revisedSize = NSSize(width: thumbSize!.width-2*publicVar.ThumbnailBorderThickness, height: thumbSize!.height-2*publicVar.ThumbnailBorderThickness-publicVar.ThumbnailFilenamePadding)
+                            var revisedSize = NSSize(width: thumbSize!.width-2*publicVar.style.ThumbnailBorderThickness, height: thumbSize!.height-2*publicVar.style.ThumbnailBorderThickness-publicVar.style.ThumbnailFilenamePadding)
                             if publicVar.layoutType == .grid {
                                 var size = originalSize ?? DEFAULT_SIZE
                                 if size.width == 0 || size.height == 0 {size=DEFAULT_SIZE}
@@ -4441,7 +4497,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         let folderPath=fileDB.curFolder
         let imageCount=fileDB.db[SortKeyDir(folderPath)]?.imageCount ?? 0
         if imageCount != 0{
-            if let idInImage=fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.sortType, isSortFolderFirst: publicVar.isSortFolderFirst)]?.idInImage {
+            if let idInImage=fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.style.sortType, isSortFolderFirst: publicVar.style.isSortFolderFirst)]?.idInImage {
                 //fullTitle += " | " + String(format: "(%d/%d)",idInImage+1,imageCount)
                 fullTitle += " " + String(format: "(%d/%d)",idInImage+1,imageCount)
                 publicVar.lastLargeImageIdInImage=idInImage
@@ -5388,30 +5444,70 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
     
-    func toggleShowFilename() {
+    func toggleShowFilename(doNotRefresh: Bool = false) {
         
-        publicVar.isShowThumbnailFilename.toggle()
+        publicVar.style.isShowThumbnailFilename.toggle()
         
         let defaults = UserDefaults.standard
-        defaults.set(publicVar.isShowThumbnailFilename, forKey: "isShowThumbnailFilename")
+        defaults.set(publicVar.style.isShowThumbnailFilename, forKey: "isShowThumbnailFilename")
 
         configShowFilename()
         
-        refreshAll()
+        //refreshAll()
+        changeWaterfallLayoutNumberOfColumns()
+        if !doNotRefresh {
+            refreshCollectionView([], dryRun: true)
+        }
     }
     
     func configShowFilename(){
-        if publicVar.isShowThumbnailFilename {
-            publicVar.ThumbnailFilenamePadding = publicVar.ThumbnailFilenamePaddingInternal
-            publicVar.ThumbnailBorderThickness = 6
-            publicVar.ThumbnailCellPadding = 5
-            publicVar.ThumbnailBorderRadius = 5
+        if publicVar.style.isShowThumbnailFilename {
+            publicVar.style.ThumbnailFilenamePadding = publicVar.style.ThumbnailFilenamePaddingInternal
+            publicVar.style.ThumbnailBorderThickness = 6
+            publicVar.style.ThumbnailCellPadding = 5
+            publicVar.style.ThumbnailBorderRadius = 5
         }else{
-            publicVar.ThumbnailFilenamePadding = 0
-            publicVar.ThumbnailBorderThickness = 0
-            publicVar.ThumbnailCellPadding = 0
-            publicVar.ThumbnailBorderRadius = 0
+            publicVar.style.ThumbnailFilenamePadding = 0
+            publicVar.style.ThumbnailBorderThickness = 0
+            publicVar.style.ThumbnailCellPadding = 0
+            publicVar.style.ThumbnailBorderRadius = 0
         }
     }
+    
+    //以下是切换设置自定义布局
+    func setCustomStyleTo(_ styleName: String){
+        publicVar.style.saveToUserDefaults(withKey: "CustomStyle_v1_"+styleName)
+    }
+    
+    func useCustomStyle(_ styleName: String){
+        guard let newStyle = CustomStyle.loadFromUserDefaults(withKey: "CustomStyle_v1_"+styleName) else {return}
+        
+        var ifChangedNeedRefresh = false
+        
+        //边栏
+        if newStyle.isDirTreeHidden != publicVar.style.isDirTreeHidden {
+            toggleSidebar()
+        }
+        //排序
+        if newStyle.sortType != publicVar.style.sortType || newStyle.isSortFolderFirst != publicVar.style.isSortFolderFirst {
+            changeSortType(sortType: newStyle.sortType, isSortFolderFirst: newStyle.isSortFolderFirst, doNotRefresh: true)
+            ifChangedNeedRefresh = true
+        }
+        //缩略图大小
+        if newStyle.thumbSize != publicVar.style.thumbSize {
+            changeThumbSize(thumbSize: newStyle.thumbSize, doNotRefresh: true)
+            ifChangedNeedRefresh = true
+        }
+        //样式
+        if newStyle.isShowThumbnailFilename != publicVar.style.isShowThumbnailFilename {
+            toggleShowFilename(doNotRefresh: true)
+            ifChangedNeedRefresh = true
+        }
+        
+        if ifChangedNeedRefresh{
+            refreshCollectionView([], dryRun: true)
+        }
+    }
+    
 }
 

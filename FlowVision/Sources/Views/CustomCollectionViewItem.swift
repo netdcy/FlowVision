@@ -145,7 +145,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             imageViewObj.isFolder = false
         }
         
-        imageNameField.stringValue=getViewController(collectionView!)!.publicVar.isShowThumbnailFilename ? URL(string:file.path)!.lastPathComponent : ""
+        imageNameField.stringValue=getViewController(collectionView!)!.publicVar.style.isShowThumbnailFilename ? URL(string:file.path)!.lastPathComponent : ""
         
         if(playAnimation){
             NSAnimationContext.runAnimationGroup({ context in
@@ -280,7 +280,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     func selectedColor(){
-        log("selectedColor")
+        //log("selectedColor")
         let theme=NSApp.effectiveAppearance.name
         
         if file.isDir {
@@ -315,8 +315,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         setCustomFrameSize()
         
         //边框为0时使用图像高亮-选中
-        guard let publicVar = getViewController(collectionView!)?.publicVar else {return}
-        if publicVar.ThumbnailBorderThickness <= 1 && !file.isDir {
+        guard let style = getViewController(collectionView!)?.publicVar.style else {return}
+        if style.ThumbnailBorderThickness <= 1 && !file.isDir {
             let overlayLayerName = "highlightOverlay"
             imageViewObj.layer?.sublayers?.forEach { sublayer in
                 if sublayer.name == overlayLayerName {
@@ -333,7 +333,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
     }
     func deselectedColor(){
-        log("deselectedColor")
+        //log("deselectedColor")
         let theme=NSApp.effectiveAppearance.name
         
         //目录
@@ -389,8 +389,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         setCustomFrameSize()
         
         //边框为0时使用图像高亮-取消选中
-        guard let publicVar = getViewController(collectionView!)?.publicVar else {return}
-        if publicVar.ThumbnailBorderThickness <= 1 && !file.isDir {
+        guard let style = getViewController(collectionView!)?.publicVar.style else {return}
+        if style.ThumbnailBorderThickness <= 1 && !file.isDir {
             let overlayLayerName = "highlightOverlay"
             imageViewObj.layer?.sublayers?.forEach { sublayer in
                 if sublayer.name == overlayLayerName {
@@ -402,11 +402,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     func setCustomFrameSize(){
-        guard let publicVar = getViewController(collectionView!)?.publicVar else {return}
-        let newX = publicVar.ThumbnailBorderThickness
-        let newY = publicVar.ThumbnailBorderThickness + publicVar.ThumbnailFilenamePadding
-        let newWidth = imageViewRef.frame.width + 12.0 - 2*publicVar.ThumbnailBorderThickness
-        let newHeight = imageViewRef.frame.height + 30.0 - 2*publicVar.ThumbnailBorderThickness - publicVar.ThumbnailFilenamePadding
+        guard let style = getViewController(collectionView!)?.publicVar.style else {return}
+        let newX = style.ThumbnailBorderThickness
+        let newY = style.ThumbnailBorderThickness + style.ThumbnailFilenamePadding
+        let newWidth = imageViewRef.frame.width + 12.0 - 2*style.ThumbnailBorderThickness
+        let newHeight = imageViewRef.frame.height + 30.0 - 2*style.ThumbnailBorderThickness - style.ThumbnailFilenamePadding
         let newFrame = NSRect(x: newX, y: newY, width: newWidth, height: newHeight)
         
         // GridView时特殊样式
@@ -417,7 +417,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 if image.size.width != 0 && image.size.height != 0{
                     imageViewObj.frame = AVMakeRect(aspectRatio: image.size, insideRect: newFrame)
                 }
-                imageViewObj.center = CGPoint(x: imageViewRef.center.x, y: imageViewRef.center.y-(18.0-publicVar.ThumbnailFilenamePadding)/2)
+                imageViewObj.center = CGPoint(x: imageViewRef.center.x, y: imageViewRef.center.y-(18.0-style.ThumbnailFilenamePadding)/2)
             }else{
                 imageViewObj.isDrawBorder=false
                 imageViewObj.layer?.borderWidth = 0.0
@@ -434,10 +434,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             //imageViewObj.frame = imageViewRef.frame
             imageViewObj.frame = newFrame
             
-            imageViewObj.layer?.cornerRadius = publicVar.ThumbnailBorderRadius
+            imageViewObj.layer?.cornerRadius = style.ThumbnailBorderRadius
         }
         
-        view.layer?.cornerRadius = publicVar.ThumbnailBorderRadius
+        view.layer?.cornerRadius = style.ThumbnailBorderRadius
     }
     
     func select(){
@@ -609,7 +609,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     let sortSubMenu = NSMenu()
                     
                     let folderFirstItem = NSMenuItem(title: NSLocalizedString("Sort Folders First", comment: "文件夹优先排序"), action: #selector(sortFolderFirst(_:)), keyEquivalent: "")
-                    folderFirstItem.state = (getViewController(collectionView!)?.publicVar.isSortFolderFirst == false) ? .off : .on
+                    folderFirstItem.state = (getViewController(collectionView!)?.publicVar.style.isSortFolderFirst == false) ? .off : .on
                     sortSubMenu.addItem(folderFirstItem)
                     
                     sortSubMenu.addItem(NSMenuItem.separator())
@@ -618,7 +618,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                         let menuItem = NSMenuItem(title: title, action: #selector(sortItems(_:)), keyEquivalent: "")
                         menuItem.target = self
                         menuItem.representedObject = sortType
-                        let curSortType=getViewController(collectionView!)?.publicVar.sortType
+                        let curSortType=getViewController(collectionView!)?.publicVar.style.sortType
                         menuItem.state = curSortType == sortType ? .on : .off
                         sortSubMenu.addItem(menuItem)
                     }
@@ -677,14 +677,15 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     @objc func sortItems(_ sender: NSMenuItem) {
+        guard let viewController = getViewController(collectionView!) else {return}
         guard let sortType = sender.representedObject as? SortType else { return }
-        getViewController(collectionView!)?.changeSortType(sortType)
+        getViewController(collectionView!)?.changeSortType(sortType: sortType, isSortFolderFirst: viewController.publicVar.style.isSortFolderFirst)
     }
     
     @objc func sortFolderFirst(_ sender: NSMenuItem) {
         guard let viewController = getViewController(collectionView!) else {return}
-        viewController.publicVar.isSortFolderFirst.toggle()
-        viewController.changeSortType(viewController.publicVar.sortType)
+        viewController.publicVar.style.isSortFolderFirst.toggle()
+        viewController.changeSortType(sortType: viewController.publicVar.style.sortType, isSortFolderFirst: viewController.publicVar.style.isSortFolderFirst)
     }
     
     @objc func actRefresh() {

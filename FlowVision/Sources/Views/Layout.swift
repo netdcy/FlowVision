@@ -57,7 +57,7 @@ class CustomFlowLayout: NSCollectionViewLayout {
         cache.removeAll()
         contentHeight = 0
 
-        let cellPadding = getViewController(collectionView)!.publicVar.ThumbnailCellPadding
+        let cellPadding = getViewController(collectionView)!.publicVar.style.ThumbnailCellPadding
         var xOffset: CGFloat = cellPadding
         var yOffset: CGFloat = cellPadding
         var rowHeight: CGFloat = 0
@@ -89,7 +89,7 @@ class CustomFlowLayout: NSCollectionViewLayout {
 
     override var collectionViewContentSize: NSSize {
         guard let collectionView = collectionView else { return NSSize(width: 100, height: 100)}
-        let cellPadding = getViewController(collectionView)!.publicVar.ThumbnailCellPadding
+        let cellPadding = getViewController(collectionView)!.publicVar.style.ThumbnailCellPadding
         return NSSize(width: contentWidth, height: contentHeight + cellPadding)
     }
 
@@ -121,9 +121,9 @@ class WaterfallLayout: NSCollectionViewLayout {
         guard let collectionView = collectionView else { return }
         guard let delegate = collectionView.delegate as? NSCollectionViewDelegateFlowLayout else { return }
 
-        let cellPadding = getViewController(collectionView)!.publicVar.ThumbnailCellPadding
+        let cellPadding = getViewController(collectionView)!.publicVar.style.ThumbnailCellPadding
         let totalWidth = getViewController(collectionView)?.mainScrollView.bounds.width ?? collectionView.bounds.width
-        let scrollbarWidth = getViewController(collectionView)!.publicVar.ThumbnailScrollbarWidth
+        let scrollbarWidth = getViewController(collectionView)!.publicVar.style.ThumbnailScrollbarWidth
         let columnWidth = floor((totalWidth - scrollbarWidth - 2*cellPadding) / CGFloat(numberOfColumns))
         var xOffset: [CGFloat] = []
         for column in 0 ..< numberOfColumns {

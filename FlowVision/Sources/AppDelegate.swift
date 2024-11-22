@@ -505,7 +505,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             switchToActualSizeMenuItem.state = (mainViewController.publicVar.isLargeImageFitWindow == false) ? .on : .off
             switchToFitToWindowMenuItem.state = (mainViewController.publicVar.isLargeImageFitWindow == true) ? .on : .off
             
-            toggleSidebarMenuItem.state = (mainViewController.publicVar.isDirTreeHidden == false) ? .on : .off
+            toggleSidebarMenuItem.state = (mainViewController.publicVar.style.isDirTreeHidden == false) ? .on : .off
             toggleSidebarMenuItem.keyEquivalent="f"
             toggleSidebarMenuItem.keyEquivalentModifierMask=[]
         }
