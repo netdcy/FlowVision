@@ -74,19 +74,19 @@
       }
     },
     "NOF-sJ-b0B.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Click the button to set this application as the default program for all supported image formats.\"; ObjectID = \"NOF-sJ-b0B\";",
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Click the button to set this application as the default program for common public image formats. For private image formats such as PSD and DNG, please associate them manually.\"; ObjectID = \"NOF-sJ-b0B\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Click the button to set this application as the default program for all supported image formats."
+            "value" : "Click the button to set this application as the default program for common public image formats. For private image formats such as PSD and DNG, please associate them manually."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点击按钮将此应用设置为所有支持图像格式的默认程序。"
+            "value" : "点击按钮将此应用设置为常见公有图像格式的默认程序。私有图像格式例如PSD和DNG请手动关联。"
           }
         }
       }
