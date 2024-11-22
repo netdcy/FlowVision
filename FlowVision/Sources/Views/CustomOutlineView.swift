@@ -244,7 +244,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         pasteboard.writeObjects(urls as [NSPasteboardWriting])
     }
     
-    @objc func actDelete(isByKeyboard: Bool = false) {
+    @objc func actDelete(isByKeyboard: Bool = false, isShowPrompt: Bool = true) {
         var url: URL?
         if isByKeyboard {
             url = getFirstSelectedUrl()
@@ -253,7 +253,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         }
         guard let url = url else {return}
         
-        let result = getViewController(self)?.handleDelete(fileUrls: [url], isShowPrompt: isByKeyboard)
+        let result = getViewController(self)?.handleDelete(fileUrls: [url], isShowPrompt: isByKeyboard && isShowPrompt)
         
         if result == true && curRightClickedIndex != self.selectedRowIndexes.first {
             refreshTreeView()

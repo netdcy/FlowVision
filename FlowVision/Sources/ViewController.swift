@@ -488,12 +488,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 if specialKey == .delete || specialKey == .backspace || specialKey == .deleteForward {
                     //如果焦点在OutlineView
                     if publicVar.isOutlineViewFirstResponder{
-                        outlineView.actDelete(isByKeyboard: true)
+                        outlineView.actDelete(isByKeyboard: true, isShowPrompt: !isCommandPressed)
                         return nil
                     }
                     //如果焦点在CollectionView
                     if publicVar.isCollectionViewFirstResponder{
-                        handleDelete()
+                        handleDelete(isShowPrompt: !isCommandPressed)
                         return nil
                     }
                 }
