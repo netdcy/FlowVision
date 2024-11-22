@@ -298,7 +298,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         // 失去焦点时的样式
         if getViewController(collectionView!)!.publicVar.isCollectionViewFirstResponder{
-            view.layer?.backgroundColor = NSColor.systemBlue.cgColor //边框
+            view.layer?.backgroundColor = NSColor.controlAccentColor.cgColor //边框
         }else{
             view.layer?.backgroundColor = NSColor.systemGray.cgColor //边框
         }

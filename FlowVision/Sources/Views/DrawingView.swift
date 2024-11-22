@@ -10,7 +10,7 @@ import Cocoa
 
 class DrawingView: NSView {
     private var path: NSBezierPath?
-    var lineColor: NSColor = NSColor.systemBlue  // 默认线条颜色
+    var lineColor: NSColor = NSColor.controlAccentColor  // 默认线条颜色
     var lineWidth: CGFloat = 4.0     // 默认线条宽度
     var directionLabel: NSTextField!   // 方向提示文本字段
     var statusLabel: NSTextField!   // 状态提示文本字段

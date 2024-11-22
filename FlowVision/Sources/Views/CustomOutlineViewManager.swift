@@ -237,10 +237,10 @@ class CustomTableRowView: NSTableRowView {
             if let window = self.window, let firstResponder = window.firstResponder as? NSView, (firstResponder === self || self.isDescendant(of: firstResponder)) {
                 if theme == .darkAqua {
                     // 暗模式下的颜色
-                    NSColor.systemBlue.setFill()
+                    NSColor.controlAccentColor.setFill()
                 } else {
                     // 光模式下的颜色
-                    NSColor.systemBlue.setFill()
+                    NSColor.controlAccentColor.setFill()
                 }
             }else{
                 NSColor.systemGray.setFill()
@@ -275,7 +275,7 @@ class CustomTableRowView: NSTableRowView {
         if let tableView = self.superview as? NSTableView {
             let rowIndex = tableView.row(for: self)
             if rowIndex == getViewController(self)?.outlineView.curRightClickedIndex {
-                NSColor.systemBlue.setStroke() // 设置边框颜色
+                NSColor.controlAccentColor.setStroke() // 设置边框颜色
                 selectionPath.lineWidth = 2.0 // 设置边框宽度
                 selectionPath.stroke() // 绘制边框
             }
