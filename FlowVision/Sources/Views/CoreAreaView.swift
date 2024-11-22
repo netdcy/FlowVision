@@ -11,6 +11,7 @@ import Cocoa
 class CoreAreaView: NSView {
     
     var infoView: InfoView!
+    var cannotBeCleard: Bool = true
     
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -33,12 +34,15 @@ class CoreAreaView: NSView {
         ])
     }
     
-    func showInfo(_ info: String, timeOut: Double = 1.0) {
+    func showInfo(_ info: String, timeOut: Double = 1.0, cannotBeCleard: Bool = true) {
         infoView.showInfo(text: info, timeOut: timeOut)
+        self.cannotBeCleard = cannotBeCleard
     }
     
     func hideInfo() {
-        infoView.hide()
+        if !self.cannotBeCleard {
+            infoView.hide()
+        }
     }
     
     override func awakeFromNib() {

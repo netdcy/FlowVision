@@ -389,16 +389,14 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         setCustomFrameSize()
         
         //边框为0时使用图像高亮-取消选中
-        guard let style = getViewController(collectionView!)?.publicVar.style else {return}
-        if style.ThumbnailBorderThickness <= 1 && !file.isDir {
-            let overlayLayerName = "highlightOverlay"
-            imageViewObj.layer?.sublayers?.forEach { sublayer in
-                if sublayer.name == overlayLayerName {
-                    sublayer.removeFromSuperlayer()
-                }
+        let overlayLayerName = "highlightOverlay"
+        imageViewObj.layer?.sublayers?.forEach { sublayer in
+            if sublayer.name == overlayLayerName {
+                sublayer.removeFromSuperlayer()
+                imageViewObj.needsDisplay = true
             }
-            imageViewObj.needsDisplay = true
         }
+        imageViewObj.needsDisplay = true
     }
     
     func setCustomFrameSize(){
@@ -438,6 +436,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
         
         view.layer?.cornerRadius = style.ThumbnailBorderRadius
+        
+        let textFrame = NSRect(x: newX, y: round(newX/2)+1, width: newWidth, height: round(style.ThumbnailFilenameSize*1.3))
+        imageNameField.font = NSFont.systemFont(ofSize: style.ThumbnailFilenameSize, weight: .light)
+        imageNameField.frame = textFrame
     }
     
     func select(){

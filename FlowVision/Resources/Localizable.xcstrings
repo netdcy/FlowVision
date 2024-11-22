@@ -367,6 +367,28 @@
         }
       }
     },
+    "Custom Layout Style" : {
+      "comment" : "自定义布局样式",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义布局样式"
+          }
+        }
+      }
+    },
+    "Custom Layout Style..." : {
+      "comment" : "自定义布局样式...",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义布局样式..."
+          }
+        }
+      }
+    },
     "Date Added" : {
       "comment" : "添加日期",
       "localizations" : {
@@ -658,6 +680,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "文件大小"
+          }
+        }
+      }
+    },
+    "Filename Font Size" : {
+      "comment" : "文件名字体大小",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件名字体大小"
           }
         }
       }
@@ -1629,6 +1662,17 @@
         }
       }
     },
+    "Reset" : {
+      "comment" : "重置",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置"
+          }
+        }
+      }
+    },
     "rotate-clockwise" : {
       "comment" : "顺时针旋转",
       "localizations" : {
@@ -1659,6 +1703,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "逆时针旋转"
+          }
+        }
+      }
+    },
+    "save-custom-layout" : {
+      "comment" : "保存到自定义布局",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save to Custom Layout %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存到自定义布局%@"
           }
         }
       }
@@ -1757,17 +1818,6 @@
         }
       }
     },
-    "Show Filename" : {
-      "comment" : "显示文件名称",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "显示文件名称"
-          }
-        }
-      }
-    },
     "Show Hidden Files" : {
       "comment" : "显示隐藏文件",
       "localizations" : {
@@ -1786,6 +1836,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示图像文件"
+          }
+        }
+      }
+    },
+    "Show Thumbnail Filename" : {
+      "comment" : "显示缩略图文件名",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示缩略图文件名"
           }
         }
       }
@@ -2292,6 +2353,23 @@
         }
       }
     },
+    "switch-to-custom-layout" : {
+      "comment" : "切换至自定义布局",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch to Custom Layout %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切换至自定义布局%@"
+          }
+        }
+      }
+    },
     "switchToActualSize" : {
       "comment" : "图片默认实际大小",
       "localizations" : {
@@ -2401,6 +2479,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "缩略图大小"
+          }
+        }
+      }
+    },
+    "Thumbnail Border Thickness" : {
+      "comment" : "缩略图边框厚度",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图边框厚度"
+          }
+        }
+      }
+    },
+    "Thumbnail Cell Padding" : {
+      "comment" : "缩略图单元格外边距",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图单元格外边距"
+          }
+        }
+      }
+    },
+    "Thumbnail Corner Radius" : {
+      "comment" : "缩略图圆角半径",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图圆角半径"
+          }
+        }
+      }
+    },
+    "Thumbnail Options" : {
+      "comment" : "缩略图选项",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图选项"
           }
         }
       }

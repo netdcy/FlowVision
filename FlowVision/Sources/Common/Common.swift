@@ -481,3 +481,219 @@ func printContent(_ content: NSView) {
     let printOperation = NSPrintOperation(view: printView, printInfo: printInfo)
     printOperation.run()
 }
+
+class ThumbnailOptionsWindow: NSWindow {
+    // Define initial values as constants
+    private let initialShowThumbnailFilename: Bool = true
+    private let initialThumbnailBorderThickness: Double = 6.0
+    private let initialThumbnailCellPadding: Double = 5.0
+    private let initialThumbnailBorderRadius: Double = 5.0
+    private let initialThumbnailFilenameSize: Double = 12.0  // Add initial value for ThumbnailFilenameSize
+    
+    // Variables to store current settings
+    var isShowThumbnailFilename: Bool
+    var thumbnailBorderThickness: Double
+    var thumbnailCellPadding: Double
+    var thumbnailBorderRadius: Double
+    var thumbnailFilenameSize: Double  // Add variable to store current ThumbnailFilenameSize
+    
+    init() {
+        let windowSize = NSSize(width: 400, height: 350) // Adjust height for new field
+        let windowRect = NSRect(origin: .zero, size: windowSize)
+        
+        // Get current values
+        let mainViewController = getMainViewController()!.publicVar.style
+        isShowThumbnailFilename = mainViewController.isShowThumbnailFilename
+        thumbnailBorderThickness = mainViewController.ThumbnailBorderThickness
+        thumbnailCellPadding = mainViewController.ThumbnailCellPadding
+        thumbnailBorderRadius = mainViewController.ThumbnailBorderRadius
+        thumbnailFilenameSize = mainViewController.ThumbnailFilenameSize // Retrieve current ThumbnailFilenameSize
+        
+        super.init(contentRect: windowRect, styleMask: [.titled, .closable], backing: .buffered, defer: false)
+        self.title = NSLocalizedString("Thumbnail Options", comment: "缩略图选项")
+        
+        // Create a custom view with desired background color
+        let customView = NSView(frame: windowRect)
+        customView.wantsLayer = true
+        customView.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
+        
+        // Create a stack view for layout
+        let stackView = NSStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.orientation = .vertical
+        stackView.alignment = .centerX
+        stackView.spacing = 15
+        
+        // Create an NSImageView for the icon
+        let icon = NSImageView()
+        icon.image = NSImage(systemSymbolName: "photo", accessibilityDescription: "")
+        icon.translatesAutoresizingMaskIntoConstraints = false
+        icon.symbolConfiguration = NSImage.SymbolConfiguration(pointSize: 20, weight: .regular)
+        
+        // Add a title label
+        let titleLabel = NSTextField(labelWithString: NSLocalizedString("Custom Layout Style", comment: "自定义布局样式"))
+        titleLabel.alignment = .center
+        titleLabel.font = NSFont.boldSystemFont(ofSize: 14)
+        
+        // Create a horizontal stack view for the icon and title
+        let titleStackView = NSStackView(views: [icon, titleLabel])
+        titleStackView.orientation = .horizontal
+        titleStackView.alignment = .centerY
+        titleStackView.spacing = 5
+        
+        stackView.addArrangedSubview(titleStackView)
+        
+        // Add spacing below the title
+        let spacingView = NSView()
+        spacingView.translatesAutoresizingMaskIntoConstraints = false
+        spacingView.heightAnchor.constraint(equalToConstant: 0).isActive = true
+        stackView.addArrangedSubview(spacingView)
+        
+        // Create labeled controls
+        let showFilenameCheckboxView = createLabeledCheckbox(label: NSLocalizedString("Show Thumbnail Filename", comment: "显示缩略图文件名"), isChecked: isShowThumbnailFilename)
+        let borderThicknessTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Border Thickness", comment: "缩略图边框厚度"), defaultValue: String(thumbnailBorderThickness))
+        let cellPaddingTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Cell Padding", comment: "缩略图单元格外边距"), defaultValue: String(thumbnailCellPadding))
+        let borderRadiusTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Corner Radius", comment: "缩略图圆角半径"), defaultValue: String(thumbnailBorderRadius))
+        let filenameSizeTextField = createLabeledTextField(label: NSLocalizedString("Filename Font Size", comment: "文件名字体大小"), defaultValue: String(thumbnailFilenameSize)) // New field
+        
+        // Add subviews to stack view
+        stackView.addArrangedSubview(showFilenameCheckboxView)
+        stackView.addArrangedSubview(borderThicknessTextField)
+        stackView.addArrangedSubview(cellPaddingTextField)
+        stackView.addArrangedSubview(borderRadiusTextField)
+        stackView.addArrangedSubview(filenameSizeTextField) // Add new field to stack view
+        
+        // Create buttons
+        let buttonStackView = NSStackView()
+        buttonStackView.orientation = .horizontal
+        buttonStackView.spacing = 20
+        
+        let okButton = NSButton(title: NSLocalizedString("OK", comment: "确定"), target: self, action: #selector(okButtonPressed))
+        let cancelButton = NSButton(title: NSLocalizedString("Cancel", comment: "取消"), target: self, action: #selector(cancelButtonPressed))
+        let resetButton = NSButton(title: NSLocalizedString("Reset", comment: "重置"), target: self, action: #selector(resetButtonPressed))
+        
+        buttonStackView.addArrangedSubview(okButton)
+        buttonStackView.addArrangedSubview(resetButton)
+        buttonStackView.addArrangedSubview(cancelButton)
+        
+        stackView.addArrangedSubview(buttonStackView)
+        
+        // Add stack view to custom view
+        customView.addSubview(stackView)
+        
+        // Set custom view as the content view
+        self.contentView = customView
+        
+        // Add constraints
+        NSLayoutConstraint.activate([
+            stackView.centerXAnchor.constraint(equalTo: customView.centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: customView.centerYAnchor),
+            stackView.leadingAnchor.constraint(greaterThanOrEqualTo: customView.leadingAnchor, constant: 20),
+            stackView.trailingAnchor.constraint(lessThanOrEqualTo: customView.trailingAnchor, constant: -20)
+        ])
+    }
+    
+    // Helper function to create labeled text fields
+    private func createLabeledTextField(label: String, defaultValue: String) -> NSStackView {
+        let labelView = NSTextField(labelWithString: label)
+        labelView.alignment = .right
+        labelView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let textField = NSTextField(string: defaultValue)
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        
+        let stackView = NSStackView(views: [labelView, textField])
+        stackView.orientation = .horizontal
+        stackView.spacing = 10
+        
+        NSLayoutConstraint.activate([
+            labelView.widthAnchor.constraint(equalToConstant: 200),
+            textField.widthAnchor.constraint(equalToConstant: 200)
+        ])
+        
+        return stackView
+    }
+    
+    // Helper function to create labeled checkbox
+    private func createLabeledCheckbox(label: String, isChecked: Bool) -> NSStackView {
+        let labelView = NSTextField(labelWithString: label)
+        labelView.alignment = .right
+        labelView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let checkbox = NSButton(checkboxWithTitle: "", target: nil, action: nil)
+        checkbox.state = isChecked ? .on : .off
+        checkbox.translatesAutoresizingMaskIntoConstraints = false
+        
+        let stackView = NSStackView(views: [labelView, checkbox])
+        stackView.orientation = .horizontal
+        stackView.spacing = 10
+        
+        NSLayoutConstraint.activate([
+            labelView.widthAnchor.constraint(equalToConstant: 200),
+            checkbox.widthAnchor.constraint(equalToConstant: 200)
+        ])
+        
+        return stackView
+    }
+    
+    @objc func okButtonPressed() {
+        guard let contentView = self.contentView else { return }
+        let stackView = contentView.subviews[0] as! NSStackView
+        
+        let showFilenameCheckbox = (stackView.arrangedSubviews[2] as! NSStackView).views[1] as! NSButton
+        let borderThicknessTextField = (stackView.arrangedSubviews[3] as! NSStackView).views[1] as! NSTextField
+        let cellPaddingTextField = (stackView.arrangedSubviews[4] as! NSStackView).views[1] as! NSTextField
+        let borderRadiusTextField = (stackView.arrangedSubviews[5] as! NSStackView).views[1] as! NSTextField
+        let filenameSizeTextField = (stackView.arrangedSubviews[6] as! NSStackView).views[1] as! NSTextField // New field
+        
+        self.isShowThumbnailFilename = showFilenameCheckbox.state == .on
+        self.thumbnailBorderThickness = Double(borderThicknessTextField.stringValue) ?? initialThumbnailBorderThickness
+        self.thumbnailCellPadding = Double(cellPaddingTextField.stringValue) ?? initialThumbnailCellPadding
+        self.thumbnailBorderRadius = Double(borderRadiusTextField.stringValue) ?? initialThumbnailBorderRadius
+        self.thumbnailFilenameSize = Double(filenameSizeTextField.stringValue) ?? initialThumbnailFilenameSize // Update new value
+        
+        self.sheetParent?.endSheet(self, returnCode: .OK)
+    }
+    
+    @objc func cancelButtonPressed() {
+        self.sheetParent?.endSheet(self, returnCode: .cancel)
+    }
+    
+    @objc func resetButtonPressed() {
+        guard let contentView = self.contentView else { return }
+        let stackView = contentView.subviews[0] as! NSStackView
+        
+        let showFilenameCheckbox = (stackView.arrangedSubviews[2] as! NSStackView).views[1] as! NSButton
+        let borderThicknessTextField = (stackView.arrangedSubviews[3] as! NSStackView).views[1] as! NSTextField
+        let cellPaddingTextField = (stackView.arrangedSubviews[4] as! NSStackView).views[1] as! NSTextField
+        let borderRadiusTextField = (stackView.arrangedSubviews[5] as! NSStackView).views[1] as! NSTextField
+        let filenameSizeTextField = (stackView.arrangedSubviews[6] as! NSStackView).views[1] as! NSTextField // New field
+        
+        // Reset values to initial values
+        showFilenameCheckbox.state = initialShowThumbnailFilename ? .on : .off
+        borderThicknessTextField.stringValue = String(initialThumbnailBorderThickness)
+        cellPaddingTextField.stringValue = String(initialThumbnailCellPadding)
+        borderRadiusTextField.stringValue = String(initialThumbnailBorderRadius)
+        filenameSizeTextField.stringValue = String(initialThumbnailFilenameSize) // Reset new field
+    }
+}
+
+
+
+// Function to display the panel as a sheet
+func showThumbnailOptionsPanel(on parentWindow: NSWindow, completion: @escaping (Bool, Double, Double, Double, Double) -> Void) {
+    let thumbnailOptionsWindow = ThumbnailOptionsWindow()
+    
+    parentWindow.beginSheet(thumbnailOptionsWindow) { response in
+        if response == .OK {
+            completion(thumbnailOptionsWindow.isShowThumbnailFilename,
+                       thumbnailOptionsWindow.thumbnailBorderThickness,
+                       thumbnailOptionsWindow.thumbnailCellPadding,
+                       thumbnailOptionsWindow.thumbnailBorderRadius,
+                       thumbnailOptionsWindow.thumbnailFilenameSize)
+        } else {
+            // Handle cancellation if needed
+            log("User canceled custom style window.")
+        }
+    }
+}

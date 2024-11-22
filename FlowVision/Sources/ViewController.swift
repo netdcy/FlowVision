@@ -12,20 +12,26 @@ import DiskArbitration
 
 class CustomStyle: Codable {
     
+    //侧边栏
     var isDirTreeHidden = false
     
+    //排序
     var sortType: SortType = .pathA
     var isSortFolderFirst: Bool = true
     
+    //缩略图大小
     var thumbSize = 512
     
+    //布局
+    var isShowThumbnailFilename = true
     var ThumbnailBorderThickness: Double = 6
     var ThumbnailBorderRadius: Double = 5
-    var ThumbnailFilenamePaddingInternal: Double = 18
-    var ThumbnailFilenamePadding: Double = 18
     var ThumbnailCellPadding: Double = 5
+    //以下暂时为内部使用
+    var ThumbnailFilenameSize: Double = 18
+    //var ThumbnailFilenamePaddingInternal: Double = 24
+    var ThumbnailFilenamePadding: Double = 18
     var ThumbnailScrollbarWidth: Double = 16
-    var isShowThumbnailFilename = true
     var isGridViewNotAffectedByCustomStyle = true
     
     func saveToUserDefaults(withKey key: String) {
@@ -35,14 +41,14 @@ class CustomStyle: Codable {
         }
     }
     
-    static func loadFromUserDefaults(withKey key: String) -> CustomStyle? {
+    static func loadFromUserDefaults(withKey key: String) -> CustomStyle {
         if let savedData = UserDefaults.standard.data(forKey: key) {
             let decoder = JSONDecoder()
             if let loadedStyle = try? decoder.decode(CustomStyle.self, from: savedData) {
                 return loadedStyle
             }
         }
-        return nil
+        return CustomStyle() //读取异常时返回默认值
     }
 }
 
@@ -368,10 +374,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if let isGenHdThumb = UserDefaults.standard.value(forKey: "isGenHdThumb") as? Bool {
             publicVar.isGenHdThumb = isGenHdThumb
         }
-        if let isShowThumbnailFilename = UserDefaults.standard.value(forKey: "isShowThumbnailFilename") as? Bool {
-            publicVar.style.isShowThumbnailFilename = isShowThumbnailFilename
-            configShowFilename()
-        }
+        publicVar.style = CustomStyle.loadFromUserDefaults(withKey: "CustomStyle_v1_current")
         
         //-----结束读取配置------
         
@@ -3376,7 +3379,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         while snapshotQueue.count > 0{
                             
                             if layoutCalcPos == 0{
-                                coreAreaView.showInfo(NSLocalizedString("Loading...", comment: "加载中..."), timeOut: .infinity)
+                                coreAreaView.showInfo(NSLocalizedString("Loading...", comment: "加载中..."), timeOut: .infinity, cannotBeCleard: false)
                             }
                             
                             let snapshot=snapshotQueue.first!
@@ -4253,7 +4256,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     
                     //显示首次使用提示
                     if globalVar.isFirstTimeUse{
-                        coreAreaView.showInfo(NSLocalizedString("first-time-use-prompt", comment: "首次使用提示..."), timeOut: 60)
+                        coreAreaView.showInfo(NSLocalizedString("first-time-use-prompt", comment: "首次使用提示..."), timeOut: .infinity, cannotBeCleard: false)
                     }
                     
                     currLargeImagePos=indexPath.item
@@ -5443,46 +5446,54 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             self?.nextLargeImage()
         }
     }
-    
-    func toggleShowFilename(doNotRefresh: Bool = false) {
-        
-        publicVar.style.isShowThumbnailFilename.toggle()
-        
-        let defaults = UserDefaults.standard
-        defaults.set(publicVar.style.isShowThumbnailFilename, forKey: "isShowThumbnailFilename")
 
-        configShowFilename()
+    func configLayoutStyle(newStyle: CustomStyle ,doNotRefresh: Bool = false){
+        publicVar.style.isShowThumbnailFilename = newStyle.isShowThumbnailFilename
+        publicVar.style.ThumbnailBorderThickness = newStyle.ThumbnailBorderThickness
+        publicVar.style.ThumbnailCellPadding = newStyle.ThumbnailCellPadding
+        publicVar.style.ThumbnailBorderRadius = newStyle.ThumbnailBorderRadius
+        publicVar.style.ThumbnailFilenameSize = newStyle.ThumbnailFilenameSize
         
-        //refreshAll()
+        if publicVar.style.isShowThumbnailFilename {
+            publicVar.style.ThumbnailFilenamePadding = round(publicVar.style.ThumbnailFilenameSize*1.3) + 2
+        }else{
+            publicVar.style.ThumbnailFilenamePadding = 0
+        }
+        
+        publicVar.style.saveToUserDefaults(withKey: "CustomStyle_v1_current")
+        
         changeWaterfallLayoutNumberOfColumns()
         if !doNotRefresh {
             refreshCollectionView([], dryRun: true)
         }
     }
     
-    func configShowFilename(){
-        if publicVar.style.isShowThumbnailFilename {
-            publicVar.style.ThumbnailFilenamePadding = publicVar.style.ThumbnailFilenamePaddingInternal
-            publicVar.style.ThumbnailBorderThickness = 6
-            publicVar.style.ThumbnailCellPadding = 5
-            publicVar.style.ThumbnailBorderRadius = 5
-        }else{
-            publicVar.style.ThumbnailFilenamePadding = 0
-            publicVar.style.ThumbnailBorderThickness = 0
-            publicVar.style.ThumbnailCellPadding = 0
-            publicVar.style.ThumbnailBorderRadius = 0
+    func customLayoutStylePrompt (){
+        if let mainWindow = NSApplication.shared.mainWindow {
+            showThumbnailOptionsPanel(on: mainWindow) { [weak self] isShowFilename, borderThickness, cellPadding, borderRadius, filenameSize in
+                guard let self = self else { return }
+                
+                let newStyle = CustomStyle()
+                newStyle.isShowThumbnailFilename = isShowFilename
+                newStyle.ThumbnailBorderThickness = borderThickness
+                newStyle.ThumbnailCellPadding = cellPadding
+                newStyle.ThumbnailBorderRadius = borderRadius
+                newStyle.ThumbnailFilenameSize = filenameSize
+                
+                configLayoutStyle(newStyle: newStyle)
+            }
         }
     }
     
+    
     //以下是切换设置自定义布局
     func setCustomStyleTo(_ styleName: String){
+        coreAreaView.showInfo(String(format: NSLocalizedString("save-custom-layout", comment: "保存到自定义布局"), styleName), timeOut: 1)
         publicVar.style.saveToUserDefaults(withKey: "CustomStyle_v1_"+styleName)
     }
     
     func useCustomStyle(_ styleName: String){
-        guard let newStyle = CustomStyle.loadFromUserDefaults(withKey: "CustomStyle_v1_"+styleName) else {return}
-        
-        var ifChangedNeedRefresh = false
+        let newStyle = CustomStyle.loadFromUserDefaults(withKey: "CustomStyle_v1_"+styleName)
         
         //边栏
         if newStyle.isDirTreeHidden != publicVar.style.isDirTreeHidden {
@@ -5491,21 +5502,18 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //排序
         if newStyle.sortType != publicVar.style.sortType || newStyle.isSortFolderFirst != publicVar.style.isSortFolderFirst {
             changeSortType(sortType: newStyle.sortType, isSortFolderFirst: newStyle.isSortFolderFirst, doNotRefresh: true)
-            ifChangedNeedRefresh = true
         }
         //缩略图大小
         if newStyle.thumbSize != publicVar.style.thumbSize {
             changeThumbSize(thumbSize: newStyle.thumbSize, doNotRefresh: true)
-            ifChangedNeedRefresh = true
         }
         //样式
-        if newStyle.isShowThumbnailFilename != publicVar.style.isShowThumbnailFilename {
-            toggleShowFilename(doNotRefresh: true)
-            ifChangedNeedRefresh = true
-        }
+        configLayoutStyle(newStyle: newStyle, doNotRefresh: true)
         
-        if ifChangedNeedRefresh{
-            refreshCollectionView([], dryRun: true)
+        refreshCollectionView([], dryRun: true)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            coreAreaView.showInfo(String(format: NSLocalizedString("switch-to-custom-layout", comment: "切换至自定义布局"), styleName), timeOut: 1)
         }
     }
     

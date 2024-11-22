@@ -825,8 +825,8 @@ extension WindowController: NSToolbarDelegate {
         
         menu.addItem(NSMenuItem.separator())
         
-        let showFilename = menu.addItem(withTitle: NSLocalizedString("Show Filename", comment: "显示文件名称"), action: #selector(toggleShowFilename), keyEquivalent: "")
-        showFilename.state = (viewController.publicVar.style.isShowThumbnailFilename) ? .on : .off
+        let customLayoutStyle = menu.addItem(withTitle: NSLocalizedString("Custom Layout Style...", comment: "自定义布局样式..."), action: #selector(customLayoutStyle), keyEquivalent: "")
+        customLayoutStyle.isEnabled = !viewController.publicVar.isInLargeView
 
         menu.addItem(NSMenuItem.separator())
         
@@ -1109,9 +1109,9 @@ extension WindowController: NSToolbarDelegate {
         viewController.toggleAutoPlay()
     }
     
-    @objc func toggleShowFilename(_ sender: NSMenuItem){
+    @objc func customLayoutStyle(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
-        viewController.toggleShowFilename()
+        viewController.customLayoutStylePrompt()
     }
 }
 
