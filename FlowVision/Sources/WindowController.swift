@@ -849,6 +849,22 @@ extension WindowController: NSToolbarDelegate {
         
         menu.addItem(NSMenuItem.separator())
         
+        var autoScrollMenuText = NSLocalizedString("Enable Automatic Scroll", comment: "启用自动滚动")
+        if viewController.autoScrollTimer != nil {
+            autoScrollMenuText = NSLocalizedString("Disable Automatic Scroll", comment: "停止自动滚动")
+        }
+        let autoScroll = menu.addItem(withTitle: autoScrollMenuText, action: #selector(toggleAutoScroll), keyEquivalent: "")
+        autoScroll.isEnabled = !viewController.publicVar.isInLargeView
+        
+        var autoPlayMenuText = NSLocalizedString("Enable Automatic Play", comment: "启用自动播放")
+        if viewController.autoPlayTimer != nil {
+            autoPlayMenuText = NSLocalizedString("Disable Automatic Play", comment: "停止自动播放")
+        }
+        let autoPlay = menu.addItem(withTitle: autoPlayMenuText, action: #selector(toggleAutoPlay), keyEquivalent: "")
+        autoPlay.isEnabled = viewController.publicVar.isInLargeView
+        
+        menu.addItem(NSMenuItem.separator())
+        
         let recursiveMode = menu.addItem(withTitle: NSLocalizedString("Recursive Mode", comment: "递归浏览模式"), action: #selector(toggleRecursiveMode), keyEquivalent: "")
         recursiveMode.state = (viewController.publicVar.isRecursiveMode) ? .on : .off
         
@@ -1076,6 +1092,16 @@ extension WindowController: NSToolbarDelegate {
     
     @objc func recursiveModeInfo(_ sender: NSMenuItem){
         showInformation(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("recursive-mode-info", comment: "对于递归模式的说明..."))
+    }
+    
+    @objc func toggleAutoScroll(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleAutoScroll()
+    }
+    
+    @objc func toggleAutoPlay(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleAutoPlay()
     }
 }
 

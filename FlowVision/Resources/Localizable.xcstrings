@@ -422,6 +422,28 @@
         }
       }
     },
+    "Disable Automatic Play" : {
+      "comment" : "停止自动播放",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止自动播放"
+          }
+        }
+      }
+    },
+    "Disable Automatic Scroll" : {
+      "comment" : "停止自动滚动",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止自动滚动"
+          }
+        }
+      }
+    },
     "do-you-want-replace" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -501,6 +523,28 @@
         }
       }
     },
+    "Enable Automatic Play" : {
+      "comment" : "启用自动播放",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用自动播放"
+          }
+        }
+      }
+    },
+    "Enable Automatic Scroll" : {
+      "comment" : "启用自动滚动",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用自动滚动"
+          }
+        }
+      }
+    },
     "Enlarge the Thumbnails" : {
       "comment" : "放大缩略图",
       "localizations" : {
@@ -508,6 +552,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "放大缩略图"
+          }
+        }
+      }
+    },
+    "Enter the auto play interval in seconds:" : {
+      "comment" : "请输入自动播放的间隔时间（秒）：",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请输入自动播放的间隔时间（秒）："
+          }
+        }
+      }
+    },
+    "Enter the scroll speed in pixels per second:" : {
+      "comment" : "输入每秒滚动的像素数：",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入每秒滚动的像素数："
           }
         }
       }
@@ -800,6 +866,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请输入文件夹名称："
+          }
+        }
+      }
+    },
+    "Invalid input, please enter a positive number" : {
+      "comment" : "输入不合法，请输入一个正数",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入不合法，请输入一个正数"
           }
         }
       }
@@ -1610,6 +1687,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前已扫描 %d 个文件，其中图像 %d 个，视频 %d 个。是否继续？"
+          }
+        }
+      }
+    },
+    "Set Auto Play Interval" : {
+      "comment" : "设置自动播放间隔",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置自动播放间隔"
+          }
+        }
+      }
+    },
+    "Set Scroll Speed" : {
+      "comment" : "设置滚动速度",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置滚动速度"
           }
         }
       }
