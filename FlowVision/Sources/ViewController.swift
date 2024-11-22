@@ -266,6 +266,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     var willTerminate = false
     
     var windowSizeChangedTimesWhenInLarge=0
+    
+    var arrowScrollDebounceWorkItem: DispatchWorkItem?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -524,70 +526,78 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 
                 // 检查按键是否是 Command+⬆️ 键
                 if specialKey == .upArrow && isOnlyCommandPressed {
-                    if let scrollView = collectionView.enclosingScrollView {
-                        scrollView.contentView.scroll(to: NSPoint(x: 0, y: 0))
-                        scrollView.reflectScrolledClipView(scrollView.contentView)
-                        DispatchQueue.main.async { [weak self] in
-                            self?.setLoadThumbPriority(ifNeedVisable: true)
+                    if !publicVar.isInLargeView{
+                        if let scrollView = collectionView.enclosingScrollView {
+                            scrollView.contentView.scroll(to: NSPoint(x: 0, y: 0))
+                            scrollView.reflectScrolledClipView(scrollView.contentView)
+                            DispatchQueue.main.async { [weak self] in
+                                self?.setLoadThumbPriority(ifNeedVisable: true)
+                            }
                         }
+                        return nil
                     }
-                    return nil
                 }
                 
                 // 检查按键是否是 Command+⬇️ 键
                 if specialKey == .downArrow && isOnlyCommandPressed {
-                    if let scrollView = collectionView.enclosingScrollView {
-                        let newOrigin = NSPoint(x: 0, y: collectionView.bounds.height - scrollView.contentSize.height)
-                        scrollView.contentView.scroll(to: newOrigin)
-                        scrollView.reflectScrolledClipView(scrollView.contentView)
-                        DispatchQueue.main.async { [weak self] in
-                            self?.setLoadThumbPriority(ifNeedVisable: true)
+                    if !publicVar.isInLargeView{
+                        if let scrollView = collectionView.enclosingScrollView {
+                            let newOrigin = NSPoint(x: 0, y: collectionView.bounds.height - scrollView.contentSize.height)
+                            scrollView.contentView.scroll(to: newOrigin)
+                            scrollView.reflectScrolledClipView(scrollView.contentView)
+                            DispatchQueue.main.async { [weak self] in
+                                self?.setLoadThumbPriority(ifNeedVisable: true)
+                            }
                         }
+                        return nil
                     }
-                    return nil
                 }
                 
                 // 检查按键是否是 Alt+⬆️ 键
-                if specialKey == .upArrow && isOnlyAltPressed {
-                    if let scrollView = collectionView.enclosingScrollView {
-                        let currentOrigin = scrollView.contentView.bounds.origin
-                        let pageHeight = scrollView.contentSize.height
-
-                        // Calculate the new y position by subtracting the page height from the current y position.
-                        let newY = max(currentOrigin.y - pageHeight, 0)
-                        let newOrigin = NSPoint(x: currentOrigin.x, y: newY)
-
-                        // Scroll to the new origin
-                        scrollView.contentView.scroll(to: newOrigin)
-                        scrollView.reflectScrolledClipView(scrollView.contentView)
-
-                        DispatchQueue.main.async { [weak self] in
-                            self?.setLoadThumbPriority(ifNeedVisable: true)
+                if (specialKey == .upArrow && isOnlyAltPressed) || (specialKey == .pageUp && noModifierKey) {
+                    if !publicVar.isInLargeView{
+                        if let scrollView = collectionView.enclosingScrollView {
+                            let currentOrigin = scrollView.contentView.bounds.origin
+                            let pageHeight = scrollView.contentSize.height
+                            
+                            // Calculate the new y position by subtracting the page height from the current y position.
+                            let newY = max(currentOrigin.y - pageHeight, 0)
+                            let newOrigin = NSPoint(x: currentOrigin.x, y: newY)
+                            
+                            // Scroll to the new origin
+                            scrollView.contentView.scroll(to: newOrigin)
+                            scrollView.reflectScrolledClipView(scrollView.contentView)
+                            
+                            DispatchQueue.main.async { [weak self] in
+                                self?.setLoadThumbPriority(ifNeedVisable: true)
+                            }
                         }
+                        return nil
                     }
-                    return nil
                 }
 
                 
                 // 检查按键是否是 Alt+⬇️ 键
-                if specialKey == .downArrow && isOnlyAltPressed {
-                    if let scrollView = collectionView.enclosingScrollView {
-                        let currentOrigin = scrollView.contentView.bounds.origin
-                        let pageHeight = scrollView.contentSize.height
-
-                        // Calculate the new y position by adding the page height to the current y position.
-                        let newY = min(currentOrigin.y + pageHeight, collectionView.bounds.height - pageHeight)
-                        let newOrigin = NSPoint(x: currentOrigin.x, y: newY)
-
-                        // Scroll to the new origin
-                        scrollView.contentView.scroll(to: newOrigin)
-                        scrollView.reflectScrolledClipView(scrollView.contentView)
-
-                        DispatchQueue.main.async { [weak self] in
-                            self?.setLoadThumbPriority(ifNeedVisable: true)
+                if (specialKey == .downArrow && isOnlyAltPressed) || (specialKey == .pageDown && noModifierKey) {
+                    if !publicVar.isInLargeView{
+                        if let scrollView = collectionView.enclosingScrollView {
+                            let currentOrigin = scrollView.contentView.bounds.origin
+                            let pageHeight = scrollView.contentSize.height
+                            
+                            // Calculate the new y position by adding the page height to the current y position.
+                            let newY = min(currentOrigin.y + pageHeight, collectionView.bounds.height - pageHeight)
+                            let newOrigin = NSPoint(x: currentOrigin.x, y: newY)
+                            
+                            // Scroll to the new origin
+                            scrollView.contentView.scroll(to: newOrigin)
+                            scrollView.reflectScrolledClipView(scrollView.contentView)
+                            
+                            DispatchQueue.main.async { [weak self] in
+                                self?.setLoadThumbPriority(ifNeedVisable: true)
+                            }
                         }
+                        return nil
                     }
-                    return nil
                 }
                 
                 // 检查按键是否是 Esc 键
@@ -828,6 +838,19 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                     collectionView.selectItems(at: [newIndexPath], scrollPosition: [])
                                     collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [newIndexPath])
                                     collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
+                                    
+                                    setLoadThumbPriority(ifNeedVisable: true)
+                                    //log(DispatchTime.now().uptimeNanoseconds)
+//                                    if publicVar.timer.intervalSafe(name: "arrowScrollViewDidScrollSetLoadThumbPriority", second: 0.1) {
+//                                        setLoadThumbPriority(ifNeedVisable: true)
+//                                    }
+//                                    arrowScrollDebounceWorkItem?.cancel()
+//                                    arrowScrollDebounceWorkItem = DispatchWorkItem {
+//                                        DispatchQueue.main.async { [weak self] in
+//                                            self?.setLoadThumbPriority(ifNeedVisable: true)
+//                                        }
+//                                    }
+//                                    DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.1, execute: arrowScrollDebounceWorkItem!)
                                 }
 
                             }else if let collectionView = collectionView {
