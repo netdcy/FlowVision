@@ -469,9 +469,77 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 Command+⬆️ 键
+//                if specialKey == .upArrow && isCommandPressed {
+//                    closeLargeImage(0)
+//                    switchDirByDirection(direction: .up, stackDeep: 0)
+//                    return nil
+//                }
+                
+                // 检查按键是否是 Command+⬆️ 键
                 if specialKey == .upArrow && isCommandPressed {
-                    closeLargeImage(0)
-                    switchDirByDirection(direction: .up, stackDeep: 0)
+                    if let scrollView = collectionView.enclosingScrollView {
+                        scrollView.contentView.scroll(to: NSPoint(x: 0, y: 0))
+                        scrollView.reflectScrolledClipView(scrollView.contentView)
+                        DispatchQueue.main.async { [weak self] in
+                            self?.setLoadThumbPriority(ifNeedVisable: true)
+                        }
+                    }
+                    return nil
+                }
+                
+                // 检查按键是否是 Command+⬇️ 键
+                if specialKey == .downArrow && isCommandPressed {
+                    if let scrollView = collectionView.enclosingScrollView {
+                        let newOrigin = NSPoint(x: 0, y: collectionView.bounds.height - scrollView.contentSize.height)
+                        scrollView.contentView.scroll(to: newOrigin)
+                        scrollView.reflectScrolledClipView(scrollView.contentView)
+                        DispatchQueue.main.async { [weak self] in
+                            self?.setLoadThumbPriority(ifNeedVisable: true)
+                        }
+                    }
+                    return nil
+                }
+                
+                // 检查按键是否是 Alt+⬆️ 键
+                if specialKey == .upArrow && isAltPressed {
+                    if let scrollView = collectionView.enclosingScrollView {
+                        let currentOrigin = scrollView.contentView.bounds.origin
+                        let pageHeight = scrollView.contentSize.height
+
+                        // Calculate the new y position by subtracting the page height from the current y position.
+                        let newY = max(currentOrigin.y - pageHeight, 0)
+                        let newOrigin = NSPoint(x: currentOrigin.x, y: newY)
+
+                        // Scroll to the new origin
+                        scrollView.contentView.scroll(to: newOrigin)
+                        scrollView.reflectScrolledClipView(scrollView.contentView)
+
+                        DispatchQueue.main.async { [weak self] in
+                            self?.setLoadThumbPriority(ifNeedVisable: true)
+                        }
+                    }
+                    return nil
+                }
+
+                
+                // 检查按键是否是 Alt+⬇️ 键
+                if specialKey == .downArrow && isAltPressed {
+                    if let scrollView = collectionView.enclosingScrollView {
+                        let currentOrigin = scrollView.contentView.bounds.origin
+                        let pageHeight = scrollView.contentSize.height
+
+                        // Calculate the new y position by adding the page height to the current y position.
+                        let newY = min(currentOrigin.y + pageHeight, collectionView.bounds.height - pageHeight)
+                        let newOrigin = NSPoint(x: currentOrigin.x, y: newY)
+
+                        // Scroll to the new origin
+                        scrollView.contentView.scroll(to: newOrigin)
+                        scrollView.reflectScrolledClipView(scrollView.contentView)
+
+                        DispatchQueue.main.async { [weak self] in
+                            self?.setLoadThumbPriority(ifNeedVisable: true)
+                        }
+                    }
                     return nil
                 }
                 
