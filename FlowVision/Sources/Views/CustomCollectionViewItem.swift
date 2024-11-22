@@ -299,7 +299,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
         
         // GridView时特殊样式
-        if getViewController(collectionView!)!.publicVar.layoutType == .grid && !file.isDir {
+        if getViewController(collectionView!)!.publicVar.profile.layoutType == .grid && !file.isDir {
             //view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor //图片边框
             //imageNameField.textColor = hexToNSColor(hex: "#7E7E7E") //图片文字
         }else{
@@ -373,7 +373,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
         
         // GridView时特殊样式
-        if getViewController(collectionView!)!.publicVar.layoutType == .grid && !file.isDir {
+        if getViewController(collectionView!)!.publicVar.profile.layoutType == .grid && !file.isDir {
             view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor //图片边框
             imageNameField.textColor = hexToNSColor(hex: "#7E7E7E") //图片文字
         }else{
@@ -403,7 +403,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         let newFrame = NSRect(x: newX, y: newY, width: newWidth, height: newHeight)
         
         // GridView时特殊样式
-        if getViewController(collectionView!)!.publicVar.layoutType == .grid {
+        if getViewController(collectionView!)!.publicVar.profile.layoutType == .grid {
             if let image = file.image, !file.isDir {
                 imageViewObj.isDrawBorder=true
                 imageViewObj.layer?.borderWidth = 2.0

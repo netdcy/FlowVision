@@ -332,7 +332,7 @@ extension WindowController: NSToolbarDelegate {
                 NSImage(systemSymbolName: "rectangle.3.offgrid", accessibilityDescription: "Waterfall")!,
                 NSImage(systemSymbolName: "rectangle.grid.2x2", accessibilityDescription: "Grid")!
             ], trackingMode: .selectOne, target: self, action: #selector(viewToggleAction(_:)))
-            segmentedControl.selectedSegment = viewController.publicVar.layoutType.rawValue
+            segmentedControl.selectedSegment = viewController.publicVar.profile.layoutType.rawValue
             segmentedControl.segmentStyle = .automatic
             segmentedControl.setToolTip(NSLocalizedString("Justified View", comment: "自适应视图"), forSegment: 0)
             segmentedControl.setToolTip(NSLocalizedString("Waterfall View", comment: "瀑布流视图"), forSegment: 1)

@@ -13,12 +13,12 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customView id="w9t-Vi-0Is">
-            <rect key="frame" x="0.0" y="0.0" width="510" height="506"/>
+        <customView misplaced="YES" id="w9t-Vi-0Is">
+            <rect key="frame" x="0.0" y="0.0" width="510" height="520"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <gridView xPlacement="center" yPlacement="center" rowAlignment="none" rowSpacing="8" columnSpacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Rch-Bu-Q2t">
-                    <rect key="frame" x="30" y="28" width="450" height="458"/>
+                    <rect key="frame" x="30" y="28" width="450" height="472"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="450" id="HFK-ed-9Rg"/>
                     </constraints>
@@ -38,7 +38,7 @@
                     <gridCells>
                         <gridCell row="tyX-xi-JUH" column="X7r-A5-zjQ" id="zcw-4m-fRz">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fwn-dW-cfy">
-                                <rect key="frame" x="30" y="442" width="96" height="16"/>
+                                <rect key="frame" x="30" y="456" width="96" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Image Viewing:" id="p6V-rJ-gwR">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -48,7 +48,7 @@
                         </gridCell>
                         <gridCell row="tyX-xi-JUH" column="oNd-Vu-470" id="3ip-Hj-cEn">
                             <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="yxf-H0-SOm">
-                                <rect key="frame" x="132" y="346" width="320" height="112"/>
+                                <rect key="frame" x="132" y="360" width="320" height="112"/>
                                 <textFieldCell key="cell" selectable="YES" id="jjU-gf-0lm">
                                     <font key="font" metaFont="message" size="11"/>
                                     <string key="title">Double-click to open/close the image. 
@@ -63,13 +63,13 @@ Long press the right mouse button to fit the image to the view.</string>
                         </gridCell>
                         <gridCell row="1ju-7T-mfc" column="X7r-A5-zjQ" headOfMergedCell="Kui-HA-yYz" xPlacement="fill" id="Kui-HA-yYz">
                             <box key="contentView" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="vND-Ga-SGQ">
-                                <rect key="frame" x="0.0" y="326" width="450" height="5"/>
+                                <rect key="frame" x="0.0" y="340" width="450" height="5"/>
                             </box>
                         </gridCell>
                         <gridCell row="1ju-7T-mfc" column="oNd-Vu-470" headOfMergedCell="Kui-HA-yYz" id="QUv-cn-RhQ"/>
                         <gridCell row="Z7f-hg-6RQ" column="X7r-A5-zjQ" id="vVd-Xc-v9G">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0yA-K6-8F3">
-                                <rect key="frame" x="-2" y="294" width="128" height="16"/>
+                                <rect key="frame" x="-2" y="308" width="128" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Right-Click Gestures:" id="qK4-Oc-vMt">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -79,7 +79,7 @@ Long press the right mouse button to fit the image to the view.</string>
                         </gridCell>
                         <gridCell row="Z7f-hg-6RQ" column="oNd-Vu-470" id="tFS-5a-2PQ">
                             <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="QOg-90-uPD">
-                                <rect key="frame" x="132" y="198" width="320" height="112"/>
+                                <rect key="frame" x="132" y="212" width="320" height="112"/>
                                 <textFieldCell key="cell" selectable="YES" id="xau-nf-fbD">
                                     <font key="font" metaFont="message" size="11"/>
                                     <string key="title">Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk).
@@ -94,13 +94,13 @@ Down-Right: Close the tab/window.</string>
                         </gridCell>
                         <gridCell row="WJc-HD-cfv" column="X7r-A5-zjQ" headOfMergedCell="AQC-E3-aoQ" xPlacement="fill" id="AQC-E3-aoQ">
                             <box key="contentView" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="Mje-69-a3s">
-                                <rect key="frame" x="0.0" y="178" width="450" height="5"/>
+                                <rect key="frame" x="0.0" y="192" width="450" height="5"/>
                             </box>
                         </gridCell>
                         <gridCell row="WJc-HD-cfv" column="oNd-Vu-470" headOfMergedCell="AQC-E3-aoQ" id="4Dm-1n-Ma6"/>
                         <gridCell row="Msn-zB-CUY" column="X7r-A5-zjQ" id="5zK-5Q-b8r">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="C0B-Ff-xTr">
-                                <rect key="frame" x="-2" y="146" width="128" height="16"/>
+                                <rect key="frame" x="-2" y="160" width="128" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Keyboard Shortcuts:" id="diV-0n-cUs">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -110,7 +110,7 @@ Down-Right: Close the tab/window.</string>
                         </gridCell>
                         <gridCell row="Msn-zB-CUY" column="oNd-Vu-470" id="LtZ-ab-hxu">
                             <textField key="contentView" focusRingType="none" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="fAd-oU-0bp">
-                                <rect key="frame" x="132" y="120" width="252" height="42"/>
+                                <rect key="frame" x="132" y="134" width="252" height="42"/>
                                 <textFieldCell key="cell" selectable="YES" id="Ple-dV-Ujq">
                                     <font key="font" metaFont="message" size="11"/>
                                     <string key="title">W: Same as the right-click gesture Up.
@@ -123,13 +123,13 @@ S: Same as the right-click gesture Down.</string>
                         </gridCell>
                         <gridCell row="csq-9b-2Vg" column="X7r-A5-zjQ" headOfMergedCell="AfO-iZ-ZM1" xPlacement="fill" id="AfO-iZ-ZM1">
                             <box key="contentView" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="FFZ-mQ-Lsf">
-                                <rect key="frame" x="0.0" y="100" width="450" height="5"/>
+                                <rect key="frame" x="0.0" y="114" width="450" height="5"/>
                             </box>
                         </gridCell>
                         <gridCell row="csq-9b-2Vg" column="oNd-Vu-470" headOfMergedCell="AfO-iZ-ZM1" id="ddN-89-jdq"/>
                         <gridCell row="ZWa-1o-EWV" column="X7r-A5-zjQ" id="y67-ck-t68">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="iwe-uk-5rL">
-                                <rect key="frame" x="16" y="68" width="110" height="16"/>
+                                <rect key="frame" x="16" y="82" width="110" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Profile Switching:" id="VtW-9m-Sj8">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -139,12 +139,12 @@ S: Same as the right-click gesture Down.</string>
                         </gridCell>
                         <gridCell row="ZWa-1o-EWV" column="oNd-Vu-470" id="hiH-ud-Jdz">
                             <textField key="contentView" focusRingType="none" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="2vx-cQ-j1A">
-                                <rect key="frame" x="132" y="0.0" width="320" height="84"/>
+                                <rect key="frame" x="132" y="0.0" width="320" height="98"/>
                                 <textFieldCell key="cell" selectable="YES" id="kUa-1f-s4l">
                                     <font key="font" metaFont="message" size="11"/>
                                     <string key="title">Press Alt + 12345 to switch to the corresponding profile.
 Press Alt + Cmd + 12345 to save the current layout and style to the corresponding profile.
-The configurations involved in switching include: whether to display the sidebar, sorting method, thumbnail size, and custom styles (such as thumbnail border width).</string>
+The configurations involved in switching include: whether to display the sidebar, view type, sorting method, thumbnail size, and custom styles (such as whether to display file names and the width of the thumbnail border).</string>
                                     <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>

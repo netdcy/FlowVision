@@ -12,6 +12,9 @@ import DiskArbitration
 
 class CustomProfile: Codable {
     
+    //布局类型
+    var layoutType: LayoutType = .justified
+    
     //侧边栏
     var isDirTreeHidden = false
     
@@ -56,10 +59,6 @@ class PublicVar{
     weak var refView: NSView!
     weak var viewController: ViewController!
 
-    var layoutType: LayoutType = .justified {
-        didSet {updateToolbar()}
-    }
-    
     var isLargeImageFitWindow = true
     var isRecursiveMode = false
     var isShowHiddenFile = false
@@ -342,9 +341,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if let isLargeImageFitWindow = UserDefaults.standard.value(forKey: "isLargeImageFitWindow") as? Bool {
             publicVar.isLargeImageFitWindow=isLargeImageFitWindow
         }
-        if let layoutType: LayoutType = UserDefaults.standard.enumValue(forKey: "layoutType"){
-            publicVar.layoutType=layoutType
-        }
         if let isShowHiddenFile = UserDefaults.standard.value(forKey: "isShowHiddenFile") as? Bool {
             publicVar.isShowHiddenFile = isShowHiddenFile
         }
@@ -363,6 +359,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if let isGenHdThumb = UserDefaults.standard.value(forKey: "isGenHdThumb") as? Bool {
             publicVar.isGenHdThumb = isGenHdThumb
         }
+//        if let layoutType: LayoutType = UserDefaults.standard.enumValue(forKey: "layoutType"){
+//            publicVar.layoutType=layoutType
+//        }
 //        if let thumbSize = UserDefaults.standard.value(forKey: "thumbSize") as? Int {
 //            publicVar.profile.thumbSize = thumbSize
 //        }
@@ -385,11 +384,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             splitView.setPosition(0, ofDividerAt: 0)
         }
 
-        if publicVar.layoutType == .waterfall {
+        if publicVar.profile.layoutType == .waterfall {
             collectionView.collectionViewLayout = publicVar.waterfallLayout
-        }else if publicVar.layoutType == .justified {
+        }else if publicVar.profile.layoutType == .justified {
             collectionView.collectionViewLayout = publicVar.justifiedLayout
-        }else if publicVar.layoutType == .grid {
+        }else if publicVar.profile.layoutType == .grid {
             collectionView.collectionViewLayout = publicVar.justifiedLayout
         }else {
             collectionView.collectionViewLayout = publicVar.justifiedLayout
@@ -1521,36 +1520,53 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
     
-    func switchToJustifiedView(){
-        let defaults = UserDefaults.standard
-        defaults.setEnum(LayoutType.justified, forKey: "layoutType")
-        publicVar.layoutType = .justified
+    func switchToJustifiedView(doNotRefresh: Bool = false){
+//        let defaults = UserDefaults.standard
+//        defaults.setEnum(LayoutType.justified, forKey: "layoutType")
+        publicVar.profile.layoutType = .justified
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
+        publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
-        refreshCollectionView([], dryRun: true)
+        if !doNotRefresh {
+            refreshCollectionView([], dryRun: true)
+        }
     }
     
-    func switchToGridView(){
-        let defaults = UserDefaults.standard
-        defaults.setEnum(LayoutType.grid, forKey: "layoutType")
-        publicVar.layoutType = .grid
+    func switchToGridView(doNotRefresh: Bool = false){
+//        let defaults = UserDefaults.standard
+//        defaults.setEnum(LayoutType.grid, forKey: "layoutType")
+        publicVar.profile.layoutType = .grid
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
+        publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
-        refreshCollectionView([], dryRun: true)
+        if !doNotRefresh {
+            refreshCollectionView([], dryRun: true)
+        }
     }
     
-    func switchToWaterfallView(){
-        let defaults = UserDefaults.standard
-        defaults.setEnum(LayoutType.waterfall, forKey: "layoutType")
-        publicVar.layoutType = .waterfall
+    func switchToWaterfallView(doNotRefresh: Bool = false){
+//        let defaults = UserDefaults.standard
+//        defaults.setEnum(LayoutType.waterfall, forKey: "layoutType")
+        publicVar.profile.layoutType = .waterfall
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
+        publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
-        refreshCollectionView([], dryRun: true)
+        if !doNotRefresh {
+            refreshCollectionView([], dryRun: true)
+        }
     }
     
-    func switchToDetailView(){
+    func switchToDetailView(doNotRefresh: Bool = false){
+        return
 //        let defaults = UserDefaults.standard
 //        defaults.setEnum(LayoutType.detail, forKey: "layoutType")
-//        publicVar.layoutType = .detail
-//        publicVar.isNeedChangeLayoutType = true
-//        refreshCollectionView([], dryRun: true)
+        publicVar.profile.layoutType = .detail
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
+        publicVar.updateToolbar()
+        publicVar.isNeedChangeLayoutType = true
+        if !doNotRefresh {
+            refreshCollectionView([], dryRun: true)
+        }
     }
     
     func changeThumbSize(thumbSize: Int, doNotRefresh: Bool = false){
@@ -1645,22 +1661,22 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             
             switch direction {
             case .leftArrow: // Left arrow key
-                if itemCenter.x < currentCenter.x && (itemCenter.y == currentCenter.y || publicVar.layoutType == .waterfall) {
+                if itemCenter.x < currentCenter.x && (itemCenter.y == currentCenter.y || publicVar.profile.layoutType == .waterfall) {
                     distance = hypot(currentCenter.x - itemCenter.x, itemCenter.y - currentCenter.y)
                     valid = true
                 }
             case .rightArrow: // Right arrow key
-                if itemCenter.x > currentCenter.x && (itemCenter.y == currentCenter.y || publicVar.layoutType == .waterfall) {
+                if itemCenter.x > currentCenter.x && (itemCenter.y == currentCenter.y || publicVar.profile.layoutType == .waterfall) {
                     distance = hypot(currentCenter.x - itemCenter.x, itemCenter.y - currentCenter.y)
                     valid = true
                 }
             case .downArrow: // Up arrow key (Adjusted to move up)
-                if itemCenter.y > currentCenter.y && (itemCenter.x == currentCenter.x || publicVar.layoutType != .waterfall) {
+                if itemCenter.y > currentCenter.y && (itemCenter.x == currentCenter.x || publicVar.profile.layoutType != .waterfall) {
                     distance = hypot(currentCenter.x - itemCenter.x, itemCenter.y - currentCenter.y)
                     valid = true
                 }
             case .upArrow: // Down arrow key (Adjusted to move down)
-                if itemCenter.y < currentCenter.y && (itemCenter.x == currentCenter.x || publicVar.layoutType != .waterfall) {
+                if itemCenter.y < currentCenter.y && (itemCenter.x == currentCenter.x || publicVar.profile.layoutType != .waterfall) {
                     distance = hypot(currentCenter.x - itemCenter.x, currentCenter.y - itemCenter.y)
                     valid = true
                 }
@@ -2447,7 +2463,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //outlineViewManager.adjustColumnWidth()
         
         //解决gird时改变窗口大小，由于不彻底重载，导致的缩放不正常
-        if publicVar.layoutType == .grid {
+        if publicVar.profile.layoutType == .grid {
             let visibleIndexPaths=collectionView.indexPathsForVisibleItems()
             for indexPath in visibleIndexPaths{
                 if let item = collectionView.item(at: indexPath) as? CustomCollectionViewItem {
@@ -2507,7 +2523,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //var WIDTH_THRESHOLD=6.0/2000
         var WIDTH_THRESHOLD=6.4/1920*512/Double(publicVar.profile.thumbSize)
         
-        if publicVar.layoutType == .grid {
+        if publicVar.profile.layoutType == .grid {
             WIDTH_THRESHOLD=10.0/1920*512/Double(publicVar.profile.thumbSize)
         }
         
@@ -2544,22 +2560,22 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 guard var originalSize=fileDB.db[SortKeyDir(targetFolder)]!.files[key]!.originalSize else{break}
                 if fileDB.db[SortKeyDir(targetFolder)]!.files[key]!.canBeCalcued != true {break}
 
-                if publicVar.layoutType == .grid { originalSize=DEFAULT_SIZE }
+                if publicVar.profile.layoutType == .grid { originalSize=DEFAULT_SIZE }
                 sum+=(originalSize.width/originalSize.height)
                 singleIds.append(key)
                 if sum>=actualThreshold || i==fileDB.db[SortKeyDir(targetFolder)]!.files.count-1 {
                     sum=max(sum,actualThreshold)
                     var singleHeight = floor((totalWidth - 2 * (publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailCellPadding) * Double(singleIds.count))/sum)
-                    if publicVar.layoutType == .grid && lastSingleHeight != nil { singleHeight=lastSingleHeight! } //防止最后一行不一样大小
+                    if publicVar.profile.layoutType == .grid && lastSingleHeight != nil { singleHeight=lastSingleHeight! } //防止最后一行不一样大小
                     lastSingleHeight=singleHeight
                     for singleId in singleIds{
                         var originalSizeSingle=fileDB.db[SortKeyDir(targetFolder)]!.files[singleId]!.originalSize!
                         
-                        if publicVar.layoutType == .grid { originalSizeSingle=DEFAULT_SIZE }
+                        if publicVar.profile.layoutType == .grid { originalSizeSingle=DEFAULT_SIZE }
                         
                         var singleWidth = floor(originalSizeSingle.width/originalSizeSingle.height*singleHeight)
                         
-                        if publicVar.layoutType == .waterfall {
+                        if publicVar.profile.layoutType == .waterfall {
                             let numberOfColumns=Double(publicVar.waterfallLayout.numberOfColumns)
                             singleWidth = floor(totalWidth/numberOfColumns-2*(publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailCellPadding))
                             singleHeight = round(originalSizeSingle.height/originalSizeSingle.width*singleWidth)
@@ -3301,7 +3317,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         
         if publicVar.isNeedChangeLayoutType {
-            if publicVar.layoutType == .waterfall {
+            if publicVar.profile.layoutType == .waterfall {
                 collectionView.collectionViewLayout=publicVar.waterfallLayout
             }else{
                 collectionView.collectionViewLayout=publicVar.justifiedLayout
@@ -3755,7 +3771,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                             }
                             
                             var revisedSize = NSSize(width: thumbSize!.width-2*publicVar.profile.ThumbnailBorderThickness, height: thumbSize!.height-2*publicVar.profile.ThumbnailBorderThickness-publicVar.profile.ThumbnailFilenamePadding)
-                            if publicVar.layoutType == .grid {
+                            if publicVar.profile.layoutType == .grid {
                                 var size = originalSize ?? DEFAULT_SIZE
                                 if size.width == 0 || size.height == 0 {size=DEFAULT_SIZE}
                                 revisedSize = AVMakeRect(aspectRatio: size, insideRect: CGRect(origin: CGPoint(x: 0, y: 0), size: revisedSize)).size
@@ -5524,6 +5540,18 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         coreAreaView.showInfo(String(format: NSLocalizedString("switch-to-custom-profile", comment: "切换至自定义配置"), styleName), timeOut: 1)
         let newStyle = CustomProfile.loadFromUserDefaults(withKey: "CustomStyle_v1_"+styleName)
         
+        //布局类型
+        if newStyle.layoutType != publicVar.profile.layoutType {
+            if newStyle.layoutType == .justified {
+                switchToJustifiedView(doNotRefresh: true)
+            }else if newStyle.layoutType == .waterfall {
+                switchToWaterfallView(doNotRefresh: true)
+            }else if newStyle.layoutType == .grid {
+                switchToGridView(doNotRefresh: true)
+            }else {
+                //
+            }
+        }
         //边栏
         if newStyle.isDirTreeHidden != publicVar.profile.isDirTreeHidden {
             toggleSidebar()

@@ -477,10 +477,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             toggleIsShowRawFileMenuItem.state = mainViewController.publicVar.isShowRawFile ? .on : .off
             toggleIsShowVideoFileMenuItem.state = mainViewController.publicVar.isShowVideoFile ? .on : .off
             
-            justifiedViewMenuItem.state = (mainViewController.publicVar.layoutType == .justified) ? .on : .off
-            waterfallViewModeMenuItem.state = (mainViewController.publicVar.layoutType == .waterfall) ? .on : .off
-            gridViewMenuItem.state = (mainViewController.publicVar.layoutType == .grid) ? .on : .off
-            detailViewModeMenuItem.state = (mainViewController.publicVar.layoutType == .detail) ? .on : .off
+            justifiedViewMenuItem.state = (mainViewController.publicVar.profile.layoutType == .justified) ? .on : .off
+            waterfallViewModeMenuItem.state = (mainViewController.publicVar.profile.layoutType == .waterfall) ? .on : .off
+            gridViewMenuItem.state = (mainViewController.publicVar.profile.layoutType == .grid) ? .on : .off
+            detailViewModeMenuItem.state = (mainViewController.publicVar.profile.layoutType == .detail) ? .on : .off
             
             maximizeWindowMenuItem.keyEquivalent="1"
             maximizeWindowMenuItem.keyEquivalentModifierMask=[]
