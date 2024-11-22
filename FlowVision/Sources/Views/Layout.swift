@@ -46,7 +46,7 @@ class CustomFlowLayout: NSCollectionViewLayout {
         return collectionView.bounds.width
     }
 
-    var cellPadding: CGFloat = 5
+    //var cellPadding: CGFloat = 5
     var itemSpacing: CGFloat = 0
     var lineSpacing: CGFloat = 0
 
@@ -57,6 +57,7 @@ class CustomFlowLayout: NSCollectionViewLayout {
         cache.removeAll()
         contentHeight = 0
 
+        let cellPadding = getViewController(collectionView)!.publicVar.ThumbnailCellPadding
         var xOffset: CGFloat = cellPadding
         var yOffset: CGFloat = cellPadding
         var rowHeight: CGFloat = 0
@@ -87,6 +88,8 @@ class CustomFlowLayout: NSCollectionViewLayout {
     }
 
     override var collectionViewContentSize: NSSize {
+        guard let collectionView = collectionView else { return NSSize(width: 100, height: 100)}
+        let cellPadding = getViewController(collectionView)!.publicVar.ThumbnailCellPadding
         return NSSize(width: contentWidth, height: contentHeight + cellPadding)
     }
 
@@ -112,15 +115,16 @@ class WaterfallLayout: NSCollectionViewLayout {
     private var cache: [NSCollectionViewLayoutAttributes] = []
     private var contentHeight: CGFloat = 0
     var numberOfColumns = 5
-    var cellPadding: CGFloat = 5
+    //var cellPadding: CGFloat = 5
 
     override func prepare() {
         guard let collectionView = collectionView else { return }
         guard let delegate = collectionView.delegate as? NSCollectionViewDelegateFlowLayout else { return }
 
-        //let columnWidth = (collectionView.bounds.width - 15) / CGFloat(numberOfColumns)
+        let cellPadding = getViewController(collectionView)!.publicVar.ThumbnailCellPadding
         let totalWidth = getViewController(collectionView)?.mainScrollView.bounds.width ?? collectionView.bounds.width
-        let columnWidth = (totalWidth - 15 - 2*cellPadding) / CGFloat(numberOfColumns)
+        let scrollbarWidth = getViewController(collectionView)!.publicVar.ThumbnailScrollbarWidth
+        let columnWidth = floor((totalWidth - scrollbarWidth - 2*cellPadding) / CGFloat(numberOfColumns))
         var xOffset: [CGFloat] = []
         for column in 0 ..< numberOfColumns {
             xOffset.append(cellPadding + CGFloat(column) * columnWidth)
@@ -134,7 +138,7 @@ class WaterfallLayout: NSCollectionViewLayout {
             let indexPath = IndexPath(item: item, section: 0)
             let itemSize = delegate.collectionView!(collectionView, layout: self, sizeForItemAt: indexPath)
             let width = columnWidth - (cellPadding * 2)
-            let height = itemSize.height * (width / itemSize.width) + (cellPadding * 2)
+            let height = round(itemSize.height * (width / itemSize.width) + (cellPadding * 2))
             
             // 找到所有列中高度最小的列
             let minYOffset = yOffset.min() ?? 0

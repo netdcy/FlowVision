@@ -24,10 +24,18 @@ class GlobalVar{
     var myFavoritesArray = ["/"]
     var WINDOW_LIMIT=16
     var windowNum=0
-    var isLaunchFromFile = false
     var randomSeed = Int.random(in: 0...Int.max)
     var toolbarIndex = 0
     
+    //TODO: 临时公用状态变量
+    var isLaunchFromFile = false
+    var startSpeedUpImageSizeCache: NSSize? = nil
+    var useCreateWindowShowDelay = false
+    
+    //实时状态变量
+    var isInMiddleMouseDrag = false
+    
+    //“设置”中的变量
     var terminateAfterLastWindowClosed = true
     var autoHideToolbar = false
     var doNotUseFFmpeg = false
@@ -37,8 +45,8 @@ class GlobalVar{
     var thumbThreadNum_External: Int = 1
     var folderSearchDepth_External: Int = 0
     
+    //可记忆设置变量
     var isFirstTimeUse = true
-    
     var portableMode = false
     var portableImageUseActualSize = false
     var portableImageWidthRatio = 0.8
@@ -47,11 +55,6 @@ class GlobalVar{
     var portableListHeightRatio = 0.84
     var portableListWidthRatioHH = 0.82
     var portableListHeightRatioHH = 0.84
-    
-    var startSpeedUpImageSizeCache: NSSize? = nil
-    
-    var isInMiddleMouseDrag = false
-    var useCreateWindowShowDelay = false
     
     var HandledImageExtensions: [String] = []
     var HandledVideoExtensions: [String] = []

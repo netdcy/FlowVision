@@ -123,7 +123,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         self.file=fileModel
         
         setTooltip()
-        
+
         if isSelected {
             // 选中状态的处理代码
             selectedColor()
@@ -145,7 +145,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             imageViewObj.isFolder = false
         }
         
-        imageNameField.stringValue=URL(string:file.path)!.lastPathComponent
+        imageNameField.stringValue=getViewController(collectionView!)!.publicVar.isShowThumbnailFilename ? URL(string:file.path)!.lastPathComponent : ""
         
         if(playAnimation){
             NSAnimationContext.runAnimationGroup({ context in
@@ -280,7 +280,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     func selectedColor(){
-        //log("selectedColor")
+        log("selectedColor")
         let theme=NSApp.effectiveAppearance.name
         
         if file.isDir {
@@ -305,34 +305,35 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         // GridView时特殊样式
         if getViewController(collectionView!)!.publicVar.layoutType == .grid && !file.isDir {
-            if let image = file.image {
-                imageViewObj.isDrawBorder=true
-                imageViewObj.layer?.borderWidth = 2.0
-                if image.size.width != 0 && image.size.height != 0{
-                    imageViewObj.frame = AVMakeRect(aspectRatio: image.size, insideRect: imageViewRef.bounds)
-                }
-                imageViewObj.center = imageViewRef.center
-            }else{
-                imageViewObj.isDrawBorder=false
-                imageViewObj.layer?.borderWidth = 0.0
-                imageViewObj.frame = imageViewRef.frame
-            }
-            
-            imageViewObj.layer?.cornerRadius = 0.0
-            imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor //填充
             //view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor //图片边框
             //imageNameField.textColor = hexToNSColor(hex: "#7E7E7E") //图片文字
         }else{
-            imageViewObj.isDrawBorder=false
-            imageViewObj.layer?.borderWidth = 0.0
-            imageViewObj.frame = imageViewRef.frame
             
-            imageViewObj.layer?.cornerRadius = 5.0
         }
         
+        //设置frame
+        setCustomFrameSize()
+        
+        //边框为0时使用图像高亮-选中
+        guard let publicVar = getViewController(collectionView!)?.publicVar else {return}
+        if publicVar.ThumbnailBorderThickness <= 1 && !file.isDir {
+            let overlayLayerName = "highlightOverlay"
+            imageViewObj.layer?.sublayers?.forEach { sublayer in
+                if sublayer.name == overlayLayerName {
+                    sublayer.removeFromSuperlayer()
+                }
+            }
+            let overlay = CALayer()
+            overlay.frame = imageViewObj.bounds
+            overlay.backgroundColor = NSColor.controlAccentColor.withAlphaComponent(0.4).cgColor
+            overlay.name = overlayLayerName
+            overlay.zPosition = 10
+            imageViewObj.layer?.addSublayer(overlay)
+            imageViewObj.needsDisplay = true
+        }
     }
     func deselectedColor(){
-        //log("deselectedColor")
+        log("deselectedColor")
         let theme=NSApp.effectiveAppearance.name
         
         //目录
@@ -378,31 +379,67 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         // GridView时特殊样式
         if getViewController(collectionView!)!.publicVar.layoutType == .grid && !file.isDir {
-            if let image = file.image {
+            view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor //图片边框
+            imageNameField.textColor = hexToNSColor(hex: "#7E7E7E") //图片文字
+        }else{
+            
+        }
+        
+        //设置frame
+        setCustomFrameSize()
+        
+        //边框为0时使用图像高亮-取消选中
+        guard let publicVar = getViewController(collectionView!)?.publicVar else {return}
+        if publicVar.ThumbnailBorderThickness <= 1 && !file.isDir {
+            let overlayLayerName = "highlightOverlay"
+            imageViewObj.layer?.sublayers?.forEach { sublayer in
+                if sublayer.name == overlayLayerName {
+                    sublayer.removeFromSuperlayer()
+                }
+            }
+            imageViewObj.needsDisplay = true
+        }
+    }
+    
+    func setCustomFrameSize(){
+        guard let publicVar = getViewController(collectionView!)?.publicVar else {return}
+        let newX = publicVar.ThumbnailBorderThickness
+        let newY = publicVar.ThumbnailBorderThickness + publicVar.ThumbnailFilenamePadding
+        let newWidth = imageViewRef.frame.width + 12.0 - 2*publicVar.ThumbnailBorderThickness
+        let newHeight = imageViewRef.frame.height + 30.0 - 2*publicVar.ThumbnailBorderThickness - publicVar.ThumbnailFilenamePadding
+        let newFrame = NSRect(x: newX, y: newY, width: newWidth, height: newHeight)
+        
+        // GridView时特殊样式
+        if getViewController(collectionView!)!.publicVar.layoutType == .grid {
+            if let image = file.image, !file.isDir {
                 imageViewObj.isDrawBorder=true
                 imageViewObj.layer?.borderWidth = 2.0
                 if image.size.width != 0 && image.size.height != 0{
-                    imageViewObj.frame = AVMakeRect(aspectRatio: image.size, insideRect: imageViewRef.bounds)
+                    imageViewObj.frame = AVMakeRect(aspectRatio: image.size, insideRect: newFrame)
                 }
-                imageViewObj.center = imageViewRef.center
+                imageViewObj.center = CGPoint(x: imageViewRef.center.x, y: imageViewRef.center.y-(18.0-publicVar.ThumbnailFilenamePadding)/2)
             }else{
                 imageViewObj.isDrawBorder=false
                 imageViewObj.layer?.borderWidth = 0.0
-                imageViewObj.frame = imageViewRef.frame
+                //imageViewObj.frame = imageViewRef.frame
+                imageViewObj.frame = newFrame
             }
             
             imageViewObj.layer?.cornerRadius = 0.0
             imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor //填充
-            view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor //图片边框
-            imageNameField.textColor = hexToNSColor(hex: "#7E7E7E") //图片文字
+
         }else{
             imageViewObj.isDrawBorder=false
             imageViewObj.layer?.borderWidth = 0.0
-            imageViewObj.frame = imageViewRef.frame
+            //imageViewObj.frame = imageViewRef.frame
+            imageViewObj.frame = newFrame
             
-            imageViewObj.layer?.cornerRadius = 5.0
+            imageViewObj.layer?.cornerRadius = publicVar.ThumbnailBorderRadius
         }
+        
+        view.layer?.cornerRadius = publicVar.ThumbnailBorderRadius
     }
+    
     func select(){
         
     }

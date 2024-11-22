@@ -28,6 +28,15 @@ class PublicVar{
     var isShowVideoFile = true
     var isGenHdThumb = false
     
+    var ThumbnailBorderThickness: Double = 6
+    var ThumbnailBorderRadius: Double = 5
+    var ThumbnailFilenamePaddingInternal: Double = 18
+    var ThumbnailFilenamePadding: Double = 18
+    var ThumbnailCellPadding: Double = 5
+    var ThumbnailScrollbarWidth: Double = 16
+    var isShowThumbnailFilename = true
+    var isGridViewNotAffectedByCustomStyle = true
+    
     var fullTitle = "FlowVision"
     var isKeyEventEnabled = true
     var folderStepStack = [String]() {
@@ -331,6 +340,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         if let isGenHdThumb = UserDefaults.standard.value(forKey: "isGenHdThumb") as? Bool {
             publicVar.isGenHdThumb = isGenHdThumb
+        }
+        if let isShowThumbnailFilename = UserDefaults.standard.value(forKey: "isShowThumbnailFilename") as? Bool {
+            publicVar.isShowThumbnailFilename = isShowThumbnailFilename
+            configShowFilename()
         }
         
         //-----结束读取配置------
@@ -2416,8 +2429,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if publicVar.layoutType == .grid {
             WIDTH_THRESHOLD=10.0/1920*512/Double(publicVar.thumbSize)
         }
-        //TODO: 这里滚动条宽度？
-        var totalWidth=self.mainScrollView.bounds.width-16-10
+        
+        let scrollbarWidth = publicVar.ThumbnailScrollbarWidth
+        var totalWidth = self.mainScrollView.bounds.width - scrollbarWidth - 2 * publicVar.ThumbnailCellPadding
         if totalWidth < 25 {totalWidth = 25}
         if publicVar.isInLargeView && globalVar.portableMode {totalWidth = 1000}
         
@@ -2440,7 +2454,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //let startKey = fileDB.db[targetFolder]!.files.elementSafe(atOffset: layoutCalcPos).0
         if layoutCalcPos>0 {
             if let thumbSize=fileDB.db[SortKeyDir(targetFolder)]!.files.elementSafe(atOffset: layoutCalcPos-1)?.1.thumbSize {
-                lastSingleHeight = thumbSize.height - (12+18)
+                lastSingleHeight = thumbSize.height - (2*publicVar.ThumbnailBorderThickness+publicVar.ThumbnailFilenamePadding)
             }
         }
         if layoutCalcPos < count {
@@ -2454,7 +2468,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 singleIds.append(key)
                 if sum>=actualThreshold || i==fileDB.db[SortKeyDir(targetFolder)]!.files.count-1 {
                     sum=max(sum,actualThreshold)
-                    var singleHeight = (totalWidth - (12.0+10.0) * Double(singleIds.count))/sum
+                    var singleHeight = floor((totalWidth - 2 * (publicVar.ThumbnailBorderThickness+publicVar.ThumbnailCellPadding) * Double(singleIds.count))/sum)
                     if publicVar.layoutType == .grid && lastSingleHeight != nil { singleHeight=lastSingleHeight! } //防止最后一行不一样大小
                     lastSingleHeight=singleHeight
                     for singleId in singleIds{
@@ -2462,16 +2476,15 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         
                         if publicVar.layoutType == .grid { originalSizeSingle=DEFAULT_SIZE }
                         
-                        var singleWidth = originalSizeSingle.width/originalSizeSingle.height*singleHeight
+                        var singleWidth = floor(originalSizeSingle.width/originalSizeSingle.height*singleHeight)
                         
                         if publicVar.layoutType == .waterfall {
                             let numberOfColumns=Double(publicVar.waterfallLayout.numberOfColumns)
-                            let cellPadding=publicVar.waterfallLayout.cellPadding
-                            singleWidth = totalWidth/numberOfColumns-2*cellPadding-12
-                            singleHeight = originalSizeSingle.height/originalSizeSingle.width*singleWidth
+                            singleWidth = floor(totalWidth/numberOfColumns-2*(publicVar.ThumbnailBorderThickness+publicVar.ThumbnailCellPadding))
+                            singleHeight = round(originalSizeSingle.height/originalSizeSingle.width*singleWidth)
                         }
                         
-                        let size=NSSize(width: singleWidth+12, height: singleHeight+12+18)
+                        let size=NSSize(width: singleWidth+2*publicVar.ThumbnailBorderThickness, height: singleHeight+2*publicVar.ThumbnailBorderThickness+publicVar.ThumbnailFilenamePadding)
                         fileDB.db[SortKeyDir(targetFolder)]!.files[singleId]!.thumbSize=size
                         fileDB.db[SortKeyDir(targetFolder)]!.files[singleId]!.lineNo=lineCount
                     }
@@ -3660,7 +3673,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 log("第一张图片开始载入耗时: \(timeInterval) seconds")
                             }
                             
-                            var revisedSize = NSSize(width: thumbSize!.width-12, height: thumbSize!.height-12-18)
+                            var revisedSize = NSSize(width: thumbSize!.width-2*publicVar.ThumbnailBorderThickness, height: thumbSize!.height-2*publicVar.ThumbnailBorderThickness-publicVar.ThumbnailFilenamePadding)
                             if publicVar.layoutType == .grid {
                                 var size = originalSize ?? DEFAULT_SIZE
                                 if size.width == 0 || size.height == 0 {size=DEFAULT_SIZE}
@@ -5375,6 +5388,30 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
     
+    func toggleShowFilename() {
+        
+        publicVar.isShowThumbnailFilename.toggle()
+        
+        let defaults = UserDefaults.standard
+        defaults.set(publicVar.isShowThumbnailFilename, forKey: "isShowThumbnailFilename")
+
+        configShowFilename()
+        
+        refreshAll()
+    }
     
+    func configShowFilename(){
+        if publicVar.isShowThumbnailFilename {
+            publicVar.ThumbnailFilenamePadding = publicVar.ThumbnailFilenamePaddingInternal
+            publicVar.ThumbnailBorderThickness = 6
+            publicVar.ThumbnailCellPadding = 5
+            publicVar.ThumbnailBorderRadius = 5
+        }else{
+            publicVar.ThumbnailFilenamePadding = 0
+            publicVar.ThumbnailBorderThickness = 0
+            publicVar.ThumbnailCellPadding = 0
+            publicVar.ThumbnailBorderRadius = 0
+        }
+    }
 }
 

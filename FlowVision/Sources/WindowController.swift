@@ -825,6 +825,11 @@ extension WindowController: NSToolbarDelegate {
         
         menu.addItem(NSMenuItem.separator())
         
+        let showFilename = menu.addItem(withTitle: NSLocalizedString("Show Filename", comment: "显示文件名称"), action: #selector(toggleShowFilename), keyEquivalent: "")
+        showFilename.state = (viewController.publicVar.isShowThumbnailFilename) ? .on : .off
+
+        menu.addItem(NSMenuItem.separator())
+        
         let actionItemShowHiddenFile = menu.addItem(withTitle: NSLocalizedString("Show Hidden Files", comment: "显示隐藏文件"), action: #selector(showHiddenFileAction), keyEquivalent: ".")
         actionItemShowHiddenFile.state = (viewController.publicVar.isShowHiddenFile) ? .on : .off
         actionItemShowHiddenFile.keyEquivalentModifierMask = [.command, .shift]
@@ -1102,6 +1107,11 @@ extension WindowController: NSToolbarDelegate {
     @objc func toggleAutoPlay(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.toggleAutoPlay()
+    }
+    
+    @objc func toggleShowFilename(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleShowFilename()
     }
 }
 
