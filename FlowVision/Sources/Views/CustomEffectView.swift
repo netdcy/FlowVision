@@ -1,49 +1,14 @@
 //
-//  CoreAreaView.swift
+//  CustomEffectView.swift
 //  FlowVision
 //
-//  Created by netdcy on 2024/7/5.
+//  Created by netdcy on 2024/3/17.
 //
 
 import Foundation
 import Cocoa
 
-class CoreAreaView: NSView {
-    
-    var infoView: InfoView!
-    var cannotBeCleard: Bool = true
-    
-    override init(frame frameRect: NSRect) {
-        super.init(frame: frameRect)
-        commonInit()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        commonInit()
-    }
-    
-    private func commonInit() {
-        infoView = InfoView(frame: .zero)
-        infoView.setupView(fontSize: 20, fontWeight: .light, cornerRadius: 6.0, edge: (18,8))
-        infoView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(infoView)
-        NSLayoutConstraint.activate([
-            infoView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            infoView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
-        ])
-    }
-    
-    func showInfo(_ info: String, timeOut: Double = 1.0, cannotBeCleard: Bool = true) {
-        infoView.showInfo(text: info, timeOut: timeOut)
-        self.cannotBeCleard = cannotBeCleard
-    }
-    
-    func hideInfo() {
-        if !self.cannotBeCleard {
-            infoView.hide()
-        }
-    }
+class CustomEffectView: NSVisualEffectView {
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -82,4 +47,5 @@ class CoreAreaView: NSView {
         }
         return false
     }
+    
 }

@@ -24,13 +24,14 @@ class CustomImageView: NSImageView {
     }
     
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
-        if sender.draggingSource == nil {
-            return .link
-        } else if isFolder && sender.draggingSource is CustomCollectionView {
-            return .copy
-        } else {
-            return .every
+        if let viewController = getViewController(self){
+            if viewController.publicVar.isInLargeView {
+                return .link
+            }else if isFolder{
+                return .copy
+            }
         }
+        return .every
     }
     
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
@@ -38,20 +39,36 @@ class CustomImageView: NSImageView {
             sender.draggingPasteboard.clearContents()
         }
         
-        if sender.draggingSource == nil {
-            let pasteboard = sender.draggingPasteboard
-            if let urls = pasteboard.readObjects(forClasses: [NSURL.self], options: nil) as? [URL] {
-                getViewController(self)?.handleDraggedFiles(urls)
-                return false
+        if let viewController = getViewController(self){
+            if viewController.publicVar.isInLargeView {
+                let pasteboard = sender.draggingPasteboard
+                if let urls = pasteboard.readObjects(forClasses: [NSURL.self], options: nil) as? [URL] {
+                    getViewController(self)?.handleDraggedFiles(urls)
+                    return true
+                }
+            }else if isFolder{
+                getViewController(self)?.handleMove(targetURL: url, pasteboard: sender.draggingPasteboard)
+                if sender.draggingSource is CustomOutlineView {
+                    viewController.refreshTreeView()
+                }
+                if !(sender.draggingSource is CustomCollectionView) {
+                    viewController.refreshAll()
+                }
+                return true
+            }else{
+                if sender.draggingSource is CustomCollectionView {
+                    return false
+                }
+                if let curFolderUrl = URL(string: viewController.fileDB.curFolder){
+                    viewController.handleMove(targetURL: curFolderUrl, pasteboard: sender.draggingPasteboard)
+                    if sender.draggingSource is CustomOutlineView {
+                        viewController.refreshTreeView()
+                    }
+                    return true
+                }
             }
-            return false
-        } else if isFolder && sender.draggingSource is CustomCollectionView {
-            getViewController(self)?.handleMove(targetURL: url, pasteboard: sender.draggingPasteboard)
-            //getViewController(self)?.refreshAll()
-            return true
-        } else {
-            return false
         }
+        return false
     }
     
     var center: CGPoint {

@@ -49,6 +49,7 @@
 		F7A0755B2BA1D717009C47A6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F7A075592BA1D717009C47A6 /* Main.storyboard */; };
 		F7C2DEB82C4E6AE9003DF765 /* Settings in Frameworks */ = {isa = PBXBuildFile; productRef = F7C2DEB72C4E6AE9003DF765 /* Settings */; };
 		F7C2DEBC2C4E6BEC003DF765 /* GeneralSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C2DEBA2C4E6BEC003DF765 /* GeneralSettingsViewController.swift */; };
+		F7DECD6D2D00939300ECC099 /* CustomEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -129,6 +130,7 @@
 		F7A0755A2BA1D717009C47A6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F7A0755C2BA1D717009C47A6 /* FlowVision.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlowVision.entitlements; sourceTree = "<group>"; };
 		F7C2DEBA2C4E6BEC003DF765 /* GeneralSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsViewController.swift; sourceTree = "<group>"; };
+		F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEffectView.swift; sourceTree = "<group>"; };
 		F7E65E342C09C7F100ACC4C0 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -163,6 +165,7 @@
 		F73865E92C37C3EA00837FE4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */,
 				F73865DD2C37BEAC00837FE4 /* CoreAreaView.swift */,
 				F73865D22C37B97500837FE4 /* CustomCollectionView.swift */,
 				F7790ED52BA5FB6A00406D35 /* CustomCollectionViewItem.swift */,
@@ -359,6 +362,7 @@
 				F73865D72C37BB2900837FE4 /* CustomOutlineView.swift in Sources */,
 				F73865E42C37C11B00837FE4 /* ImageProcess.swift in Sources */,
 				F71DCEB92BD425D6006E5B1E /* CustomOutlineViewManager.swift in Sources */,
+				F7DECD6D2D00939300ECC099 /* CustomEffectView.swift in Sources */,
 				F7790ECC2BA5CA9200406D35 /* WindowController.swift in Sources */,
 				F73865DE2C37BEAC00837FE4 /* CoreAreaView.swift in Sources */,
 				F70F9FC12BAFE7B300C50CDD /* Common.swift in Sources */,

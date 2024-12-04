@@ -517,12 +517,17 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     }
                 }
                 
-                // 检查按键是否是 Command+⬆️ 键
-//                if specialKey == .upArrow && isCommandPressed {
-//                    closeLargeImage(0)
-//                    switchDirByDirection(direction: .up, stackDeep: 0)
-//                    return nil
-//                }
+                // 检查按键是否是 Command+[ 键
+                if characters == "[" && isCommandPressed {
+                    switchDirByDirection(direction: .back, stackDeep: 0)
+                    return nil
+                }
+                
+                // 检查按键是否是 Command+] 键
+                if characters == "]" && isCommandPressed {
+                    switchDirByDirection(direction: .forward, stackDeep: 0)
+                    return nil
+                }
                 
                 // 检查按键是否是 Command+⬆️ 键
                 if specialKey == .upArrow && isOnlyCommandPressed {
