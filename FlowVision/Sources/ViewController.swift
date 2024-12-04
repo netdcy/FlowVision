@@ -2341,12 +2341,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
     
-    func refreshAll(_ reloadThumbType: [FileType] = [.folder], dryRun: Bool = false){
+    func refreshAll(_ reloadThumbType: [FileType] = [.folder], dryRun: Bool = false, needStopAutoScroll: Bool = true){
         refreshTreeView()
-        refreshCollectionView(reloadThumbType, dryRun: dryRun)
+        refreshCollectionView(reloadThumbType, dryRun: dryRun, needStopAutoScroll: needStopAutoScroll)
     }
     
-    func refreshCollectionView(_ reloadThumbType: [FileType] = [.folder], dryRun: Bool = false){
+    func refreshCollectionView(_ reloadThumbType: [FileType] = [.folder], dryRun: Bool = false, needStopAutoScroll: Bool = true){
         fileDB.lock()
         let curFolder = fileDB.curFolder
         if let files = fileDB.db[SortKeyDir(curFolder)]?.files {
@@ -2360,7 +2360,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
         }
         fileDB.unlock()
-        switchDirByDirection(direction: .zero, doCollapse: false, skip: dryRun, stackDeep: 0, dryRun: dryRun)
+        switchDirByDirection(direction: .zero, doCollapse: false, skip: dryRun, stackDeep: 0, dryRun: dryRun, needStopAutoScroll: needStopAutoScroll)
     }
     
     func refreshTreeView(){
@@ -2792,7 +2792,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         return snapshotView
     }
     
-    func switchDirByDirection(direction rawdirection: GestureDirection, dest: String = "", doCollapse: Bool = true, expandLast: Bool = true, skip: Bool = false, stackDeep: Int, dryRun: Bool = false){
+    func switchDirByDirection(direction rawdirection: GestureDirection, dest: String = "", doCollapse: Bool = true, expandLast: Bool = true, skip: Bool = false, stackDeep: Int, dryRun: Bool = false, needStopAutoScroll: Bool = true){
         
         if rawdirection == .zero {
             publicVar.isInStageOneProgress = true
@@ -2807,7 +2807,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         
         //停止自动滚动
-        //stopAutoScroll()
+        if needStopAutoScroll {
+            stopAutoScroll()
+        }
         
         //停止自动播放
         stopAutoPlay()
@@ -5040,7 +5042,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             guard let self = self else { return }
             folderMonitorTimer?.invalidate()
             folderMonitorTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { timer in
-                self.refreshAll()
+                self.refreshAll(needStopAutoScroll: false)
             }
         }
     }

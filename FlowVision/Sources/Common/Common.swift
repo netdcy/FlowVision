@@ -488,17 +488,17 @@ class ThumbnailOptionsWindow: NSWindow {
     private let initialThumbnailBorderThickness: Double = 6.0
     private let initialThumbnailCellPadding: Double = 5.0
     private let initialThumbnailBorderRadius: Double = 5.0
-    private let initialThumbnailFilenameSize: Double = 12.0  // Add initial value for ThumbnailFilenameSize
+    private let initialThumbnailFilenameSize: Double = 12.0
     
     // Variables to store current settings
     var isShowThumbnailFilename: Bool
     var thumbnailBorderThickness: Double
     var thumbnailCellPadding: Double
     var thumbnailBorderRadius: Double
-    var thumbnailFilenameSize: Double  // Add variable to store current ThumbnailFilenameSize
+    var thumbnailFilenameSize: Double
     
     init() {
-        let windowSize = NSSize(width: 400, height: 350) // Adjust height for new field
+        let windowSize = NSSize(width: 400, height: 340)
         let windowRect = NSRect(origin: .zero, size: windowSize)
         
         // Get current values
@@ -507,15 +507,16 @@ class ThumbnailOptionsWindow: NSWindow {
         thumbnailBorderThickness = profile.ThumbnailBorderThickness
         thumbnailCellPadding = profile.ThumbnailCellPadding
         thumbnailBorderRadius = profile.ThumbnailBorderRadius
-        thumbnailFilenameSize = profile.ThumbnailFilenameSize // Retrieve current ThumbnailFilenameSize
+        thumbnailFilenameSize = profile.ThumbnailFilenameSize
         
         super.init(contentRect: windowRect, styleMask: [.titled, .closable], backing: .buffered, defer: false)
         self.title = NSLocalizedString("Thumbnail Options", comment: "缩略图选项")
         
-        // Create a custom view with desired background color
-        let customView = NSView(frame: windowRect)
-        customView.wantsLayer = true
-        customView.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
+        // Create a custom view with a glass-like effect
+        let customView = NSVisualEffectView(frame: windowRect)
+        customView.material = .hudWindow
+        customView.blendingMode = .behindWindow
+        customView.state = .active
         
         // Create a stack view for layout
         let stackView = NSStackView()
@@ -554,14 +555,14 @@ class ThumbnailOptionsWindow: NSWindow {
         let borderThicknessTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Border Thickness", comment: "缩略图边框厚度"), defaultValue: String(thumbnailBorderThickness))
         let cellPaddingTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Cell Padding", comment: "缩略图单元格外边距"), defaultValue: String(thumbnailCellPadding))
         let borderRadiusTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Corner Radius", comment: "缩略图圆角半径"), defaultValue: String(thumbnailBorderRadius))
-        let filenameSizeTextField = createLabeledTextField(label: NSLocalizedString("Filename Font Size", comment: "文件名字体大小"), defaultValue: String(thumbnailFilenameSize)) // New field
+        let filenameSizeTextField = createLabeledTextField(label: NSLocalizedString("Filename Font Size", comment: "文件名字体大小"), defaultValue: String(thumbnailFilenameSize))
         
         // Add subviews to stack view
         stackView.addArrangedSubview(showFilenameCheckboxView)
         stackView.addArrangedSubview(borderThicknessTextField)
         stackView.addArrangedSubview(cellPaddingTextField)
         stackView.addArrangedSubview(borderRadiusTextField)
-        stackView.addArrangedSubview(filenameSizeTextField) // Add new field to stack view
+        stackView.addArrangedSubview(filenameSizeTextField)
         
         // Create buttons
         let buttonStackView = NSStackView()
@@ -644,13 +645,13 @@ class ThumbnailOptionsWindow: NSWindow {
         let borderThicknessTextField = (stackView.arrangedSubviews[3] as! NSStackView).views[1] as! NSTextField
         let cellPaddingTextField = (stackView.arrangedSubviews[4] as! NSStackView).views[1] as! NSTextField
         let borderRadiusTextField = (stackView.arrangedSubviews[5] as! NSStackView).views[1] as! NSTextField
-        let filenameSizeTextField = (stackView.arrangedSubviews[6] as! NSStackView).views[1] as! NSTextField // New field
+        let filenameSizeTextField = (stackView.arrangedSubviews[6] as! NSStackView).views[1] as! NSTextField
         
         self.isShowThumbnailFilename = showFilenameCheckbox.state == .on
         self.thumbnailBorderThickness = Double(borderThicknessTextField.stringValue) ?? initialThumbnailBorderThickness
         self.thumbnailCellPadding = Double(cellPaddingTextField.stringValue) ?? initialThumbnailCellPadding
         self.thumbnailBorderRadius = Double(borderRadiusTextField.stringValue) ?? initialThumbnailBorderRadius
-        self.thumbnailFilenameSize = Double(filenameSizeTextField.stringValue) ?? initialThumbnailFilenameSize // Update new value
+        self.thumbnailFilenameSize = Double(filenameSizeTextField.stringValue) ?? initialThumbnailFilenameSize
         
         self.sheetParent?.endSheet(self, returnCode: .OK)
     }
@@ -667,17 +668,16 @@ class ThumbnailOptionsWindow: NSWindow {
         let borderThicknessTextField = (stackView.arrangedSubviews[3] as! NSStackView).views[1] as! NSTextField
         let cellPaddingTextField = (stackView.arrangedSubviews[4] as! NSStackView).views[1] as! NSTextField
         let borderRadiusTextField = (stackView.arrangedSubviews[5] as! NSStackView).views[1] as! NSTextField
-        let filenameSizeTextField = (stackView.arrangedSubviews[6] as! NSStackView).views[1] as! NSTextField // New field
+        let filenameSizeTextField = (stackView.arrangedSubviews[6] as! NSStackView).views[1] as! NSTextField
         
         // Reset values to initial values
         showFilenameCheckbox.state = initialShowThumbnailFilename ? .on : .off
         borderThicknessTextField.stringValue = String(initialThumbnailBorderThickness)
         cellPaddingTextField.stringValue = String(initialThumbnailCellPadding)
         borderRadiusTextField.stringValue = String(initialThumbnailBorderRadius)
-        filenameSizeTextField.stringValue = String(initialThumbnailFilenameSize) // Reset new field
+        filenameSizeTextField.stringValue = String(initialThumbnailFilenameSize)
     }
 }
-
 
 
 // Function to display the panel as a sheet
