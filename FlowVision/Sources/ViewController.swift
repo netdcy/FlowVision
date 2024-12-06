@@ -3792,10 +3792,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                             }
                         }
                         
-                        //如果因为优先级调度未能预先计算到目标大小，则此时计算粗略大小
+                        //因为优先级调度未能预先计算到目标大小时，设置标识
+                        var noThumbSizeDueToSchedule = false
                         if thumbSize == nil && otherTaskInfo.isPriorityScheduled {
                             //originalSize = getImageSize(url: URL(string: key.path)!)
-                            thumbSize = NSSize(width: 64, height: 64) //通过设置过小值使后面使用简单缩略图方法
+                            thumbSize = NSSize(width: 256, height: 256)
+                            noThumbSizeDueToSchedule = true
                         }
                         
                         if thumbSize != nil {
@@ -3819,9 +3821,15 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                             fileDB.lock()
                             if let thumbImage = file.image {
                                 imageExist=true
-                                if publicVar.isGenHdThumb && file.type == .image { //&& publicVar.layoutType != .grid
-                                    let maxLength = max(revisedSize.width,revisedSize.height)
-                                    if thumbImage.size.width != revisedSize.width && maxLength > 256 {
+                                //print(revisedSize,thumbImage.size)
+                                if (publicVar.isGenHdThumb && !noThumbSizeDueToSchedule) && file.type == .image { //&& publicVar.layoutType != .grid
+                                    if thumbImage.size.width != revisedSize.width {
+                                        imageExist=false
+                                    }
+                                }
+                                if (!publicVar.isGenHdThumb || noThumbSizeDueToSchedule) && file.type == .image {
+                                    let maxLength = max(thumbImage.size.width,thumbImage.size.height)
+                                    if maxLength < 256 { // 说明是由targetSize重绘生成的且不够清晰的图（双倍采样），取不取等不重要
                                         imageExist=false
                                     }
                                 }
@@ -3836,8 +3844,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 if doNotActualRead{
                                     image = getFileTypeIcon(url: url)
                                 }else{
-                                    let maxLength = max(revisedSize.width,revisedSize.height)
-                                    if !publicVar.isGenHdThumb || maxLength <= 256 { // || publicVar.layoutType == .grid
+                                    if !publicVar.isGenHdThumb || noThumbSizeDueToSchedule { // publicVar.layoutType == .grid
                                         //image = getImageThumb(url: url, refSize: originalSize)
                                         image = ThumbImageProcessor.getImageCache(url: url, refSize: originalSize)
                                     }else{
@@ -3848,7 +3855,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                         image = getFileTypeIcon(url: url)
                                     }
                                 }
-                                
                                 
                                 //目录则请求3个缩略图
                                 var folderImages = [NSImage]()
