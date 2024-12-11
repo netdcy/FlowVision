@@ -1159,7 +1159,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         fileDB.unlock()
         if !doNotRefresh {
-            refreshCollectionView([], dryRun: true)
+            refreshCollectionView(dryRun: true)
         }
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
@@ -1255,40 +1255,40 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     
     func toggleRecursiveMode(){
         publicVar.isRecursiveMode.toggle()
-        refreshCollectionView([])
+        refreshCollectionView()
     }
     
     func toggleIsShowHiddenFile(){
         publicVar.isShowHiddenFile.toggle()
         UserDefaults.standard.set(publicVar.isShowHiddenFile, forKey: "isShowHiddenFile")
-        refreshAll([])
+        refreshAll()
     }
     
     func toggleIsShowAllTypeFile(){
         publicVar.isShowAllTypeFile.toggle()
         UserDefaults.standard.set(publicVar.isShowAllTypeFile, forKey: "isShowAllTypeFile")
-        refreshAll([])
+        refreshAll()
     }
     
     func toggleIsShowImageFile(){
         publicVar.isShowImageFile.toggle()
         UserDefaults.standard.set(publicVar.isShowImageFile, forKey: "isShowImageFile")
         publicVar.setFileExtensions()
-        refreshCollectionView([])
+        refreshCollectionView()
     }
     
     func toggleIsShowRawFile(){
         publicVar.isShowRawFile.toggle()
         UserDefaults.standard.set(publicVar.isShowRawFile, forKey: "isShowRawFile")
         publicVar.setFileExtensions()
-        refreshCollectionView([])
+        refreshCollectionView()
     }
     
     func toggleIsShowVideoFile(){
         publicVar.isShowVideoFile.toggle()
         UserDefaults.standard.set(publicVar.isShowVideoFile, forKey: "isShowVideoFile")
         publicVar.setFileExtensions()
-        refreshCollectionView([])
+        refreshCollectionView()
     }
     
     func adjustWindowToCenter(animate: Bool = true) {
@@ -1556,7 +1556,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
         if !doNotRefresh {
-            refreshCollectionView([], dryRun: true)
+            refreshCollectionView(dryRun: true)
         }
     }
     
@@ -1568,7 +1568,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
         if !doNotRefresh {
-            refreshCollectionView([], dryRun: true)
+            refreshCollectionView(dryRun: true)
         }
     }
     
@@ -1580,7 +1580,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
         if !doNotRefresh {
-            refreshCollectionView([], dryRun: true)
+            refreshCollectionView(dryRun: true)
         }
     }
     
@@ -1593,7 +1593,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
         if !doNotRefresh {
-            refreshCollectionView([], dryRun: true)
+            refreshCollectionView(dryRun: true)
         }
     }
     
@@ -1603,7 +1603,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
         changeWaterfallLayoutNumberOfColumns()
         if !doNotRefresh {
-            refreshCollectionView([], dryRun: true)
+            refreshCollectionView(dryRun: true)
         }
     }
     
@@ -2335,18 +2335,18 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 collectionView.layer?.backgroundColor = hexToNSColor(hex: "#FFFFFF").cgColor
             }
             if(lastTheme != theme){
-                refreshAll([], dryRun: true)
+                refreshAll(dryRun: true)
             }
             lastTheme=theme
         }
     }
     
-    func refreshAll(_ reloadThumbType: [FileType] = [.folder], dryRun: Bool = false, needStopAutoScroll: Bool = true){
+    func refreshAll(_ reloadThumbType: [FileType] = [], dryRun: Bool = false, needStopAutoScroll: Bool = true){
         refreshTreeView()
         refreshCollectionView(reloadThumbType, dryRun: dryRun, needStopAutoScroll: needStopAutoScroll)
     }
     
-    func refreshCollectionView(_ reloadThumbType: [FileType] = [.folder], dryRun: Bool = false, needStopAutoScroll: Bool = true){
+    func refreshCollectionView(_ reloadThumbType: [FileType] = [], dryRun: Bool = false, needStopAutoScroll: Bool = true){
         fileDB.lock()
         let curFolder = fileDB.curFolder
         if let files = fileDB.db[SortKeyDir(curFolder)]?.files {
@@ -5540,7 +5540,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         changeWaterfallLayoutNumberOfColumns()
         if !doNotRefresh {
-            refreshCollectionView([], dryRun: true)
+            refreshCollectionView(dryRun: true)
         }
     }
     
@@ -5599,7 +5599,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //样式
         configLayoutStyle(newStyle: newStyle, doNotRefresh: true)
         
-        refreshCollectionView([], dryRun: true)
+        refreshCollectionView(dryRun: true)
     }
     
 }
