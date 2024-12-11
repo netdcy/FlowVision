@@ -253,6 +253,17 @@ class SortKey: Comparable {
     }
 }
 
+class ImageInfo {
+    var size: NSSize?
+    var rating: Int?
+    var properties: [String: Any]?
+    var metadata: CGImageMetadata?
+    
+    init(_ size: NSSize?){
+        self.size=size
+    }
+}
+
 class FileModel {
     init(path: String, ver: Int, isDir: Bool = false, fileSize: Int? = nil, createDate: Date? = nil, modDate: Date? = nil, addDate: Date? = nil, doNotActualRead:Bool = false){
         self.path=path
@@ -288,6 +299,7 @@ class FileModel {
     var addDate: Date?
     var doNotActualRead: Bool = false
     var rotate: Int = 0
+    var imageInfo: ImageInfo?
 }
 
 class DirModel {
@@ -574,7 +586,7 @@ class TreeViewModel {
 
 typealias TaskType = (String, DirModel, SortKeyFile, FileModel, Int, OtherTaskInfo)
 
-struct OtherTaskInfo {
+class OtherTaskInfo {
     var isFromScroll: Bool
     var isPriorityScheduled: Bool
     

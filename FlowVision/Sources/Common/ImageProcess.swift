@@ -116,17 +116,25 @@ extension NSImage {
 //    }
 //}
 
-func getFileSize(atPath path: String) -> UInt64 {
+func getFileInfo(file: FileModel) {
     let fileManager = FileManager.default
     do {
-        let attributes = try fileManager.attributesOfItem(atPath: path.removingPercentEncoding!)
-        if let size = attributes[.size] as? UInt64 {
-            return size
+        let attributes = try fileManager.attributesOfItem(atPath: URL(string: file.path)!.path)
+        if let size = attributes[.size] as? Int {
+            file.fileSize = size
         }
+        
+        if let creationDate = attributes[.creationDate] as? Date {
+            file.createDate = creationDate
+        }
+        
+        if let modificationDate = attributes[.modificationDate] as? Date {
+            file.modDate = modificationDate
+        }
+        
     } catch {
-        log("Error fetching file size: \(error)")
+        log("Error fetching file info (size and date): \(error)")
     }
-    return 0
 }
 
 func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, timeout: TimeInterval = 1.0) -> [URL] {
@@ -757,12 +765,12 @@ func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
     return nil
 }
 
-func getImageSize(url: URL) -> NSSize? {
+func getImageInfo(url: URL) -> ImageInfo? {
     //let defaultSize = DEFAULT_SIZE
     if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
         if globalVar.HandledNotNativeSupportedVideoExtensions.contains(url.pathExtension.lowercased()){
             if let sizeUseFFmpeg = getVideoResolutionFFmpeg(for: url){
-                return sizeUseFFmpeg
+                return ImageInfo(sizeUseFFmpeg)
             }else{
                 return nil
             }
@@ -775,18 +783,18 @@ func getImageSize(url: URL) -> NSSize? {
 
             //log("Video dimensions: \(width) x \(height)")
             //此处获取的是像素size
-            return NSSize(width: width, height: height)
+            return ImageInfo(NSSize(width: width, height: height))
             
         } else {
             //log("No video track available")
             if let sizeUseFFmpeg = getVideoResolutionFFmpeg(for: url){
-                return sizeUseFFmpeg
+                return ImageInfo(sizeUseFFmpeg)
             }else{
                 return nil
             }
         }
     }else if "pdf" == url.pathExtension.lowercased() {
-        if let thumb = getImageThumb(url: url) {return thumb.size}
+        if let thumb = getImageThumb(url: url) {return ImageInfo(thumb.size)}
         return nil
     }else if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()){
         guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
@@ -797,14 +805,31 @@ func getImageSize(url: URL) -> NSSize? {
 
         let orientation = (imageProperties[kCGImagePropertyOrientation as String] as? NSNumber)?.intValue ?? 1
 
+        var imageSize: NSSize
         switch orientation {
         case 1, 2, 3, 4: // Normal orientations (1 is normal, 2 is flipped horizontally, etc.)
-            return NSSize(width: width, height: height)
+            imageSize = NSSize(width: width, height: height)
         case 5, 6, 7, 8: // Rotated orientations (6 is 90 degrees CW, etc.)
-            return NSSize(width: height, height: width)
+            imageSize = NSSize(width: height, height: width)
         default:
-            return NSSize(width: width, height: height)
+            imageSize = NSSize(width: width, height: height)
         }
+        
+        let imageInfo = ImageInfo(imageSize)
+        imageInfo.properties = imageProperties
+        
+//        let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil)
+//        imageInfo.metadata = metadata
+//        let prefix = "xmp"
+//        let key = "Rating"
+//        if let metadata = metadata,
+//           let tag = CGImageMetadataCopyTagWithPath(metadata, nil, "\(prefix):\(key)" as CFString),
+//           let value = CGImageMetadataTagCopyValue(tag) as? String {
+//            imageInfo.rating = Int(value)
+//        }
+        
+        return imageInfo
+        
     }else{
         return nil
     }
@@ -911,37 +936,32 @@ func readableFileSize(_ bytes: Int) -> String {
     }
 }
 
-func getExifData(from imageURL: URL) -> [String: Any]? {
-    guard let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, nil) else {
-        log("Failed to create image source")
-        return nil
+func convertExifData(file: FileModel) -> [String: Any]? {
+    
+    guard var imageProperties = file.imageInfo?.properties else {return nil}
+
+    if let fileSize = file.fileSize {
+        imageProperties["FileSize"]=readableFileSize(fileSize)
     }
     
-    guard var imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as? [String: Any] else {
-        log("Failed to copy image properties")
-        return nil
+    if let creationDate = file.createDate {
+        imageProperties["FileCreatedTime"]=formatDateToCurrentTimeZone(creationDate)
     }
     
-    do {
-        let fileAttributes = try FileManager.default.attributesOfItem(atPath: imageURL.path)
-        
-        if let fileSize = fileAttributes[.size] as? Int {
-            imageProperties["FileSize"]=readableFileSize(fileSize)
-        }
-        
-        if let creationDate = fileAttributes[.creationDate] as? Date {
-            imageProperties["FileCreatedTime"]=formatDateToCurrentTimeZone(creationDate)
-        }
-        
-        if let modificationDate = fileAttributes[.modificationDate] as? Date {
-            imageProperties["FileModifiedTime"]=formatDateToCurrentTimeZone(modificationDate)
-        }
-    } catch {
-        log("Error retrieving file attributes: \(error.localizedDescription)")
+    if let modificationDate = file.modDate {
+        imageProperties["FileModifiedTime"]=formatDateToCurrentTimeZone(modificationDate)
     }
     
-    if let imageSize=getImageSize(url: imageURL) {
+    if let additionDate = file.addDate {
+        imageProperties["FileAddedTime"]=formatDateToCurrentTimeZone(additionDate)
+    }
+
+    if let imageSize = file.originalSize {
         imageProperties["ImageSize"]=String(format: "%.0f", imageSize.width) + " × " + String(format: "%.0f", imageSize.height)
+    }
+    
+    if let rating = file.imageInfo?.rating {
+        imageProperties["Rating"]=rating
     }
     
     return imageProperties
@@ -993,6 +1013,8 @@ func formatExifData(_ imageProperties: [String: Any]) -> [(String, Any)] {
         ("ImageSize" as CFString, "图像分辨率"),
         ("FileCreatedTime" as CFString, "文件创建时间"),
         ("FileModifiedTime" as CFString, "文件修改时间"),
+        ("FileAddedTime" as CFString, "文件添加时间"),
+        ("Rating" as CFString, "星级"),
         
         ("-" as CFString, "-"),
         

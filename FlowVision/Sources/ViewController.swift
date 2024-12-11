@@ -105,7 +105,8 @@ class PublicVar{
             if let largeImageView = getViewController(refView)?.largeImageView,
                let url = URL(string: largeImageView.file.path),
                isShowExif && largeImageView.exifTextView.textItems.isEmpty{
-                largeImageView.updateTextItems(formatExifData(getExifData(from: url) ?? [:]))
+                let exifData = convertExifData(file: largeImageView.file)
+                largeImageView.updateTextItems(formatExifData(exifData ?? [:]))
             }
             getViewController(refView)?.largeImageView.exifTextView.isHidden = !isShowExif
             updateToolbar()
@@ -1807,7 +1808,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
     
-    struct StatisticInfo {
+    class StatisticInfo {
         var folderCount = 0
         var fileCount = 0
         var imageCount = 0
@@ -1853,7 +1854,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             if FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) {
                 if isDirectory.boolValue {
                     result.folderCount += 1
-                    getFolderStatistic(url, result: &result)
+                    getFolderStatistic(url, result: result)
                 }else{
                     result.fileCount += 1
                     if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
@@ -1871,7 +1872,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
     }
     
-    func getFolderStatistic(_ folderURL: URL, result: inout StatisticInfo) {
+    func getFolderStatistic(_ folderURL: URL, result: StatisticInfo) {
         let properties: [URLResourceKey] = [.isHiddenKey, .isDirectoryKey, .fileSizeKey]
         let options:FileManager.DirectoryEnumerationOptions = [] // [.skipsHiddenFiles]
         
@@ -3321,7 +3322,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 currLargeImagePos = offset//-(totalCount-fileCount)
                 initLargeImagePos = -1
                 publicVar.openFromFinderPath = ""
-                file.originalSize=getImageSize(url: url)
+                file.imageInfo=getImageInfo(url: url)
+                file.originalSize=file.imageInfo?.size
                 if file.originalSize == nil {
                     file.originalSize = DEFAULT_SIZE
                     file.isGetImageSizeFail = true
@@ -3522,6 +3524,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         if willTerminate {return}
                         
                         fileDB.lock()
+                        var imageInfo = file.imageInfo
                         var originalSize = file.originalSize
                         let curFolder=fileDB.curFolder
                         fileDB.unlock() //内存屏障
@@ -3542,7 +3545,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 originalSize = DEFAULT_SIZE
                                 isGetImageSizeFail = true
                             }else{
-                                originalSize = getImageSize(url: URL(string: key.path)!)
+                                imageInfo = getImageInfo(url: URL(string: key.path)!)
+                                originalSize = imageInfo?.size
                                 if originalSize == nil {
                                     originalSize = DEFAULT_SIZE
                                     isGetImageSizeFail = true
@@ -3556,6 +3560,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 guard let self = self else { return }
                                 
                                 fileDB.lock()
+                                file.imageInfo = imageInfo
                                 file.originalSize = originalSize
                                 file.canBeCalcued=true
                                 file.isGetImageSizeFail=isGetImageSizeFail
@@ -4714,7 +4719,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //当文件被修改，列表重新读取但大小还没来得及获取时可能为空，此时需要获取一下
         //或者由于外置卷，使用的默认大小 || VolumeManager.shared.isExternalVolume(url)
         if originalSize == nil {
-            originalSize = getImageSize(url: url)
+            originalSize = getImageInfo(url: url)?.size
             if originalSize == nil {
                 originalSize = DEFAULT_SIZE
                 file.isGetImageSizeFail = true
@@ -4762,7 +4767,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if publicVar.openFromFinderPath != "" {
             let url = URL(string: publicVar.openFromFinderPath)!
             file=FileModel(path: publicVar.openFromFinderPath, ver: 0)
-            file.originalSize=getImageSize(url: url)
+            file.imageInfo=getImageInfo(url: url)
+            file.originalSize=file.imageInfo?.size
             if !justChangeLargeImageViewFile {
                 file.image = getImageThumb(url: url, refSize: file.originalSize) // 获取缩略图（以加快响应）
             }
@@ -4770,8 +4776,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 file.originalSize = DEFAULT_SIZE
                 file.isGetImageSizeFail = true
             }
-            file.fileSize=Int(getFileSize(atPath: publicVar.openFromFinderPath.replacingOccurrences(of: "file://", with: "")))
-            //log(file.fileSize)
+            getFileInfo(file: file)
+
             isThisFromFinder=true
             
         }else {
@@ -4806,12 +4812,16 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         var largeSize: NSSize
         var originalSize: NSSize? = file.originalSize
+        var imageInfo: ImageInfo? = file.imageInfo
         var rotate = file.rotate
 
         //当文件被修改，列表重新读取但大小还没来得及获取时可能为空，此时需要获取一下
         //或者由于外置卷，使用的默认大小 || VolumeManager.shared.isExternalVolume(url)
         if originalSize == nil {
-            originalSize = getImageSize(url: url)
+            imageInfo = getImageInfo(url: url)
+            originalSize = imageInfo?.size
+            file.imageInfo = imageInfo
+            file.originalSize = originalSize
             if originalSize == nil {
                 originalSize = DEFAULT_SIZE
                 file.isGetImageSizeFail = true
@@ -4895,19 +4905,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             
             //加载Exif
             if publicVar.isShowExif && resetSize {
-                DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                    guard let self = self else { return }
-                    if pos != currLargeImagePos && !isThisFromFinder {return}
-                    
-                    let exifData = formatExifData(getExifData(from: url) ?? [:])
-                    
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else { return }
-                        if pos != currLargeImagePos && !isThisFromFinder {return}
-                        
-                        largeImageView.updateTextItems(exifData)
-                    }
-                }
+                let exifData = convertExifData(file: file)
+                print(file.imageInfo?.metadata)
+                largeImageView.updateTextItems(formatExifData(exifData ?? [:]))
             }
             
             if isImageCached {
