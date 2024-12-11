@@ -121,37 +121,27 @@ class PublicVar{
     var isInStageTwoProgress = false
     var isInStageThreeProgress = false
     
-    var HandledImageExtensions: [String] = []
+    var HandledImageAndRawExtensions: [String] = []
     var HandledVideoExtensions: [String] = []
     var HandledOtherExtensions: [String] = []
-    var HandledNonExternalExtensions: [String] = []
-    var HandledNotNativeSupportedVideoExtensions: [String] = []
-    //var HandledExternalExtensions: [String] = []
     var HandledFileExtensions: [String] = []
     var HandledSearchExtensions: [String] = []
-    var HandledFolderThumbExtensions: [String] = []
-    //使用个别特殊svg作为文件夹缩略图绘图元素会导致程序异常 'NSGenericException', reason: 'NaN point value'
 
     func setFileExtensions(){
-        HandledImageExtensions = []
+        HandledImageAndRawExtensions = []
         if self.isShowImageFile{
-            HandledImageExtensions += ["jpg", "jpeg", "jxl", "png", "gif", "bmp", "heif", "heic", "hif", "avif", "tif", "tiff", "webp", "jfif", "jp2", "ai", "psd", "ico", "icns", "svg"]
+            HandledImageAndRawExtensions += globalVar.HandledImageExtensions
         }
         if self.isShowRawFile {
-            HandledImageExtensions += ["crw", "cr2", "cr3", "nef", "nrw", "arw", "srf", "sr2", "rw2", "orf", "raf", "pef", "dng", "raw", "rwl", "x3f", "3fr", "fff", "iiq", "mos", "dcr", "erf", "mrw", "gpr", "srw"]
+            HandledImageAndRawExtensions += globalVar.HandledRawExtensions
         }
         HandledVideoExtensions = []
         if self.isShowVideoFile {
-            HandledVideoExtensions += ["mp4", "mov", "m2ts", "vob", "mpeg", "mpg", "m4v"] + ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
+            HandledVideoExtensions += globalVar.HandledVideoExtensions
         }
-        HandledOtherExtensions = [] //["pdf"] //不能为""，否则会把目录异常包含进来
-        HandledNonExternalExtensions = HandledImageExtensions
-        HandledNotNativeSupportedVideoExtensions = ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
-        //HandledExternalExtensions = HandledVideoExtensions // + ["pdf"] //外部程序打开的
-        HandledFileExtensions = HandledImageExtensions + HandledVideoExtensions + HandledOtherExtensions //文件列表显示的
-        HandledSearchExtensions = HandledImageExtensions + HandledVideoExtensions //作为鼠标手势查找的目标
-        HandledFolderThumbExtensions = HandledImageExtensions.filter{$0 != "svg"} + HandledVideoExtensions // + ["pdf"] //目录缩略图
-        //使用个别特殊svg作为文件夹缩略图绘图元素会导致程序异常 'NSGenericException', reason: 'NaN point value'
+        HandledOtherExtensions = globalVar.HandledOtherExtensions
+        HandledFileExtensions = HandledImageAndRawExtensions + HandledVideoExtensions + HandledOtherExtensions //文件列表显示的
+        HandledSearchExtensions = HandledImageAndRawExtensions + HandledVideoExtensions //作为鼠标手势查找的目标
     }
     
     var selectedUrls2 = [URL]()
@@ -1866,7 +1856,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     getFolderStatistic(url, result: &result)
                 }else{
                     result.fileCount += 1
-                    if globalVar.HandledImageExtensions.contains(url.pathExtension.lowercased()) {
+                    if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
                         result.imageCount += 1
                     } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
                         result.videoCount += 1
@@ -1900,7 +1890,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             
             if !isDirectory {
                 result.fileCount += 1
-                if globalVar.HandledImageExtensions.contains(url.pathExtension.lowercased()) {
+                if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
                     result.imageCount += 1
                 } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
                     result.videoCount += 1
@@ -2961,7 +2951,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             if !isDirectory {
                 contents.append(url)
                 fileCount += 1
-                if globalVar.HandledImageExtensions.contains(url.pathExtension.lowercased()) {
+                if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
                     imageCount += 1
                 } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
                     videoCount += 1
@@ -3062,7 +3052,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             if publicVar.HandledFileExtensions.contains(file.pathExtension.lowercased()) || publicVar.isShowAllTypeFile {
                 filesUrlInFolder.append(file)
             }
-            if publicVar.HandledImageExtensions.contains(file.pathExtension.lowercased()) {
+            if publicVar.HandledImageAndRawExtensions.contains(file.pathExtension.lowercased()) {
                 imageCount+=1
             }
             if publicVar.HandledVideoExtensions.contains(file.pathExtension.lowercased()) {
@@ -3254,7 +3244,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 ele.1.canBeCalcued = false
                 if !ele.1.isDir{
                     ele.1.ext=URL(string: ele.1.path)!.pathExtension.lowercased()
-                    if globalVar.HandledImageExtensions.contains(ele.1.ext) {
+                    if globalVar.HandledImageAndRawExtensions.contains(ele.1.ext) {
                         ele.1.type = .image
                         ele.1.idInImage = idInImage
                         idInImage += 1
@@ -4328,7 +4318,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             if(url.hasDirectoryPath){
                 switchDirByDirection(direction: .zero, dest: item.file.path, stackDeep: 0)
             }
-            else if !globalVar.HandledImageExtensions.contains(url.pathExtension.lowercased()) {
+            else if !globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
                 NSWorkspace.shared.open(url)
             }else{
                 if largeImageView.isHidden {
@@ -5355,7 +5345,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     viewController.closeLargeImage(0)
                 }
             }else{
-                if !globalVar.HandledImageExtensions.contains(urls[0].pathExtension) {return} //限制文件类型
+                if !globalVar.HandledImageAndRawExtensions.contains(urls[0].pathExtension) {return} //限制文件类型
                 folderPath=""+urls[0].deletingLastPathComponent().absoluteString
                 path=""+urls[0].absoluteString
                 viewController.publicVar.openFromFinderPath=path

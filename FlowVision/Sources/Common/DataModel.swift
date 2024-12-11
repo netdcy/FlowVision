@@ -330,7 +330,7 @@ class DirModel {
 //            ele.1.id=id
 //            id+=1
 //            if !(ele.1.isDir) {
-//                if HandledImageExtensions.contains(ele.1.ext) {
+//                if HandledImageAndRawExtensions.contains(ele.1.ext) {
 //                    ele.1.idInImage=idInImage
 //                    idInImage+=1
 //                }

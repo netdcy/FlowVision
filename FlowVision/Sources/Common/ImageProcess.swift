@@ -452,7 +452,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
             //return nil
         }
         
-    }else if (globalVar.HandledImageExtensions+["pdf"]).contains(url.pathExtension.lowercased()) { //处理其它缩略图
+    }else if (globalVar.HandledImageAndRawExtensions+["pdf"]).contains(url.pathExtension.lowercased()) { //处理其它缩略图
         //使用原图的格式
         if ["gif", "svg"].contains(url.pathExtension.lowercased()){
             return NSImage(contentsOf: url)
@@ -489,7 +489,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
             let img = NSImage(cgImage: scaledImage, size: NSSize(width: scaledImage.width, height: scaledImage.height))
             
             //对于缩略图旋转异常的情况
-            if refSize != nil && globalVar.HandledImageExtensions.contains(url.pathExtension.lowercased()) {
+            if refSize != nil && globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
                 let ratio1 = Double(scaledImage.width) / Double(scaledImage.height) / refSize!.width * refSize!.height
                 let ratio2 = Double(scaledImage.height) / Double(scaledImage.width) / refSize!.width * refSize!.height
                 if ratio1 > 1.05 || ratio1 < 0.95 {
@@ -774,7 +774,7 @@ func getImageSize(url: URL) -> NSSize? {
     }else if "pdf" == url.pathExtension.lowercased() {
         if let thumb = getImageThumb(url: url) {return thumb.size}
         return nil
-    }else if globalVar.HandledImageExtensions.contains(url.pathExtension.lowercased()){
+    }else if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()){
         guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
         guard let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as? [String: Any] else { return nil }
         guard let width = imageProperties[kCGImagePropertyPixelWidth as String] as? CGFloat,

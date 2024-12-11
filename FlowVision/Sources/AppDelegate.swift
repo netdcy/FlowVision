@@ -333,7 +333,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         dialog.showsHiddenFiles        = false
         dialog.allowsMultipleSelection = false
         dialog.canChooseDirectories    = true
-        dialog.allowedFileTypes        = globalVar.HandledImageExtensions
+        dialog.allowedFileTypes        = globalVar.HandledImageAndRawExtensions
         
         if (dialog.runModal() == NSApplication.ModalResponse.OK) {
             if let result = dialog.url {
