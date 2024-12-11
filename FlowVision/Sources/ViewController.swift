@@ -3221,19 +3221,15 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     log("Error reading properties.")
                 }
                 //log("i:",i,"path:",fileSortKey.path.removingPercentEncoding)
-                var newFileModel=FileModel(path: fileSortKey.path, ver: fileDB.db[SortKeyDir(folderpath)]!.ver, isDir: isDir, fileSize: fileSize, createDate: createDate, modDate: modDate, addDate: addDate, doNotActualRead: doNotActualRead)
-                //newFileModel.folderImageCount=fileCount
+                let newFileModel=FileModel(path: fileSortKey.path, ver: fileDB.db[SortKeyDir(folderpath)]!.ver, isDir: isDir, fileSize: fileSize, createDate: createDate, modDate: modDate, addDate: addDate, doNotActualRead: doNotActualRead)
                 //log(fileSortKey.path)
                 if fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] != nil {
                     fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
                     fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.isDir=isDir
-                    //fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.folderImageCount=fileCount
                     fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.doNotActualRead=doNotActualRead
-                    //检查文件是否有变化
-                    if !isDir{
-                        if fileSize != fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.fileSize || modDate != fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.modDate {
-                            fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
-                        }
+                    //检查文件或文件夹是否有变化(文件夹fileSize为nil)
+                    if fileSize != fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.fileSize || modDate != fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.modDate {
+                        fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
                     }
                 }else{
                     fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
@@ -3846,10 +3842,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 }else{
                                     if !publicVar.isGenHdThumb || noThumbSizeDueToSchedule { // publicVar.layoutType == .grid
                                         //image = getImageThumb(url: url, refSize: originalSize)
-                                        image = ThumbImageProcessor.getImageCache(url: url, refSize: originalSize)
+                                        image = ThumbImageProcessor.getImageCache(url: url, refSize: originalSize, ver: ver)
                                     }else{
                                         //image = getImageThumb(url: url, size: revisedSize)
-                                        image = ThumbImageProcessor.getImageCache(url: url, size: revisedSize)
+                                        image = ThumbImageProcessor.getImageCache(url: url, size: revisedSize, ver: ver)
                                     }
                                     if image == nil {
                                         image = getFileTypeIcon(url: url)

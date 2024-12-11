@@ -275,7 +275,6 @@ class FileModel {
     var isGetImageSizeFail = false
     var thumbSize: NSSize?
     var lineNo: Int = 0
-    //var folderImageCount = 0
     var image: NSImage?
     var folderImages = [NSImage]()
     var lock: NSLock = NSLock()

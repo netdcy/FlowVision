@@ -1326,7 +1326,7 @@ class CustomCache<Key: Hashable, Value> {
 class ThumbImageProcessor {
     private static let cache: CustomCache<NSString, CacheWrapper> = {
         let cache = CustomCache<NSString, CacheWrapper>()
-        cache.countLimit = 1 // 设置缓存容量
+        cache.countLimit = 16 // 设置缓存容量
         return cache
     }()
     
@@ -1341,8 +1341,8 @@ class ThumbImageProcessor {
         }
     }
     
-    static func getImageCache(url: URL, size: NSSize? = nil, refSize: NSSize? = nil, needWaitWhenSame: Bool = true) -> NSImage? {
-        let cacheKey = "\(url.absoluteString)_s\(size?.width ?? 0)x\(size?.height ?? 0)_r\(refSize?.width ?? 0)x\(refSize?.height ?? 0)" as NSString
+    static func getImageCache(url: URL, size: NSSize? = nil, refSize: NSSize? = nil, needWaitWhenSame: Bool = true, ver: Int) -> NSImage? {
+        let cacheKey = "\(url.absoluteString)_s\(size?.width ?? 0)x\(size?.height ?? 0)_r\(refSize?.width ?? 0)x\(refSize?.height ?? 0)_v\(ver)" as NSString
         //print(cacheKey)
         
         // 先检查缓存中是否已有图像（包括nil情况）
@@ -1390,24 +1390,6 @@ class ThumbImageProcessor {
             
             return image
         }
-    }
-    
-    // 检查缓存中是否有图像（且不是nil）
-    static func isImageCached(url: URL, size: NSSize, rotate: Int = 0) -> Bool {
-        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)" as NSString
-        if let cachedWrapper = cache.object(forKey: cacheKey) {
-            return cachedWrapper.image != nil
-        }
-        return false
-    }
-    
-    // 检查缓存中是否有图像，有的话则返回
-    static func isImageCachedAndGet(url: URL, size: NSSize, rotate: Int = 0) -> NSImage? {
-        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)" as NSString
-        if let cachedWrapper = cache.object(forKey: cacheKey) {
-            return cachedWrapper.image
-        }
-        return nil
     }
     
     // 清空缓存
