@@ -139,48 +139,49 @@ func getFileInfo(file: FileModel) {
 
 func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, timeout: TimeInterval = 1.0) -> [URL] {
     let fileManager = FileManager.default
-    //要不扫描子目录在下面添加Option: .skipsSubdirectoryDescendants
-    let options: FileManager.DirectoryEnumerationOptions = [.skipsHiddenFiles]
-    let validExtensions = globalVar.HandledFolderThumbExtensions  // 支持缩略图的格式
+    let validExtensions = globalVar.HandledFolderThumbExtensions
     var imageUrls: [URL] = []
-    
+    var directoriesToVisit: [(URL, Int)] = [(directoryURL, 0)] // 栈包含目录及其深度
+
     let startTime = Date()
 
-    guard let enumerator = fileManager.enumerator(at: directoryURL, includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey], options: options) else {
-        return imageUrls
-    }
-
-    for case let fileURL as URL in enumerator {
+    while !directoriesToVisit.isEmpty {
+        let (currentDirectory, currentDepth) = directoriesToVisit.removeLast()
+        
         // 检查是否超时
         if Date().timeIntervalSince(startTime) > timeout {
             log("Operation timed out")
             break
         }
-        
-        // 检查是否已经找到足够多的图片
-        if imageUrls.count >= maxImages {
-            break
-        }
 
-        // 检查是否超过了最大目录层数
-        let relativePathComponents = fileURL.pathComponents.dropLast().suffix(from: directoryURL.pathComponents.count)
-        if relativePathComponents.count > maxDepth {
-            enumerator.skipDescendants()  // 跳过更深层次的目录
-            continue
-        }
-
-        // 检查文件扩展名是否为可生成缩略图的格式
-        if validExtensions.contains(fileURL.pathExtension.lowercased()) {
-            // 确认这是一个文件而不是文件夹
-            do {
-                let fileAttributes = try fileURL.resourceValues(forKeys: [.isRegularFileKey])
-                if fileAttributes.isRegularFile ?? false {
-                    imageUrls.append(fileURL)
+        do {
+            var contents = try fileManager.contentsOfDirectory(at: currentDirectory, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsHiddenFiles])
+            
+            // 打乱目录内容顺序
+            contents.shuffle()
+            
+            for fileURL in contents {
+                let resourceValues = try fileURL.resourceValues(forKeys: [.isDirectoryKey])
+                
+                if resourceValues.isDirectory ?? false {
+                    // 仅在深度限制内将子目录及其深度放入栈中
+                    if currentDepth + 1 < maxDepth {
+                        directoriesToVisit.append((fileURL, currentDepth + 1))
+                    }
+                } else {
+                    // 检查文件扩展名是否为可生成缩略图的格式
+                    if validExtensions.contains(fileURL.pathExtension.lowercased()) {
+                        imageUrls.append(fileURL)
+                        
+                        // 检查是否已经找到足够多的图片
+                        if imageUrls.count >= maxImages {
+                            return imageUrls
+                        }
+                    }
                 }
-            } catch {
-                log("Error reading file attributes for \(fileURL): \(error)")
-                continue
             }
+        } catch {
+            log("Error accessing contents of directory \(currentDirectory): \(error)")
         }
     }
 
@@ -400,7 +401,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         var urls = [URL]()
         let folderSearchDepth = VolumeManager.shared.isExternalVolume(url) ? globalVar.folderSearchDepth_External : globalVar.folderSearchDepth
         if folderSearchDepth > 0 {
-            urls = findImageURLs(in: url, maxDepth: folderSearchDepth-1, maxImages: 3)
+            urls = findImageURLs(in: url, maxDepth: folderSearchDepth, maxImages: 3)
         }
         
         if urls.count>0 {
