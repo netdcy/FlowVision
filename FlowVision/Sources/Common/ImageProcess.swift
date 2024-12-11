@@ -453,16 +453,12 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         }
         
     }else if (globalVar.HandledImageExtensions+["pdf"]).contains(url.pathExtension.lowercased()) { //处理其它缩略图
-        //gif特殊处理
-        if( "gif" == url.pathExtension.lowercased() ){
-            return NSImage(contentsOf: url)
-        }
-        //svg特殊处理
-        if( "svg" == url.pathExtension.lowercased() ){
+        //使用原图的格式
+        if ["gif", "svg"].contains(url.pathExtension.lowercased()){
             return NSImage(contentsOf: url)
         }
         //若指定了大小则特殊处理
-        if( size != nil ){
+        if( size != nil && "ai" != url.pathExtension.lowercased()){
             //log(size.width,size.height)
             if let resizedImage=getResizedImage(url: url, size: size!){
                 return resizedImage

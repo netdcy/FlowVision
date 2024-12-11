@@ -3818,6 +3818,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                             if let thumbImage = file.image {
                                 imageExist=true
                                 //print(revisedSize,thumbImage.size)
+                                
                                 if (publicVar.isGenHdThumb && !noThumbSizeDueToSchedule) && file.type == .image { //&& publicVar.layoutType != .grid
                                     if thumbImage.size.width != revisedSize.width {
                                         imageExist=false
@@ -3828,6 +3829,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                     if maxLength < 256 { // 说明是由targetSize重绘生成的且不够清晰的图（双倍采样），取不取等不重要
                                         imageExist=false
                                     }
+                                }
+                                if ["gif", "svg", "ai"].contains(file.ext.lowercased()){
+                                    imageExist=true //由于无法正常生成指定大小的缩略图
                                 }
                             }
                             fileDB.unlock()
@@ -4746,13 +4750,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 doNotGenResized=true
             }
             
-            //gif图直接使用缩略图（原图），能直接播放
-            if ["gif"].contains(url.pathExtension.lowercased()){
-                doNotGenResized=true
-            }
-            
-            //svg图直接使用缩略图（原图），没必要缩放
-            if ["svg"].contains(url.pathExtension.lowercased()){
+            //使用原图的格式
+            if ["gif", "svg", "ai"].contains(url.pathExtension.lowercased()){
                 doNotGenResized=true
             }
 
@@ -4859,13 +4858,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 doNotGenResized=true
             }
             
-            //gif图直接使用缩略图（原图），能直接播放
-            if ["gif"].contains(url.pathExtension.lowercased()){
-                doNotGenResized=true
-            }
-            
-            //svg图直接使用缩略图（原图），没必要缩放
-            if ["svg"].contains(url.pathExtension.lowercased()){
+            //使用原图的格式
+            if ["gif", "svg", "ai"].contains(url.pathExtension.lowercased()){
                 doNotGenResized=true
             }
             
