@@ -349,11 +349,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 FileManager.default.fileExists(atPath: result.path, isDirectory: &isDirectoryObj)
                 let isDirectory=isDirectoryObj.boolValue
                 if isDirectory {
-                    _ = createNewWindow(result.path)
+                    _ = createNewWindow(result.absoluteString)
                 }else{
                     globalVar.isLaunchFromFile=true
-                    if let windowController = createNewWindow(result.path) {
-                        openImageInTargetWindow(result.path, windowController: windowController)
+                    if let windowController = createNewWindow(result.absoluteString) {
+                        openImageInTargetWindow(result.absoluteString, windowController: windowController)
                     }
                 }
             }

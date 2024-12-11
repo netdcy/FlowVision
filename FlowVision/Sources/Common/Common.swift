@@ -123,14 +123,14 @@ extension UserDefaults {
 }
 
 func getFileStylePath(_ path: String) -> String {
-    guard let url=URL(string: path) else{return ""}
-    var path=url.absoluteString//.removingPercentEncoding!
+    guard let url=URL(string: path.removingPercentEncoding!.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!) else{return ""}
+    var path=url.absoluteString
     path = path.hasPrefix("file://") ? path : "file://" + path
     return path
 }
 
 func getFileStyleFolderPath(_ path: String) -> String {
-    guard let url=URL(string: path) else{return ""}
+    guard let url=URL(string: path.removingPercentEncoding!.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!) else{return ""}
     var folderPath=url.deletingLastPathComponent().absoluteString
     folderPath = folderPath.hasPrefix("file://") ? folderPath : "file://" + folderPath
     return folderPath
@@ -310,7 +310,7 @@ func renameAlert(url: URL) -> Bool {
 func getDirectoryPath(_ path: String) -> String {
     if path.hasPrefix("file://") {
         let url = URL(string: path)!
-        return url.deletingLastPathComponent().path
+        return url.deletingLastPathComponent().absoluteString
     } else {
         return (path as NSString).deletingLastPathComponent
     }
@@ -367,7 +367,7 @@ class VolumeManager {
         }
         
         if url.scheme == nil {
-            url = URL(fileURLWithPath: path)
+            url = URL(fileURLWithPath: path.removingPercentEncoding!)
         }
         
         return isExternalVolume(url)
