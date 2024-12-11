@@ -530,7 +530,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 Command+⬆️ 键
-                if specialKey == .upArrow && isOnlyCommandPressed {
+                if (specialKey == .upArrow && isOnlyCommandPressed) || (specialKey == .home && noModifierKey) {
                     if !publicVar.isInLargeView{
                         if let scrollView = collectionView.enclosingScrollView {
                             scrollView.contentView.scroll(to: NSPoint(x: 0, y: 0))
@@ -544,7 +544,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
                 
                 // 检查按键是否是 Command+⬇️ 键
-                if specialKey == .downArrow && isOnlyCommandPressed {
+                if (specialKey == .downArrow && isOnlyCommandPressed) || (specialKey == .end && noModifierKey) {
                     if !publicVar.isInLargeView{
                         if let scrollView = collectionView.enclosingScrollView {
                             let newOrigin = NSPoint(x: 0, y: collectionView.bounds.height - scrollView.contentSize.height)

@@ -35,6 +35,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     @IBOutlet weak var toggleIsShowRawFileMenuItem: NSMenuItem!
     @IBOutlet weak var toggleIsShowVideoFileMenuItem: NSMenuItem!
     @IBOutlet weak var toggleIsShowAllTypeFileMenuItem: NSMenuItem!
+    @IBOutlet weak var deselectMenuItem: NSMenuItem!
     
     var commonParentPath=""
     
@@ -542,6 +543,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 if mainViewController.publicVar.selectedUrls().count == 0 {
                     return false
                 }
+            }
+        }
+        if menuItem.action == #selector(deselectAll(_:)) {
+            //如果焦点在CollectionView
+            if mainViewController.publicVar.isCollectionViewFirstResponder{
+                if mainViewController.publicVar.selectedUrls().count == 0 {
+                    return false
+                }
+            }else{
+                return false
             }
         }
         if menuItem.action == #selector(editPaste(_:)) || menuItem.action == #selector(editMove(_:)) {

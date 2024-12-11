@@ -868,6 +868,7 @@ Gw
                         <outlet property="adjustWindowCurrentMenuItem" destination="9zb-jY-FJF" id="fdh-Ck-WgD"/>
                         <outlet property="adjustWindowToCenterMenuItem" destination="6W0-Wg-Cpn" id="ySc-ni-Hwl"/>
                         <outlet property="darkModeMenuItem" destination="BIe-WV-g2r" id="07D-n2-CgM"/>
+                        <outlet property="deselectMenuItem" destination="MFt-GP-W33" id="dWr-FB-Nqj"/>
                         <outlet property="detailViewModeMenuItem" destination="aHz-iD-6dU" id="hEJ-gf-r7w"/>
                         <outlet property="favoritesMenu" destination="fDm-Nj-S0c" id="2uV-gL-apG"/>
                         <outlet property="gridViewMenuItem" destination="SAw-E9-7Mm" id="Bz4-eK-VxC"/>
@@ -970,7 +971,7 @@ Gw
                                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="t2d-Ol-iJC"/>
                                                                                         </imageView>
-                                                                                        <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0HQ-rx-KfT">
+                                                                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0HQ-rx-KfT">
                                                                                             <rect key="frame" x="23" y="-24" width="234" height="24"/>
                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="XDl-gN-nwq">
