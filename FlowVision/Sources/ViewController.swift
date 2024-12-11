@@ -3938,7 +3938,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     
                     var ifCantDetectMemUse = false
                     if #available(macOS 15, *) {
-                        //有时在macos 15上观察到，图片占用的内存变成了与WindowServer的共享内存，此时无法直接获取大小
+                        // TODO: 有时在macos 15上观察到，图片占用的内存变成了与WindowServer的共享内存，此时无法直接获取大小
                         ifCantDetectMemUse = totalCount > memUseLimit * 2
                     }
                     

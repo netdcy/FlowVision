@@ -686,41 +686,6 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0) -> NSImage
     return img
 }
 
-func getResizedImage2(url: URL, size: NSSize, rotate: Int = 0) -> NSImage? {
-    guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil),
-          let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) else {
-        print("imageSource:", url.absoluteString.removingPercentEncoding!)
-        return nil
-    }
-
-    var orientation = 1
-    if let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as? [String: Any],
-       let orientationRaw = imageProperties[kCGImagePropertyOrientation as String] as? Int {
-        orientation = orientationRaw
-    }
-
-    orientation = newOrientation(currentOrientation: orientation, rotate: rotate)
-    let transform = CGAffineTransform(rotationAngle: rotationAngle(for: orientation))
-
-    let ciImage = CIImage(cgImage: image).transformed(by: transform)
-    let context = CIContext(options: [CIContextOption.useSoftwareRenderer: false])
-
-    // 缩放图像
-    let scaleX = size.width * 2 / ciImage.extent.width
-    let scaleY = size.height * 2 / ciImage.extent.height
-    let scaleTransform = CGAffineTransform(scaleX: scaleX, y: scaleY)
-    let scaledImage = ciImage.transformed(by: scaleTransform)
-
-    // 创建 CGImage
-    guard let cgImage = context.createCGImage(scaledImage, from: scaledImage.extent) else {
-        print("createCGImage:", url.absoluteString.removingPercentEncoding!)
-        return nil
-    }
-
-    let pixelSize = NSSize(width: size.width, height: size.height)
-    return NSImage(cgImage: cgImage, size: pixelSize)
-}
-
 func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
     // 构建 ffprobe 命令来获取视频流的宽度和高度
     //let ffprobeCommand = "-v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1:nokey=1 '\(url.path)'"
@@ -836,53 +801,6 @@ func getImageInfo(url: URL) -> ImageInfo? {
     }else{
         return nil
     }
-}
-
-func getResizedImageDeprecated1(url: URL, size: NSSize) -> NSImage? {
-    guard let imageSource = CGImageSourceCreateWithURL(url as NSURL, nil),
-          let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
-    else {return nil}
-    
-    let pointSize=CGSize(width: size.width*2, height: size.height*2)
-    let pixelSize=NSSize(width: size.width, height: size.height)
-    
-    let context = CGContext(data: nil,
-                            width: Int(pointSize.width),
-                            height: Int(pointSize.height),
-                            bitsPerComponent: image.bitsPerComponent,
-                            bytesPerRow: 0,
-                            space: image.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!,
-                            bitmapInfo: image.bitmapInfo.rawValue)
-    context?.interpolationQuality = .high
-    context?.draw(image, in: CGRect(origin: .zero, size: pointSize))
-    
-    guard let scaledImage = context?.makeImage() else {return nil}
-    
-    let img = NSImage(cgImage: scaledImage,size:pixelSize)
-    //img.cacheMode=NSImage.CacheMode.never
-    
-    //        let bitmapRep = NSBitmapImageRep(cgImage: scaledImage)
-    //        guard let jpegData = bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: 0.9]) else { return nil }
-    //        let finalImage = NSImage(data: jpegData)
-    
-    return img
-}
-
-func getImageSizeDeprecated2(url: URL) -> NSSize {
-    let result=DEFAULT_SIZE
-    guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else { return result }
-    guard let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as Dictionary? else { return result }
-    guard let width = imageProperties[kCGImagePropertyPixelWidth] as? CGFloat,
-          let height = imageProperties[kCGImagePropertyPixelHeight] as? CGFloat else { return result }
-    
-    return NSSize(width: width, height: height)
-}
-func getImageSizeDeprecated1(url: URL) -> NSSize{
-    //居然不会释放内存
-    let img = NSImageRep(contentsOf: url)
-    let raw_width = Double( img?.pixelsWide ?? 512)
-    let raw_height = Double( img?.pixelsHigh ?? 512)
-    return NSSize(width: raw_width, height: raw_height)
 }
 
 func hexToNSColor(hex: String = "#000000", alpha: Double = 1.0) -> NSColor {
