@@ -17,6 +17,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
     
     @IBOutlet weak var terminateAfterLastWindowClosedCheckbox: NSButton!
     @IBOutlet weak var autoHideToolbarCheckbox: NSButton!
+    @IBOutlet weak var randomFolderThumbCheckbox: NSButton!
     @IBOutlet weak var languagePopUpButton: NSPopUpButton!
 
     override func viewDidLoad() {
@@ -26,6 +27,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
         
         terminateAfterLastWindowClosedCheckbox.state = globalVar.terminateAfterLastWindowClosed ? .on : .off
         autoHideToolbarCheckbox.state = globalVar.autoHideToolbar ? .on : .off
+        randomFolderThumbCheckbox.state = globalVar.randomFolderThumb ? .on : .off
         
         // 初始化 NSPopUpButton 的选项
         let autoTitle = NSLocalizedString("Auto", comment: "自动")
@@ -70,6 +72,11 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
     
     @IBAction func autoHideToolbarToggled(_ sender: NSButton) {
         UserDefaults.standard.set(sender.state, forKey: "autoHideToolbar")
+    }
+    
+    @IBAction func randomFolderThumbToggled(_ sender: NSButton) {
+        globalVar.randomFolderThumb = (sender.state == .on)
+        UserDefaults.standard.set(globalVar.randomFolderThumb, forKey: "randomFolderThumb")
     }
     
     @IBAction func openSystemPreferences(_ sender: Any) {

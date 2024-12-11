@@ -1,6 +1,24 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "5e8-7g-fZU.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Thumbnail:\"; ObjectID = \"5e8-7g-fZU\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Thumbnail:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图："
+          }
+        }
+      }
+    },
     "7aF-tg-6Qj.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Permissions:\"; ObjectID = \"7aF-tg-6Qj\";",
       "extractionState" : "extracted_with_value",
@@ -213,6 +231,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关闭行为："
+          }
+        }
+      }
+    },
+    "Wab-QO-jJE.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Random Folder Thumbnail\"; ObjectID = \"Wab-QO-jJE\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Random Folder Thumbnail"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "随机文件夹缩略图"
           }
         }
       }

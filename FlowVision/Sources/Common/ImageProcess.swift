@@ -141,12 +141,12 @@ func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, timeout:
     let fileManager = FileManager.default
     let validExtensions = globalVar.HandledFolderThumbExtensions
     var imageUrls: [URL] = []
-    var directoriesToVisit: [(URL, Int)] = [(directoryURL, 0)] // 栈包含目录及其深度
+    var directoriesToVisit: [(URL, Int)] = [(directoryURL, 0)] // 包含目录及其深度
 
     let startTime = Date()
 
     while !directoriesToVisit.isEmpty {
-        let (currentDirectory, currentDepth) = directoriesToVisit.removeLast()
+        let (currentDirectory, currentDepth) = directoriesToVisit.removeFirst() // 广度优先搜索
         
         // 检查是否超时
         if Date().timeIntervalSince(startTime) > timeout {
@@ -158,13 +158,15 @@ func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, timeout:
             var contents = try fileManager.contentsOfDirectory(at: currentDirectory, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsHiddenFiles])
             
             // 打乱目录内容顺序
-            contents.shuffle()
+            if globalVar.randomFolderThumb {
+                contents.shuffle()
+            }
             
             for fileURL in contents {
                 let resourceValues = try fileURL.resourceValues(forKeys: [.isDirectoryKey])
                 
                 if resourceValues.isDirectory ?? false {
-                    // 仅在深度限制内将子目录及其深度放入栈中
+                    // 仅在深度限制内将子目录及其深度放入栈/队列中
                     if currentDepth + 1 < maxDepth {
                         directoriesToVisit.append((fileURL, currentDepth + 1))
                     }

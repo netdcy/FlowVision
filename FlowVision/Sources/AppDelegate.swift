@@ -105,6 +105,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let autoHideToolbar = UserDefaults.standard.value(forKey: "autoHideToolbar") as? Bool {
             globalVar.autoHideToolbar = autoHideToolbar
         }
+        if let randomFolderThumb = UserDefaults.standard.value(forKey: "randomFolderThumb") as? Bool {
+            globalVar.randomFolderThumb = randomFolderThumb
+        }
         if let memUseLimit = UserDefaults.standard.value(forKey: "memUseLimit") as? Int {
             globalVar.memUseLimit = memUseLimit
         }

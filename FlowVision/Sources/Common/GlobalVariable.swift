@@ -44,6 +44,7 @@ class GlobalVar{
     var folderSearchDepth: Int = 4
     var thumbThreadNum_External: Int = 1
     var folderSearchDepth_External: Int = 0
+    var randomFolderThumb = false
     
     //可记忆设置变量
     var isFirstTimeUse = true
