@@ -458,7 +458,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
             return NSImage(contentsOf: url)
         }
         //若指定了大小则特殊处理
-        if( size != nil && "ai" != url.pathExtension.lowercased()){
+        if( size != nil && "ai" != url.pathExtension.lowercased() && !globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased())){
             //log(size.width,size.height)
             if let resizedImage=getResizedImage(url: url, size: size!){
                 return resizedImage
@@ -473,12 +473,26 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
                 //return getFileTypeIcon(url: url)
                 return nil
             }
-            let thumbnailOptions = [kCGImageSourceCreateThumbnailWithTransform : kCFBooleanTrue!,
-                                  kCGImageSourceCreateThumbnailFromImageAlways : kCFBooleanTrue!,
-                                           kCGImageSourceThumbnailMaxPixelSize : 512,
-                                                     kCGImageSourceShouldCache : kCFBooleanFalse!,
-                                    
+            
+            var thumbnailOptions: CFDictionary
+            
+            let thumbnailOptionsAlways = [kCGImageSourceCreateThumbnailWithTransform : kCFBooleanTrue!,
+                                        kCGImageSourceCreateThumbnailFromImageAlways : kCFBooleanTrue!,
+                                                 kCGImageSourceThumbnailMaxPixelSize : 512,
+                                                           kCGImageSourceShouldCache : kCFBooleanFalse!,
             ] as CFDictionary;
+            
+            let thumbnailOptionsIfAbsent = [kCGImageSourceCreateThumbnailWithTransform : kCFBooleanTrue!,
+                                        kCGImageSourceCreateThumbnailFromImageIfAbsent : kCFBooleanTrue!,
+                                                   kCGImageSourceThumbnailMaxPixelSize : 512,
+                                                             kCGImageSourceShouldCache : kCFBooleanFalse!,
+            ] as CFDictionary;
+            
+            if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) {
+                thumbnailOptions = thumbnailOptionsIfAbsent
+            }else{
+                thumbnailOptions = thumbnailOptionsAlways
+            }
 
             guard let scaledImage = CGImageSourceCreateThumbnailAtIndex(myImageSource,0,thumbnailOptions)else {
                 log(stderr, "Thumbnail not created from image source.");

@@ -3823,6 +3823,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 if ["gif", "svg", "ai"].contains(file.ext.lowercased()){
                                     imageExist=true //由于无法正常生成指定大小的缩略图
                                 }
+                                if globalVar.HandledRawExtensions.contains(file.ext.lowercased()){
+                                    imageExist=true //RAW优先使用内嵌缩略图
+                                }
                             }
                             fileDB.unlock()
                             loadImageTaskPool.lock.unlock()
