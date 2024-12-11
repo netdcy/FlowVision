@@ -68,7 +68,7 @@ class GlobalVar{
     var HandledFolderThumbExtensions: [String] = []
 
     init(){
-        HandledImageExtensions = ["jpg", "jpeg", "jxl", "png", "gif", "bmp", "heif", "heic", "hif", "avif", "tif", "tiff", "webp", "jfif", "jp2", "ai", "psd", "ico", "icns", "svg"]
+        HandledImageExtensions = ["jpg", "jpeg", "jxl", "png", "gif", "bmp", "heif", "heic", "hif", "avif", "tif", "tiff", "webp", "jfif", "jp2", "ai", "psd", "ico", "icns", "svg", "tga"]
         HandledRawExtensions = ["crw", "cr2", "cr3", "nef", "nrw", "arw", "srf", "sr2", "rw2", "orf", "raf", "pef", "dng", "raw", "rwl", "x3f", "3fr", "fff", "iiq", "mos", "dcr", "erf", "mrw", "gpr", "srw"]
         HandledImageAndRawExtensions = HandledImageExtensions + HandledRawExtensions
         HandledVideoExtensions = ["mp4", "mov", "m2ts", "vob", "mpeg", "mpg", "m4v"] + ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
