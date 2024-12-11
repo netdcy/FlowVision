@@ -1212,8 +1212,8 @@ class LargeImageProcessor {
 //        return getResizedImage(url: url, size: size, rotate: rotate)
 //    }
     
-    static func getImageCache(url: URL, size: NSSize, rotate: Int = 0, useOriginalImage: Bool, needWaitWhenSame: Bool = true) -> NSImage? {
-        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)" as NSString
+    static func getImageCache(url: URL, size: NSSize, rotate: Int = 0, ver: Int, useOriginalImage: Bool, needWaitWhenSame: Bool = true) -> NSImage? {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)" as NSString
         //print(cacheKey)
         
         // 先检查缓存中是否已有图像（包括nil情况）
@@ -1271,8 +1271,8 @@ class LargeImageProcessor {
     }
     
     // 检查缓存中是否有图像（且不是nil）
-    static func isImageCached(url: URL, size: NSSize, rotate: Int = 0) -> Bool {
-        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)" as NSString
+    static func isImageCached(url: URL, size: NSSize, rotate: Int = 0, ver: Int) -> Bool {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)" as NSString
         if let cachedWrapper = cache.object(forKey: cacheKey) {
             return cachedWrapper.image != nil
         }
@@ -1280,8 +1280,8 @@ class LargeImageProcessor {
     }
     
     // 检查缓存中是否有图像，有的话则返回
-    static func isImageCachedAndGet(url: URL, size: NSSize, rotate: Int = 0) -> NSImage? {
-        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)" as NSString
+    static func isImageCachedAndGet(url: URL, size: NSSize, rotate: Int = 0, ver: Int) -> NSImage? {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)" as NSString
         if let cachedWrapper = cache.object(forKey: cacheKey) {
             return cachedWrapper.image
         }

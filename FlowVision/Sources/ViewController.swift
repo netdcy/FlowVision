@@ -3298,11 +3298,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //            currLargeImagePos = -1
             initLargeImagePos = -1
             if publicVar.lastLargeImageIdInImage == 0 {
-                nextLargeImage(isShowReachEndPrompt: false)
-                previousLargeImage(isShowReachEndPrompt: false)
+                nextLargeImage(isShowReachEndPrompt: false, firstShowThumb: false)
+                previousLargeImage(isShowReachEndPrompt: false, firstShowThumb: false)
             }else{
-                previousLargeImage(isShowReachEndPrompt: false)
-                nextLargeImage(isShowReachEndPrompt: false)
+                previousLargeImage(isShowReachEndPrompt: false, firstShowThumb: false)
+                nextLargeImage(isShowReachEndPrompt: false, firstShowThumb: false)
             }
 
         }else{
@@ -4443,7 +4443,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         lastScrollSwitchLargeImageTime=event.timestamp
     }
     
-    func previousLargeImage(isShowReachEndPrompt: Bool = true){
+    func previousLargeImage(isShowReachEndPrompt: Bool = true, firstShowThumb: Bool = true){
         if largeImageView.isHidden {return}
         if publicVar.openFromFinderPath != "" {return}
         if currLargeImagePos == -1 {
@@ -4479,9 +4479,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 fileDB.lock()
                 let refSize = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.originalSize
                 fileDB.unlock()
-                adjustWindowPortable(refSize: refSize, firstShowThumb: true, animate: false)
+                adjustWindowPortable(refSize: refSize, firstShowThumb: firstShowThumb, animate: false)
             }else{
-                changeLargeImage()
+                changeLargeImage(firstShowThumb: firstShowThumb)
             }
             
             //选中新的项目
@@ -4496,7 +4496,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
     
-    func nextLargeImage(isShowReachEndPrompt: Bool = true){
+    func nextLargeImage(isShowReachEndPrompt: Bool = true, firstShowThumb: Bool = true){
         //log(currLargeImagePos)
         if largeImageView.isHidden {return}
         if publicVar.openFromFinderPath != "" {return}
@@ -4533,9 +4533,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 fileDB.lock()
                 let refSize = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.originalSize
                 fileDB.unlock()
-                adjustWindowPortable(refSize: refSize, firstShowThumb: true, animate: false)
+                adjustWindowPortable(refSize: refSize, firstShowThumb: firstShowThumb, animate: false)
             }else{
-                changeLargeImage()
+                changeLargeImage(firstShowThumb: firstShowThumb)
             }
             
             //选中新的项目
@@ -4754,13 +4754,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
 
             DispatchQueue.global(qos: .userInitiated).async {
-                _ = LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: 0, useOriginalImage: doNotGenResized, needWaitWhenSame: false)
+                _ = LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: 0, ver: file.ver, useOriginalImage: doNotGenResized, needWaitWhenSame: false)
             }
             
         }
     }
     
-    func changeLargeImage(firstShowThumb: Bool = true, resetSize: Bool = true, triggeredByLongPress: Bool = false, justChangeLargeImageViewFile: Bool = false){
+    func changeLargeImage(firstShowThumb: Bool = true, resetSize: Bool = true, triggeredByLongPress: Bool = false, justChangeLargeImageViewFile: Bool = false, forceRefresh: Bool = false){
         let pos=currLargeImagePos
         var file=FileModel(path: "", ver: 0)
         var isThisFromFinder=false
@@ -4797,10 +4797,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         largeImageView.file=file
         
         if justChangeLargeImageViewFile {return}
-        
-        setWindowTitleOfLargeImage(file: file)
-            
+  
         let url=URL(string:file.path)!
+        
+        if forceRefresh {
+            getFileInfo(file: file)
+            file.imageInfo = getImageInfo(url: url)
+            file.originalSize=file.imageInfo?.size
+        }
         
         let scale = NSScreen.main?.backingScaleFactor ?? 1
         
@@ -4829,6 +4833,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 file.isGetImageSizeFail = false
             }
         }
+        
+        setWindowTitleOfLargeImage(file: file)
         
         if var originalSize=originalSize{
             
@@ -4879,7 +4885,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             lastLargeImageRotate=rotate
             
             //检查是否有大图缓存
-            let preGetImageCache = LargeImageProcessor.isImageCachedAndGet(url: url, size: largeSize, rotate: rotate)
+            var preGetImageCache = LargeImageProcessor.isImageCachedAndGet(url: url, size: largeSize, rotate: rotate, ver: file.ver)
+            if forceRefresh {preGetImageCache = nil}
             let isImageCached = preGetImageCache != nil
             
             //先显示小图
@@ -4906,7 +4913,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             //加载Exif
             if publicVar.isShowExif && resetSize {
                 let exifData = convertExifData(file: file)
-                print(file.imageInfo?.metadata)
                 largeImageView.updateTextItems(formatExifData(exifData ?? [:]))
             }
             
@@ -4935,8 +4941,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 
                 //按实际目标分辨率绘制效果较差，观察到1080P屏幕双倍插值后绘制与直接使用原图效果才类似，因此即使scale==1，此处size也不除以2
                 var largeImage: NSImage?
-                if resetSize {
-                    largeImage=LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, useOriginalImage: doNotGenResized)
+                if resetSize && !forceRefresh {
+                    largeImage=LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, ver: file.ver, useOriginalImage: doNotGenResized)
                 }else{
                     if doNotGenResized {
                         largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))

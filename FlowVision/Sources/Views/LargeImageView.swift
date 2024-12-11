@@ -593,7 +593,7 @@ class LargeImageView: NSView {
     
     @objc func actRefresh() {
         file.rotate = 0
-        getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
+        getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false, forceRefresh: true)
     }
     
     @objc func actShowExif() {
@@ -614,7 +614,7 @@ class LargeImageView: NSView {
     @objc func actOCR() {
         guard let url=URL(string:file.path),
               let size=imageView.image?.size,
-              var image=LargeImageProcessor.getImageCache(url: url, size: size, rotate: file.rotate, useOriginalImage: true)
+              let image=LargeImageProcessor.getImageCache(url: url, size: size, rotate: file.rotate, ver: file.ver, useOriginalImage: true)
         else {return}
         image.size = size
         
