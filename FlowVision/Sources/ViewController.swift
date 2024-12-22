@@ -4984,6 +4984,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     }
 
     func startWatchingDirectory(atPath path: String) {
+        if path.contains("Cryptomator") { // TODO: 有大量write事件且造成go-nfsv4进程繁忙
+            return
+        }
+        
         watchFileDescriptor = open(path, O_EVTONLY)
         guard watchFileDescriptor != -1 else {
             log("Failed to open directory, errno: \(errno)")
