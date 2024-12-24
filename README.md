@@ -6,7 +6,6 @@
 
 [![](https://img.shields.io/github/release/netdcy/FlowVision.svg)](https://github.com/netdcy/FlowVision/releases/latest?color=blue "GitHub release") ![GitHub License](https://img.shields.io/github/license/netdcy/FlowVision?color=blue)
 
-
 ## Screenshots
 
 ### Light Mode
@@ -120,6 +119,13 @@ Xcode 15.2+
 4. Open `FlowVision.xcodeproj` by Xcode, click 'Product' -> 'Build For' -> 'Profiling' in menu bar.
 5. Then 'Product' -> 'Show Build Folder in Finder', and you will find the app is at `Products/Release/FlowVison.app`.
 
+## Donate
+
+If you found the project is helpful, feel free to buy me a coffee.
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/netdcyn)
+
 ## License
 
 This project is licensed under the GPL License. See the [LICENSE](https://github.com/netdcy/FlowVision/blob/main/LICENSE) file for the full license text.
+
