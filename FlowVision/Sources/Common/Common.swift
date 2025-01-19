@@ -529,6 +529,88 @@ func printContent(_ content: NSView) {
     printOperation.run()
 }
 
+func captureSnapshotDeprecated(of view: NSView) -> NSView? {
+    guard let bitmapRep = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { return nil }
+    view.cacheDisplay(in: view.bounds, to: bitmapRep)
+    
+    let snapshotView = NSImageView(frame: view.bounds)
+    snapshotView.image = NSImage(size: view.bounds.size)
+    snapshotView.image?.addRepresentation(bitmapRep)
+    return snapshotView
+}
+
+func captureSnapshotDeprecated2(of view: NSView) -> NSView? {
+    // 创建一个新的NSImageView作为快照容器
+    let snapshotView = NSImageView(frame: view.bounds)
+    
+    // 创建一个位图上下文来渲染视图
+    let image = NSImage(size: view.bounds.size)
+    image.lockFocus()
+    
+    if let context = NSGraphicsContext.current?.cgContext {
+        // 保存上下文状态
+        context.saveGState()
+        
+        // 判断是否需要翻转坐标系
+        if !(view is NSImageView) {
+            context.translateBy(x: 0, y: view.bounds.height)
+            context.scaleBy(x: 1.0, y: -1.0)
+        }
+        
+        // 使用layer渲染视图内容
+        view.layer?.render(in: context)
+        
+        // 恢复上下文状态
+        context.restoreGState()
+    }
+    
+    image.unlockFocus()
+    
+    // 设置快照图像
+    snapshotView.image = image
+    
+    return snapshotView
+}
+
+func captureSnapshot(of view: NSView) -> NSView? {
+    guard let window = view.window else { return nil }
+    
+    // 将视图坐标转换为屏幕坐标
+    let rect = view.convert(view.bounds, to: nil)
+    var screenRect = window.convertToScreen(rect)
+
+    // 将y坐标转换为从上到下
+    if screenRect.origin.y == window.frame.origin.y {
+        if let screen = window.screen ?? NSScreen.main {
+            screenRect.origin.y = screen.frame.height - screenRect.origin.y - screenRect.height
+        }
+    }
+
+    // 获取当前窗口的windowNumber
+    let windowID = window.windowNumber
+    
+    // 只捕获指定窗口的内容
+    guard let cgImage = CGWindowListCreateImage(
+        screenRect,
+        .optionIncludingWindow,  // 改为只包含指定窗口
+        CGWindowID(windowID),    // 指定窗口ID
+        .bestResolution
+    ) else { return nil }
+    
+    let image = NSImage(cgImage: cgImage, size: view.bounds.size)
+    
+    // 保存图片用于调试
+//        if let tiffData = image.tiffRepresentation,
+//           let bitmapImage = NSBitmapImageRep(data: tiffData),
+//           let pngData = bitmapImage.representation(using: .png, properties: [:]) {
+//            try? pngData.write(to: URL(fileURLWithPath: "/tmp/snapshot.png"))
+//        }
+    
+    let snapshotView = NSImageView(frame: view.bounds)
+    snapshotView.image = image
+    return snapshotView
+}
+
 class ThumbnailOptionsWindow: NSWindow {
     // Define initial values as constants
     private let initialWindowTitleUseFullPath: Bool = true

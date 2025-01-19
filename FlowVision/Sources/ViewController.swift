@@ -288,6 +288,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     var windowSizeChangedTimesWhenInLarge=0
     
     var arrowScrollDebounceWorkItem: DispatchWorkItem?
+    
+    var gestureTriggeredSwitch = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -2862,16 +2864,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
     
-    func captureSnapshot(of view: NSView) -> NSView? {
-        guard let bitmapRep = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { return nil }
-        view.cacheDisplay(in: view.bounds, to: bitmapRep)
-        
-        let snapshotView = NSImageView(frame: view.bounds)
-        snapshotView.image = NSImage(size: view.bounds.size)
-        snapshotView.image?.addRepresentation(bitmapRep)
-        return snapshotView
-    }
-    
     func switchDirByDirection(direction rawdirection: GestureDirection, dest: String = "", doCollapse: Bool = true, expandLast: Bool = true, skip: Bool = false, stackDeep: Int, dryRun: Bool = false, needStopAutoScroll: Bool = true){
         
         if rawdirection == .zero {
@@ -3381,9 +3373,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         //是捕获界面，还是将从finder打开替换为目录中打开
         if publicVar.openFromFinderPath == "" {
-            let snapshot = captureSnapshot(of: mainScrollView)
-            mainScrollView.addSubview(snapshot!)
-            snapshotQueue.append(snapshot)
+            if let snapshot = captureSnapshot(of: mainScrollView){
+                mainScrollView.addSubview(snapshot)
+                snapshotQueue.append(snapshot)
+            }
 //            currLargeImagePos = -1
             initLargeImagePos = -1
             if publicVar.lastLargeImageIdInImage == 0 {
@@ -5286,16 +5279,22 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //publicVar.isRightMouseDown = false
         if !largeImageView.isHidden {return}
         
+        gestureTriggeredSwitch = false
         analyzeGesture(doAction: true)
         directionHistory.removeAll()
 //        drawingView?.containerView.isHidden=true
         
-        NSAnimationContext.runAnimationGroup({ context in
-            context.duration = 0.2
-            drawingView?.containerView.animator().alphaValue = 0
-        }, completionHandler: {
-            self.drawingView?.containerView.isHidden = true
-        })
+        if gestureTriggeredSwitch { //由于捕获屏幕渐变切换的方式，此时后半段不要播放动画
+            drawingView?.containerView.alphaValue = 0
+            drawingView?.containerView.isHidden = true
+        }else{
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.2
+                drawingView?.containerView.animator().alphaValue = 0
+            }, completionHandler: {
+                self.drawingView?.containerView.isHidden = true
+            })
+        }
         
         if event.locationInWindow.y > self.mainScrollView.bounds.height {
             popTitlebarMenu(with: event)
@@ -5360,19 +5359,19 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         switch direction {
         case .right:
             //log("Gesture: ➡️")
-            if doAction {switchDirByDirection(direction: .right, stackDeep: 0)}
+            if doAction {switchDirByDirection(direction: .right, stackDeep: 0);gestureTriggeredSwitch=true}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("next-folder", comment: "下一个目录")}
         case .left:
             //log("Gesture: ⬅️")
-            if doAction {switchDirByDirection(direction: .left, stackDeep: 0)}
+            if doAction {switchDirByDirection(direction: .left, stackDeep: 0);gestureTriggeredSwitch=true}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("previous-folder", comment: "上一个目录")}
         case .up:
             //log("Gesture: ⬆️")
-            if doAction {switchDirByDirection(direction: .up, stackDeep: 0)}
+            if doAction {switchDirByDirection(direction: .up, stackDeep: 0);gestureTriggeredSwitch=true}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("parent-folder", comment: "上级目录")}
         case .down:
             //log("Gesture: ⬇️")
-            if doAction {switchDirByDirection(direction: .down, stackDeep: 0)}
+            if doAction {switchDirByDirection(direction: .down, stackDeep: 0);gestureTriggeredSwitch=true}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("back-folder", comment: "返回历史目录")}
         default:
             break
@@ -5383,25 +5382,25 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         switch (first, second) {
         case (.up, .right):
             //log("Gesture: ⬆️ ➡️")
-            //if doAction {switchDirByDirection(direction: .up_right, stackDeep: 0)}
+            //if doAction {switchDirByDirection(direction: .up_right, stackDeep: 0);gestureTriggeredSwitch=true}
             //else{drawingView?.statusLabel.stringValue=NSLocalizedString("next-sibling-of-parent", comment: "上级的平级下一个目录")}
-            if doAction {switchDirByDirection(direction: .down_right, stackDeep: 0)}
+            if doAction {switchDirByDirection(direction: .down_right, stackDeep: 0);gestureTriggeredSwitch=true}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("next-sibling", comment: "平级的下一个目录")}
         case (.up, .left):
             //log("Gesture: ⬆️ ⬅️")
-            //if doAction {switchDirByDirection(direction: .up_left, stackDeep: 0)}
+            //if doAction {switchDirByDirection(direction: .up_left, stackDeep: 0);gestureTriggeredSwitch=true}
             //else{drawingView?.statusLabel.stringValue=NSLocalizedString("previous-sibling-of-parent", comment: "上级的平级上一个目录")}
-            if doAction {switchDirByDirection(direction: .down_left, stackDeep: 0)}
+            if doAction {switchDirByDirection(direction: .down_left, stackDeep: 0);gestureTriggeredSwitch=true}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("previous-sibling", comment: "平级的上一个目录")}
         case (.down, .right):
             //log("Gesture: ⬇️ ➡️")
-//            if doAction {switchDirByDirection(direction: .down_right, stackDeep: 0)}
+//            if doAction {switchDirByDirection(direction: .down_right, stackDeep: 0);gestureTriggeredSwitch=true}
 //            else{drawingView?.statusLabel.stringValue=NSLocalizedString("next-sibling", comment: "平级的下一个目录")}
             if doAction {self.view.window?.performClose(nil)}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("Close Tab", comment: "关闭标签页")}
 //        case (.down, .left):
 //            //log("Gesture: ⬇️ ⬅️")
-//            if doAction {switchDirByDirection(direction: .down_left, stackDeep: 0)}
+//            if doAction {switchDirByDirection(direction: .down_left, stackDeep: 0);gestureTriggeredSwitch=true}
 //            else{drawingView?.statusLabel.stringValue=NSLocalizedString("previous-sibling", comment: "平级的上一个目录")}
         default:
             drawingView?.statusLabel.stringValue=""
