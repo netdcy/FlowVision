@@ -25,17 +25,49 @@ class CustomProfile: Codable {
     //缩略图大小
     var thumbSize = 512
     
-    //布局
+    //布局（通用）
     var isShowThumbnailFilename = true
-    var ThumbnailBorderThickness: Double = 6
-    var ThumbnailBorderRadius: Double = 5
-    var ThumbnailCellPadding: Double = 5
-    //以下暂时为内部使用
     var ThumbnailFilenameSize: Double = 12
-    //var ThumbnailFilenamePaddingInternal: Double = 18
-    var ThumbnailFilenamePadding: Double = 18
-    var ThumbnailScrollbarWidth: Double = 16
-    var isGridViewNotAffectedByCustomStyle = true
+    var _thumbnailCellPadding: Double = 5
+    var ThumbnailCellPadding: Double {
+        get {
+            return layoutType == .grid ? _thumbnailCellPadding + 4 : _thumbnailCellPadding
+        }
+        set {
+            abort()
+        }
+    }
+    //布局（网格视图）
+    var ThumbnailBorderRadiusInGrid: Double = 0
+    //布局（非网格视图）
+    var ThumbnailBorderRadius: Double = 5
+    var _thumbnailBorderThickness: Double = 6
+    var ThumbnailBorderThickness: Double {
+        get {
+            return layoutType == .grid ? 0 : _thumbnailBorderThickness
+        }
+        set {
+            abort()
+        }
+    }
+    var ThumbnailLineSpaceAdjust: Double = 0
+    var ThumbnailShowShadow: Bool = false
+
+    //计算获得
+    var ThumbnailFilenamePadding: Double {
+        if isShowThumbnailFilename {
+            var tmp = round(ThumbnailFilenameSize*1.3) + 2
+            if ThumbnailBorderThickness == 0 {
+                tmp += 3
+            }
+            return tmp
+        }else{
+            return 0
+        }
+    }
+    var ThumbnailScrollbarWidth: Double {
+        return 16
+    }
 
     //可扩展值
     private var dict: [String: String] = [:]
@@ -409,7 +441,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //        if let isSortFolderFirst = UserDefaults.standard.value(forKey: "isSortFolderFirst") as? Bool {
 //            publicVar.profile.isSortFolderFirst = isSortFolderFirst
 //        }
-        publicVar.profile = CustomProfile.loadFromUserDefaults(withKey: "CustomStyle_v1_current")
+        publicVar.profile = CustomProfile.loadFromUserDefaults(withKey: "CustomStyle_v2_current")
         
         //-----结束读取配置------
         
@@ -1203,7 +1235,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         publicVar.profile.isSortFolderFirst = isSortFolderFirst
 //        UserDefaults.standard.setEnum(publicVar.profile.sortType, forKey: "sortType")
 //        UserDefaults.standard.set(publicVar.profile.isSortFolderFirst, forKey: "isSortFolderFirst")
-        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
         globalVar.randomSeed = Int.random(in: 0...Int.max)
         for dirModel in fileDB.db {
             dirModel.1.changeSortType(publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst)
@@ -1229,7 +1261,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 
 //        let defaults = UserDefaults.standard
 //        defaults.set(publicVar.profile.isDirTreeHidden, forKey: "isDirTreeHidden")
-        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
     }
     
     func toggleOnTop(){
@@ -1603,11 +1635,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //        let defaults = UserDefaults.standard
 //        defaults.setEnum(LayoutType.justified, forKey: "layoutType")
         publicVar.profile.layoutType = .justified
-        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
         publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
         if !doNotRefresh {
             refreshCollectionView(dryRun: true)
+            DispatchQueue.main.async { [weak self] in
+                self?.setLoadThumbPriority(ifNeedVisable: true)
+            }
         }
     }
     
@@ -1615,11 +1650,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //        let defaults = UserDefaults.standard
 //        defaults.setEnum(LayoutType.grid, forKey: "layoutType")
         publicVar.profile.layoutType = .grid
-        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
         publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
         if !doNotRefresh {
             refreshCollectionView(dryRun: true)
+            DispatchQueue.main.async { [weak self] in
+                self?.setLoadThumbPriority(ifNeedVisable: true)
+            }
         }
     }
     
@@ -1627,11 +1665,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //        let defaults = UserDefaults.standard
 //        defaults.setEnum(LayoutType.waterfall, forKey: "layoutType")
         publicVar.profile.layoutType = .waterfall
-        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
         publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
         if !doNotRefresh {
             refreshCollectionView(dryRun: true)
+            DispatchQueue.main.async { [weak self] in
+                self?.setLoadThumbPriority(ifNeedVisable: true)
+            }
         }
     }
     
@@ -1640,18 +1681,21 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 //        let defaults = UserDefaults.standard
 //        defaults.setEnum(LayoutType.detail, forKey: "layoutType")
         publicVar.profile.layoutType = .detail
-        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
         publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
         if !doNotRefresh {
             refreshCollectionView(dryRun: true)
+            DispatchQueue.main.async { [weak self] in
+                self?.setLoadThumbPriority(ifNeedVisable: true)
+            }
         }
     }
     
     func changeThumbSize(thumbSize: Int, doNotRefresh: Bool = false){
         publicVar.profile.thumbSize = thumbSize
         //UserDefaults.standard.set(thumbSize, forKey: "thumbSize")
-        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
         changeWaterfallLayoutNumberOfColumns()
         if !doNotRefresh {
             refreshCollectionView(dryRun: true)
@@ -2547,8 +2591,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //注：似乎改变了实现方式（直接从数据源获取而不是可见view），就不用此处调用了，这里调用计算量大会导致卡顿
         //outlineViewManager.adjustColumnWidth()
         
-        //解决gird时改变窗口大小，由于不彻底重载，导致的缩放不正常
-        if publicVar.profile.layoutType == .grid {
+        //解决改变窗口大小，由于不彻底重载，导致的缩放不正常（有时，原因未知）
+        if true {
             let visibleIndexPaths=collectionView.indexPathsForVisibleItems()
             for indexPath in visibleIndexPaths{
                 if let item = collectionView.item(at: indexPath) as? CustomCollectionViewItem {
@@ -3923,8 +3967,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 //let fileVer=file.ver//获取缩略图开始之前版本 （注：已经用dirModel的方法）
                                 let url=URL(string: key.path)!
                                 var image: NSImage? = nil
+                                var getThumbFailed = false
                                 if doNotActualRead{
                                     image = getFileTypeIcon(url: url)
+                                    getThumbFailed = true
                                 }else{
                                     if !publicVar.isGenHdThumb || noThumbSizeDueToSchedule { // publicVar.layoutType == .grid
                                         //image = getImageThumb(url: url, refSize: originalSize)
@@ -3935,6 +3981,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                     }
                                     if image == nil {
                                         image = getFileTypeIcon(url: url)
+                                        getThumbFailed = true
                                     }
                                 }
                                 
@@ -3964,6 +4011,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                         
                                         fileDB.lock()
                                         file.image=image
+                                        file.getThumbFailed=getThumbFailed
                                         file.folderImages=folderImages
                                         fileDB.unlock()
                                         //此处必须分开加锁解锁，因为下面这句调用底层会重入锁
@@ -5687,22 +5735,26 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     }
 
     func configLayoutStyle(newStyle: CustomProfile ,doNotRefresh: Bool = false){
+        // 窗口标题相关
         publicVar.profile.setValue(forKey: "isWindowTitleUseFullPath", value: newStyle.getValue(forKey: "isWindowTitleUseFullPath"))
         publicVar.profile.setValue(forKey: "isWindowTitleShowStatistics", value: newStyle.getValue(forKey: "isWindowTitleShowStatistics"))
-        publicVar.profile.isShowThumbnailFilename = newStyle.isShowThumbnailFilename
+        
+        // 通用布局
         publicVar.profile.setValue(forKey: "isShowThumbnailHDR", value: newStyle.getValue(forKey: "isShowThumbnailHDR"))
-        publicVar.profile.ThumbnailBorderThickness = newStyle.ThumbnailBorderThickness
-        publicVar.profile.ThumbnailCellPadding = newStyle.ThumbnailCellPadding
-        publicVar.profile.ThumbnailBorderRadius = newStyle.ThumbnailBorderRadius
+        publicVar.profile.isShowThumbnailFilename = newStyle.isShowThumbnailFilename
         publicVar.profile.ThumbnailFilenameSize = newStyle.ThumbnailFilenameSize
+        publicVar.profile._thumbnailCellPadding = newStyle.ThumbnailCellPadding
         
-        if publicVar.profile.isShowThumbnailFilename {
-            publicVar.profile.ThumbnailFilenamePadding = round(publicVar.profile.ThumbnailFilenameSize*1.3) + 2
-        }else{
-            publicVar.profile.ThumbnailFilenamePadding = 0
-        }
+        // 网格视图
+        publicVar.profile.ThumbnailBorderRadiusInGrid = newStyle.ThumbnailBorderRadiusInGrid
         
-        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_current")
+        // 非网格视图
+        publicVar.profile.ThumbnailBorderRadius = newStyle.ThumbnailBorderRadius
+        publicVar.profile._thumbnailBorderThickness = newStyle.ThumbnailBorderThickness
+        publicVar.profile.ThumbnailLineSpaceAdjust = newStyle.ThumbnailLineSpaceAdjust
+        publicVar.profile.ThumbnailShowShadow = newStyle.ThumbnailShowShadow
+        
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
         
         changeWaterfallLayoutNumberOfColumns()
         if !doNotRefresh {
@@ -5712,18 +5764,28 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     
     func customLayoutStylePrompt (){
         if let mainWindow = NSApplication.shared.mainWindow {
-            showThumbnailOptionsPanel(on: mainWindow) { [weak self] isUseFullPath, isShowStatistics, isShowFilename, isShowHDR, borderThickness, cellPadding, borderRadius, filenameSize in
+            showThumbnailOptionsPanel(on: mainWindow) { [weak self] isUseFullPath, isShowStatistics, isShowHDR, isShowFilename, filenameSize, cellPadding, borderRadiusInGrid, borderRadius, borderThickness, lineSpaceAdjust, showShadow in
                 guard let self = self else { return }
                 
                 let newStyle = CustomProfile()
+                // 窗口标题相关
                 newStyle.setValue(forKey: "isWindowTitleUseFullPath", value: String(isUseFullPath))
                 newStyle.setValue(forKey: "isWindowTitleShowStatistics", value: String(isShowStatistics))
-                newStyle.isShowThumbnailFilename = isShowFilename
+                
+                // 通用布局
                 newStyle.setValue(forKey: "isShowThumbnailHDR", value: String(isShowHDR))
-                newStyle.ThumbnailBorderThickness = borderThickness
-                newStyle.ThumbnailCellPadding = cellPadding
-                newStyle.ThumbnailBorderRadius = borderRadius
+                newStyle.isShowThumbnailFilename = isShowFilename
                 newStyle.ThumbnailFilenameSize = filenameSize
+                newStyle._thumbnailCellPadding = cellPadding
+                
+                // 网格视图
+                newStyle.ThumbnailBorderRadiusInGrid = borderRadiusInGrid
+                
+                // 非网格视图
+                newStyle.ThumbnailBorderRadius = borderRadius
+                newStyle._thumbnailBorderThickness = borderThickness
+                newStyle.ThumbnailLineSpaceAdjust = lineSpaceAdjust
+                newStyle.ThumbnailShowShadow = showShadow
                 
                 configLayoutStyle(newStyle: newStyle)
             }
@@ -5734,12 +5796,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     //以下是切换自定义配置
     func setCustomProfileTo(_ styleName: String){
         coreAreaView.showInfo(String(format: NSLocalizedString("save-to-custom-profile", comment: "保存到自定义配置"), styleName), timeOut: 1)
-        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v1_"+styleName)
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_"+styleName)
     }
     
     func useCustomProfile(_ styleName: String){
         coreAreaView.showInfo(String(format: NSLocalizedString("switch-to-custom-profile", comment: "切换至自定义配置"), styleName), timeOut: 1)
-        let newStyle = CustomProfile.loadFromUserDefaults(withKey: "CustomStyle_v1_"+styleName)
+        let newStyle = CustomProfile.loadFromUserDefaults(withKey: "CustomStyle_v2_"+styleName)
         
         //布局类型
         if newStyle.layoutType != publicVar.profile.layoutType {

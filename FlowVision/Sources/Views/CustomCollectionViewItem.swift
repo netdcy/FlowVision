@@ -145,6 +145,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         self.file=fileModel
         
         setTooltip()
+        
+        imageNameField.stringValue=getViewController(collectionView!)!.publicVar.profile.isShowThumbnailFilename ? URL(string:file.path)!.lastPathComponent : ""
 
         if isSelected {
             // 选中状态的处理代码
@@ -160,8 +162,6 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }else{
             imageViewObj.isFolder = false
         }
-        
-        imageNameField.stringValue=getViewController(collectionView!)!.publicVar.profile.isShowThumbnailFilename ? URL(string:file.path)!.lastPathComponent : ""
 
         let isShowThumbnailHDR = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailHDR") == "true"
         if (file.imageInfo?.isHDR ?? false) && isShowThumbnailHDR {
@@ -333,12 +333,25 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         let theme=NSApp.effectiveAppearance.name
         
-        if file.isDir {
-            imageNameField.textColor = hexToNSColor(hex: "#FFFFFF") //文字
-            imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor //填充
-            //imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#ECECEC").cgColor
+        //定义失去焦点时的边框颜色
+        var focusColor = NSColor.systemGray //失焦
+        if getViewController(collectionView!)!.publicVar.isCollectionViewFirstResponder{
+            focusColor = NSColor.controlAccentColor //聚焦
+        } else if style.ThumbnailBorderThickness == 0 {
+            focusColor = NSColor.black
+        }
+        
+        //文件名颜色
+        if style.ThumbnailBorderThickness == 0 {
+            imageNameField.textColor = focusColor
         }else{
-            imageNameField.textColor = hexToNSColor(hex: "#FFFFFF") //文字
+            imageNameField.textColor = hexToNSColor(hex: "#FFFFFF")
+        }
+        
+        //占位背景色
+        if file.isDir {
+            imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor //填充
+        }else{
             if theme == .darkAqua {
                 imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#505050").cgColor //填充
             }else{
@@ -346,45 +359,19 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             }
         }
         
-        // 失去焦点时的样式
-        if getViewController(collectionView!)!.publicVar.isCollectionViewFirstResponder{
-            view.layer?.backgroundColor = NSColor.controlAccentColor.cgColor //边框
-        }else{
-            view.layer?.backgroundColor = NSColor.systemGray.cgColor //边框
-        }
+        //边框颜色
+        view.layer?.backgroundColor = focusColor.cgColor
         
-        // GridView时特殊样式
-        if getViewController(collectionView!)!.publicVar.profile.layoutType == .grid {
+        //边框为0时不显示底色
+        if style.ThumbnailBorderThickness == 0 {
             view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
-            imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
-            
-            imageNameField.textColor = NSColor.controlAccentColor //图片文字
-            
-            if let _ = file.image, !file.isDir, (file.type == .image || file.type == .video || file.ext == "pdf") {
-                imageViewObj.layer?.cornerRadius = 0.0
-                imageViewObj.layer?.masksToBounds = false
-                imageViewObj.layer?.shadowColor = NSColor.black.withAlphaComponent(0.4).cgColor
-                imageViewObj.layer?.shadowOffset = CGSize(width: 1.3, height: -1.3)
-                imageViewObj.layer?.shadowRadius = 2.5
-                imageViewObj.layer?.shadowOpacity = 1
-                
-                // 添加shadowPath以提高性能
-                let shadowPath = CGPath(rect: imageViewObj.bounds, transform: nil)
-                imageViewObj.layer?.shadowPath = shadowPath
-            }else{
-                imageViewObj.layer?.cornerRadius = style.ThumbnailBorderRadius
-                imageViewObj.layer?.masksToBounds = true
-                imageViewObj.layer?.shadowOpacity = 0
+            if file.getThumbFailed || !(file.type == .image || file.type == .video || file.ext == "pdf") {
+                imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
             }
-        }else{
-            imageViewObj.layer?.cornerRadius = style.ThumbnailBorderRadius
-            imageViewObj.layer?.masksToBounds = true
-            imageViewObj.layer?.shadowOpacity = 0
         }
         
         //图像高亮-选中
-        guard let style = getViewController(collectionView!)?.publicVar.profile else {return}
-        if (style.ThumbnailBorderThickness == 0 && !file.isDir) || getViewController(collectionView!)!.publicVar.profile.layoutType == .grid {
+        if style.ThumbnailBorderThickness == 0 {
             let overlayLayerName = "highlightOverlay"
             imageViewObj.layer?.sublayers?.forEach { sublayer in
                 if sublayer.name == overlayLayerName {
@@ -393,7 +380,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             }
             let overlay = CALayer()
             overlay.frame = imageViewObj.bounds
-            overlay.backgroundColor = NSColor.controlAccentColor.withAlphaComponent(0.4).cgColor
+            overlay.backgroundColor = focusColor.withAlphaComponent(0.4).cgColor
             overlay.name = overlayLayerName
             overlay.zPosition = 10
             imageViewObj.layer?.addSublayer(overlay)
@@ -408,78 +395,40 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         let theme=NSApp.effectiveAppearance.name
         
-        //目录
+        //文件名颜色
+        imageNameField.textColor = hexToNSColor(hex: "#7E7E7E")
+        
+        //占位背景色和边框颜色
         if file.isDir {
-            //黑暗模式
-            if theme == .darkAqua {
-                imageNameField.textColor = hexToNSColor(hex: "#7E7E7E")
-                imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
-                //imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#272A2C").cgColor
-                view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
-            }else{//浅色模式
-                imageNameField.textColor = hexToNSColor(hex: "#7E7E7E")
-                imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
-                //imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#ECECEC").cgColor
-                view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
-            }
+            imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
+            view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
         }else{//文件
             //黑暗模式
             if theme == .darkAqua {
                 imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#404040").cgColor //填充
-                if let url=URL(string:file.path),
-                   globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased())
+                if file.type == .video
                 {
-                    imageNameField.textColor = hexToNSColor(hex: "#7E7E7E") //视频文字
                     view.layer?.backgroundColor = hexToNSColor(hex: "#DDDDDD").cgColor //视频边框
                 }else{
-                    imageNameField.textColor = hexToNSColor(hex: "#7E7E7E") //图片文字
                     view.layer?.backgroundColor = hexToNSColor(hex: "#333333").cgColor //图片边框
                 }
             }else{//浅色模式
                 imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#DDDDDD").cgColor //填充
-                if let url=URL(string:file.path),
-                   globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased())
+                if file.type == .video
                 {
-                    imageNameField.textColor = hexToNSColor(hex: "#7E7E7E") //视频文字
                     view.layer?.backgroundColor = hexToNSColor(hex: "#404040").cgColor //视频边框
                 }else{
-                    imageNameField.textColor = hexToNSColor(hex: "#7E7E7E") //图片文字
                     view.layer?.backgroundColor = hexToNSColor(hex: "#F4F5F5").cgColor //图片边框
                 }
             }
         }
         
-        // GridView时特殊样式
-        if getViewController(collectionView!)!.publicVar.profile.layoutType == .grid {
-            view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
-            imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
-            
-            imageNameField.textColor = hexToNSColor(hex: "#7E7E7E") //图片文字
-            
-            imageViewObj.layer?.cornerRadius = 0.0
-            imageViewObj.layer?.masksToBounds = false
-            if let _ = file.image, !file.isDir, (file.type == .image || file.type == .video || file.ext == "pdf") {
-                imageViewObj.layer?.shadowColor = NSColor.black.withAlphaComponent(0.4).cgColor
-                imageViewObj.layer?.shadowOffset = CGSize(width: 1.3, height: -1.3)
-                imageViewObj.layer?.shadowRadius = 2.5
-                imageViewObj.layer?.shadowOpacity = 1
-
-                // 添加shadowPath以提高性能
-                let shadowPath = CGPath(rect: imageViewObj.bounds, transform: nil)
-                imageViewObj.layer?.shadowPath = shadowPath
-            }else{
-                imageViewObj.layer?.shadowOpacity = 0
-            }
-        }else{
-            imageViewObj.layer?.cornerRadius = style.ThumbnailBorderRadius
-            imageViewObj.layer?.masksToBounds = true
-            imageViewObj.layer?.shadowOpacity = 0
-        }
-        
         //边框为0时不显示底色
-        guard let style = getViewController(collectionView!)?.publicVar.profile else {return}
         if style.ThumbnailBorderThickness == 0 {
             view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
+            if file.getThumbFailed || !(file.type == .image || file.type == .video || file.ext == "pdf") {
+                imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
+            }
         }
         
         //图像高亮-取消选中
@@ -497,7 +446,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         guard let style = getViewController(collectionView!)?.publicVar.profile else {return}
         var tmpFilenamePadding = style.ThumbnailFilenamePadding
         var girdFilenameCompensation = 0.0
-        if getViewController(collectionView!)!.publicVar.profile.layoutType == .grid {
+        if style.layoutType == .grid {
             girdFilenameCompensation = tmpFilenamePadding
             tmpFilenamePadding = 0
         }
@@ -507,30 +456,17 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         let newHeight = imageViewRef.frame.height + 12.0 + 18.0 - 2*style.ThumbnailBorderThickness - tmpFilenamePadding
         let newFrame = NSRect(x: newX, y: newY, width: newWidth, height: newHeight)
         
-        // GridView时特殊样式
-//        if getViewController(collectionView!)!.publicVar.profile.layoutType == .grid {
-//            if let image = file.image, !file.isDir {
-//                if image.size.width != 0 && image.size.height != 0{
-//                    imageViewObj.frame = AVMakeRect(aspectRatio: image.size, insideRect: newFrame)
-//                }
-//                imageViewObj.center = CGPoint(x: imageViewRef.center.x, y: imageViewRef.center.y-(18.0-tmpFilenamePadding)/2)
-//            }else{
-//                //imageViewObj.frame = imageViewRef.frame
-//                imageViewObj.frame = newFrame
-//            }
-//        }else{
-//            //imageViewObj.frame = imageViewRef.frame
-//            imageViewObj.frame = newFrame
-//        }
         imageViewObj.frame = newFrame
         
-        view.layer?.cornerRadius = style.ThumbnailBorderRadius
+        let borderRadius = style.layoutType == .grid ? style.ThumbnailBorderRadiusInGrid : style.ThumbnailBorderRadius
+        view.layer?.cornerRadius = borderRadius
         view.layer?.masksToBounds = false
+        imageViewObj.layer?.cornerRadius = borderRadius
         
         var textX = newX
         var textY = round(newX/2)+1 - girdFilenameCompensation
         var textWidth = newWidth
-        if getViewController(collectionView!)!.publicVar.profile.layoutType == .grid {
+        if style.layoutType == .grid {
             textWidth = max(newWidth, newHeight)
             textX -= round((textWidth-newWidth)/2)
             textY -= round((textWidth-newHeight)/2)
@@ -539,6 +475,20 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         let textFrame = NSRect(x: textX, y: textY, width: textWidth, height: round(style.ThumbnailFilenameSize*1.3))
         imageNameField.font = NSFont.systemFont(ofSize: style.ThumbnailFilenameSize, weight: .light)
         imageNameField.frame = textFrame
+        
+        //阴影效果
+        if (style.ThumbnailShowShadow || style.layoutType == .grid) && (file.type == .image || file.type == .video || file.ext == "pdf") && !file.getThumbFailed {
+            view.layer?.shadowColor = NSColor.black.withAlphaComponent(0.4).cgColor
+            view.layer?.shadowOffset = CGSize(width: 1.3, height: -1.3)
+            view.layer?.shadowRadius = 2.5
+            view.layer?.shadowOpacity = 1
+            // 添加shadowPath以提高性能
+            let cutoff = (style.ThumbnailBorderThickness == 0 && style.layoutType != .grid) ? style.ThumbnailFilenamePadding : 0
+            let shadowPath = CGPath(rect: CGRect(x: view.bounds.origin.x, y: view.bounds.origin.y + cutoff, width: view.bounds.width, height: view.bounds.height - cutoff), transform: nil)
+            view.layer?.shadowPath = shadowPath
+        }else{
+            view.layer?.shadowOpacity = 0
+        }
     }
     
     func select(){

@@ -612,40 +612,74 @@ func captureSnapshot(of view: NSView) -> NSView? {
 }
 
 class ThumbnailOptionsWindow: NSWindow {
-    // Define initial values as constants
-    private let initialWindowTitleUseFullPath: Bool = true
-    private let initialWindowTitleShowStatistics: Bool = true
-    private let initialShowThumbnailFilename: Bool = true
-    private let initialShowThumbnailHDR: Bool = true
-    private let initialThumbnailBorderThickness: Double = 6.0
-    private let initialThumbnailCellPadding: Double = 5.0
-    private let initialThumbnailBorderRadius: Double = 5.0
-    private let initialThumbnailFilenameSize: Double = 12.0
+    // Get initial values from CustomProfile
+    private var initialProfile = CustomProfile()
     
+    // Define initial values from CustomProfile
+    private var initialWindowTitleUseFullPath: Bool {
+        return initialProfile.getValue(forKey: "isWindowTitleUseFullPath") == "true"
+    }
+    private var initialWindowTitleShowStatistics: Bool {
+        return initialProfile.getValue(forKey: "isWindowTitleShowStatistics") == "true"
+    }
+    private var initialShowThumbnailHDR: Bool {
+        return initialProfile.getValue(forKey: "isShowThumbnailHDR") == "true"
+    }
+    private var initialShowThumbnailFilename: Bool {
+        return initialProfile.isShowThumbnailFilename
+    }
+    private var initialThumbnailFilenameSize: Double {
+        return initialProfile.ThumbnailFilenameSize
+    }
+    private var initialThumbnailCellPadding: Double {
+        return initialProfile._thumbnailCellPadding
+    }
+    private var initialThumbnailBorderRadiusInGrid: Double {
+        return initialProfile.ThumbnailBorderRadiusInGrid
+    }
+    private var initialThumbnailBorderRadius: Double {
+        return initialProfile.ThumbnailBorderRadius
+    }
+    private var initialThumbnailBorderThickness: Double {
+        return initialProfile._thumbnailBorderThickness
+    }
+    private var initialThumbnailLineSpaceAdjust: Double {
+        return initialProfile.ThumbnailLineSpaceAdjust
+    }
+    private var initialThumbnailShowShadow: Bool {
+        return initialProfile.ThumbnailShowShadow
+    }
+
     // Variables to store current settings
     var isWindowTitleUseFullPath: Bool
     var isWindowTitleShowStatistics: Bool
-    var isShowThumbnailFilename: Bool
     var isShowThumbnailHDR: Bool
-    var thumbnailBorderThickness: Double
-    var thumbnailCellPadding: Double
-    var thumbnailBorderRadius: Double
+    var isShowThumbnailFilename: Bool
     var thumbnailFilenameSize: Double
+    var thumbnailCellPadding: Double
+    var thumbnailBorderRadiusInGrid: Double
+    var thumbnailBorderRadius: Double
+    var thumbnailBorderThickness: Double
+    var thumbnailLineSpaceAdjust: Double
+    var thumbnailShowShadow: Bool
     
     init() {
-        let windowSize = NSSize(width: 640, height: 400)
+        let windowSize = NSSize(width: 800, height: 580)
         let windowRect = NSRect(origin: .zero, size: windowSize)
         
         // Get current values
         let profile = getMainViewController()!.publicVar.profile
         isWindowTitleUseFullPath = profile.getValue(forKey: "isWindowTitleUseFullPath") == "true"
         isWindowTitleShowStatistics = profile.getValue(forKey: "isWindowTitleShowStatistics") == "true"
-        isShowThumbnailFilename = profile.isShowThumbnailFilename
         isShowThumbnailHDR = profile.getValue(forKey: "isShowThumbnailHDR") == "true"
-        thumbnailBorderThickness = profile.ThumbnailBorderThickness
-        thumbnailCellPadding = profile.ThumbnailCellPadding
-        thumbnailBorderRadius = profile.ThumbnailBorderRadius
+        isShowThumbnailFilename = profile.isShowThumbnailFilename
         thumbnailFilenameSize = profile.ThumbnailFilenameSize
+        thumbnailCellPadding = profile._thumbnailCellPadding
+        thumbnailBorderRadiusInGrid = profile.ThumbnailBorderRadiusInGrid
+        thumbnailBorderRadius = profile.ThumbnailBorderRadius
+        thumbnailBorderThickness = profile._thumbnailBorderThickness
+        thumbnailLineSpaceAdjust = profile.ThumbnailLineSpaceAdjust
+        thumbnailShowShadow = profile.ThumbnailShowShadow
         
         super.init(contentRect: windowRect, styleMask: [.titled, .closable], backing: .buffered, defer: false)
         self.title = NSLocalizedString("Thumbnail Options", comment: "缩略图选项")
@@ -691,22 +725,28 @@ class ThumbnailOptionsWindow: NSWindow {
         // Create labeled controls
         let windowTitleFullPathCheckboxView = createLabeledCheckbox(label: NSLocalizedString("Use Full Path in Window Title", comment: "在窗口标题中使用完整路径"), isChecked: isWindowTitleUseFullPath)
         let windowTitleStatsCheckboxView = createLabeledCheckbox(label: NSLocalizedString("Show Statistics in Window Title", comment: "在窗口标题中显示统计信息"), isChecked: isWindowTitleShowStatistics)
-        let showFilenameCheckboxView = createLabeledCheckbox(label: NSLocalizedString("Show Thumbnail Filename", comment: "缩略图显示文件名"), isChecked: isShowThumbnailFilename)
         let showHDRCheckboxView = createLabeledCheckbox(label: NSLocalizedString("Show HDR Badge in Thumbnail(if exist)", comment: "缩略图显示HDR标记(如果存在)"), isChecked: isShowThumbnailHDR)
-        let borderThicknessTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Border Thickness", comment: "缩略图边框厚度"), defaultValue: String(thumbnailBorderThickness))
-        let cellPaddingTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Cell Padding", comment: "缩略图单元格外边距"), defaultValue: String(thumbnailCellPadding))
-        let borderRadiusTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Corner Radius", comment: "缩略图圆角半径"), defaultValue: String(thumbnailBorderRadius))
+        let showFilenameCheckboxView = createLabeledCheckbox(label: NSLocalizedString("Show Thumbnail Filename", comment: "缩略图显示文件名"), isChecked: isShowThumbnailFilename)
         let filenameSizeTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Filename Font Size", comment: "缩略图文件名字体大小"), defaultValue: String(thumbnailFilenameSize))
+        let cellPaddingTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Cell Padding", comment: "缩略图单元格外边距"), defaultValue: String(thumbnailCellPadding))
+        let borderRadiusInGridTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Corner Radius (Grid View)", comment: "缩略图圆角半径(网格视图)"), defaultValue: String(thumbnailBorderRadiusInGrid))
+        let borderRadiusTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Corner Radius (Non-Grid View)", comment: "缩略图圆角半径(非网格视图)"), defaultValue: String(thumbnailBorderRadius))
+        let borderThicknessTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Border Thickness (Non-Grid View)", comment: "缩略图边框厚度(非网格视图)"), defaultValue: String(thumbnailBorderThickness))
+        let lineSpaceAdjustTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Line Space Adjustment (Non-Grid View)", comment: "缩略图行间距调整(非网格视图)"), defaultValue: String(thumbnailLineSpaceAdjust))
+        let showShadowCheckboxView = createLabeledCheckbox(label: NSLocalizedString("Show Thumbnail Shadow (Non-Grid View)", comment: "显示缩略图阴影(非网格视图)"), isChecked: thumbnailShowShadow)
         
-        // Add subviews to stack view
+        // Add subviews to stack view in the new order
         stackView.addArrangedSubview(windowTitleFullPathCheckboxView)
         stackView.addArrangedSubview(windowTitleStatsCheckboxView)
-        stackView.addArrangedSubview(showFilenameCheckboxView)
         stackView.addArrangedSubview(showHDRCheckboxView)
-        stackView.addArrangedSubview(borderThicknessTextField)
-        stackView.addArrangedSubview(cellPaddingTextField)
-        stackView.addArrangedSubview(borderRadiusTextField)
+        stackView.addArrangedSubview(showFilenameCheckboxView)
         stackView.addArrangedSubview(filenameSizeTextField)
+        stackView.addArrangedSubview(cellPaddingTextField)
+        stackView.addArrangedSubview(borderRadiusInGridTextField)
+        stackView.addArrangedSubview(borderRadiusTextField)
+        stackView.addArrangedSubview(borderThicknessTextField)
+        stackView.addArrangedSubview(lineSpaceAdjustTextField)
+        stackView.addArrangedSubview(showShadowCheckboxView)
         
         // Create buttons
         let buttonStackView = NSStackView()
@@ -752,8 +792,8 @@ class ThumbnailOptionsWindow: NSWindow {
         stackView.spacing = 10
         
         NSLayoutConstraint.activate([
-            labelView.widthAnchor.constraint(equalToConstant: 200),
-            textField.widthAnchor.constraint(equalToConstant: 200)
+            labelView.widthAnchor.constraint(equalToConstant: 320),
+            textField.widthAnchor.constraint(equalToConstant: 320)
         ])
         
         return stackView
@@ -774,8 +814,8 @@ class ThumbnailOptionsWindow: NSWindow {
         stackView.spacing = 10
         
         NSLayoutConstraint.activate([
-            labelView.widthAnchor.constraint(equalToConstant: 300),
-            checkbox.widthAnchor.constraint(equalToConstant: 300)
+            labelView.widthAnchor.constraint(equalToConstant: 320),
+            checkbox.widthAnchor.constraint(equalToConstant: 320)
         ])
         
         return stackView
@@ -787,21 +827,27 @@ class ThumbnailOptionsWindow: NSWindow {
         
         let windowTitleFullPathCheckbox = (stackView.arrangedSubviews[2] as! NSStackView).views[1] as! NSButton
         let windowTitleStatsCheckbox = (stackView.arrangedSubviews[3] as! NSStackView).views[1] as! NSButton
-        let showFilenameCheckbox = (stackView.arrangedSubviews[4] as! NSStackView).views[1] as! NSButton
-        let showHDRCheckbox = (stackView.arrangedSubviews[5] as! NSStackView).views[1] as! NSButton
-        let borderThicknessTextField = (stackView.arrangedSubviews[6] as! NSStackView).views[1] as! NSTextField
+        let showHDRCheckbox = (stackView.arrangedSubviews[4] as! NSStackView).views[1] as! NSButton
+        let showFilenameCheckbox = (stackView.arrangedSubviews[5] as! NSStackView).views[1] as! NSButton
+        let filenameSizeTextField = (stackView.arrangedSubviews[6] as! NSStackView).views[1] as! NSTextField
         let cellPaddingTextField = (stackView.arrangedSubviews[7] as! NSStackView).views[1] as! NSTextField
-        let borderRadiusTextField = (stackView.arrangedSubviews[8] as! NSStackView).views[1] as! NSTextField
-        let filenameSizeTextField = (stackView.arrangedSubviews[9] as! NSStackView).views[1] as! NSTextField
+        let borderRadiusInGridTextField = (stackView.arrangedSubviews[8] as! NSStackView).views[1] as! NSTextField
+        let borderRadiusTextField = (stackView.arrangedSubviews[9] as! NSStackView).views[1] as! NSTextField
+        let borderThicknessTextField = (stackView.arrangedSubviews[10] as! NSStackView).views[1] as! NSTextField
+        let lineSpaceAdjustTextField = (stackView.arrangedSubviews[11] as! NSStackView).views[1] as! NSTextField
+        let showShadowCheckbox = (stackView.arrangedSubviews[12] as! NSStackView).views[1] as! NSButton
         
         self.isWindowTitleUseFullPath = windowTitleFullPathCheckbox.state == .on
         self.isWindowTitleShowStatistics = windowTitleStatsCheckbox.state == .on
-        self.isShowThumbnailFilename = showFilenameCheckbox.state == .on
         self.isShowThumbnailHDR = showHDRCheckbox.state == .on
-        self.thumbnailBorderThickness = Double(borderThicknessTextField.stringValue) ?? initialThumbnailBorderThickness
-        self.thumbnailCellPadding = Double(cellPaddingTextField.stringValue) ?? initialThumbnailCellPadding
-        self.thumbnailBorderRadius = Double(borderRadiusTextField.stringValue) ?? initialThumbnailBorderRadius
+        self.isShowThumbnailFilename = showFilenameCheckbox.state == .on
         self.thumbnailFilenameSize = Double(filenameSizeTextField.stringValue) ?? initialThumbnailFilenameSize
+        self.thumbnailCellPadding = Double(cellPaddingTextField.stringValue) ?? initialThumbnailCellPadding
+        self.thumbnailBorderRadiusInGrid = Double(borderRadiusInGridTextField.stringValue) ?? initialThumbnailBorderRadiusInGrid
+        self.thumbnailBorderRadius = Double(borderRadiusTextField.stringValue) ?? initialThumbnailBorderRadius
+        self.thumbnailBorderThickness = Double(borderThicknessTextField.stringValue) ?? initialThumbnailBorderThickness
+        self.thumbnailLineSpaceAdjust = Double(lineSpaceAdjustTextField.stringValue) ?? initialThumbnailLineSpaceAdjust
+        self.thumbnailShowShadow = showShadowCheckbox.state == .on
         
         self.sheetParent?.endSheet(self, returnCode: .OK)
     }
@@ -816,28 +862,34 @@ class ThumbnailOptionsWindow: NSWindow {
         
         let windowTitleFullPathCheckbox = (stackView.arrangedSubviews[2] as! NSStackView).views[1] as! NSButton
         let windowTitleStatsCheckbox = (stackView.arrangedSubviews[3] as! NSStackView).views[1] as! NSButton
-        let showFilenameCheckbox = (stackView.arrangedSubviews[4] as! NSStackView).views[1] as! NSButton
-        let showHDRCheckbox = (stackView.arrangedSubviews[5] as! NSStackView).views[1] as! NSButton
-        let borderThicknessTextField = (stackView.arrangedSubviews[6] as! NSStackView).views[1] as! NSTextField
+        let showHDRCheckbox = (stackView.arrangedSubviews[4] as! NSStackView).views[1] as! NSButton
+        let showFilenameCheckbox = (stackView.arrangedSubviews[5] as! NSStackView).views[1] as! NSButton
+        let filenameSizeTextField = (stackView.arrangedSubviews[6] as! NSStackView).views[1] as! NSTextField
         let cellPaddingTextField = (stackView.arrangedSubviews[7] as! NSStackView).views[1] as! NSTextField
-        let borderRadiusTextField = (stackView.arrangedSubviews[8] as! NSStackView).views[1] as! NSTextField
-        let filenameSizeTextField = (stackView.arrangedSubviews[9] as! NSStackView).views[1] as! NSTextField
+        let borderRadiusInGridTextField = (stackView.arrangedSubviews[8] as! NSStackView).views[1] as! NSTextField
+        let borderRadiusTextField = (stackView.arrangedSubviews[9] as! NSStackView).views[1] as! NSTextField
+        let borderThicknessTextField = (stackView.arrangedSubviews[10] as! NSStackView).views[1] as! NSTextField
+        let lineSpaceAdjustTextField = (stackView.arrangedSubviews[11] as! NSStackView).views[1] as! NSTextField
+        let showShadowCheckbox = (stackView.arrangedSubviews[12] as! NSStackView).views[1] as! NSButton
         
         // Reset values to initial values
         windowTitleFullPathCheckbox.state = initialWindowTitleUseFullPath ? .on : .off
         windowTitleStatsCheckbox.state = initialWindowTitleShowStatistics ? .on : .off
-        showFilenameCheckbox.state = initialShowThumbnailFilename ? .on : .off
         showHDRCheckbox.state = initialShowThumbnailHDR ? .on : .off
-        borderThicknessTextField.stringValue = String(initialThumbnailBorderThickness)
-        cellPaddingTextField.stringValue = String(initialThumbnailCellPadding)
-        borderRadiusTextField.stringValue = String(initialThumbnailBorderRadius)
+        showFilenameCheckbox.state = initialShowThumbnailFilename ? .on : .off
         filenameSizeTextField.stringValue = String(initialThumbnailFilenameSize)
+        cellPaddingTextField.stringValue = String(initialThumbnailCellPadding)
+        borderRadiusInGridTextField.stringValue = String(initialThumbnailBorderRadiusInGrid)
+        borderRadiusTextField.stringValue = String(initialThumbnailBorderRadius)
+        borderThicknessTextField.stringValue = String(initialThumbnailBorderThickness)
+        lineSpaceAdjustTextField.stringValue = String(initialThumbnailLineSpaceAdjust)
+        showShadowCheckbox.state = initialThumbnailShowShadow ? .on : .off
     }
 }
 
 
 // Function to display the panel as a sheet
-func showThumbnailOptionsPanel(on parentWindow: NSWindow, completion: @escaping (Bool, Bool, Bool, Bool, Double, Double, Double, Double) -> Void) {
+func showThumbnailOptionsPanel(on parentWindow: NSWindow, completion: @escaping (Bool, Bool, Bool, Bool, Double, Double, Double, Double, Double, Double, Bool) -> Void) {
     let thumbnailOptionsWindow = ThumbnailOptionsWindow()
     
     getMainViewController()!.publicVar.isKeyEventEnabled=false
@@ -846,12 +898,15 @@ func showThumbnailOptionsPanel(on parentWindow: NSWindow, completion: @escaping 
         if response == .OK {
             completion(thumbnailOptionsWindow.isWindowTitleUseFullPath,
                       thumbnailOptionsWindow.isWindowTitleShowStatistics,
-                      thumbnailOptionsWindow.isShowThumbnailFilename,
                       thumbnailOptionsWindow.isShowThumbnailHDR,
-                      thumbnailOptionsWindow.thumbnailBorderThickness,
+                      thumbnailOptionsWindow.isShowThumbnailFilename,
+                      thumbnailOptionsWindow.thumbnailFilenameSize,
                       thumbnailOptionsWindow.thumbnailCellPadding,
+                      thumbnailOptionsWindow.thumbnailBorderRadiusInGrid,
                       thumbnailOptionsWindow.thumbnailBorderRadius,
-                      thumbnailOptionsWindow.thumbnailFilenameSize)
+                      thumbnailOptionsWindow.thumbnailBorderThickness,
+                      thumbnailOptionsWindow.thumbnailLineSpaceAdjust,
+                      thumbnailOptionsWindow.thumbnailShowShadow)
         } else {
             // Handle cancellation if needed
             log("User canceled custom style window.")

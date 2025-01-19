@@ -38,6 +38,8 @@ class LeftAlignedCollectionViewFlowLayout: NSCollectionViewFlowLayout {
     }
 }
 
+let xxxxxxx = 14.0
+
 class CustomFlowLayout: NSCollectionViewLayout {
     private var cache: [NSCollectionViewLayoutAttributes] = []
     private var contentHeight: CGFloat = 0
@@ -58,6 +60,8 @@ class CustomFlowLayout: NSCollectionViewLayout {
         contentHeight = 0
 
         let cellPadding = getViewController(collectionView)!.publicVar.profile.ThumbnailCellPadding
+        let borderThickness = getViewController(collectionView)!.publicVar.profile.ThumbnailBorderThickness
+        let lineSpaceAdjust = getViewController(collectionView)!.publicVar.profile.ThumbnailLineSpaceAdjust
         var xOffset: CGFloat = cellPadding
         var yOffset: CGFloat = cellPadding
         var rowHeight: CGFloat = 0
@@ -71,7 +75,7 @@ class CustomFlowLayout: NSCollectionViewLayout {
 
             if xOffset + width > contentWidth {
                 xOffset = cellPadding
-                yOffset += rowHeight + lineSpacing
+                yOffset += rowHeight + lineSpacing + lineSpaceAdjust
                 rowHeight = 0
             }
 
@@ -214,6 +218,8 @@ class WaterfallLayout: NSCollectionViewLayout {
         guard let delegate = collectionView.delegate as? NSCollectionViewDelegateFlowLayout else { return }
 
         let cellPadding = getViewController(collectionView)!.publicVar.profile.ThumbnailCellPadding
+        let borderThickness = getViewController(collectionView)!.publicVar.profile.ThumbnailBorderThickness
+        let lineSpaceAdjust = getViewController(collectionView)!.publicVar.profile.ThumbnailLineSpaceAdjust
         let totalWidth = getViewController(collectionView)?.mainScrollView.bounds.width ?? collectionView.bounds.width
         let scrollbarWidth = getViewController(collectionView)!.publicVar.profile.ThumbnailScrollbarWidth
         let columnWidth = floor((totalWidth - scrollbarWidth - 2*cellPadding) / CGFloat(numberOfColumns))
@@ -243,7 +249,7 @@ class WaterfallLayout: NSCollectionViewLayout {
             cache.append(attributes)
 
             contentHeight = max(contentHeight, frame.maxY + cellPadding)
-            yOffset[column] = yOffset[column] + height
+            yOffset[column] = yOffset[column] + height + lineSpaceAdjust
         }
     }
 

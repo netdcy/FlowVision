@@ -301,6 +301,7 @@ class FileModel {
     var doNotActualRead: Bool = false
     var rotate: Int = 0
     var imageInfo: ImageInfo?
+    var getThumbFailed = false
 }
 
 class DirModel {

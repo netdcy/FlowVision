@@ -1961,6 +1961,17 @@
         }
       }
     },
+    "Show Thumbnail Shadow (Non-Grid View)" : {
+      "comment" : "显示缩略图阴影(非网格视图)",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示缩略图阴影(非网格视图)"
+          }
+        }
+      }
+    },
     "Show Video Files" : {
       "comment" : "显示视频文件",
       "localizations" : {
@@ -2593,13 +2604,13 @@
         }
       }
     },
-    "Thumbnail Border Thickness" : {
-      "comment" : "缩略图边框厚度",
+    "Thumbnail Border Thickness (Non-Grid View)" : {
+      "comment" : "缩略图边框厚度(非网格视图)",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "缩略图边框厚度"
+            "value" : "缩略图边框厚度(非网格视图)"
           }
         }
       }
@@ -2615,13 +2626,24 @@
         }
       }
     },
-    "Thumbnail Corner Radius" : {
-      "comment" : "缩略图圆角半径",
+    "Thumbnail Corner Radius (Grid View)" : {
+      "comment" : "缩略图圆角半径(网格视图)",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "缩略图圆角半径"
+            "value" : "缩略图圆角半径(网格视图)"
+          }
+        }
+      }
+    },
+    "Thumbnail Corner Radius (Non-Grid View)" : {
+      "comment" : "缩略图圆角半径(非网格视图)",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图圆角半径(非网格视图)"
           }
         }
       }
@@ -2633,6 +2655,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "缩略图文件名字体大小"
+          }
+        }
+      }
+    },
+    "Thumbnail Line Space Adjustment (Non-Grid View)" : {
+      "comment" : "缩略图行间距调整(非网格视图)",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图行间距调整(非网格视图)"
           }
         }
       }

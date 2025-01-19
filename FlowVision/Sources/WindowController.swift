@@ -286,13 +286,19 @@ extension WindowController: NSToolbarDelegate {
     func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
         let toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
         guard let viewController = contentViewController as? ViewController else {return toolbarItem}
+        
+        //let titleFontColor = NSApp.effectiveAppearance.name == .darkAqua ? hexToNSColor(hex: "#FFFFFF", alpha: 0.847) : hexToNSColor(hex: "#000000", alpha: 0.847)
+        //let titleFontColor = NSApp.effectiveAppearance.name == .darkAqua ? hexToNSColor(hex: "#FFFFFF", alpha: 0.64) : hexToNSColor(hex: "#000000", alpha: 0.6)
+        let titleFontColor = NSColor.labelColor
+        //let titleFontColor = NSColor.controlTextColor
+        
         switch itemIdentifier {
             
         case .windowTitle:
             let text = (contentViewController as? ViewController)?.publicVar.toolbarTitle
             let titleLabel = createWindowTitleLabel(string: text ?? "FlowVision")
             titleLabel.font = NSFont.systemFont(ofSize: 13, weight: .regular)
-            titleLabel.textColor = NSColor.labelColor
+            titleLabel.textColor = titleFontColor
             titleLabel.alignment = .center
             toolbarItem.view = titleLabel
             toolbarItem.minSize = NSSize(width: 200, height: titleLabel.fittingSize.height)
@@ -395,7 +401,7 @@ extension WindowController: NSToolbarDelegate {
             for item in pathControl.pathItems {
                 let range = NSMakeRange(0, item.attributedTitle.length)
                 let attributedTitle = NSMutableAttributedString(attributedString: item.attributedTitle)
-                attributedTitle.addAttribute(.foregroundColor, value: NSColor.labelColor, range: range)
+                attributedTitle.addAttribute(.foregroundColor, value: titleFontColor, range: range)
                 attributedTitle.addAttribute(.font, value: font, range: range)
                 item.attributedTitle = attributedTitle
             }
@@ -588,6 +594,14 @@ extension WindowController: NSToolbarDelegate {
             
             let button = NSButton(title: title, image: image, target: self, action: #selector(showSortMenu(_:)))
             setButtonStyle(button)
+            
+            // 自定义title的字体大小和颜色
+            let font = NSFont.systemFont(ofSize: 13)
+            let attributedTitle = NSAttributedString(string: title, attributes: [
+                .font: font,
+                //.foregroundColor: titleFontColor
+            ])
+            button.attributedTitle = attributedTitle
             button.toolTip = NSLocalizedString("sort-type", comment: "排序方式")
             toolbarItem.view = button
             toolbarItem.label = NSLocalizedString("sort-type", comment: "排序方式")
