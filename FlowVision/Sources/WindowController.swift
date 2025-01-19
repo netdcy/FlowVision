@@ -186,6 +186,7 @@ extension NSToolbarItem.Identifier {
     static let sidebar = NSToolbarItem.Identifier("com.example.sidebar")
     static let goBack = NSToolbarItem.Identifier("com.example.goBack")
     static let goForward = NSToolbarItem.Identifier("com.example.goForward")
+    static let upFolder = NSToolbarItem.Identifier("com.example.upFolder")
     static let viewToggle = NSToolbarItem.Identifier("com.example.viewToggle")
     static let newtab = NSToolbarItem.Identifier("com.example.newtab")
     static let showinfo = NSToolbarItem.Identifier("com.example.showinfo")
@@ -215,7 +216,7 @@ extension WindowController: NSToolbarDelegate {
     
     func getItemIdentifiers() -> [NSToolbarItem.Identifier] {
         //, .flexibleSpace, .space
-        var identifiers: [NSToolbarItem.Identifier] = [.sidebar, .favorites, .goBack, .goForward, .windowTitle]
+        var identifiers: [NSToolbarItem.Identifier] = [.sidebar, .favorites, .goBack, .goForward, .upFolder, .windowTitle]
         if let viewController = contentViewController as? ViewController {
             if viewController.publicVar.isInLargeView {
                 if #available(macOS 14.0, *) {
@@ -321,6 +322,15 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.label = NSLocalizedString("go-forward", comment: "前进")
             toolbarItem.paletteLabel = NSLocalizedString("go-forward", comment: "前进")
             toolbarItem.isNavigational = true
+            toolbarItem.visibilityPriority = .low
+            
+        case .upFolder:
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "chevron.up", accessibilityDescription: "")!, target: self, action: #selector(upFolderAction(_:)))
+            setButtonStyle(button)
+            button.toolTip = NSLocalizedString("up-folder", comment: "上层文件夹")
+            toolbarItem.view = button
+            toolbarItem.label = NSLocalizedString("up-folder", comment: "上层文件夹")
+            toolbarItem.paletteLabel = NSLocalizedString("up-folder", comment: "上层文件夹")
             toolbarItem.visibilityPriority = .low
             
         case .newtab:
@@ -560,6 +570,12 @@ extension WindowController: NSToolbarDelegate {
     @objc func goForwardAction(_ sender: Any?) {
         if let viewController = contentViewController as? ViewController {
             viewController.switchDirByDirection(direction: .forward, stackDeep: 0)
+        }
+    }
+
+    @objc func upFolderAction(_ sender: Any?) {
+        if let viewController = contentViewController as? ViewController {
+            viewController.switchDirByDirection(direction: .up, stackDeep: 0)
         }
     }
     

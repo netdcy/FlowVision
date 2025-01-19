@@ -395,11 +395,13 @@ class LargeImageView: NSView {
             menu.addItem(NSMenuItem.separator())
             
             let actionItemCopy = menu.addItem(withTitle: NSLocalizedString("Copy", comment: "复制"), action: #selector(actCopy), keyEquivalent: "c")
+
+            let actionItemCopyPath = menu.addItem(withTitle: NSLocalizedString("Copy Path", comment: "复制路径"), action: #selector(actCopyPath), keyEquivalent: "")
             
             let actionItemShare = menu.addItem(withTitle: NSLocalizedString("Share...", comment: "共享..."), action: #selector(actShare(_:)), keyEquivalent: "")
             
             menu.addItem(NSMenuItem.separator())
-            
+                        
             let actionItemCopyToDownload = menu.addItem(withTitle: NSLocalizedString("copy-to-download", comment: "复制到\"下载\"文件夹"), action: #selector(actCopyToDownload), keyEquivalent: "n")
             actionItemCopyToDownload.keyEquivalentModifierMask = []
             
@@ -585,6 +587,13 @@ class LargeImageView: NSView {
     
     @objc func actMoveToDownload() {
         getViewController(self)?.handleMoveToDownload()
+    }
+
+    @objc func actCopyPath() {
+        guard let url=URL(string: file.path) else{return}
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(url.path, forType: .string)
     }
 
     @objc func actDelete() {

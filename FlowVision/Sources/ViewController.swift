@@ -505,7 +505,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 let isOnlyCtrlPressed = !isCommandPressed && !isAltPressed && isCtrlPressed && !isShiftPressed
                 let isOnlyShiftPressed = !isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed
                 
-                let characters = event.charactersIgnoringModifiers ?? ""
+                let characters = (event.charactersIgnoringModifiers ?? "").lowercased()
                 let specialKey = event.specialKey ?? .f30
                 
                 // 检查按键是否是 "A" 键
@@ -547,6 +547,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         }
                         return nil
                     }
+                }
+
+                // 检查按键是否是 Command+Shift+G 键
+                if characters == "g" && isCommandPressed && isShiftPressed {
+                    DispatchQueue.main.async { [weak self] in
+                        self?.showCmdShiftGWindow()
+                    }
+                    return nil
                 }
                 
                 // 检查按键是否是 Command+[ 键
@@ -5689,5 +5697,110 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         refreshCollectionView(dryRun: true)
     }
     
+    func showCmdShiftGWindow(){
+        let alert = NSAlert()
+        alert.messageText = NSLocalizedString("Go To", comment: "跳转至")
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
+        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
+        alert.icon = NSImage(systemSymbolName: "arrowshape.turn.up.forward.circle", accessibilityDescription: nil)
+        
+        let inputTextField = NSTextField(frame: NSRect(x: 0, y: 0, width: 400, height: 24))
+        inputTextField.placeholderString = ""
+        if let textFieldCell = inputTextField.cell as? NSTextFieldCell {
+            textFieldCell.usesSingleLineMode = true
+            textFieldCell.wraps = false
+            textFieldCell.isScrollable = true
+        }
+        alert.accessoryView = inputTextField
+        
+        // 确保输入框成为第一响应者
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            alert.window.makeFirstResponder(inputTextField)
+        }
+        
+        // 使用 beginSheetModal 替代 runModal
+        if let window = view.window {
+            getMainViewController()!.publicVar.isKeyEventEnabled=false
+            alert.beginSheetModal(for: window) { [weak self] response in
+                guard let self = self else { return }
+                getMainViewController()!.publicVar.isKeyEventEnabled=true
+                if response == .alertFirstButtonReturn {
+                    var path = inputTextField.stringValue
+                    // 如果被''或者""包裹则去掉
+                    if path.hasPrefix("'") && path.hasSuffix("'") {
+                        path = String(path.dropFirst().dropLast())
+                    }
+                    if path.hasPrefix("\"") && path.hasSuffix("\"") {
+                        path = String(path.dropFirst().dropLast())
+                    }
+                    // 解码URL编码
+                    path = path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!
+
+                    // 检查路径是否为空
+                    if path.isEmpty {
+                        return
+                    }
+                    
+                    // 获取当前目录作为基准路径
+                    fileDB.lock()
+                    var curFolder = fileDB.curFolder // 如果以/结尾，则去掉
+                    if curFolder.hasSuffix("/") {
+                        curFolder = String(curFolder.dropLast())
+                    }
+                    fileDB.unlock()
+                    
+                    // 处理路径
+                    var fullPath = path
+                    
+                    guard let curUrl = URL(string: curFolder) else {
+                        coreAreaView.showInfo(NSLocalizedString("Invalid current path", comment: "当前路径无效"), timeOut: 2, cannotBeCleard: false)
+                        return
+                    }
+                    
+                    // 处理相对路径
+                    if !path.hasPrefix("/") {
+                        if let resolvedPath = resolveRelativePath(basePath: curUrl.path, relativePath: path) {
+                            fullPath = resolvedPath
+                        } else {
+                            coreAreaView.showInfo(NSLocalizedString("Invalid relative path", comment: "相对路径无效"), timeOut: 2, cannotBeCleard: false)
+                            return
+                        }
+                    }
+                    
+                    // 检查路径是否存在
+                    let fileManager = FileManager.default
+                    var isDirectory: ObjCBool = false
+                    if !fileManager.fileExists(atPath: fullPath, isDirectory: &isDirectory) {
+                        coreAreaView.showInfo(NSLocalizedString("Path does not exist", comment: "路径不存在"), timeOut: 2, cannotBeCleard: false)
+                        return
+                    }
+                    
+                    // 转换为 file:// URL 格式
+                    var destPath = getFileStylePath(fullPath)
+                    
+                    // 检查是否是目录
+                    if !isDirectory.boolValue {
+                        if let appDelegate=NSApplication.shared.delegate as? AppDelegate {
+                            appDelegate.openImageInMainWindow(getFileStylePath(destPath))
+                        }
+                        return
+                    }
+                    
+                    if !destPath.hasSuffix("/") {
+                        destPath += "/"
+                    }
+
+                    if publicVar.isInLargeView {
+                        closeLargeImage(0)
+                    }
+                    
+                    switchDirByDirection(direction: .zero, dest: destPath, doCollapse: true, expandLast: true, skip: false, stackDeep: 0)
+                }
+            }
+        }
+    }
 }
+
 

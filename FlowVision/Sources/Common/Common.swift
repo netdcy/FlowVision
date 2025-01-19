@@ -726,7 +726,9 @@ class ThumbnailOptionsWindow: NSWindow {
 func showThumbnailOptionsPanel(on parentWindow: NSWindow, completion: @escaping (Bool, Bool, Double, Double, Double, Double) -> Void) {
     let thumbnailOptionsWindow = ThumbnailOptionsWindow()
     
+    getMainViewController()!.publicVar.isKeyEventEnabled=false
     parentWindow.beginSheet(thumbnailOptionsWindow) { response in
+        getMainViewController()!.publicVar.isKeyEventEnabled=true
         if response == .OK {
             completion(thumbnailOptionsWindow.isShowThumbnailFilename,
                        thumbnailOptionsWindow.isShowThumbnailHDR,
@@ -789,4 +791,53 @@ func triggerFinderSound() {
     } catch {
         log("Error setting up directories: \(error)")
     }
+}
+
+func resolveRelativePath(basePath: String, relativePath: String) -> String? {
+    // 移除开头的 file:// 并解码
+    var base = basePath.replacingOccurrences(of: "file://", with: "").removingPercentEncoding ?? basePath
+    var relative = relativePath.removingPercentEncoding ?? relativePath
+    
+    // 处理波浪号(~)表示用户主目录
+    if relative.hasPrefix("~") {
+        let homeDir = FileManager.default.homeDirectoryForCurrentUser.path
+        relative = relative.replacingOccurrences(of: "~", with: homeDir, options: [.anchored])
+    }
+    
+    // 如果相对路径以/开头,则直接返回
+    if relative.hasPrefix("/") {
+        return relative
+    }
+    
+    // 确保基础路径不以/结尾
+    if base.hasSuffix("/") {
+        base = String(base.dropLast())
+    }
+    
+    // 将路径分割成组件
+    var components = base.split(separator: "/").map(String.init)
+    let relativeComponents = relative.split(separator: "/").map(String.init)
+    
+    // 处理每个相对路径组件
+    for component in relativeComponents {
+        switch component {
+        case "..":
+            if !components.isEmpty {
+                components.removeLast()
+            } else {
+                return nil // 试图超出根目录
+            }
+        case ".", "":
+            continue
+        default:
+            components.append(component)
+        }
+    }
+    
+    // 重新组合路径
+    let resolvedPath = "/" + components.joined(separator: "/")
+    
+    // 如果原始相对路径以/结尾,则保留
+    let shouldAddSlash = relative.hasSuffix("/")
+    return resolvedPath + (shouldAddSlash ? "/" : "")
 }

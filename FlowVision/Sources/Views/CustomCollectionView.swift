@@ -142,6 +142,14 @@ class CustomCollectionView: NSCollectionView {
                     actionItemNewFolder.keyEquivalentModifierMask = [.command,.shift]
                     
                     menu.addItem(NSMenuItem.separator())
+
+                    // 复制路径
+                    //let actionItemCopyPath = menu.addItem(withTitle: NSLocalizedString("Copy Path", comment: "复制路径"), action: #selector(actCopyPath), keyEquivalent: "")
+            
+                    // 在终端中打开
+                    let actionItemOpenInTerminal = menu.addItem(withTitle: NSLocalizedString("Open in Terminal", comment: "在终端中打开"), action: #selector(actOpenInTerminal), keyEquivalent: "")
+            
+                    menu.addItem(NSMenuItem.separator())
                     
                     let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("Refresh", comment: "刷新"), action: #selector(actRefresh), keyEquivalent: "r")
                     actionItemRefresh.keyEquivalentModifierMask = []
@@ -193,5 +201,21 @@ class CustomCollectionView: NSCollectionView {
             getViewController(self)?.setLoadThumbPriority(ifNeedVisable: true)
         }
     }
-    
+
+    @objc func actCopyPath() {
+        guard let folderURL=getViewController(self)?.fileDB.curFolder else{return}
+        guard let url=URL(string: folderURL) else{return}
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(url.path, forType: .string)
+    }
+
+    @objc func actOpenInTerminal() {
+        guard let folderURL=getViewController(self)?.fileDB.curFolder else{return}
+        guard let url=URL(string: folderURL) else{return}
+        let task = Process()
+        task.launchPath = "/usr/bin/open"
+        task.arguments = ["-a", "Terminal", url.path]
+        task.launch()
+    }
 }

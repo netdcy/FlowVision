@@ -658,7 +658,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 }
                 
                 let actionItemCopy = menu.addItem(withTitle: NSLocalizedString("Copy", comment: "复制"), action: #selector(actCopy), keyEquivalent: "c")
-                //actionItemCopy.isEnabled = (items.count>0)
+                
+                let actionItemCopyPath = menu.addItem(withTitle: NSLocalizedString("Copy Path", comment: "复制路径"), action: #selector(actCopyPath), keyEquivalent: "")
                 
                 let actionItemPaste = menu.addItem(withTitle: NSLocalizedString("Paste", comment: "粘贴"), action: #selector(actPaste), keyEquivalent: "v")
                 actionItemPaste.isEnabled = canPasteOrMove
@@ -670,7 +671,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 let actionItemShare = menu.addItem(withTitle: NSLocalizedString("Share...", comment: "共享..."), action: #selector(actShare(_:)), keyEquivalent: "")
                 
                 menu.addItem(NSMenuItem.separator())
-                
+                                
                 let actionItemCopyToDownload = menu.addItem(withTitle: NSLocalizedString("copy-to-download", comment: "复制到\"下载\"文件夹"), action: #selector(actCopyToDownload), keyEquivalent: "n")
                 actionItemCopyToDownload.keyEquivalentModifierMask = []
 
@@ -758,6 +759,14 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     
     @objc func actNewFolder() {
         getViewController(collectionView!)?.handleNewFolder()
+    }
+
+    @objc func actCopyPath() {
+        guard let urls = getViewController(collectionView!)?.getSelectedURLs() else { return }
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        let paths = urls.map { $0.path }.joined(separator: "\n")
+        pasteboard.setString(paths, forType: .string)
     }
     
     @objc func actCopy() {

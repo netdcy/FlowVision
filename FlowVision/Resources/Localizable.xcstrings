@@ -372,6 +372,17 @@
         }
       }
     },
+    "Copy Path" : {
+      "comment" : "复制路径",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制路径"
+          }
+        }
+      }
+    },
     "copy-to-download" : {
       "comment" : "复制到\"下载\"文件夹",
       "localizations" : {
@@ -784,6 +795,17 @@
         }
       }
     },
+    "Go To" : {
+      "comment" : "跳转至",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跳转至"
+          }
+        }
+      }
+    },
     "go-back" : {
       "comment" : "后退",
       "localizations" : {
@@ -925,6 +947,17 @@
         }
       }
     },
+    "Invalid current path" : {
+      "comment" : "当前路径无效",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前路径无效"
+          }
+        }
+      }
+    },
     "Invalid input, please enter a positive number" : {
       "comment" : "输入不合法，请输入一个正数",
       "localizations" : {
@@ -932,6 +965,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "输入不合法，请输入一个正数"
+          }
+        }
+      }
+    },
+    "Invalid relative path" : {
+      "comment" : "相对路径无效",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相对路径无效"
           }
         }
       }
@@ -1246,6 +1290,17 @@
         }
       }
     },
+    "Open in Terminal" : {
+      "comment" : "在终端中打开",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在终端中打开"
+          }
+        }
+      }
+    },
     "open-in-finder" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1366,6 +1421,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "粘贴"
+          }
+        }
+      }
+    },
+    "Path does not exist" : {
+      "comment" : "路径不存在",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "路径不存在"
           }
         }
       }
@@ -2567,6 +2633,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "缩略图选项"
+          }
+        }
+      }
+    },
+    "up-folder" : {
+      "comment" : "上层文件夹",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enclosing Folder"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上层文件夹"
           }
         }
       }

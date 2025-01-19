@@ -120,17 +120,24 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             
             let actionItemCopy = menu.addItem(withTitle: NSLocalizedString("Copy", comment: "复制"), action: #selector(actCopy), keyEquivalent: "c")
             
+            let actionItemCopyPath = menu.addItem(withTitle: NSLocalizedString("Copy Path", comment: "复制路径"), action: #selector(actCopyPath), keyEquivalent: "")
+            
             let actionItemPaste = menu.addItem(withTitle: NSLocalizedString("Paste", comment: "粘贴"), action: #selector(actPaste), keyEquivalent: "v")
             actionItemPaste.isEnabled = canPasteOrMove
             
             let actionItemMove = menu.addItem(withTitle: NSLocalizedString("move-here", comment: "移动到此"), action: #selector(actMove), keyEquivalent: "v")
             actionItemMove.keyEquivalentModifierMask = [.command,.option]
             actionItemMove.isEnabled = canPasteOrMove
-            
+
             menu.addItem(NSMenuItem.separator())
             
             let actionItemNewFolder = menu.addItem(withTitle: NSLocalizedString("new-folder", comment: "新建文件夹"), action: #selector(actNewFolder), keyEquivalent: "n")
             actionItemNewFolder.keyEquivalentModifierMask = [.command,.shift]
+            
+            menu.addItem(NSMenuItem.separator())
+
+            // 在终端中打开
+            let actionItemOpenInTerminal = menu.addItem(withTitle: NSLocalizedString("Open in Terminal", comment: "在终端中打开"), action: #selector(actOpenInTerminal), keyEquivalent: "")
             
             menu.addItem(NSMenuItem.separator())
             
@@ -277,5 +284,19 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             refreshTreeView()
         }
     }
-    
+
+    @objc func actCopyPath() {
+        guard let url=URL(string: curRightClickedPath) else{return}
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(url.path, forType: .string)
+    }
+
+    @objc func actOpenInTerminal() {
+        guard let url=URL(string: curRightClickedPath) else{return}
+        let task = Process()
+        task.launchPath = "/usr/bin/open"
+        task.arguments = ["-a", "Terminal", url.path]
+        task.launch()
+    }
 }
