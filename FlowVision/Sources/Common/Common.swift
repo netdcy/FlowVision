@@ -194,12 +194,26 @@ func showInformationLong(title: String, message: String, width: CGFloat = 400) {
     
     // 设置对话框宽度
     let textField = NSTextView()
-    textField.string = message
     textField.isEditable = false
     textField.backgroundColor = .clear
     textField.isSelectable = true
     textField.textColor = NSColor.headerTextColor
-    textField.font = NSFont.systemFont(ofSize: 12)
+    
+    // 创建段落样式并设置行间距
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.lineSpacing = 1.2  // 设置行间距
+    
+    // 使用富文本设置内容和样式
+    let attributedString = NSAttributedString(
+        string: message,
+        attributes: [
+            .font: NSFont.systemFont(ofSize: 11.5),
+            .foregroundColor: NSColor.headerTextColor,
+            .paragraphStyle: paragraphStyle
+        ]
+    )
+    textField.textStorage?.setAttributedString(attributedString)
+    
     textField.isVerticallyResizable = true
     textField.isHorizontallyResizable = false
     textField.textContainer?.widthTracksTextView = true
@@ -557,7 +571,7 @@ class ThumbnailOptionsWindow: NSWindow {
         // Create a custom view with a glass-like effect
         let customView = NSVisualEffectView(frame: windowRect)
         customView.material = .hudWindow
-        customView.blendingMode = .behindWindow
+        customView.blendingMode = .withinWindow
         customView.state = .active
         
         // Create a stack view for layout

@@ -426,8 +426,14 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         // GridView时特殊样式
         if getViewController(collectionView!)!.publicVar.profile.layoutType == .grid {
             if let image = file.image, !file.isDir {
-                imageViewObj.isDrawBorder=true
-                imageViewObj.layer?.borderWidth = 2.0
+                imageViewObj.isDrawBorder=false
+                imageViewObj.layer?.borderWidth = 0.0
+                imageViewObj.layer?.cornerRadius = 0.0 // 由于masksToBounds导致不起作用
+                imageViewObj.layer?.masksToBounds = false
+                imageViewObj.layer?.shadowColor = NSColor.black.withAlphaComponent(0.4).cgColor
+                imageViewObj.layer?.shadowOffset = CGSize(width: 1.3, height: -1.3)
+                imageViewObj.layer?.shadowRadius = 2.5
+                imageViewObj.layer?.shadowOpacity = 1
                 if image.size.width != 0 && image.size.height != 0{
                     imageViewObj.frame = AVMakeRect(aspectRatio: image.size, insideRect: newFrame)
                 }
@@ -435,20 +441,23 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             }else{
                 imageViewObj.isDrawBorder=false
                 imageViewObj.layer?.borderWidth = 0.0
+                imageViewObj.layer?.cornerRadius = 0.0
+                imageViewObj.layer?.masksToBounds = false
+                imageViewObj.layer?.shadowOpacity = 0
                 //imageViewObj.frame = imageViewRef.frame
                 imageViewObj.frame = newFrame
             }
             
-            imageViewObj.layer?.cornerRadius = 0.0
             imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor //填充
 
         }else{
             imageViewObj.isDrawBorder=false
             imageViewObj.layer?.borderWidth = 0.0
+            imageViewObj.layer?.cornerRadius = style.ThumbnailBorderRadius
+            imageViewObj.layer?.masksToBounds = true
+            imageViewObj.layer?.shadowOpacity = 0
             //imageViewObj.frame = imageViewRef.frame
             imageViewObj.frame = newFrame
-            
-            imageViewObj.layer?.cornerRadius = style.ThumbnailBorderRadius
         }
         
         view.layer?.cornerRadius = style.ThumbnailBorderRadius

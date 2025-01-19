@@ -292,6 +292,7 @@ extension WindowController: NSToolbarDelegate {
             let text = (contentViewController as? ViewController)?.publicVar.toolbarTitle
             let titleLabel = createWindowTitleLabel(string: text ?? "FlowVision")
             titleLabel.font = NSFont.systemFont(ofSize: 13, weight: .regular)
+            titleLabel.textColor = NSColor.labelColor
             titleLabel.alignment = .center
             toolbarItem.view = titleLabel
             toolbarItem.minSize = NSSize(width: 200, height: titleLabel.fittingSize.height)
@@ -329,27 +330,35 @@ extension WindowController: NSToolbarDelegate {
             
             if let viewController = contentViewController as? ViewController {
                 let curFolder=viewController.fileDB.curFolder
-                var fullTitle = ROOT_NAME+curFolder.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!
+                var pathString = ROOT_NAME+curFolder.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!
 
-                let components = fullTitle.components(separatedBy: "/")
+                let components = pathString.components(separatedBy: "/")
                 let maxNum = 7
                 if components.count > maxNum {
                     pathShortenStore = components[0..<components.count-maxNum].joined(separator: "/")
                     let shortenedTitle = ".../" + components[components.count-maxNum..<components.count].joined(separator: "/")
-                    fullTitle = shortenedTitle
+                    pathString = shortenedTitle
                 } else {
                     pathShortenStore = ""
                 }
-
-                //print(pathShortenStore)
                 
-                if let url = URL(string: fullTitle) {
+                if let url = URL(string: pathString) {
                     pathControl.url = url
                 } else {
-                    pathControl.placeholderString = fullTitle
+                    pathControl.placeholderString = pathString
                 }
-//                let url = URL(fileURLWithPath: fullTitle)
-//                pathControl.url = url
+            }
+            
+//            for item in pathControl.pathComponentCells() {
+//                item.font = NSFont.systemFont(ofSize: 13, weight: .regular)
+//                item.textColor = NSColor.labelColor
+//            }
+            
+            for item in pathControl.pathItems {
+                let range = NSMakeRange(0, item.attributedTitle.length)
+                let attributedTitle = NSMutableAttributedString(attributedString: item.attributedTitle)
+                attributedTitle.addAttribute(.foregroundColor, value: NSColor.labelColor, range: range)
+                item.attributedTitle = attributedTitle
             }
             
             toolbarItem.view = pathControl
@@ -535,7 +544,8 @@ extension WindowController: NSToolbarDelegate {
                 case .pathZ,.extZ,.sizeZ,.createDateZ,.modDateZ,.addDateZ:
                     image = NSImage(systemSymbolName: "chevron.down.circle", accessibilityDescription: "")!
                 case .random:
-                    image = NSImage(systemSymbolName: "arrow.up.arrow.down.circle", accessibilityDescription: "")!
+                    //image = NSImage(systemSymbolName: "arrow.up.arrow.down.circle", accessibilityDescription: "")!
+                    image = NSImage(systemSymbolName: "arrow.2.circlepath", accessibilityDescription: "")!
                 }
             }
             
@@ -620,7 +630,9 @@ extension WindowController: NSToolbarDelegate {
                 //print("1:"+itemURL.path)
                 //print("2:"+pathShortenStore)
                 //print("3:"+destAbsPath)
-                viewController.switchDirByDirection(direction: .zero, dest: destAbsPath, doCollapse: true, expandLast: true, skip: false, stackDeep: 0)
+                if destAbsPath != viewController.fileDB.curFolder {
+                    viewController.switchDirByDirection(direction: .zero, dest: destAbsPath, doCollapse: true, expandLast: true, skip: false, stackDeep: 0)
+                }
             }
         }
     }
@@ -1283,7 +1295,7 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func portableModeInfo(_ sender: NSMenuItem){
-        showInformation(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("portable-mode-info", comment: "对于便携模式的说明..."))
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("portable-mode-info", comment: "对于便携模式的说明..."), width: 300)
     }
     
     @objc func toggleRecursiveMode(_ sender: NSMenuItem){
@@ -1292,7 +1304,7 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func recursiveModeInfo(_ sender: NSMenuItem){
-        showInformation(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("recursive-mode-info", comment: "对于递归模式的说明..."))
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("recursive-mode-info", comment: "对于递归模式的说明..."), width: 300)
     }
     
     @objc func toggleAutoScroll(_ sender: NSMenuItem){

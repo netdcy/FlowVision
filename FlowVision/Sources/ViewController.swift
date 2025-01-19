@@ -4034,7 +4034,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                             fileDB.unlock()
                         }else{
                             //是当前目录
-                            let visibleIndexPaths=collectionView.indexPathsForVisibleItems()
+                            var visibleIndexPaths: Set<IndexPath> = []
+                            DispatchQueue.main.sync { [weak self] in
+                                guard let self = self else { return }
+                                visibleIndexPaths = collectionView.indexPathsForVisibleItems()
+                            }
                             var itemArray: [Int] = visibleIndexPaths.map { $0.item }
                             itemArray.sort()
                             let indexMin = (itemArray.first ?? 0) - PRELOAD_THUMB_RANGE_PRE
