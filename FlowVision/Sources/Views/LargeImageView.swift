@@ -303,13 +303,13 @@ class LargeImageView: NSView {
                 longPressZoomTimer = nil
                 doNotPopRightMenu = true
             }
-        }
-        
-        let dx = newLocation.x - lastLocation.x
-        let dy = newLocation.y - lastLocation.y
+            
+            let dx = newLocation.x - lastLocation.x
+            let dy = newLocation.y - lastLocation.y
 
-        imageView.frame.origin.x += dx
-        imageView.frame.origin.y += dy
+            imageView.frame.origin.x += dx
+            imageView.frame.origin.y += dy
+        }
 
         lastDragLocation = newLocation
     }
