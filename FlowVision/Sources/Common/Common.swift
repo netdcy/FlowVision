@@ -184,6 +184,39 @@ func showInformation(title: String, message: String) {
     getMainViewController()!.publicVar.isKeyEventEnabled=true
 }
 
+func showInformationLong(title: String, message: String, width: CGFloat = 400) {
+    let alert = NSAlert()
+    alert.messageText = title
+    //alert.informativeText = message
+    alert.alertStyle = .informational
+    alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
+    alert.icon = NSImage(named: NSImage.infoName)
+    
+    // 设置对话框宽度
+    let textField = NSTextView()
+    textField.string = message
+    textField.isEditable = false
+    textField.backgroundColor = .clear
+    textField.isSelectable = true
+    textField.textColor = NSColor.headerTextColor
+    textField.font = NSFont.systemFont(ofSize: 12)
+    textField.isVerticallyResizable = true
+    textField.isHorizontallyResizable = false
+    textField.textContainer?.widthTracksTextView = true
+    textField.textContainer?.containerSize = NSSize(width: width, height: CGFloat.greatestFiniteMagnitude)
+    
+    // 计算文本高度
+    let contentSize = textField.layoutManager?.usedRect(for: textField.textContainer!).size ?? .zero
+    let height = min(max(contentSize.height, 50), 600) // 设置最小50和最大600的高度限制
+    
+    textField.frame = NSRect(x: 0, y: 0, width: width, height: height)
+    alert.accessoryView = textField
+    
+    getMainViewController()!.publicVar.isKeyEventEnabled=false
+    alert.runModal()
+    getMainViewController()!.publicVar.isKeyEventEnabled=true
+}
+
 func showInformationCopy(title: String, message: String) {
     let alert = NSAlert()
     alert.messageText = title
@@ -506,7 +539,7 @@ class ThumbnailOptionsWindow: NSWindow {
         // Get current values
         let profile = getMainViewController()!.publicVar.profile
         isShowThumbnailFilename = profile.isShowThumbnailFilename
-        isShowThumbnailHDR = profile.isShowThumbnailHDR
+        isShowThumbnailHDR = profile.getValue(forKey: "isShowThumbnailHDR") == "true"
         thumbnailBorderThickness = profile.ThumbnailBorderThickness
         thumbnailCellPadding = profile.ThumbnailCellPadding
         thumbnailBorderRadius = profile.ThumbnailBorderRadius

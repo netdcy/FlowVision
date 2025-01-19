@@ -762,13 +762,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " - \"Prefer using embedded thumbnails\" refers to prioritizing the use of thumbnails embedded within the image's EXIF data, which typically have lower resolution. However, since only the file header content needs to be read, it can significantly improve the speed of reading images on a network drive. But, as most images on the internet have their EXIF data removed to reduce file size, the program will then switch to \"generate standard thumbnails.\"\n\n - \"Generate standard thumbnails\" refers to creating medium-quality thumbnails with a size of 512×512. In this case, the entire file content needs to be downloaded.\n\n - \"Generate high-definition thumbnails\" involves rendering the image precisely in the thumbnail area, and it is recommended to enable this option when the thumbnail size is larger than the default value. At this point, the re-rendered image may consume more memory."
+            "value" : " - \"Prefer using embedded thumbnails\" refers to prioritizing the use of thumbnails embedded within the image's EXIF data, which typically have lower resolution. However, since only the file header content needs to be read, it can significantly improve the speed of reading images on a network drive. But, as most images on the internet have their EXIF data removed to reduce file size, the program will then switch to \"generate standard thumbnails.\"\n\n - \"Generate standard thumbnails\" refers to creating medium-quality thumbnails with a size of 512×512. In this case, the entire file content needs to be downloaded. (Since embedded thumbnails in RAW images usually have a higher resolution, their embedded thumbnails are still preferred in this mode.)\n\n - \"Generate high-definition thumbnails\" involves rendering the image precisely in the thumbnail area, and it is recommended to enable this option when the thumbnail size is larger than the default value. At this point, the re-rendered image may consume more memory."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " - “优先使用内嵌缩略图”指优先使用内嵌于图像EXIF中的缩略图，其分辨率通常较低。但由于只需读取文件头部内容，将会明显提高对网络驱动器中图像的读取速度。但互联网上多数图片为缩减文件大小删除了EXIF数据，此时程序会转而“生成标准缩略图”。\n\n - “生成标准缩略图”指生成尺寸为512×512的中等质量缩略图。此时需要下载完整文件内容。\n\n - “生成高清缩略图”指在缩略图区域精确绘制图片，建议缩略图大小大于默认值时开启此选项。此时重绘制的图像可能占用较多内存。"
+            "value" : " - “优先使用内嵌缩略图”指优先使用内嵌于图像EXIF中的缩略图，其分辨率通常较低。但由于只需读取文件头部内容，将会明显提高对网络驱动器中图像的读取速度。但互联网上多数图片为缩减文件大小删除了EXIF数据，此时程序会转而“生成标准缩略图”。\n\n - “生成标准缩略图”指生成尺寸为512×512的中等质量缩略图。此时需要下载完整文件内容。（由于RAW图像内嵌缩略图通常分辨率较高，此模式下仍然优先使用内嵌缩略图。）\n\n - “生成高清缩略图”指在缩略图区域精确绘制图片，建议缩略图大小大于默认值时开启此选项。此时重绘制的图像可能占用较多内存。"
           }
         }
       }
@@ -1595,13 +1595,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In \"Recursive Mode\", after selecting a folder in the directory tree, the thumbnail area will display all files within the folder and its subdirectories.\nWhen scanning certain system directories or network drives, the program may experience lag."
+            "value" : "In \"Recursive Mode\", after selecting a folder in the directory tree, the thumbnail area will display all files within the folder and its subdirectories.\n\nWhen scanning certain system directories or network drives, the program may experience lag."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“递归浏览模式”时，在目录树中选择文件夹后，缩略图区域将显示文件夹及其子目录下的所有文件。\n扫描部分系统目录或网络驱动器时，程序可能产生卡顿。"
+            "value" : "“递归浏览模式”时，在目录树中选择文件夹后，缩略图区域将显示文件夹及其子目录下的所有文件。\n\n扫描部分系统目录或网络驱动器时，程序可能产生卡顿。"
           }
         }
       }

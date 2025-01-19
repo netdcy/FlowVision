@@ -151,7 +151,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         imageNameField.stringValue=getViewController(collectionView!)!.publicVar.profile.isShowThumbnailFilename ? URL(string:file.path)!.lastPathComponent : ""
 
-        if (file.imageInfo?.isHDR ?? false) && getViewController(collectionView!)!.publicVar.profile.isShowThumbnailHDR {
+        let isShowThumbnailHDR = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailHDR") == "true"
+        if (file.imageInfo?.isHDR ?? false) && isShowThumbnailHDR {
             imageLabel.stringValue="HDR"
             imageLabel.sizeToFit() // 先调整文字大小
             imageLabel.frame.origin.x = imageViewObj.frame.origin.x + imageViewObj.frame.width - imageLabel.frame.width - 5

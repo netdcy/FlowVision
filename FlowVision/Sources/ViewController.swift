@@ -27,7 +27,6 @@ class CustomProfile: Codable {
     
     //布局
     var isShowThumbnailFilename = true
-    var isShowThumbnailHDR = true
     var ThumbnailBorderThickness: Double = 6
     var ThumbnailBorderRadius: Double = 5
     var ThumbnailCellPadding: Double = 5
@@ -37,6 +36,20 @@ class CustomProfile: Codable {
     var ThumbnailFilenamePadding: Double = 18
     var ThumbnailScrollbarWidth: Double = 16
     var isGridViewNotAffectedByCustomStyle = true
+
+    //可扩展值
+    private var dict: [String: String] = [:]
+
+    func getValue(forKey key: String) -> String {
+        if dict[key] == nil && key == "isShowThumbnailHDR" {
+            return "true"
+        }
+        return dict[key]!
+    }
+
+    func setValue(forKey key: String, value: String) {
+        dict[key] = value
+    }
     
     func saveToUserDefaults(withKey key: String) {
         let encoder = JSONEncoder()
@@ -48,8 +61,11 @@ class CustomProfile: Codable {
     static func loadFromUserDefaults(withKey key: String) -> CustomProfile {
         if let savedData = UserDefaults.standard.data(forKey: key) {
             let decoder = JSONDecoder()
-            if let loadedStyle = try? decoder.decode(CustomProfile.self, from: savedData) {
+            do {
+                let loadedStyle = try decoder.decode(CustomProfile.self, from: savedData)
                 return loadedStyle
+            } catch {
+                log("Failed to decode CustomProfile: \(error)")
             }
         }
         return CustomProfile() //读取异常时返回默认值
@@ -5588,7 +5604,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 
     func configLayoutStyle(newStyle: CustomProfile ,doNotRefresh: Bool = false){
         publicVar.profile.isShowThumbnailFilename = newStyle.isShowThumbnailFilename
-        publicVar.profile.isShowThumbnailHDR = newStyle.isShowThumbnailHDR
+        publicVar.profile.setValue(forKey: "isShowThumbnailHDR", value: newStyle.getValue(forKey: "isShowThumbnailHDR"))
         publicVar.profile.ThumbnailBorderThickness = newStyle.ThumbnailBorderThickness
         publicVar.profile.ThumbnailCellPadding = newStyle.ThumbnailCellPadding
         publicVar.profile.ThumbnailBorderRadius = newStyle.ThumbnailBorderRadius
@@ -5615,7 +5631,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 
                 let newStyle = CustomProfile()
                 newStyle.isShowThumbnailFilename = isShowFilename
-                newStyle.isShowThumbnailHDR = isShowHDR
+                newStyle.setValue(forKey: "isShowThumbnailHDR", value: String(isShowHDR))
                 newStyle.ThumbnailBorderThickness = borderThickness
                 newStyle.ThumbnailCellPadding = cellPadding
                 newStyle.ThumbnailBorderRadius = borderRadius

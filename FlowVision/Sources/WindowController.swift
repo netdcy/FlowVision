@@ -848,7 +848,7 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func genHdThumbInfoAction(_ sender: NSMenuItem){
-        showInformation(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("gen-thumb-info", comment: "对于高清缩略图的说明..."))
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("gen-thumb-info", comment: "对于高清缩略图的说明..."))
     }
     
     @objc func enlargeThumb(_ sender: NSMenuItem){
