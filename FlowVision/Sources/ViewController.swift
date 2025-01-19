@@ -319,9 +319,27 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     
     var windowSizeChangedTimesWhenInLarge=0
     
+    var scrollDebounceWorkItem: DispatchWorkItem?
+    
     var arrowScrollDebounceWorkItem: DispatchWorkItem?
     
+    private var cumulativeScroll: CGFloat = 0 //累积滚动量
+    private var lastScrollSwitchLargeImageTime: TimeInterval = 0
+    
     var gestureTriggeredSwitch = false
+    
+    var initialMouseLocation: CGPoint?
+    var lastMouseLocation: CGPoint?
+    var gestureState: GestureState = .none
+    var directionHistory: [GestureDirection] = []
+    
+    var autoScrollTimer: Timer?
+    var scrollSpeed: CGFloat = 1.0
+    var isAutoScrollPaused: Bool = false
+    
+    var autoPlayTimer: Timer? // 定时器，用于控制自动播放的节奏
+    var autoPlayInterval: TimeInterval = 0 // 播放间隔，初始设置为0，用户输入后更新
+    var isAutoPlaying: Bool = false // 自动播放是否正在进行的标志
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -1161,17 +1179,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         log("结束viewDidLoad")
 
     }
-
-    override var representedObject: Any? {
-        didSet {
-        // Update the view, if already loaded.
-        }
-    }
     
     deinit {
         // 在这里执行清理工作
         log("ViewController is being deinitialized")
-        willTerminate=true
         
         if let eventMonitorKeyDown = eventMonitorKeyDown {
             NSEvent.removeMonitor(eventMonitorKeyDown)
@@ -1197,6 +1208,30 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             NotificationCenter.default.removeObserver(self, name: NSScrollView.didLiveScrollNotification, object: scrollView)
             NotificationCenter.default.removeObserver(self, name: NSScrollView.didEndLiveScrollNotification, object: scrollView)
         }
+        
+        // 取消所有未完成的异步任务
+        largeImageLoadTask?.cancel()
+        largeImageLoadTask = nil
+        scrollDebounceWorkItem?.cancel()
+        scrollDebounceWorkItem = nil
+        arrowScrollDebounceWorkItem?.cancel()
+        arrowScrollDebounceWorkItem = nil
+        
+        // 停止所有计时器
+        resizeTimer?.invalidate()
+        resizeTimer = nil
+        folderMonitorTimer?.invalidate()
+        folderMonitorTimer = nil
+        autoPlayTimer?.invalidate()
+        autoPlayTimer = nil
+        autoScrollTimer?.invalidate()
+        autoScrollTimer = nil
+        
+        //停止监控
+        stopWatchingDirectory()
+        
+        //工作线程结束标志
+        willTerminate=true
 
     }
     
@@ -2560,7 +2595,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         fileDB.unlock()
         //注：此处最好使用定时器，因为程序首次启动时会调用6次！
         if fileCount ?? 0 > -1 && !hasManualToggleSidebar && notification.name != .AVAssetDurationDidChange {
-            resizeTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(splitViewSizeChanged), userInfo: nil, repeats: false)
+            resizeTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { [weak self] _ in
+                self?.splitViewSizeChanged()
+            }
         }else{
             splitViewSizeChanged()
         }
@@ -2574,10 +2611,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
     
-    var _temp_count_sizeChanged: Int = 0
+    //var _temp_count_sizeChanged: Int = 0
     @objc func splitViewSizeChanged() {
         
-        _temp_count_sizeChanged+=1
+        //_temp_count_sizeChanged+=1
         //print("计算布局"+String(_temp_count_sizeChanged))
         
 //        DispatchQueue.main.async { [weak self] in
@@ -4252,8 +4289,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             return 0
         }
     }
-
-    var scrollDebounceWorkItem: DispatchWorkItem?
     
     @objc func scrollViewDidScroll(_ notification: Notification) {
         guard let scrollView = notification.object as? NSScrollView else { return }
@@ -4581,9 +4616,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         collectionView.deselectAll(nil)
     }
     
-    private var cumulativeScroll: CGFloat = 0 //累积滚动量
-    private var lastScrollSwitchLargeImageTime: TimeInterval = 0
-    
     func handleScrollWheel(_ event: NSEvent) {
         //log("触控板:",event.scrollingDeltaY,event.scrollingDeltaX)
         //log("滚轮的:",event.deltaY)
@@ -4843,10 +4875,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         fileDB.lock()
         let curFolder=fileDB.curFolder
         let totalCount = fileDB.db[SortKeyDir(curFolder)]!.files.count
-        fileDB.unlock()
         guard let path = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: currLargeImagePos)?.1.path,
               let url = URL(string: path)
-        else{ return }
+        else{
+            fileDB.unlock()
+            return
+        }
+        fileDB.unlock()
         
         var threadNum: Int
         if VolumeManager.shared.isExternalVolume(url) {
@@ -5291,8 +5326,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             folderMonitorTimer?.invalidate()
-            folderMonitorTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { timer in
-                self.refreshAll(needStopAutoScroll: false)
+            folderMonitorTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { [weak self] _ in
+                self?.refreshAll(needStopAutoScroll: false)
             }
         }
     }
@@ -5320,15 +5355,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             log("File system event: revoke")
         }
     }
-
-    enum GestureState {
-        case none, oneDirection(GestureDirection), twoDirections(GestureDirection, GestureDirection)
-    }
-    
-    var initialMouseLocation: CGPoint?
-    var lastMouseLocation: CGPoint?
-    var gestureState: GestureState = .none
-    var directionHistory: [GestureDirection] = []
     
     override func rightMouseDown(with event: NSEvent) {
         //publicVar.isRightMouseDown = true
@@ -5406,6 +5432,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
 
         super.rightMouseUp(with: event)
+    }
+    
+    enum GestureState {
+        case none, oneDirection(GestureDirection), twoDirections(GestureDirection, GestureDirection)
     }
 
     func analyzeGesture(doAction: Bool) {
@@ -5645,10 +5675,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
         }
     }
-
-    var autoScrollTimer: Timer?
-    var scrollSpeed: CGFloat = 1.0
-    var isAutoScrollPaused: Bool = false
     
     func promptForScrollSpeed(completion: @escaping (CGFloat?) -> Void) {
         let alert = NSAlert()
@@ -5733,10 +5759,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             pauseAutoScroll()
         }
     }
-    
-    var autoPlayTimer: Timer? // 定时器，用于控制自动播放的节奏
-    var autoPlayInterval: TimeInterval = 0 // 播放间隔，初始设置为0，用户输入后更新
-    var isAutoPlaying: Bool = false // 自动播放是否正在进行的标志
 
     func startAutoPlay() {
         guard !isAutoPlaying else {return}

@@ -36,6 +36,8 @@ class LargeImageView: NSView {
     
     var isInOcrState: Bool = false
     
+    private var magnificationGesture: NSMagnificationGestureRecognizer?
+    
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         commonInit()
@@ -80,8 +82,10 @@ class LargeImageView: NSView {
             infoView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
         ])
         
-        let magnificationGesture = NSMagnificationGestureRecognizer(target: self, action: #selector(handleMagnification(_:)))
-        self.addGestureRecognizer(magnificationGesture)
+        magnificationGesture = NSMagnificationGestureRecognizer(target: self, action: #selector(handleMagnification(_:)))
+        if let gesture = magnificationGesture {
+            self.addGestureRecognizer(gesture)
+        }
     }
     
     func updateTextItems(_ items: [(String, Any)]) {
@@ -459,7 +463,7 @@ class LargeImageView: NSView {
                 wheelZoomRegenTimer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false) { [weak self] _ in
                     guard let self=self else{return}
                     getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false)
-                    self.hasZoomedByWheel=false
+                    hasZoomedByWheel=false
                 }
             }
 
@@ -706,6 +710,18 @@ class LargeImageView: NSView {
         let rect = NSRect(origin: NSPoint(x: centerPoint.x - 5, y: centerPoint.y - 5), size: NSSize(width: 10, height: 10))
         sharingServicePicker.show(relativeTo: rect, of: self, preferredEdge: .maxX)
     }
+    
+    deinit {
+        if let gesture = magnificationGesture {
+            self.removeGestureRecognizer(gesture)
+        }
+        magnificationGesture = nil
+        
+        longPressZoomTimer?.invalidate()
+        longPressZoomTimer = nil
+        wheelZoomRegenTimer?.invalidate()
+        wheelZoomRegenTimer = nil
+    }
 }
 
 
@@ -890,5 +906,10 @@ class InfoView: NSView {
                 self.isHidden = true
             }
         }
+    }
+    
+    deinit {
+        hideTimer?.invalidate()
+        hideTimer = nil
     }
 }
