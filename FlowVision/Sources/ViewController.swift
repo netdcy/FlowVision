@@ -1032,12 +1032,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 return event
             }
             if publicVar.isInLargeView {
-                self.largeImageView.rightMouseUp(with: event)
+                //self.largeImageView.rightMouseUp(with: event)
             }else{
                 self.drawingView?._rightMouseUp(with: event)
             }
-            //return event  // 返回 nil 则不传递事件
-            return nil
+            return event  // 返回 nil 则不传递事件
+            //return nil
         }
         eventMonitorRightMouseDown = NSEvent.addLocalMonitorForEvents(matching: .rightMouseDown) { [weak self] event in
             guard let self=self else{return event}
@@ -1047,12 +1047,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 return event
             }
             if publicVar.isInLargeView {
-                self.largeImageView.rightMouseDown(with: event)
+                //self.largeImageView.rightMouseDown(with: event)
             }else{
                 self.drawingView?._rightMouseDown(with: event)
             }
-            //return event  // 返回 nil 则不传递事件
-            return nil
+            return event  // 返回 nil 则不传递事件
+            //return nil
         }
         eventMonitorRightMouseDragged = NSEvent.addLocalMonitorForEvents(matching: .rightMouseDragged) { [weak self] event in
             guard let self=self else{return event}
@@ -1062,12 +1062,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 return event
             }
             if publicVar.isInLargeView {
-                self.largeImageView.rightMouseDragged(with: event)
+                //self.largeImageView.rightMouseDragged(with: event)
             }else{
                 self.drawingView?._rightMouseDragged(with: event)
             }
-            //return event  // 返回 nil 则不传递事件
-            return nil
+            return event  // 返回 nil 则不传递事件
+            //return nil
         }
         
         //=========结束事件监听配置==========
