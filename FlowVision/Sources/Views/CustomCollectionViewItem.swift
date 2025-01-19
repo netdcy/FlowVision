@@ -14,6 +14,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var imageViewRef: CustomThumbImageView!
     @IBOutlet weak var imageNameField: NSTextField!
     @IBOutlet weak var imageLabel: NSTextField!
+    @IBOutlet weak var videoFlag: NSImageView!
     
     var folderViews=[NSView]()
     var folderImageViews=[CustomImageView]()
@@ -35,6 +36,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         view.layer?.cornerRadius = 5.0
         view.layer?.masksToBounds = true
         
+        //图像容器
         imageViewObj.imageScaling = .scaleAxesIndependently
         imageViewObj.wantsLayer = true
         imageViewObj.layer?.borderWidth = 0.0
@@ -46,13 +48,27 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             imageViewObj.preferredImageDynamicRange = .standard
         }
         
+        //文件名标签
         imageNameField.cell?.lineBreakMode = .byTruncatingTail
         
+        //右上角标签
         imageLabel.wantsLayer = true
         imageLabel.layer?.backgroundColor = NSColor.gray.withAlphaComponent(0.6).cgColor
         imageLabel.layer?.cornerRadius = 4
 //        imageLabel.layer?.borderWidth = 0.5
 //        imageLabel.layer?.borderColor = NSColor.gray.withAlphaComponent(0.5).cgColor
+        
+        //视频图标
+        let playImage = NSImage(systemSymbolName: "play.circle", accessibilityDescription: "Video")?.withSymbolConfiguration(.init(pointSize: 0, weight: .regular, scale: .large))
+        playImage?.isTemplate = true
+        videoFlag.image = playImage
+        videoFlag.contentTintColor = NSColor.white.withAlphaComponent(0.8)
+        videoFlag.imageScaling = .scaleAxesIndependently
+        videoFlag.wantsLayer = true
+        videoFlag.layer?.shadowColor = NSColor.black.cgColor
+        videoFlag.layer?.shadowOffset = CGSize(width: 0, height: 0)
+        videoFlag.layer?.shadowRadius = 3
+        videoFlag.layer?.shadowOpacity = 0.5
         
 //        for _ in 0...0 {
 //            // 父视图 - 用于阴影和边框
@@ -160,6 +176,19 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             imageLabel.isHidden=false
         }else{
             imageLabel.isHidden=true
+        }
+        
+        if file.type == .video && getViewController(collectionView!)!.publicVar.profile.layoutType == .grid {
+            // 设置视频播放图标的大小为视图宽度的1/4
+            let iconSize = min(view.frame.width, view.frame.height) * 0.25
+            let iconPoint = NSPoint(
+                x: imageViewObj.frame.origin.x + (imageViewObj.frame.width - iconSize) / 2,
+                y: imageViewObj.frame.origin.y + (imageViewObj.frame.height - iconSize) / 2
+            )
+            videoFlag.frame = NSRect(origin: iconPoint, size: NSSize(width: iconSize, height: iconSize))
+            videoFlag.isHidden = false
+        }else{
+            videoFlag.isHidden = true
         }
         
         

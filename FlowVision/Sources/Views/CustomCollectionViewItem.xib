@@ -12,6 +12,7 @@
                 <outlet property="imageNameField" destination="pCL-Qi-9tg" id="Wm9-cR-1T3"/>
                 <outlet property="imageViewObj" destination="mLA-jB-nbi" id="Chi-eg-LHj"/>
                 <outlet property="imageViewRef" destination="Bgk-cS-MXG" id="y6F-wk-C87"/>
+                <outlet property="videoFlag" destination="nRh-ad-vPL" id="EzM-k9-XXc"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
             </connections>
         </customObject>
@@ -49,6 +50,11 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nRh-ad-vPL" userLabel="Video Flag">
+                    <rect key="frame" x="132" y="141" width="48" height="48"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="UUt-m4-kNO"/>
+                </imageView>
             </subviews>
             <point key="canvasLocation" x="98" y="134"/>
         </customView>
