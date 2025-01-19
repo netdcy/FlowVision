@@ -268,6 +268,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     var largeImageLoadQueueLock = NSLock()
     
     var lastDoNotGenResized = false
+    var lastResizeFailed = false
     var lastLargeImageRotate = 0
     var lastUseHDR = false
     
@@ -4430,7 +4431,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     
                     currLargeImagePos=indexPath.item
                     initLargeImagePos=indexPath.item
+
                     lastDoNotGenResized=false
+                    lastResizeFailed=false
                     lastUseHDR=false
                     lastLargeImageRotate=0
 
@@ -4562,7 +4565,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             largeImageView.file.rotate=0
             
             currLargeImagePos=nextLargeImagePos
+
             lastDoNotGenResized=false
+            lastResizeFailed=false
             lastUseHDR=false
             lastLargeImageRotate=0
             
@@ -4618,7 +4623,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             largeImageView.file.rotate=0
             
             currLargeImagePos=nextLargeImagePos
+
             lastDoNotGenResized=false
+            lastResizeFailed=false
             lastUseHDR=false
             lastLargeImageRotate=0
             
@@ -4702,6 +4709,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         initLargeImagePos = -1
         
         lastDoNotGenResized=false
+        lastResizeFailed=false
         lastUseHDR=false
         lastLargeImageRotate=0
 
@@ -4986,6 +4994,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 doNotGenResized=true
             }
             
+            //如果上次生成Resize失败
+            if lastResizeFailed {
+                lastDoNotGenResized=true
+                doNotGenResized=true
+            }
+            
             log("ori:",originalSize.width,originalSize.height)
             log("dest:",largeSize.width,largeSize.height)
             
@@ -4993,9 +5007,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             if lastDoNotGenResized && doNotGenResized && lastLargeImageRotate == rotate && lastUseHDR == isHDR {return}
             
             //若上次已经是HDR，这次还是，则不重新载入
-            if lastUseHDR && isHDR && lastLargeImageRotate == rotate {return}
+            //if lastUseHDR && isHDR && lastLargeImageRotate == rotate {return}
 
             lastDoNotGenResized=doNotGenResized
+            lastResizeFailed = false
             lastUseHDR=isHDR
             lastLargeImageRotate=rotate
             
@@ -5060,12 +5075,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     largeImage=LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR)
                 }else{
                     if isHDR {
-                        largeImage = getHDRImage(url: url, rotate: rotate)
+                        largeImage = getHDRImage(url: url, size: doNotGenResized ? nil : largeSize, rotate: rotate)
                     }else if doNotGenResized {
                         largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
                     }else{
                         largeImage = getResizedImage(url: url, size: largeSize, rotate: rotate)
                         if largeImage == nil {
+                            lastResizeFailed = true
                             largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
                         }
                     }

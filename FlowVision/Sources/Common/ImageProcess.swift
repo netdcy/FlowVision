@@ -592,7 +592,7 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0) -> NSImage
     guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil),
           let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
     else {
-        print("imageSource:",url.absoluteString.removingPercentEncoding!)
+        print("Failed when imageSource:",url.absoluteString.removingPercentEncoding!)
         return nil
     }
 
@@ -675,7 +675,7 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0) -> NSImage
 
     guard let scaledImage = context?.makeImage() else {
         if image.bitsPerComponent <= 8 { // 本来就不支持8bit以上图像
-            print("makeImage:",url.absoluteString.removingPercentEncoding!)
+            print("Failed when makeImage:",url.absoluteString.removingPercentEncoding!)
         }
         return nil
     }
@@ -695,7 +695,7 @@ func checkIsHDR(imageInfo: ImageInfo?) -> Bool {
     return false
 }
 
-func getHDRImage(url: URL, rotate: Int = 0) -> NSImage? {
+func getHDRImage(url: URL, size: NSSize? = nil, rotate: Int = 0) -> NSImage? {
     if #available(macOS 14.0, *) {
         let ciOptions: [CIImageOption: Any] = [.applyOrientationProperty: true, .expandToHDR: true]
         if var inputImage = CIImage(contentsOf: url, options: ciOptions) {
@@ -704,6 +704,20 @@ func getHDRImage(url: URL, rotate: Int = 0) -> NSImage? {
                 inputImage = inputImage.oriented(.right).transformed(by: CGAffineTransform(rotationAngle: CGFloat(-rotate+1) * .pi / 2))
             }
             
+            if let size = size {
+                // 分别计算宽度和高度的缩放比例
+                let scaleX = 2 * size.width / inputImage.extent.width
+                let scaleY = 2 * size.height / inputImage.extent.height
+                // 使用CILanczosScaleTransform进行高质量缩放
+                let scaleFilter = CIFilter(name: "CILanczosScaleTransform")!
+                scaleFilter.setValue(inputImage, forKey: kCIInputImageKey)
+                scaleFilter.setValue(scaleY, forKey: kCIInputScaleKey)
+                scaleFilter.setValue(scaleX/scaleY, forKey: kCIInputAspectRatioKey)
+                if let outputImage = scaleFilter.outputImage{
+                    inputImage = outputImage
+                }
+            }
+
             let context = CIContext(options: [.name: "Renderer"])
             if let cgImage = context.createCGImage(inputImage,
                                                    from: inputImage.extent,
@@ -1222,7 +1236,7 @@ class LargeImageProcessor {
             // 生成图像
             var image: NSImage?
             if isHDR {
-                image = getHDRImage(url: url, rotate: rotate)
+                image = getHDRImage(url: url, size: useOriginalImage ? nil : size, rotate: rotate)
             }else if useOriginalImage {
                 image = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
             }else{
