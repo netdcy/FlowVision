@@ -8,6 +8,8 @@
 import Cocoa
 
 class WindowController: NSWindowController, NSWindowDelegate {
+    
+    var pathShortenStore = ""
 
     override func windowDidLoad() {
         super.windowDidLoad()
@@ -33,7 +35,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
             toolbar.allowsUserCustomization = true
             toolbar.autosavesConfiguration = false
             toolbar.displayMode = .iconOnly
-            toolbar.showsBaselineSeparator = true
+            //toolbar.showsBaselineSeparator = true
             window.toolbar = toolbar
 
             if globalVar.autoHideToolbar {
@@ -192,6 +194,8 @@ extension NSToolbarItem.Identifier {
     static let showinfo = NSToolbarItem.Identifier("com.example.showinfo")
     static let ontop = NSToolbarItem.Identifier("com.example.ontop")
     static let windowTitle = NSToolbarItem.Identifier("com.example.windowTitle")
+    static let windowTitleStatistics = NSToolbarItem.Identifier("com.example.windowTitleStatistics")
+    static let pathControl = NSToolbarItem.Identifier("com.example.pathControl")
     static let rotateL = NSToolbarItem.Identifier("com.example.rotateL")
     static let rotateR = NSToolbarItem.Identifier("com.example.rotateR")
     static let zoomIn = NSToolbarItem.Identifier("com.example.zoomIn")
@@ -216,9 +220,13 @@ extension WindowController: NSToolbarDelegate {
     
     func getItemIdentifiers() -> [NSToolbarItem.Identifier] {
         //, .flexibleSpace, .space
-        var identifiers: [NSToolbarItem.Identifier] = [.sidebar, .favorites, .goBack, .goForward, .upFolder, .windowTitle]
+        var identifiers: [NSToolbarItem.Identifier] = [.sidebar, .favorites, .goBack, .goForward]
+        
+        //identifiers.append(.upFolder)
+        
         if let viewController = contentViewController as? ViewController {
             if viewController.publicVar.isInLargeView {
+                identifiers.append(.windowTitle)
                 if #available(macOS 14.0, *) {
                     if viewController.largeImageView.file.imageInfo?.isHDR ?? false {
                         identifiers.append(.isEnableHDR)
@@ -230,6 +238,16 @@ extension WindowController: NSToolbarDelegate {
                 identifiers.append(.rotateR)
                 identifiers.append(.showinfo)
             }else{
+                if viewController.publicVar.profile.getValue(forKey: "isWindowTitleUseFullPath") == "true" {
+                    identifiers.append(.pathControl)
+                    if viewController.publicVar.profile.getValue(forKey: "isWindowTitleShowStatistics") == "true" {
+                        identifiers.append(.windowTitleStatistics)
+                    }
+                    identifiers.append(.flexibleSpace)
+                }else{
+                    identifiers.append(.windowTitle)
+                }
+                
                 if viewController.publicVar.isRecursiveMode {
                     identifiers.append(.isRecursiveMode)
                 }
@@ -240,7 +258,7 @@ extension WindowController: NSToolbarDelegate {
         }
         
         identifiers.append(NSToolbarItem.Identifier("CustomSeparator"))
-        //identifiers.append(.flexibleSpace)
+        
         
         identifiers.append(.more)
         identifiers.append(.newtab)
@@ -271,7 +289,10 @@ extension WindowController: NSToolbarDelegate {
         switch itemIdentifier {
             
         case .windowTitle:
-            let titleLabel = createWindowTitleLabel()
+            let text = (contentViewController as? ViewController)?.publicVar.toolbarTitle
+            let titleLabel = createWindowTitleLabel(string: text ?? "FlowVision")
+            titleLabel.font = NSFont.systemFont(ofSize: 13, weight: .regular)
+            titleLabel.alignment = .center
             toolbarItem.view = titleLabel
             toolbarItem.minSize = NSSize(width: 200, height: titleLabel.fittingSize.height)
             toolbarItem.maxSize = NSSize(width: 10000, height: titleLabel.fittingSize.height)
@@ -279,6 +300,63 @@ extension WindowController: NSToolbarDelegate {
             //toolbarItem.maxSize = titleLabel.fittingSize
             toolbarItem.label = NSLocalizedString("window-title", comment: "窗口标题")
             toolbarItem.paletteLabel = NSLocalizedString("window-title", comment: "窗口标题")
+            toolbarItem.visibilityPriority = .high
+            
+        case .windowTitleStatistics:
+            let text = (contentViewController as? ViewController)?.publicVar.titleStatisticInfo
+            let titleLabel = createWindowTitleLabel(string: text ?? "")
+            titleLabel.font = NSFont.systemFont(ofSize: 13, weight: .regular)
+            titleLabel.textColor = NSColor.placeholderTextColor
+            titleLabel.alignment = .left
+            toolbarItem.view = titleLabel
+//            toolbarItem.minSize = NSSize(width: 200, height: titleLabel.fittingSize.height)
+//            toolbarItem.maxSize = NSSize(width: 10000, height: titleLabel.fittingSize.height)
+            //toolbarItem.minSize = titleLabel.fittingSize
+            //toolbarItem.maxSize = titleLabel.fittingSize
+            toolbarItem.label = NSLocalizedString("window-title", comment: "窗口标题")
+            toolbarItem.paletteLabel = NSLocalizedString("window-title", comment: "窗口标题")
+            toolbarItem.visibilityPriority = .high
+            
+        case .pathControl:
+            let pathControl = CustomPathControl()
+            pathControl.pathStyle = .standard
+            pathControl.isEditable = false
+            pathControl.backgroundColor = .clear
+            pathControl.focusRingType = .none
+            //pathControl.translatesAutoresizingMaskIntoConstraints = false
+            pathControl.target = self
+            pathControl.action = #selector(pathControlClicked(_:))
+            
+            if let viewController = contentViewController as? ViewController {
+                let curFolder=viewController.fileDB.curFolder
+                var fullTitle = ROOT_NAME+curFolder.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!
+
+                let components = fullTitle.components(separatedBy: "/")
+                let maxNum = 7
+                if components.count > maxNum {
+                    pathShortenStore = components[0..<components.count-maxNum].joined(separator: "/")
+                    let shortenedTitle = ".../" + components[components.count-maxNum..<components.count].joined(separator: "/")
+                    fullTitle = shortenedTitle
+                } else {
+                    pathShortenStore = ""
+                }
+
+                //print(pathShortenStore)
+                
+                if let url = URL(string: fullTitle) {
+                    pathControl.url = url
+                } else {
+                    pathControl.placeholderString = fullTitle
+                }
+//                let url = URL(fileURLWithPath: fullTitle)
+//                pathControl.url = url
+            }
+            
+            toolbarItem.view = pathControl
+            //toolbarItem.minSize = NSSize(width: 200, height: pathControl.fittingSize.height)
+            //toolbarItem.maxSize = NSSize(width: 10000, height: pathControl.fittingSize.height)
+            toolbarItem.label = NSLocalizedString("window-title", comment: "窗口标题")
+            toolbarItem.paletteLabel = NSLocalizedString("window-title", comment: "窗口标题") 
             toolbarItem.visibilityPriority = .high
             
         case .sidebar:
@@ -332,15 +410,6 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.label = NSLocalizedString("up-folder", comment: "上层文件夹")
             toolbarItem.paletteLabel = NSLocalizedString("up-folder", comment: "上层文件夹")
             toolbarItem.visibilityPriority = .low
-            
-        case .newtab:
-            let button = NSButton(title: "", image: NSImage(systemSymbolName: "rectangle.badge.plus", accessibilityDescription: "")!, target: self, action: #selector(newtabAction(_:)))
-            setButtonStyle(button)
-            button.toolTip = NSLocalizedString("new-tab", comment: "新标签页")
-            toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("new-tab", comment: "新标签页")
-            toolbarItem.paletteLabel = NSLocalizedString("new-tab", comment: "新标签页")
-            toolbarItem.visibilityPriority = .user
             
         case .viewToggle:
             let segmentedControl = NSSegmentedControl(images: [
@@ -460,11 +529,13 @@ extension WindowController: NSToolbarDelegate {
                 }
                 switch viewController.publicVar.profile.sortType {
                 case .pathA,.extA,.sizeA,.createDateA,.modDateA,.addDateA:
-                    image = NSImage(systemSymbolName: "arrow.up", accessibilityDescription: "")!
+                    //image = NSImage(systemSymbolName: "arrow.up", accessibilityDescription: "")!
+                    //image = NSImage(systemSymbolName: "arrowtriangle.up", accessibilityDescription: "")!
+                    image = NSImage(systemSymbolName: "chevron.up.circle", accessibilityDescription: "")!
                 case .pathZ,.extZ,.sizeZ,.createDateZ,.modDateZ,.addDateZ:
-                    image = NSImage(systemSymbolName: "arrow.down", accessibilityDescription: "")!
+                    image = NSImage(systemSymbolName: "chevron.down.circle", accessibilityDescription: "")!
                 case .random:
-                    image = NSImage(systemSymbolName: "arrow.up.arrow.down", accessibilityDescription: "")!
+                    image = NSImage(systemSymbolName: "arrow.up.arrow.down.circle", accessibilityDescription: "")!
                 }
             }
             
@@ -477,7 +548,7 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.visibilityPriority = .low
             
         case .thumbSize:
-            let button = NSButton(title: "", image: NSImage(systemSymbolName: "photo.on.rectangle", accessibilityDescription: "")!, target: self, action: #selector(showThumbSizeMenu(_:)))
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "photo", accessibilityDescription: "")!, target: self, action: #selector(showThumbSizeMenu(_:)))
             setButtonStyle(button)
             button.toolTip = NSLocalizedString("thumb-size", comment: "缩略图大小")
             toolbarItem.view = button
@@ -502,7 +573,16 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.view = button
             toolbarItem.label = NSLocalizedString("More", comment: "更多")
             toolbarItem.paletteLabel = NSLocalizedString("More", comment: "更多")
-            toolbarItem.visibilityPriority = .user
+            toolbarItem.visibilityPriority = .high
+            
+        case .newtab:
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "rectangle.badge.plus", accessibilityDescription: "")!, target: self, action: #selector(newtabAction(_:)))
+            setButtonStyle(button)
+            button.toolTip = NSLocalizedString("new-tab", comment: "新标签页")
+            toolbarItem.view = button
+            toolbarItem.label = NSLocalizedString("new-tab", comment: "新标签页")
+            toolbarItem.paletteLabel = NSLocalizedString("new-tab", comment: "新标签页")
+            toolbarItem.visibilityPriority = .high
             
         case NSToolbarItem.Identifier("CustomSeparator"):
             let margin: CGFloat = 4
@@ -524,17 +604,35 @@ extension WindowController: NSToolbarDelegate {
         return toolbarItem
     }
     
+    @objc func pathControlClicked(_ sender: NSPathControl) {
+        guard let viewController = contentViewController as? ViewController else {return}
+        if let clickedItem = sender.clickedPathItem {
+            if let itemURL = clickedItem.url {
+                if viewController.publicVar.isInLargeView {
+                    viewController.closeLargeImage(0)
+                }
+                var tmpPath = itemURL.path
+                if pathShortenStore.count > 0 {
+                    tmpPath = "/"+pathShortenStore + tmpPath.dropFirst("/...".count)
+                }
+                let rootPrefix = "/"+ROOT_NAME
+                let destAbsPath = "file://"+String(tmpPath.dropFirst(rootPrefix.count)).addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!+"/"
+                //print("1:"+itemURL.path)
+                //print("2:"+pathShortenStore)
+                //print("3:"+destAbsPath)
+                viewController.switchDirByDirection(direction: .zero, dest: destAbsPath, doCollapse: true, expandLast: true, skip: false, stackDeep: 0)
+            }
+        }
+    }
+    
     class NonClickableTextField: NSTextField {
         override func hitTest(_ point: NSPoint) -> NSView? {
             return nil  // 忽略所有鼠标事件
         }
     }
     
-    private func createWindowTitleLabel() -> NSTextField {
-        var fullTitle = (contentViewController as? ViewController)?.publicVar.fullTitle
-        let titleLabel = NonClickableTextField(labelWithString: fullTitle ?? "FlowVision")
-        titleLabel.font = NSFont.systemFont(ofSize: 14, weight: .medium)
-        titleLabel.alignment = .center
+    private func createWindowTitleLabel(string: String) -> NSTextField {
+        let titleLabel = NonClickableTextField(labelWithString: string)
         titleLabel.isBezeled = false
         titleLabel.drawsBackground = false
         titleLabel.isEditable = false
@@ -548,6 +646,7 @@ extension WindowController: NSToolbarDelegate {
         button.bezelStyle = .rounded
         button.setButtonType(.momentaryPushIn)
         button.isBordered = true
+//        button.bezelStyle = .toolbar
         button.showsBorderOnlyWhileMouseInside = true
     }
     

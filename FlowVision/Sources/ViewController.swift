@@ -96,7 +96,8 @@ class PublicVar{
     //可一键切换的配置
     var profile = CustomProfile()
     
-    var fullTitle = "FlowVision"
+    var toolbarTitle = "FlowVision"
+    var titleStatisticInfo = ""
     var isKeyEventEnabled = true
     var folderStepStack = [String]() {
         didSet {updateToolbar()}
@@ -2788,8 +2789,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     }
     
     func setWindowTitle(){
-        var fullTitle = "FlowVision"
-
+        
         fileDB.lock()
         let curFolder=fileDB.curFolder
         let imageCount=(fileDB.db[SortKeyDir(curFolder)]?.imageCount ?? 0)
@@ -2798,37 +2798,51 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         let folderCount=(fileDB.db[SortKeyDir(curFolder)]?.folderCount ?? 0)
         fileDB.unlock()
 
-        var shortTitle = (curFolder as NSString).lastPathComponent.removingPercentEncoding!
-        fullTitle = curFolder.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!
-
-        if publicVar.profile.getValue(forKey: "isWindowTitleUseFullPath") != "true" {
-            fullTitle = shortTitle
-        }
-
-        if folderCount+imageCount+videoCount+otherCount > 0 && publicVar.profile.getValue(forKey: "isWindowTitleShowStatistics") == "true" {
-            fullTitle += String(format: " (")
+        var statisticInfo = ""
+        if folderCount+imageCount+videoCount+otherCount > 0 {
+            statisticInfo += String(format: "(")
             if folderCount != 0 {
-                fullTitle += String(format: "%d %@ ", folderCount, NSLocalizedString("Folder", comment: "目录"))
+                statisticInfo += String(format: "%d %@ ", folderCount, NSLocalizedString("Folder", comment: "目录"))
             }
             if imageCount != 0 {
-                fullTitle += String(format: "%d %@ ", imageCount, NSLocalizedString("Image", comment: "图像"))
+                statisticInfo += String(format: "%d %@ ", imageCount, NSLocalizedString("Image", comment: "图像"))
             }
             if videoCount != 0 {
-                fullTitle += String(format: "%d %@ ", videoCount, NSLocalizedString("Video", comment: "视频"))
+                statisticInfo += String(format: "%d %@ ", videoCount, NSLocalizedString("Video", comment: "视频"))
             }
             if otherCount != 0 {
-                fullTitle += String(format: "%d %@ ", otherCount, NSLocalizedString("Other", comment: "其它"))
+                statisticInfo += String(format: "%d %@ ", otherCount, NSLocalizedString("Other", comment: "其它"))
             }
-            fullTitle=fullTitle.trimmingCharacters(in: .whitespaces)
+            statisticInfo=statisticInfo.trimmingCharacters(in: .whitespaces)
             //                if folderCount == 0 && imageCount == 0 && videoCount == 0 && otherCount == 0 {
             //                    windowTitle += NSLocalizedString("Empty", comment: "空")
             //                }
-            fullTitle += String(format: ")")
+            statisticInfo += String(format: ")")
+        }
+        
+        var shortTitle = (curFolder as NSString).lastPathComponent.removingPercentEncoding!
+        var fullTitle = String(curFolder.replacingOccurrences(of: "file:///", with: "").removingPercentEncoding!.dropLast())
+        
+        if curFolder == "file:///" {
+            shortTitle = ROOT_NAME
+            fullTitle = ROOT_NAME
+        }
+        
+//        if publicVar.profile.getValue(forKey: "isWindowTitleUseFullPath") == "true" {
+//            publicVar.toolbarTitle = fullTitle
+//        }else{
+//            publicVar.toolbarTitle = shortTitle
+//        }
+        
+        publicVar.toolbarTitle = shortTitle
+        
+        if publicVar.profile.getValue(forKey: "isWindowTitleShowStatistics") == "true" {
+            publicVar.toolbarTitle += " " + statisticInfo
         }
 
-        if curFolder == "file:///" {shortTitle = ROOT_NAME}
+        publicVar.titleStatisticInfo = statisticInfo
         view.window?.title = shortTitle
-        publicVar.fullTitle = fullTitle
+        
         if let windowController = view.window?.windowController as? WindowController {
             windowController.updateToolbar()
         }
@@ -4667,8 +4681,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         let shortTitle = (file.path as NSString).lastPathComponent.removingPercentEncoding!
         view.window?.title = shortTitle
-        publicVar.fullTitle = fullTitle
-        //publicVar.fullTitle = shortTitle
+        publicVar.toolbarTitle = fullTitle
+        //publicVar.toolbarTitle = shortTitle
         if let windowController = view.window?.windowController as? WindowController {
             windowController.updateToolbar()
         }
