@@ -4856,6 +4856,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 largeSize=NSSize(width: originalSize.width/scale, height: originalSize.height/scale)
             }
             
+            //整数缩放
+            largeSize = NSSize(width: round(largeSize.width), height: round(largeSize.height))
+            
             //不进行过大缩放，内存炸了
             var doNotGenResized=false
             if largeSize.width*scale>=originalSize.width && largeSize.height*scale>=originalSize.height {
@@ -4960,7 +4963,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 originalSize=NSSize(width: originalSize.height, height: originalSize.width)
             }
             
-            //if let originalSize=getCurrentImageOriginalSize(){
+            //由于首次打开图像时maxBounds可能为窗口大小，因此要按比例缩放到合适
             if originalSize.height/originalSize.width*maxBounds.width > maxBounds.height {
                 largeSize=NSSize(width: originalSize.width/originalSize.height*maxBounds.height, height: maxBounds.height)
             }else{
@@ -4977,6 +4980,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 let rectImage=NSRect(origin: CGPoint(x: (rectView.width-largeSize.width)/2, y: (rectView.height-largeSize.height)/2), size: largeSize)
                 largeImageView.imageView.frame=rectImage
             }
+            
+            //整数缩放
+            largeSize = NSSize(width: round(largeSize.width), height: round(largeSize.height))
             
             //不进行过大缩放，内存炸了
             var doNotGenResized=false

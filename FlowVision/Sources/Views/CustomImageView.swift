@@ -156,6 +156,10 @@ class IntegerImageView: CustomImageView {
     // Use floating-point numbers to store the precise position and size
     private var internalOrigin: CGPoint = .zero
     private var internalSize: CGSize = .zero
+    
+    func getIntFrame () -> NSRect {
+        return super.frame
+    }
 
     // Override frame property
     override var frame: NSRect {
