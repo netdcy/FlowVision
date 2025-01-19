@@ -185,7 +185,13 @@ class CustomCollectionView: NSCollectionView {
     }
     
     @objc func actRefresh() {
-        getViewController(self)?.refreshAll()
+        LargeImageProcessor.clearCache()
+        ThumbImageProcessor.clearCache()
+        getViewController(self)?.refreshAll([.all])
+        DispatchQueue.main.async { [weak self] in
+            guard let self=self else {return}
+            getViewController(self)?.setLoadThumbPriority(ifNeedVisable: true)
+        }
     }
     
 }

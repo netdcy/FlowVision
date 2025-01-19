@@ -504,10 +504,16 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 // 检查按键是否是 "R" 键
                 if (characters == "r" || specialKey == .f5) && noModifierKey {
                     if publicVar.isInLargeView{
+                        LargeImageProcessor.clearCache()
                         largeImageView.actRefresh()
                         return nil
                     }else{
-                        refreshAll()
+                        LargeImageProcessor.clearCache()
+                        ThumbImageProcessor.clearCache()
+                        refreshAll([.all])
+                        DispatchQueue.main.async { [weak self] in
+                            self?.setLoadThumbPriority(ifNeedVisable: true)
+                        }
                         return nil
                     }
                 }
@@ -2346,7 +2352,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         let curFolder = fileDB.curFolder
         if let files = fileDB.db[SortKeyDir(curFolder)]?.files {
             for file in files {
-                if reloadThumbType.contains(file.1.type) || reloadThumbType.first == .all {
+                if reloadThumbType.contains(file.1.type) || reloadThumbType.contains(.all) {
                     file.1.originalSize=nil
                     file.1.thumbSize=nil
                     file.1.image=nil
@@ -4078,28 +4084,33 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         guard let scrollView = notification.object as? NSScrollView else { return }
         // 确保是针对我们感兴趣的ScrollView（如果有多个ScrollView）
         if scrollView == collectionView.enclosingScrollView {
-
-            if publicVar.timer.intervalSafe(name: "scrollViewDidScrollSetLoadThumbPriority", second: 0.1) {
-                setLoadThumbPriority(ifNeedVisable: true)
-            }
-            
-            scrollDebounceWorkItem?.cancel()
-            scrollDebounceWorkItem = DispatchWorkItem {
-                DispatchQueue.main.async { [weak self] in
-                    self?.setLoadThumbPriority(ifNeedVisable: true)
-                }
-            }
-            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.1, execute: scrollDebounceWorkItem!)
+            debounceSetLoadThumbPriority(interval: 0.1, ifNeedVisable: true)
         }
     }
-    
+
     @objc func scrollViewScrollEnd(_ notification: Notification) {
         guard let scrollView = notification.object as? NSScrollView else { return }
         // 确保是针对我们感兴趣的ScrollView（如果有多个ScrollView）
         if scrollView == collectionView.enclosingScrollView {
-            setLoadThumbPriority(ifNeedVisable: true)
+            debounceSetLoadThumbPriority(interval: 0.1, ifNeedVisable: true)
         }
     }
+
+    func debounceSetLoadThumbPriority(interval: Double, ifNeedVisable: Bool){
+        if publicVar.timer.intervalSafe(name: "scrollViewDidScrollSetLoadThumbPriority", second: interval) {
+            setLoadThumbPriority(ifNeedVisable: ifNeedVisable)
+        }
+        
+        scrollDebounceWorkItem?.cancel()
+        scrollDebounceWorkItem = DispatchWorkItem {
+            DispatchQueue.main.async { [weak self] in
+                self?.setLoadThumbPriority(ifNeedVisable: ifNeedVisable)
+            }
+        }
+        DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + interval, execute: scrollDebounceWorkItem!)
+    }
+    
+    
 
     func setLoadThumbPriority(indexPath: IndexPath? = nil, range: (Int,Int) = (-20,20), ifNeedVisable: Bool){
 
@@ -5440,6 +5451,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         scrollView.contentView.scroll(to: newOrigin)
         scrollView.reflectScrolledClipView(scrollView.contentView)
+
+        debounceSetLoadThumbPriority(interval: 1, ifNeedVisable: true)
     }
     
     func toggleAutoScroll() {

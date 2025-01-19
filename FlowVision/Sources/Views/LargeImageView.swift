@@ -593,6 +593,7 @@ class LargeImageView: NSView {
     
     @objc func actRefresh() {
         file.rotate = 0
+        LargeImageProcessor.clearCache()
         getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false, forceRefresh: true)
     }
     
