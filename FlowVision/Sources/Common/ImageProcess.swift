@@ -677,7 +677,7 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0) -> NSImage
         if image.bitsPerComponent <= 8 { // 本来就不支持8bit以上图像
             print("Failed when makeImage:",url.absoluteString.removingPercentEncoding!)
         }
-        return nil
+        return getResizedImageUsingCI(url: url, size: size, rotate: rotate)
     }
 
     let pixelSize = NSSize(width: size.width, height: size.height)
@@ -696,41 +696,51 @@ func checkIsHDR(imageInfo: ImageInfo?) -> Bool {
 }
 
 func getHDRImage(url: URL, size: NSSize? = nil, rotate: Int = 0) -> NSImage? {
-    if #available(macOS 14.0, *) {
-        let ciOptions: [CIImageOption: Any] = [.applyOrientationProperty: true, .expandToHDR: true]
-        if var inputImage = CIImage(contentsOf: url, options: ciOptions) {
-            // 根据rotate参数旋转图像
-            if rotate != 0 {
-                inputImage = inputImage.oriented(.right).transformed(by: CGAffineTransform(rotationAngle: CGFloat(-rotate+1) * .pi / 2))
-            }
-            
-            if let size = size {
-                // 分别计算宽度和高度的缩放比例
-                let scaleX = 2 * size.width / inputImage.extent.width
-                let scaleY = 2 * size.height / inputImage.extent.height
-                // 使用CILanczosScaleTransform进行高质量缩放
-                let scaleFilter = CIFilter(name: "CILanczosScaleTransform")!
-                scaleFilter.setValue(inputImage, forKey: kCIInputImageKey)
-                scaleFilter.setValue(scaleY, forKey: kCIInputScaleKey)
-                scaleFilter.setValue(scaleX/scaleY, forKey: kCIInputAspectRatioKey)
-                if let outputImage = scaleFilter.outputImage{
-                    inputImage = outputImage
-                }
-            }
+    return getResizedImageUsingCI(url: url, size: size, rotate: rotate, useHDR: true)
+}
 
-            let context = CIContext(options: [.name: "Renderer"])
-            if let cgImage = context.createCGImage(inputImage,
-                                                   from: inputImage.extent,
-                                                   format: .RGB10,
-                                                   colorSpace: inputImage.colorSpace ?? CGColorSpace(name: CGColorSpace.itur_2100_PQ)!,
-                                                   deferred: true) {
-                
-                return NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
+func getResizedImageUsingCI(url: URL, size: NSSize? = nil, rotate: Int = 0, useHDR: Bool = false) -> NSImage? {
+    var ciOptions: [CIImageOption: Any] = [.applyOrientationProperty: true]
+    var ciFormat: CIFormat = .ARGB8
+    
+    if #available(macOS 14.0, *) {
+        if useHDR {
+            ciOptions[.expandToHDR] = true
+            ciFormat = .RGB10
+        }else{
+            ciOptions[.expandToHDR] = false
+        }
+    }
+    
+    if var inputImage = CIImage(contentsOf: url, options: ciOptions) {
+        // 根据rotate参数旋转图像
+        if rotate != 0 {
+            inputImage = inputImage.oriented(.right).transformed(by: CGAffineTransform(rotationAngle: CGFloat(-rotate+1) * .pi / 2))
+        }
+        
+        if let size = size {
+            // 分别计算宽度和高度的缩放比例
+            let scaleX = 2 * size.width / inputImage.extent.width
+            let scaleY = 2 * size.height / inputImage.extent.height
+            // 使用CILanczosScaleTransform进行高质量缩放
+            let scaleFilter = CIFilter(name: "CILanczosScaleTransform")!
+            scaleFilter.setValue(inputImage, forKey: kCIInputImageKey)
+            scaleFilter.setValue(scaleY, forKey: kCIInputScaleKey)
+            scaleFilter.setValue(scaleX/scaleY, forKey: kCIInputAspectRatioKey)
+            if let outputImage = scaleFilter.outputImage{
+                inputImage = outputImage
             }
         }
-    } else {
-        // Fallback on earlier versions
-        return NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
+
+        let context = CIContext(options: [.name: "Renderer"])
+        if let cgImage = context.createCGImage(inputImage,
+                                               from: inputImage.extent,
+                                               format: ciFormat,
+                                               colorSpace: inputImage.colorSpace ?? CGColorSpace(name: CGColorSpace.itur_2100_PQ)!,
+                                               deferred: true) {
+            
+            return NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
+        }
     }
     
     return nil
