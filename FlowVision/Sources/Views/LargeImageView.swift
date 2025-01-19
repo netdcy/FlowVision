@@ -215,7 +215,6 @@ class LargeImageView: NSView {
     }
     
     override func mouseDown(with event: NSEvent) {
-        super.mouseDown(with: event)
         getViewController(self)!.publicVar.isLeftMouseDown = true//临时按住左键也能缩放
         
         // 检测双击
@@ -242,7 +241,7 @@ class LargeImageView: NSView {
             self?.performLongPressZoom(at: event.locationInWindow)
         }
         
-        
+        super.mouseDown(with: event)
     }
 
     private func performLongPressZoom(at point: NSPoint) {
@@ -278,7 +277,6 @@ class LargeImageView: NSView {
     }
     
     override func mouseUp(with event: NSEvent) {
-        super.mouseUp(with: event)
         getViewController(self)!.publicVar.isLeftMouseDown = false//临时按住左键也能缩放
         initialPos=nil
         longPressZoomTimer?.invalidate()
@@ -290,6 +288,8 @@ class LargeImageView: NSView {
             getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false)
         }
         hasZoomedByWheel=false
+
+        super.mouseUp(with: event)
     }
     
     override func mouseDragged(with event: NSEvent) {
@@ -366,7 +366,7 @@ class LargeImageView: NSView {
             let menu = NSMenu(title: "Custom Menu")
             menu.autoenablesItems = false
             
-            let actionItemClose = menu.addItem(withTitle: NSLocalizedString("close-large-image", comment: "关闭（双击）"), action: #selector(actClose), keyEquivalent: " ")
+            let actionItemClose = menu.addItem(withTitle: NSLocalizedString("close-large-image", comment: "关闭 (双击)"), action: #selector(actClose), keyEquivalent: " ")
             actionItemClose.keyEquivalentModifierMask = []
             
             let actionItemOpenInNewTab = menu.addItem(withTitle: NSLocalizedString("open-in-new-tab", comment: "在新标签页中打开"), action: #selector(actOpenInNewTab), keyEquivalent: "")
@@ -414,7 +414,7 @@ class LargeImageView: NSView {
             actionItemShowExif.keyEquivalentModifierMask = []
             actionItemShowExif.state = getViewController(self)!.publicVar.isShowExif ? .on : .off
             
-            let actionItemOCR = menu.addItem(withTitle: NSLocalizedString("recognize-OCR", comment: "识别文本(OCR)"), action: #selector(actOCR), keyEquivalent: "o")
+            let actionItemOCR = menu.addItem(withTitle: NSLocalizedString("recognize-OCR", comment: "识别文本 (OCR)"), action: #selector(actOCR), keyEquivalent: "o")
             actionItemOCR.keyEquivalentModifierMask = []
             
             let actionItemQRCode = menu.addItem(withTitle: NSLocalizedString("recognize-QRCode", comment: "识别二维码"), action: #selector(actQRCode), keyEquivalent: "p")

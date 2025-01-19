@@ -664,7 +664,7 @@ class ThumbnailOptionsWindow: NSWindow {
     var thumbnailShowShadow: Bool
     
     init() {
-        let windowSize = NSSize(width: 800, height: 580)
+        let windowSize = NSSize(width: 740, height: 520)
         let windowRect = NSRect(origin: .zero, size: windowSize)
         
         // Get current values

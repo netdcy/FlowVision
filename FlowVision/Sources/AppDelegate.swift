@@ -251,16 +251,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         for filePath in files {
             log(filePath)
         }
+
+        var path = files[0]
         
-        if let url=URL(string: getFileStylePath(files[0])){
+        if path == "." {
+            path = FileManager.default.currentDirectoryPath
+        }
+        
+        if let url=URL(string: getFileStylePath(path)){
             NSDocumentController.shared.noteNewRecentDocumentURL(url)
         }
         
         var isDirectoryObj: ObjCBool = false
-        FileManager.default.fileExists(atPath: files[0], isDirectory: &isDirectoryObj)
+        FileManager.default.fileExists(atPath: path, isDirectory: &isDirectoryObj)
         let isDirectory=isDirectoryObj.boolValue
         
-        var file=getFileStylePath(files[0])
+        var file=getFileStylePath(path)
         if isDirectory && file.last != "/" {file=file+"/"}
         
         //新窗口打开（暂时统一新窗口打开）

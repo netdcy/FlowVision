@@ -499,7 +499,6 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     override func mouseDown(with event: NSEvent) {
-        super.mouseDown(with: event)
         //print("mouseDownItem: ",file.id)
         let currentTime = event.timestamp
         let currentLocation = event.locationInWindow
@@ -525,6 +524,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
         lastClickTime = currentTime
         lastClickLocation = currentLocation
+        super.mouseDown(with: event)
     }
     
     override func otherMouseDown(with event: NSEvent) {
@@ -561,8 +561,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
     override func rightMouseUp(with event: NSEvent) {
         getViewController(collectionView!)!.publicVar.isColllectionViewItemRightClicked=true
-        super.rightMouseUp(with: event)
-        
+          
         let mouseUpLocation = event.locationInWindow
         if let mouseDownLocation = self.mouseDownLocation {
             let maxDistance: CGFloat = 5.0 // 允许的最大移动距离
@@ -726,6 +725,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             }
         }
         self.mouseDownLocation = nil // 重置按下位置
+        super.rightMouseUp(with: event)
     }
     
     @objc func sortItems(_ sender: NSMenuItem) {
