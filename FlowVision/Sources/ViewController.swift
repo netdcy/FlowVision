@@ -5160,6 +5160,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         initialMouseLocation = event.locationInWindow
         lastMouseLocation = initialMouseLocation
         gestureState = .none
+
+        super.rightMouseDown(with: event)
     }
 
     override func rightMouseDragged(with event: NSEvent) {
@@ -5197,6 +5199,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         initialMouseLocation = currentLocation
         
         analyzeGesture(doAction: false)
+
+        super.rightMouseDragged(with: event)
     }
 
     override func rightMouseUp(with event: NSEvent) {
@@ -5217,6 +5221,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if event.locationInWindow.y > self.mainScrollView.bounds.height {
             popTitlebarMenu(with: event)
         }
+
+        super.rightMouseUp(with: event)
     }
 
     func analyzeGesture(doAction: Bool) {
