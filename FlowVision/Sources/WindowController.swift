@@ -232,8 +232,9 @@ extension WindowController: NSToolbarDelegate {
             }
         }
         
-        identifiers.append(.space)
-        identifiers.append(.flexibleSpace)
+        identifiers.append(NSToolbarItem.Identifier("CustomSeparator"))
+        //identifiers.append(.flexibleSpace)
+        
         identifiers.append(.more)
         identifiers.append(.newtab)
         
@@ -470,6 +471,20 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.label = NSLocalizedString("More", comment: "更多")
             toolbarItem.paletteLabel = NSLocalizedString("More", comment: "更多")
             toolbarItem.visibilityPriority = .user
+            
+        case NSToolbarItem.Identifier("CustomSeparator"):
+            let margin: CGFloat = 4
+            let lineWidth: CGFloat = 1
+            let height: CGFloat = 16
+            let containerWidth = margin * 2 + lineWidth
+            let containerView = NSView(frame: NSRect(x: 0, y: 0, width: containerWidth, height: height))
+            let line = NSBox()
+            line.boxType = .separator
+            line.frame = NSRect(x: margin, y: 0, width: lineWidth, height: height)
+            line.fillColor = NSColor.separatorColor
+            containerView.addSubview(line)
+            toolbarItem.view = containerView
+            toolbarItem.visibilityPriority = .low
             
         default:
             return nil
@@ -732,7 +747,13 @@ extension WindowController: NSToolbarDelegate {
         let menu = NSMenu()
         menu.autoenablesItems = false
 
-        let isGenHdThumb = menu.addItem(withTitle: NSLocalizedString("Generate HD Thumbnails", comment: "生成高清缩略图"), action: #selector(genHdThumbAction), keyEquivalent: "")
+        let isPreferInternalThumb = menu.addItem(withTitle: NSLocalizedString("Prefer Using Embedded Thumbnails", comment: "优先使用内嵌缩略图"), action: #selector(preferInternalThumbAction), keyEquivalent: "")
+        isPreferInternalThumb.state = (viewController.publicVar.isPreferInternalThumb) ? .on : .off
+
+        let isNormalThumb = menu.addItem(withTitle: NSLocalizedString("Always Generate Standard Thumbnails", comment: "总是生成标准缩略图"), action: #selector(normalThumbAction), keyEquivalent: "")
+        isNormalThumb.state = (!viewController.publicVar.isPreferInternalThumb && !viewController.publicVar.isGenHdThumb) ? .on : .off
+
+        let isGenHdThumb = menu.addItem(withTitle: NSLocalizedString("Always Generate HD Thumbnails", comment: "总是生成高清缩略图"), action: #selector(genHdThumbAction), keyEquivalent: "")
         isGenHdThumb.state = (viewController.publicVar.isGenHdThumb) ? .on : .off
         
         let actionItemSettings = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(genHdThumbInfoAction), keyEquivalent: "")
@@ -773,11 +794,31 @@ extension WindowController: NSToolbarDelegate {
             menu.popUp(positioning: nil, at: menuLocation, in: nil)
         }
     }
+
+    @objc func preferInternalThumbAction(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.publicVar.isPreferInternalThumb = true
+        viewController.publicVar.isGenHdThumb = false
+        UserDefaults.standard.set(viewController.publicVar.isPreferInternalThumb, forKey: "isPreferInternalThumb")
+        UserDefaults.standard.set(viewController.publicVar.isGenHdThumb, forKey: "isGenHdThumb")
+        viewController.refreshCollectionView(dryRun: true)
+    }
+
+    @objc func normalThumbAction(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.publicVar.isPreferInternalThumb = false
+        viewController.publicVar.isGenHdThumb = false
+        UserDefaults.standard.set(viewController.publicVar.isPreferInternalThumb, forKey: "isPreferInternalThumb")
+        UserDefaults.standard.set(viewController.publicVar.isGenHdThumb, forKey: "isGenHdThumb")
+        viewController.refreshCollectionView(dryRun: true)
+    }
     
     @objc func genHdThumbAction(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
-        viewController.publicVar.isGenHdThumb.toggle()
+        viewController.publicVar.isGenHdThumb = true
+        viewController.publicVar.isPreferInternalThumb = false
         UserDefaults.standard.set(viewController.publicVar.isGenHdThumb, forKey: "isGenHdThumb")
+        UserDefaults.standard.set(viewController.publicVar.isPreferInternalThumb, forKey: "isPreferInternalThumb")
         viewController.refreshCollectionView(dryRun: true)
     }
     
@@ -834,8 +875,9 @@ extension WindowController: NSToolbarDelegate {
         actionItemShowHiddenFile.state = (viewController.publicVar.isShowHiddenFile) ? .on : .off
         actionItemShowHiddenFile.keyEquivalentModifierMask = [.command, .shift]
         
-        let showAllTypeFile = menu.addItem(withTitle: NSLocalizedString("Show All Types of Files", comment: "显示所有类型文件"), action: #selector(showAllTypeFileAction), keyEquivalent: "")
+        let showAllTypeFile = menu.addItem(withTitle: NSLocalizedString("Show All Types of Files", comment: "显示所有类型文件"), action: #selector(showAllTypeFileAction), keyEquivalent: ",")
         showAllTypeFile.state = (viewController.publicVar.isShowAllTypeFile) ? .on : .off
+        showAllTypeFile.keyEquivalentModifierMask = [.command, .shift]
         
         let showImageFile = menu.addItem(withTitle: NSLocalizedString("Show Image Files", comment: "显示图像文件"), action: #selector(showImageFileAction), keyEquivalent: "")
         showImageFile.state = (viewController.publicVar.isShowImageFile) ? .on : .off

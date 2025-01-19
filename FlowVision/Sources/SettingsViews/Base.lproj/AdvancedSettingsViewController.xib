@@ -26,10 +26,10 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView translatesAutoresizingMaskIntoConstraints="NO" id="c22-O7-iKe">
-            <rect key="frame" x="0.0" y="0.0" width="510" height="740"/>
+            <rect key="frame" x="0.0" y="0.0" width="510" height="754"/>
             <subviews>
                 <gridView xPlacement="center" yPlacement="center" rowAlignment="none" rowSpacing="8" columnSpacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="UrC-xJ-uLm">
-                    <rect key="frame" x="30" y="42" width="450" height="678"/>
+                    <rect key="frame" x="30" y="42" width="450" height="692"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="450" id="vG6-yf-hye"/>
                     </constraints>
@@ -59,8 +59,8 @@
                     </columns>
                     <gridCells>
                         <gridCell row="ltX-Ja-eM6" column="RqK-yY-jzI" id="042-ss-ffF">
-                            <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PfT-L0-R1r">
-                                <rect key="frame" x="-2" y="655" width="140" height="16"/>
+                            <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PfT-L0-R1r">
+                                <rect key="frame" x="-2" y="669" width="140" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Load Dynamic Library:" id="bnu-AS-zpg">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -70,7 +70,7 @@
                         </gridCell>
                         <gridCell row="ltX-Ja-eM6" column="d5q-Pb-pgU" id="W2c-el-Egx">
                             <button key="contentView" horizontalHuggingPriority="248" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zhk-nP-ekf">
-                                <rect key="frame" x="144" y="647" width="306" height="32"/>
+                                <rect key="frame" x="144" y="661" width="306" height="32"/>
                                 <buttonCell key="cell" type="radio" title="Use FFmpeg for More Video Format Thumbnails" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="G15-Qe-p8C">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -83,7 +83,7 @@
                         <gridCell row="OOd-hD-rve" column="RqK-yY-jzI" id="ibh-ig-esN"/>
                         <gridCell row="OOd-hD-rve" column="d5q-Pb-pgU" id="1P6-Pp-b5f">
                             <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zL0-h8-cNf">
-                                <rect key="frame" x="144" y="623" width="149" height="18"/>
+                                <rect key="frame" x="144" y="637" width="149" height="18"/>
                                 <buttonCell key="cell" type="radio" title="Do Not Use FFmpeg" bezelStyle="regularSquare" imagePosition="left" inset="2" id="1V0-bu-KPz">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -95,11 +95,11 @@
                         </gridCell>
                         <gridCell row="4jR-A6-ncy" column="RqK-yY-jzI" id="01b-gQ-h0w"/>
                         <gridCell row="4jR-A6-ncy" column="d5q-Pb-pgU" id="CtD-KL-2FS">
-                            <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="EPt-y7-xMO">
-                                <rect key="frame" x="144" y="574" width="308" height="42"/>
+                            <textField key="contentView" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="EPt-y7-xMO">
+                                <rect key="frame" x="144" y="588" width="308" height="42"/>
                                 <textFieldCell key="cell" selectable="YES" id="o1C-Ac-oMz">
                                     <font key="font" metaFont="message" size="11"/>
-                                    <string key="title">The application has built-in FFmpeg library. If exception occurs while generating video thumbnails, please try disabling this option or uncheck "Show Video Files".</string>
+                                    <string key="title">The application has built-in FFmpeg library. If exception occurs while generating video thumbnails, please try to disable this option or uncheck "Show Video Files".</string>
                                     <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
@@ -107,13 +107,13 @@
                         </gridCell>
                         <gridCell row="puZ-Ya-kDr" column="RqK-yY-jzI" headOfMergedCell="nRC-Xy-vIE" xPlacement="fill" id="nRC-Xy-vIE">
                             <box key="contentView" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="1it-g6-Hmt">
-                                <rect key="frame" x="0.0" y="554" width="450" height="5"/>
+                                <rect key="frame" x="0.0" y="568" width="450" height="5"/>
                             </box>
                         </gridCell>
                         <gridCell row="puZ-Ya-kDr" column="d5q-Pb-pgU" headOfMergedCell="nRC-Xy-vIE" id="3db-vV-teS"/>
                         <gridCell row="ON5-EJ-u14" column="RqK-yY-jzI" id="S6f-Ug-zcG">
-                            <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Pwh-HF-wf6">
-                                <rect key="frame" x="13" y="515" width="125" height="16"/>
+                            <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Pwh-HF-wf6">
+                                <rect key="frame" x="13" y="529" width="125" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Thumbnail Threads:" id="UWB-wJ-kV4">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -123,9 +123,9 @@
                         </gridCell>
                         <gridCell row="ON5-EJ-u14" column="d5q-Pb-pgU" id="TNl-Oa-jHy">
                             <customView key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="6DS-6P-sA6">
-                                <rect key="frame" x="146" y="508" width="100" height="30"/>
+                                <rect key="frame" x="146" y="522" width="100" height="30"/>
                                 <subviews>
-                                    <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6bW-aR-2l5">
+                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6bW-aR-2l5">
                                         <rect key="frame" x="0.0" y="4" width="40" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="8" drawsBackground="YES" id="qvY-7X-FWO">
@@ -147,8 +147,8 @@
                         </gridCell>
                         <gridCell row="XVo-xD-toi" column="RqK-yY-jzI" id="SMU-2J-1sM"/>
                         <gridCell row="XVo-xD-toi" column="d5q-Pb-pgU" id="tTl-RY-niR">
-                            <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="fvH-i6-MLV">
-                                <rect key="frame" x="144" y="472" width="308" height="28"/>
+                            <textField key="contentView" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="fvH-i6-MLV">
+                                <rect key="frame" x="144" y="486" width="308" height="28"/>
                                 <textFieldCell key="cell" selectable="YES" title="This setting applies to internal SSD. It is recommended to set it between 4 and 8." id="FwL-1J-M3z">
                                     <font key="font" metaFont="message" size="11"/>
                                     <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
@@ -157,8 +157,8 @@
                             </textField>
                         </gridCell>
                         <gridCell row="hK2-hz-DnW" column="RqK-yY-jzI" id="rUP-x1-92x">
-                            <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kdZ-Ix-AIT">
-                                <rect key="frame" x="5" y="441" width="133" height="16"/>
+                            <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kdZ-Ix-AIT">
+                                <rect key="frame" x="5" y="455" width="133" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Folder Search Depth:" id="UN1-r8-SEh">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -168,9 +168,9 @@
                         </gridCell>
                         <gridCell row="hK2-hz-DnW" column="d5q-Pb-pgU" id="Owg-D7-lze">
                             <customView key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="6Os-yd-4FJ">
-                                <rect key="frame" x="146" y="434" width="100" height="30"/>
+                                <rect key="frame" x="146" y="448" width="100" height="30"/>
                                 <subviews>
-                                    <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zxr-LH-pM3">
+                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zxr-LH-pM3">
                                         <rect key="frame" x="0.0" y="4" width="40" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="4" drawsBackground="YES" id="EWL-HL-RdL">
@@ -192,8 +192,8 @@
                         </gridCell>
                         <gridCell row="Uoz-eI-34C" column="RqK-yY-jzI" id="XO1-S6-uT1"/>
                         <gridCell row="Uoz-eI-34C" column="d5q-Pb-pgU" id="Gqh-os-iWs">
-                            <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="E2R-gU-fDF">
-                                <rect key="frame" x="144" y="356" width="308" height="70"/>
+                            <textField key="contentView" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="E2R-gU-fDF">
+                                <rect key="frame" x="144" y="370" width="308" height="70"/>
                                 <textFieldCell key="cell" selectable="YES" id="Tb5-5a-q2X">
                                     <font key="font" metaFont="message" size="11"/>
                                     <string key="title">The number of subfolder levels to search when generating folder thumbnails. If set to 0, folder thumbnails will not be generated, and the directory tree will not indicate whether subfolders exist by left-side arrow.</string>
@@ -204,13 +204,13 @@
                         </gridCell>
                         <gridCell row="WlW-4i-yz2" column="RqK-yY-jzI" headOfMergedCell="kmF-D7-QLb" xPlacement="fill" id="kmF-D7-QLb">
                             <box key="contentView" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="e7Y-1T-v5E">
-                                <rect key="frame" x="0.0" y="336" width="450" height="5"/>
+                                <rect key="frame" x="0.0" y="350" width="450" height="5"/>
                             </box>
                         </gridCell>
                         <gridCell row="WlW-4i-yz2" column="d5q-Pb-pgU" headOfMergedCell="kmF-D7-QLb" id="3EZ-U6-Tv7"/>
                         <gridCell row="LII-6Q-pmP" column="RqK-yY-jzI" headOfMergedCell="WCy-gM-37u" xPlacement="leading" id="WCy-gM-37u">
-                            <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="ZPo-Vg-JiF">
-                                <rect key="frame" x="-2" y="292" width="454" height="28"/>
+                            <textField key="contentView" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="ZPo-Vg-JiF">
+                                <rect key="frame" x="-2" y="306" width="454" height="28"/>
                                 <textFieldCell key="cell" selectable="YES" title="These settings apply to external volumes, including external drives, network drives, and other mounted directories." id="YPT-xM-oyn">
                                     <font key="font" metaFont="message" size="11"/>
                                     <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
@@ -220,8 +220,8 @@
                         </gridCell>
                         <gridCell row="LII-6Q-pmP" column="d5q-Pb-pgU" headOfMergedCell="WCy-gM-37u" id="gA6-I3-P5F"/>
                         <gridCell row="hUu-vB-x9E" column="RqK-yY-jzI" id="T2z-Ra-8Ff">
-                            <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lY6-pg-F5V">
-                                <rect key="frame" x="13" y="252" width="125" height="32"/>
+                            <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lY6-pg-F5V">
+                                <rect key="frame" x="13" y="266" width="125" height="32"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" id="fpm-qG-HXc">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <string key="title">Thumbnail Threads:
@@ -233,9 +233,9 @@
                         </gridCell>
                         <gridCell row="hUu-vB-x9E" column="d5q-Pb-pgU" id="Ish-ZC-lna">
                             <customView key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="Nnp-7H-iOp">
-                                <rect key="frame" x="146" y="253" width="100" height="30"/>
+                                <rect key="frame" x="146" y="267" width="100" height="30"/>
                                 <subviews>
-                                    <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zZQ-EJ-dYu">
+                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zZQ-EJ-dYu">
                                         <rect key="frame" x="0.0" y="4" width="40" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="1" drawsBackground="YES" id="WIz-pH-xsE">
@@ -257,8 +257,8 @@
                         </gridCell>
                         <gridCell row="MjZ-zL-dkp" column="RqK-yY-jzI" id="QSz-gr-JM0"/>
                         <gridCell row="MjZ-zL-dkp" column="d5q-Pb-pgU" id="sMd-qb-ppZ">
-                            <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="flf-fX-6PH">
-                                <rect key="frame" x="144" y="202" width="308" height="42"/>
+                            <textField key="contentView" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="flf-fX-6PH">
+                                <rect key="frame" x="144" y="216" width="308" height="42"/>
                                 <textFieldCell key="cell" selectable="YES" id="A97-Bz-qH3">
                                     <font key="font" metaFont="message" size="11"/>
                                     <string key="title">For mechanical hard drives and network drives, it is recommended to set it to 1. For external SSDs, this value can be increased appropriately.</string>
@@ -268,8 +268,8 @@
                             </textField>
                         </gridCell>
                         <gridCell row="g4b-yS-dHl" column="RqK-yY-jzI" id="6h3-fb-Wms">
-                            <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="n4I-6t-KIu">
-                                <rect key="frame" x="5" y="162" width="133" height="32"/>
+                            <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="n4I-6t-KIu">
+                                <rect key="frame" x="5" y="176" width="133" height="32"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" id="L44-0u-7JE">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <string key="title">Folder Search Depth:
@@ -281,9 +281,9 @@
                         </gridCell>
                         <gridCell row="g4b-yS-dHl" column="d5q-Pb-pgU" id="x4L-SH-wLD">
                             <customView key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="zXt-cr-ApT">
-                                <rect key="frame" x="146" y="163" width="100" height="30"/>
+                                <rect key="frame" x="146" y="177" width="100" height="30"/>
                                 <subviews>
-                                    <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="m9s-n3-RvP">
+                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="m9s-n3-RvP">
                                         <rect key="frame" x="0.0" y="4" width="40" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="0" drawsBackground="YES" id="U1E-PH-Kdi">
@@ -305,9 +305,9 @@
                         </gridCell>
                         <gridCell row="1UL-bd-mbt" column="RqK-yY-jzI" id="Oby-jt-LO8"/>
                         <gridCell row="1UL-bd-mbt" column="d5q-Pb-pgU" id="j4o-jo-nnR">
-                            <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="QE9-Tu-7hp">
-                                <rect key="frame" x="144" y="140" width="275" height="14"/>
-                                <textFieldCell key="cell" selectable="YES" title="For network drives, it is recommended to set it to 0." id="v0X-zl-sTc">
+                            <textField key="contentView" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="QE9-Tu-7hp">
+                                <rect key="frame" x="144" y="140" width="308" height="28"/>
+                                <textFieldCell key="cell" selectable="YES" title="For network drives, it is recommended to set it to 0 (do not generate folder thumbnails)." id="v0X-zl-sTc">
                                     <font key="font" metaFont="message" size="11"/>
                                     <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -321,7 +321,7 @@
                         </gridCell>
                         <gridCell row="If4-3e-uiP" column="d5q-Pb-pgU" headOfMergedCell="Had-d9-ftW" id="UcV-H8-fjJ"/>
                         <gridCell row="Zqi-zd-glF" column="RqK-yY-jzI" id="FqK-tX-yeu">
-                            <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DFm-5v-ZoC">
+                            <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DFm-5v-ZoC">
                                 <rect key="frame" x="5" y="81" width="133" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Memory Usage Limit:" id="a8Q-Mw-3Xn">
                                     <font key="font" usesAppearanceFont="YES"/>
@@ -347,7 +347,7 @@
                         </gridCell>
                         <gridCell row="vXH-Op-53p" column="RqK-yY-jzI" id="HCa-nV-Y0T"/>
                         <gridCell row="vXH-Op-53p" column="d5q-Pb-pgU" id="IRh-ji-drn">
-                            <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7Xg-hi-ROx">
+                            <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7Xg-hi-ROx">
                                 <rect key="frame" x="144" y="50" width="49" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="e.g. 4G" id="VVf-Z7-kSI">
                                     <font key="font" usesAppearanceFont="YES"/>
@@ -358,7 +358,7 @@
                         </gridCell>
                         <gridCell row="a7k-lS-FJV" column="RqK-yY-jzI" id="aNa-GV-cge"/>
                         <gridCell row="a7k-lS-FJV" column="d5q-Pb-pgU" id="WsA-tE-uwi">
-                            <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Oqw-lt-CbH">
+                            <textField key="contentView" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Oqw-lt-CbH">
                                 <rect key="frame" x="144" y="0.0" width="308" height="42"/>
                                 <textFieldCell key="cell" selectable="YES" id="lIW-EQ-tyL">
                                     <font key="font" metaFont="message" size="11"/>

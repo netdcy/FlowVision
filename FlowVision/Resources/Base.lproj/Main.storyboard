@@ -682,8 +682,8 @@ Gw
                                                 <action selector="toggleIsShowHiddenFile:" target="Voe-Tx-rLC" id="L0l-RG-uc0"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Show All Types of Files" id="S31-Ni-z5u">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        <menuItem title="Show All Types of Files" keyEquivalent="," id="S31-Ni-z5u">
+                                            <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                             <connections>
                                                 <action selector="toggleIsShowAllTypeFile:" target="Voe-Tx-rLC" id="85b-hE-Eij"/>
                                             </connections>

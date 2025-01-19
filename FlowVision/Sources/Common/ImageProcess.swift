@@ -394,7 +394,7 @@ func getFileTypeIcon(url: URL) -> NSImage {
     return NSWorkspace.shared.icon(forFile: url.absoluteString.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!)
 }
 
-func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil) -> NSImage? {
+func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil, isPreferInternalThumb: Bool = false) -> NSImage? {
     
     let size: NSSize? = oriSize != nil ? NSSize(width: round(oriSize!.width), height: round(oriSize!.height)) : nil
     
@@ -411,7 +411,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
             var imgs=[NSImage]()
             var isVideos=[Bool]()
             for url in urls {
-                var img = getImageThumb(url: url)
+                var img = getImageThumb(url: url, isPreferInternalThumb: isPreferInternalThumb)
                 if img == nil {
                     img = getFileTypeIcon(url: url)
                 }
@@ -499,7 +499,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
                                                              kCGImageSourceShouldCache : kCFBooleanFalse!,
             ] as CFDictionary;
             
-            if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) {
+            if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) || isPreferInternalThumb {
                 thumbnailOptions = thumbnailOptionsIfAbsent
             }else{
                 thumbnailOptions = thumbnailOptionsAlways
@@ -1294,8 +1294,8 @@ class ThumbImageProcessor {
         }
     }
     
-    static func getImageCache(url: URL, size: NSSize? = nil, refSize: NSSize? = nil, needWaitWhenSame: Bool = true, ver: Int) -> NSImage? {
-        let cacheKey = "\(url.absoluteString)_s\(size?.width ?? 0)x\(size?.height ?? 0)_r\(refSize?.width ?? 0)x\(refSize?.height ?? 0)_v\(ver)" as NSString
+    static func getImageCache(url: URL, size: NSSize? = nil, refSize: NSSize? = nil, needWaitWhenSame: Bool = true, isPreferInternalThumb: Bool = false, ver: Int) -> NSImage? {
+        let cacheKey = "\(url.absoluteString)_s\(size?.width ?? 0)x\(size?.height ?? 0)_r\(refSize?.width ?? 0)x\(refSize?.height ?? 0)_p\(isPreferInternalThumb)_v\(ver)" as NSString
         //print(cacheKey)
         
         // 先检查缓存中是否已有图像（包括nil情况）
@@ -1325,7 +1325,7 @@ class ThumbImageProcessor {
             
             // 生成图像
             var image: NSImage?
-            image = getImageThumb(url: url, size: size, refSize: refSize)
+            image = getImageThumb(url: url, size: size, refSize: refSize, isPreferInternalThumb: isPreferInternalThumb)
             
             // 更新缓存（包括nil情况）
             let cacheWrapper = CacheWrapper(image: image)

@@ -67,6 +67,7 @@ class PublicVar{
     var isShowRawFile = true
     var isShowVideoFile = true
     var isGenHdThumb = false
+    var isPreferInternalThumb = false
     
     //可一键切换的配置
     var profile = CustomProfile()
@@ -351,6 +352,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         if let isGenHdThumb = UserDefaults.standard.value(forKey: "isGenHdThumb") as? Bool {
             publicVar.isGenHdThumb = isGenHdThumb
+        }
+        if let isPreferInternalThumb = UserDefaults.standard.value(forKey: "isPreferInternalThumb") as? Bool {
+            publicVar.isPreferInternalThumb = isPreferInternalThumb
         }
 //        if let layoutType: LayoutType = UserDefaults.standard.enumValue(forKey: "layoutType"){
 //            publicVar.layoutType=layoutType
@@ -3844,7 +3848,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 }else{
                                     if !publicVar.isGenHdThumb || noThumbSizeDueToSchedule { // publicVar.layoutType == .grid
                                         //image = getImageThumb(url: url, refSize: originalSize)
-                                        image = ThumbImageProcessor.getImageCache(url: url, refSize: originalSize, ver: ver)
+                                        image = ThumbImageProcessor.getImageCache(url: url, refSize: originalSize, isPreferInternalThumb: publicVar.isPreferInternalThumb, ver: ver)
                                     }else{
                                         //image = getImageThumb(url: url, size: revisedSize)
                                         image = ThumbImageProcessor.getImageCache(url: url, size: revisedSize, ver: ver)

@@ -182,13 +182,13 @@
       }
     },
     "o1C-Ac-oMz.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"The application has built-in FFmpeg library. If exception occurs while generating video thumbnails, please try disabling this option or uncheck \\\"Show Video Files\\\".\"; ObjectID = \"o1C-Ac-oMz\";",
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"The application has built-in FFmpeg library. If exception occurs while generating video thumbnails, please try to disable this option or uncheck \\\"Show Video Files\\\".\"; ObjectID = \"o1C-Ac-oMz\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "The application has built-in FFmpeg library. If exception occurs while generating video thumbnails, please try disabling this option or uncheck \"Show Video Files\"."
+            "value" : "The application has built-in FFmpeg library. If exception occurs while generating video thumbnails, please try to disable this option or uncheck \"Show Video Files\"."
           }
         },
         "zh-Hans" : {
@@ -290,19 +290,19 @@
       }
     },
     "v0X-zl-sTc.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"For network drives, it is recommended to set it to 0.\"; ObjectID = \"v0X-zl-sTc\";",
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"For network drives, it is recommended to set it to 0 (do not generate folder thumbnails).\"; ObjectID = \"v0X-zl-sTc\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "For network drives, it is recommended to set it to 0."
+            "value" : "For network drives, it is recommended to set it to 0 (do not generate folder thumbnails)."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "对于网络驱动器建议设置为0。"
+            "value" : "对于网络驱动器建议设置为0(不生成文件夹缩略图)。"
           }
         }
       }
