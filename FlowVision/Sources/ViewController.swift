@@ -3829,12 +3829,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                         imageExist=false
                                     }
                                 }
-                                if (!publicVar.isGenHdThumb || noThumbSizeDueToSchedule) && file.type == .image {
-                                    let maxLength = max(thumbImage.size.width,thumbImage.size.height)
-                                    if maxLength < 256 { // 说明是由targetSize重绘生成的且不够清晰的图（双倍采样），取不取等不重要
-                                        imageExist=false
-                                    }
-                                }
+//                                if (!publicVar.isGenHdThumb || noThumbSizeDueToSchedule) && file.type == .image {
+//                                    let maxLength = max(thumbImage.size.width,thumbImage.size.height)
+//                                    if maxLength < 256 { // 说明是由targetSize重绘生成的且不够清晰的图（双倍采样），取不取等不重要
+//                                        imageExist=false
+//                                    }
+//                                }
                                 if ["gif", "svg", "ai"].contains(file.ext.lowercased()){
                                     imageExist=true //由于无法正常生成指定大小的缩略图
                                 }

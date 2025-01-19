@@ -1013,7 +1013,7 @@ func formatExifData(_ imageProperties: [String: Any]) -> [(String, Any)] {
                 }
             case kCGImagePropertyExifFocalLength:
                 if let focalLength = value as? Double {
-                    formattedData.append((translationKey, "\(focalLength) mm"))
+                    formattedData.append((translationKey, String(format: "%.6g", focalLength) + " mm"))
                 }
             default:
                 formattedData.append((translationKey, value))
