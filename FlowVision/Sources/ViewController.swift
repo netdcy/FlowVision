@@ -553,26 +553,42 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 
                 // 检查按键是否是 "A" 键
                 if characters == "a" && noModifierKey {
-                    closeLargeImage(0)
-                    switchDirByDirection(direction: .left, stackDeep: 0)
+                    if publicVar.isInLargeView{
+                        previousLargeImage()
+                    }else{
+                        closeLargeImage(0)
+                        switchDirByDirection(direction: .left, stackDeep: 0)
+                    }
                     return nil
                 }
                 // 检查按键是否是 "D" 键
                 if characters == "d" && noModifierKey {
-                    closeLargeImage(0)
-                    switchDirByDirection(direction: .right, stackDeep: 0)
+                    if publicVar.isInLargeView{
+                        nextLargeImage()
+                    }else{
+                        closeLargeImage(0)
+                        switchDirByDirection(direction: .right, stackDeep: 0)
+                    }
                     return nil
                 }
                 // 检查按键是否是 "W" 键
                 if characters == "w" && noModifierKey {
-                    closeLargeImage(0)
-                    switchDirByDirection(direction: .up, stackDeep: 0)
+                    if publicVar.isInLargeView{
+                        largeImageView.zoom(direction: +1)
+                    }else{
+                        closeLargeImage(0)
+                        switchDirByDirection(direction: .up, stackDeep: 0)
+                    }
                     return nil
                 }
                 // 检查按键是否是 "S" 键
                 if characters == "s" && noModifierKey {
-                    closeLargeImage(0)
-                    switchDirByDirection(direction: .down, stackDeep: 0)
+                    if publicVar.isInLargeView{
+                        largeImageView.zoom(direction: -1)
+                    }else{
+                        closeLargeImage(0)
+                        switchDirByDirection(direction: .down, stackDeep: 0)
+                    }
                     return nil
                 }
                 // 检查按键是否是 "R" 键
@@ -3729,7 +3745,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                 //                                fileDB.db[SortKeyDir(dir)]!.layoutCalcPos=nowLayoutCalcPos
                                 //                                fileDB.unlock()
                                 //                            }
-                                if(nowLayoutCalcPos > lastLayoutCalcPosUsed && (publicVar.timer.intervalSafe(name: "insertItems", second: min(0.02+Double(i)*0.0001,5.0)) || nowLayoutCalcPos == count)){
+                                if(nowLayoutCalcPos > lastLayoutCalcPosUsed && (publicVar.timer.intervalSafe(name: "insertItems", second: min(0.02+Double(i)*0.0001,4.0)) || nowLayoutCalcPos == count)){
                                     var indexPaths = [IndexPath]()
                                     for x in lastLayoutCalcPosUsed...nowLayoutCalcPos-1{
                                         indexPaths.append(IndexPath(item: x, section: 0))
@@ -3737,10 +3753,13 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                                     if(dir == curFolder){
                                         
                                         coreAreaView.hideInfo()
+
+                                        let curItemCount = collectionView.numberOfItems(inSection: 0)
                                         
-                                        if collectionView.numberOfItems(inSection:0) + indexPaths.count == nowLayoutCalcPos {
+                                        if curItemCount + indexPaths.count >= nowLayoutCalcPos {
                                             if !keepScrollPos {
-                                                collectionView.insertItems(at: Set(indexPaths))
+                                                let newIndexPaths = indexPaths.dropFirst(curItemCount + indexPaths.count - nowLayoutCalcPos)
+                                                collectionView.insertItems(at: Set(newIndexPaths))
                                             }
                                             if nowLayoutCalcPos == count {
                                                 fileDB.lock()
@@ -4055,7 +4074,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 //log("Memory usage: "+String(memUse))
                 
                 if LRUqueue.count >= 1 {
-                    let overTime = (DispatchTime.now().uptimeNanoseconds-LRUqueue.last!.1.uptimeNanoseconds)/1000000000
+                    guard let lastLRUItem = LRUqueue.last else {continue}
+                    
+                    let overTime = (DispatchTime.now().uptimeNanoseconds-lastLRUItem.1.uptimeNanoseconds)/1000000000
                     let memUseLimit = globalVar.memUseLimit
                     
                     fileDB.lock()
@@ -4076,14 +4097,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     
                     if (overTime > 600 && LRUqueue.count >= 2) || (Int(memUse) > memUseLimit) {
                         log("Memory free:")
-                        log(LRUqueue.last!.0.removingPercentEncoding)
+                        log(lastLRUItem.0.removingPercentEncoding)
                         //由于先置目录再请求缩略图，所以此处可保证安全
                         
-                        if(LRUqueue.last!.0 != fileDB.curFolder){
+                        if(lastLRUItem.0 != fileDB.curFolder){
                             //不是当前目录
                             fileDB.lock()
-                            fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.isMemClearedToAvoidRemainingTask=true
-                            for fileModel in fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.files {
+                            fileDB.db[SortKeyDir(lastLRUItem.0)]!.isMemClearedToAvoidRemainingTask=true
+                            for fileModel in fileDB.db[SortKeyDir(lastLRUItem.0)]!.files {
                                 fileModel.1.image=nil
                                 fileModel.1.folderImages=[NSImage]()
                             }
@@ -4091,25 +4112,53 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                             fileDB.unlock()
                         }else{
                             //是当前目录
-                            var visibleIndexPaths: Set<IndexPath> = []
+                            var indexPaths: Set<IndexPath> = []
+                            var isInLargeView = false
+                            var curImagePos = -1
                             DispatchQueue.main.sync { [weak self] in
                                 guard let self = self else { return }
-                                visibleIndexPaths = collectionView.indexPathsForVisibleItems()
-                            }
-                            var itemArray: [Int] = visibleIndexPaths.map { $0.item }
-                            itemArray.sort()
-                            let indexMin = (itemArray.first ?? 0) - PRELOAD_THUMB_RANGE_PRE
-                            let indexMax = (itemArray.last ?? 0) + PRELOAD_THUMB_RANGE_NEXT
-                            
-                            fileDB.lock()
-                            fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.isMemClearedToAvoidRemainingTask=true
-                            for fileModel in fileDB.db[SortKeyDir(LRUqueue.last!.0)]!.files {
-                                if fileModel.1.id < indexMin || fileModel.1.id > indexMax {
-                                    fileModel.1.image=nil
-                                    fileModel.1.folderImages=[NSImage]()
+                                if publicVar.isInLargeView {
+                                    isInLargeView = true
+                                    curImagePos = currLargeImagePos
+                                }
+                                indexPaths = collectionView.indexPathsForVisibleItems()
+                                //进一步过滤
+                                let visibleRectRaw = mainScrollView.contentView.visibleRect
+                                let scrollPos = visibleRectRaw.origin
+                                let scrollWidth = visibleRectRaw.width
+                                let scrollHeight = visibleRectRaw.height
+                                let visibleRect = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight*2)) //注意这里乘了2
+                                indexPaths = indexPaths.filter { [weak self] indexPath in
+                                    guard let self = self else { return true }
+                                    let itemFrame = collectionView.layoutAttributesForItem(at: indexPath)?.frame ?? .zero
+                                    return itemFrame.intersects(visibleRect)
                                 }
                             }
-                            fileDB.unlock()
+                            var itemArray: [Int] = indexPaths.map { $0.item }
+                            itemArray.sort()
+                            let indexMin = (itemArray.first ?? 0) - max(PRELOAD_THUMB_RANGE_PRE, itemArray.count)
+                            let indexMax = (itemArray.last ?? 0) + max(PRELOAD_THUMB_RANGE_NEXT, itemArray.count*2)
+                            
+                            var indexMinOfLarge = -1
+                            var indexMaxOfLarge = -1
+                            if isInLargeView && curImagePos != -1 {
+                                indexMinOfLarge = curImagePos - PRELOAD_THUMB_RANGE_PRE
+                                indexMaxOfLarge = curImagePos + PRELOAD_THUMB_RANGE_NEXT
+                            }
+                            
+                            if indexMax > indexMin {
+                                fileDB.lock()
+                                fileDB.db[SortKeyDir(lastLRUItem.0)]!.isMemClearedToAvoidRemainingTask=true
+                                for fileModel in fileDB.db[SortKeyDir(lastLRUItem.0)]!.files {
+                                    // 如果不在任一范围内,才清除缩略图
+                                    if (fileModel.1.id < indexMin || fileModel.1.id > indexMax) &&
+                                        (fileModel.1.id < indexMinOfLarge || fileModel.1.id > indexMaxOfLarge) {
+                                        fileModel.1.image=nil
+                                        fileModel.1.folderImages=[NSImage]()
+                                    }
+                                }
+                                fileDB.unlock()
+                            }
                         }
                         
                     }
@@ -4238,7 +4287,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     
     
 
-    func setLoadThumbPriority(indexPath: IndexPath? = nil, range: (Int,Int) = (-20,20), ifNeedVisable: Bool){
+    func setLoadThumbPriority(indexPath: IndexPath? = nil, range: (Int,Int) = (-1,1), ifNeedVisable: Bool){
 
         var indexPaths: Set<IndexPath> = Set()
         if indexPath != nil {
@@ -4271,9 +4320,17 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             let originalMin=itemSorted.first!
             let originalMax=itemSorted.last!
 
+            //预加载范围
+            var preloadRangePre = PRELOAD_THUMB_RANGE_PRE
+            var preloadRangeNext = PRELOAD_THUMB_RANGE_NEXT
+            if ifNeedVisable {
+                preloadRangePre = max(PRELOAD_THUMB_RANGE_PRE, itemSorted.count)
+                preloadRangeNext = max(PRELOAD_THUMB_RANGE_NEXT, itemSorted.count*2)
+            }
+
             //序号最大最小值
-            let itemIndexMin=max(itemSorted.first! - PRELOAD_THUMB_RANGE_PRE, 0)
-            let itemIndexMax=itemSorted.last! + PRELOAD_THUMB_RANGE_NEXT
+            let itemIndexMin=max(itemSorted.first! - preloadRangePre, 0)
+            let itemIndexMax=itemSorted.last! + preloadRangeNext
             
             if itemIndexMin >= itemIndexMax {return}
             
