@@ -58,8 +58,6 @@ class CustomCollectionView: NSCollectionView {
     }
 
     override func rightMouseUp(with event: NSEvent) {
-        super.rightMouseUp(with: event)
-
         let mouseUpLocation = event.locationInWindow
         
         if let mouseDownLocation = self.mouseDownLocation {
@@ -160,6 +158,7 @@ class CustomCollectionView: NSCollectionView {
             }
         }
         self.mouseDownLocation = nil // 重置按下位置
+        super.rightMouseUp(with: event)
     }
     
     @objc func actOpenInFinder() {

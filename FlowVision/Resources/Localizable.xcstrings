@@ -334,7 +334,7 @@
       }
     },
     "close-large-image" : {
-      "comment" : "关闭（双击）",
+      "comment" : "关闭 (双击)",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -345,7 +345,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "关闭（双击）"
+            "value" : "关闭 (双击)"
           }
         }
       }
@@ -1600,7 +1600,7 @@
       }
     },
     "recognize-OCR" : {
-      "comment" : "识别文本(OCR)",
+      "comment" : "识别文本 (OCR)",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1611,7 +1611,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "识别文本(OCR)"
+            "value" : "识别文本 (OCR)"
           }
         }
       }

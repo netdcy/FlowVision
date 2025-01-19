@@ -21,6 +21,7 @@
  - Performance optimizations for directories with a large number of images
  - High-quality scaling (reduces moiré and other issues)
  - Support for video thumbnails
+ - Support HDR display
  - Recursive mode
 
 ## Installation and Usage
