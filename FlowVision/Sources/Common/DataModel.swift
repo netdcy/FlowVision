@@ -258,6 +258,7 @@ class ImageInfo {
     var rating: Int?
     var properties: [String: Any]?
     var metadata: CGImageMetadata?
+    var isHDR: Bool = false
     
     init(_ size: NSSize?){
         self.size=size

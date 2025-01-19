@@ -200,6 +200,7 @@ extension NSToolbarItem.Identifier {
     static let favorites = NSToolbarItem.Identifier("com.example.favorites")
     static let thumbSize = NSToolbarItem.Identifier("com.example.thumbSize")
     static let isRecursiveMode = NSToolbarItem.Identifier("com.example.isRecursiveMode")
+    static let isEnableHDR = NSToolbarItem.Identifier("com.example.isEnableHDR")
 }
 
 extension WindowController: NSToolbarDelegate {
@@ -217,6 +218,11 @@ extension WindowController: NSToolbarDelegate {
         var identifiers: [NSToolbarItem.Identifier] = [.sidebar, .favorites, .goBack, .goForward, .windowTitle]
         if let viewController = contentViewController as? ViewController {
             if viewController.publicVar.isInLargeView {
+                if #available(macOS 14.0, *) {
+                    if viewController.largeImageView.file.imageInfo?.isHDR ?? false {
+                        identifiers.append(.isEnableHDR)
+                    }
+                }
                 identifiers.append(.zoomOut)
                 identifiers.append(.zoomIn)
                 //identifiers.append(.rotateL)
@@ -358,6 +364,22 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.label = NSLocalizedString("pin-window", comment: "置顶")
             toolbarItem.paletteLabel = NSLocalizedString("pin-window", comment: "置顶")
             toolbarItem.visibilityPriority = .standard
+
+        case .isEnableHDR:
+            let button: NSButton
+            if viewController.publicVar.isEnableHDR {
+                button = NSButton(title: "HDR", target: self, action: #selector(toggleEnableHDR(_:)))
+                button.contentTintColor = .controlAccentColor
+            } else {
+                button = NSButton(title: "SDR", target: self, action: #selector(toggleEnableHDR(_:)))
+                button.contentTintColor = .secondaryLabelColor
+            }
+            setButtonStyle(button)
+            button.toolTip = NSLocalizedString("Enable HDR", comment: "启用HDR")
+            toolbarItem.view = button
+            toolbarItem.label = NSLocalizedString("Enable HDR", comment: "启用HDR")
+            toolbarItem.paletteLabel = NSLocalizedString("Enable HDR", comment: "启用HDR")
+            toolbarItem.visibilityPriority = .low
         
         case .showinfo:
             var image: NSImage
@@ -914,7 +936,7 @@ extension WindowController: NSToolbarDelegate {
         autoPlay.isEnabled = viewController.publicVar.isInLargeView
         
         menu.addItem(NSMenuItem.separator())
-        
+
         let recursiveMode = menu.addItem(withTitle: NSLocalizedString("Recursive Mode", comment: "递归浏览模式"), action: #selector(toggleRecursiveMode), keyEquivalent: "")
         recursiveMode.state = (viewController.publicVar.isRecursiveMode) ? .on : .off
         
@@ -980,6 +1002,20 @@ extension WindowController: NSToolbarDelegate {
         } else {
             let menuLocation = NSEvent.mouseLocation
             menu.popUp(positioning: nil, at: menuLocation, in: nil)
+        }
+    }
+
+    @objc func toggleEnableHDR(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.publicVar.isEnableHDR.toggle()
+        UserDefaults.standard.set(viewController.publicVar.isEnableHDR, forKey: "isEnableHDR")
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            if #available(macOS 14.0, *) {
+                viewController.largeImageView.imageView.preferredImageDynamicRange = (viewController.publicVar.isEnableHDR) ? .high : .standard
+            }
+            //self.updateToolbar()
+            viewController.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false, forceRefresh: true)
         }
     }
     

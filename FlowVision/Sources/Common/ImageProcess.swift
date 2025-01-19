@@ -686,6 +686,42 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0) -> NSImage
     return img
 }
 
+func checkIsHDR(imageInfo: ImageInfo?) -> Bool {
+    if let properties = imageInfo?.properties,
+       let headroom = properties["Headroom"] as? Double,
+       headroom > 1.0 {
+        return true
+    }
+    return false
+}
+
+func getHDRImage(url: URL, rotate: Int = 0) -> NSImage? {
+    if #available(macOS 14.0, *) {
+        let ciOptions: [CIImageOption: Any] = [.applyOrientationProperty: true, .expandToHDR: true]
+        if var inputImage = CIImage(contentsOf: url, options: ciOptions) {
+            // 根据rotate参数旋转图像
+            if rotate != 0 {
+                inputImage = inputImage.oriented(.right).transformed(by: CGAffineTransform(rotationAngle: CGFloat(-rotate+1) * .pi / 2))
+            }
+            
+            let context = CIContext(options: [.name: "Renderer"])
+            if let cgImage = context.createCGImage(inputImage,
+                                                   from: inputImage.extent,
+                                                   format: .RGB10,
+                                                   colorSpace: inputImage.colorSpace ?? CGColorSpace(name: CGColorSpace.itur_2100_PQ)!,
+                                                   deferred: true) {
+                
+                return NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
+            }
+        }
+    } else {
+        // Fallback on earlier versions
+        return NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
+    }
+    
+    return nil
+}
+
 func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
     // 构建 ffprobe 命令来获取视频流的宽度和高度
     //let ffprobeCommand = "-v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1:nokey=1 '\(url.path)'"
@@ -785,6 +821,8 @@ func getImageInfo(url: URL) -> ImageInfo? {
         
         let imageInfo = ImageInfo(imageSize)
         imageInfo.properties = imageProperties
+        imageInfo.isHDR = checkIsHDR(imageInfo: imageInfo)
+        //print(imageProperties)
         
 //        let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil)
 //        imageInfo.metadata = metadata
@@ -959,7 +997,8 @@ func formatExifData(_ imageProperties: [String: Any]) -> [(String, Any)] {
         
         (kCGImagePropertyColorModel, "色彩空间"),
         (kCGImagePropertyProfileName, "配置文件名称"),
-        (kCGImagePropertyDepth, "位深度")
+        (kCGImagePropertyDepth, "位深度"),
+        ("custom-HDR" as CFString, "HDR")
     ]
     
     for i in 0..<translationMap.count {
@@ -1033,6 +1072,17 @@ func formatExifData(_ imageProperties: [String: Any]) -> [(String, Any)] {
             }else{
                 formattedData.append((translationKey, value))
             }
+        }else if key == "custom-HDR" as CFString {
+            if let _ = imageProperties["Headroom"]{
+                if let depth = imageProperties["Depth"] as? Int {
+                    if depth == 8 {
+                        formattedData.append((translationKey, "Gain Map HDR"))
+                    }else if depth > 8 {
+                        formattedData.append((translationKey, "\(depth)bit HDR"))
+                    }
+                }
+            }
+            
         }
     }
     
@@ -1133,8 +1183,8 @@ class LargeImageProcessor {
 //        return getResizedImage(url: url, size: size, rotate: rotate)
 //    }
     
-    static func getImageCache(url: URL, size: NSSize, rotate: Int = 0, ver: Int, useOriginalImage: Bool, needWaitWhenSame: Bool = true) -> NSImage? {
-        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)" as NSString
+    static func getImageCache(url: URL, size: NSSize, rotate: Int = 0, ver: Int, useOriginalImage: Bool, isHDR: Bool, needWaitWhenSame: Bool = true) -> NSImage? {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)" as NSString
         //print(cacheKey)
         
         // 先检查缓存中是否已有图像（包括nil情况）
@@ -1164,7 +1214,9 @@ class LargeImageProcessor {
             
             // 生成图像
             var image: NSImage?
-            if useOriginalImage {
+            if isHDR {
+                image = getHDRImage(url: url, rotate: rotate)
+            }else if useOriginalImage {
                 image = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
             }else{
                 image = getResizedImage(url: url, size: size, rotate: rotate)
@@ -1192,8 +1244,8 @@ class LargeImageProcessor {
     }
     
     // 检查缓存中是否有图像（且不是nil）
-    static func isImageCached(url: URL, size: NSSize, rotate: Int = 0, ver: Int) -> Bool {
-        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)" as NSString
+    static func isImageCached(url: URL, size: NSSize, rotate: Int = 0, ver: Int, isHDR: Bool) -> Bool {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)" as NSString
         if let cachedWrapper = cache.object(forKey: cacheKey) {
             return cachedWrapper.image != nil
         }
@@ -1201,8 +1253,8 @@ class LargeImageProcessor {
     }
     
     // 检查缓存中是否有图像，有的话则返回
-    static func isImageCachedAndGet(url: URL, size: NSSize, rotate: Int = 0, ver: Int) -> NSImage? {
-        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)" as NSString
+    static func isImageCachedAndGet(url: URL, size: NSSize, rotate: Int = 0, ver: Int, isHDR: Bool) -> NSImage? {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)" as NSString
         if let cachedWrapper = cache.object(forKey: cacheKey) {
             return cachedWrapper.image
         }

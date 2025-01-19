@@ -8,6 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="CustomCollectionViewItem" customModule="FlowVision" customModuleProvider="target">
             <connections>
+                <outlet property="imageLabel" destination="zCy-jm-djJ" id="9St-59-2lF"/>
                 <outlet property="imageNameField" destination="pCL-Qi-9tg" id="Wm9-cR-1T3"/>
                 <outlet property="imageViewObj" destination="mLA-jB-nbi" id="Chi-eg-LHj"/>
                 <outlet property="imageViewRef" destination="Bgk-cS-MXG" id="y6F-wk-C87"/>
@@ -39,8 +40,17 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
+                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zCy-jm-djJ">
+                    <rect key="frame" x="234" y="308" width="74" height="16"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="ImageLabel" id="ihO-ZU-SfR">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
             </subviews>
-            <point key="canvasLocation" x="139" y="132"/>
+            <point key="canvasLocation" x="98" y="134"/>
         </customView>
     </objects>
 </document>

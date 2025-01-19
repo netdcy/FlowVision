@@ -13,6 +13,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var imageViewObj: CustomThumbImageView!
     @IBOutlet weak var imageViewRef: CustomThumbImageView!
     @IBOutlet weak var imageNameField: NSTextField!
+    @IBOutlet weak var imageLabel: NSTextField!
     
     var folderViews=[NSView]()
     var folderImageViews=[CustomImageView]()
@@ -41,9 +42,17 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         imageViewObj.layer?.cornerRadius = 5.0 // 这里可以根据需要调整圆角的半径
         imageViewObj.layer?.masksToBounds = true
         imageViewObj.animates=true
+        if #available(macOS 14.0, *) {
+            imageViewObj.preferredImageDynamicRange = .standard
+        }
         
         imageNameField.cell?.lineBreakMode = .byTruncatingTail
         
+        imageLabel.wantsLayer = true
+        imageLabel.layer?.backgroundColor = NSColor.gray.withAlphaComponent(0.6).cgColor
+        imageLabel.layer?.cornerRadius = 4
+//        imageLabel.layer?.borderWidth = 0.5
+//        imageLabel.layer?.borderColor = NSColor.gray.withAlphaComponent(0.5).cgColor
         
 //        for _ in 0...0 {
 //            // 父视图 - 用于阴影和边框
@@ -141,6 +150,17 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
         
         imageNameField.stringValue=getViewController(collectionView!)!.publicVar.profile.isShowThumbnailFilename ? URL(string:file.path)!.lastPathComponent : ""
+
+        if (file.imageInfo?.isHDR ?? false) && getViewController(collectionView!)!.publicVar.profile.isShowThumbnailHDR {
+            imageLabel.stringValue="HDR"
+            imageLabel.sizeToFit() // 先调整文字大小
+            imageLabel.frame.origin.x = imageViewObj.frame.origin.x + imageViewObj.frame.width - imageLabel.frame.width - 5
+            imageLabel.frame.origin.y = imageViewObj.frame.origin.y + imageViewObj.frame.height - imageLabel.frame.height - 5
+            imageLabel.isHidden=false
+        }else{
+            imageLabel.isHidden=true
+        }
+        
         
         if(playAnimation){
             NSAnimationContext.runAnimationGroup({ context in

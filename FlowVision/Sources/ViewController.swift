@@ -27,6 +27,7 @@ class CustomProfile: Codable {
     
     //布局
     var isShowThumbnailFilename = true
+    var isShowThumbnailHDR = true
     var ThumbnailBorderThickness: Double = 6
     var ThumbnailBorderRadius: Double = 5
     var ThumbnailCellPadding: Double = 5
@@ -68,6 +69,7 @@ class PublicVar{
     var isShowVideoFile = true
     var isGenHdThumb = false
     var isPreferInternalThumb = false
+    var isEnableHDR = true
     
     //可一键切换的配置
     var profile = CustomProfile()
@@ -244,6 +246,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     
     var lastDoNotGenResized = false
     var lastLargeImageRotate = 0
+    var lastUseHDR = false
     
     var lastTheme: NSAppearance.Name = .aqua
     
@@ -356,6 +359,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if let isPreferInternalThumb = UserDefaults.standard.value(forKey: "isPreferInternalThumb") as? Bool {
             publicVar.isPreferInternalThumb = isPreferInternalThumb
         }
+        if let isEnableHDR = UserDefaults.standard.value(forKey: "isEnableHDR") as? Bool {
+            publicVar.isEnableHDR = isEnableHDR
+        }
+        if #available(macOS 14.0, *) {
+            //
+        }else{
+            publicVar.isEnableHDR = false
+        }
 //        if let layoutType: LayoutType = UserDefaults.standard.enumValue(forKey: "layoutType"){
 //            publicVar.layoutType=layoutType
 //        }
@@ -406,6 +417,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if globalVar.autoHideToolbar {
             mainScrollView.automaticallyAdjustsContentInsets = false
             outlineScrollView.automaticallyAdjustsContentInsets = false
+        }
+
+        if #available(macOS 14.0, *) {
+            largeImageView.imageView.preferredImageDynamicRange = (publicVar.isEnableHDR) ? .high : .standard
         }
         
         mainScrollView.scrollerStyle = .legacy
@@ -4357,6 +4372,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     currLargeImagePos=indexPath.item
                     initLargeImagePos=indexPath.item
                     lastDoNotGenResized=false
+                    lastUseHDR=false
+                    lastLargeImageRotate=0
+
                     changeLargeImage(justChangeLargeImageViewFile: globalVar.portableMode)
                     largeImageView.isHidden=false
                     largeImageBgEffectView.isHidden=false
@@ -4486,6 +4504,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             
             currLargeImagePos=nextLargeImagePos
             lastDoNotGenResized=false
+            lastUseHDR=false
+            lastLargeImageRotate=0
             
             //取消OCR
             largeImageView.unSetOcr()
@@ -4540,6 +4560,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             
             currLargeImagePos=nextLargeImagePos
             lastDoNotGenResized=false
+            lastUseHDR=false
+            lastLargeImageRotate=0
             
             //取消OCR
             largeImageView.unSetOcr()
@@ -4621,6 +4643,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         initLargeImagePos = -1
         
         lastDoNotGenResized=false
+        lastUseHDR=false
+        lastLargeImageRotate=0
+
         changeLargeImage(justChangeLargeImageViewFile: globalVar.portableMode)
         largeImageView.isHidden=false
         largeImageBgEffectView.isHidden=false
@@ -4734,7 +4759,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         //当文件被修改，列表重新读取但大小还没来得及获取时可能为空，此时需要获取一下
         //或者由于外置卷，使用的默认大小 || VolumeManager.shared.isExternalVolume(url)
         if originalSize == nil {
-            originalSize = getImageInfo(url: url)?.size
+            let imageInfo = getImageInfo(url: url)
+            originalSize = imageInfo?.size
+            file.imageInfo = imageInfo
+            file.originalSize = originalSize
+
             if originalSize == nil {
                 originalSize = DEFAULT_SIZE
                 file.isGetImageSizeFail = true
@@ -4744,6 +4773,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
         
         if let originalSize=originalSize{
+            
+            //判断HDR
+            var isHDR = (file.imageInfo?.isHDR ?? false) && publicVar.isEnableHDR
             
             //计算宽高
             if originalSize.height/originalSize.width*maxBounds.width > maxBounds.height {
@@ -4769,7 +4801,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
 
             DispatchQueue.global(qos: .userInitiated).async {
-                _ = LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: 0, ver: file.ver, useOriginalImage: doNotGenResized, needWaitWhenSame: false)
+                _ = LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: 0, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR, needWaitWhenSame: false)
             }
             
         }
@@ -4853,6 +4885,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         if var originalSize=originalSize{
             
+            //判断HDR
+            var isHDR = (file.imageInfo?.isHDR ?? false) && publicVar.isEnableHDR
+            
             //判断旋转
             if rotate%2 == 1 {
                 originalSize=NSSize(width: originalSize.height, height: originalSize.width)
@@ -4882,25 +4917,31 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 doNotGenResized=true
             }
             
+            //但如果是旋转，还是缩放占用更小
+            if rotate != 0 {
+                doNotGenResized=false
+            }
+            
             //使用原图的格式
             if ["gif", "svg", "ai"].contains(url.pathExtension.lowercased()){
                 doNotGenResized=true
             }
             
-            //但如果是旋转，还是缩放占用更小
-            if rotate != 0 {
-                doNotGenResized=false
-            }
             log("ori:",originalSize.width,originalSize.height)
             log("dest:",largeSize.width,largeSize.height)
             
             //若上次已经用了原图，这次还用原图，则不重新载入
-            if lastDoNotGenResized && doNotGenResized && lastLargeImageRotate == rotate {return}
+            if lastDoNotGenResized && doNotGenResized && lastLargeImageRotate == rotate && lastUseHDR == isHDR {return}
+            
+            //若上次已经是HDR，这次还是，则不重新载入
+            if lastUseHDR && isHDR && lastLargeImageRotate == rotate {return}
+
             lastDoNotGenResized=doNotGenResized
+            lastUseHDR=isHDR
             lastLargeImageRotate=rotate
             
             //检查是否有大图缓存
-            var preGetImageCache = LargeImageProcessor.isImageCachedAndGet(url: url, size: largeSize, rotate: rotate, ver: file.ver)
+            var preGetImageCache = LargeImageProcessor.isImageCachedAndGet(url: url, size: largeSize, rotate: rotate, ver: file.ver, isHDR: isHDR)
             if forceRefresh {preGetImageCache = nil}
             let isImageCached = preGetImageCache != nil
             
@@ -4957,9 +4998,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 //按实际目标分辨率绘制效果较差，观察到1080P屏幕双倍插值后绘制与直接使用原图效果才类似，因此即使scale==1，此处size也不除以2
                 var largeImage: NSImage?
                 if resetSize && !forceRefresh {
-                    largeImage=LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, ver: file.ver, useOriginalImage: doNotGenResized)
+                    largeImage=LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR)
                 }else{
-                    if doNotGenResized {
+                    if isHDR {
+                        largeImage = getHDRImage(url: url, rotate: rotate)
+                    }else if doNotGenResized {
                         largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
                     }else{
                         largeImage = getResizedImage(url: url, size: largeSize, rotate: rotate)
@@ -5545,6 +5588,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 
     func configLayoutStyle(newStyle: CustomProfile ,doNotRefresh: Bool = false){
         publicVar.profile.isShowThumbnailFilename = newStyle.isShowThumbnailFilename
+        publicVar.profile.isShowThumbnailHDR = newStyle.isShowThumbnailHDR
         publicVar.profile.ThumbnailBorderThickness = newStyle.ThumbnailBorderThickness
         publicVar.profile.ThumbnailCellPadding = newStyle.ThumbnailCellPadding
         publicVar.profile.ThumbnailBorderRadius = newStyle.ThumbnailBorderRadius
@@ -5566,11 +5610,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     
     func customLayoutStylePrompt (){
         if let mainWindow = NSApplication.shared.mainWindow {
-            showThumbnailOptionsPanel(on: mainWindow) { [weak self] isShowFilename, borderThickness, cellPadding, borderRadius, filenameSize in
+            showThumbnailOptionsPanel(on: mainWindow) { [weak self] isShowFilename, isShowHDR, borderThickness, cellPadding, borderRadius, filenameSize in
                 guard let self = self else { return }
                 
                 let newStyle = CustomProfile()
                 newStyle.isShowThumbnailFilename = isShowFilename
+                newStyle.isShowThumbnailHDR = isShowHDR
                 newStyle.ThumbnailBorderThickness = borderThickness
                 newStyle.ThumbnailCellPadding = cellPadding
                 newStyle.ThumbnailBorderRadius = borderRadius

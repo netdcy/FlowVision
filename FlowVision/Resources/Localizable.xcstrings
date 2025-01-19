@@ -589,6 +589,17 @@
         }
       }
     },
+    "Enable HDR" : {
+      "comment" : "启用HDR",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用HDR"
+          }
+        }
+      }
+    },
     "Enlarge the Thumbnails" : {
       "comment" : "放大缩略图",
       "localizations" : {
@@ -1836,6 +1847,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示相机RAW文件"
+          }
+        }
+      }
+    },
+    "Show HDR Badge(if exist)" : {
+      "comment" : "显示HDR标记(如果存在)",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示HDR标记(如果存在)"
           }
         }
       }

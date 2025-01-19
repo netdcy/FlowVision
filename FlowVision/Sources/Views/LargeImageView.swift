@@ -615,7 +615,7 @@ class LargeImageView: NSView {
     @objc func actOCR() {
         guard let url=URL(string:file.path),
               let size=imageView.image?.size,
-              let image=LargeImageProcessor.getImageCache(url: url, size: size, rotate: file.rotate, ver: file.ver, useOriginalImage: true)
+              let image=LargeImageProcessor.getImageCache(url: url, size: size, rotate: file.rotate, ver: file.ver, useOriginalImage: true, isHDR: false)
         else {return}
         image.size = size
         
