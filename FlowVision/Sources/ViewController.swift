@@ -2552,6 +2552,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 }
             }
         }
+        
+        //刷新工具栏
+        if let windowController = view.window?.windowController as? WindowController {
+            windowController.updateToolbar()
+        }
     }
     
     func adjustThumbSizeByDirection(direction: Int) {
@@ -5097,6 +5102,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
 
     func startWatchingDirectory(atPath path: String) {
         if path.contains("Cryptomator") { // TODO: 有大量write事件且造成go-nfsv4进程繁忙
+            return
+        }
+        
+        if publicVar.isRecursiveMode { // 递归模式不监听
             return
         }
         

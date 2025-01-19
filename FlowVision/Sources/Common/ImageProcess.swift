@@ -897,7 +897,14 @@ func readableFileSize(_ bytes: Int) -> String {
 
 func convertExifData(file: FileModel) -> [String: Any]? {
     
-    guard var imageProperties = file.imageInfo?.properties else {return nil}
+    if file.imageInfo == nil {
+        file.imageInfo = ImageInfo(nil)
+    }
+    if file.imageInfo?.properties == nil {
+        file.imageInfo?.properties = [:]
+    }
+    
+    guard var imageProperties = file.imageInfo?.properties else {return [:]}
 
     if let fileSize = file.fileSize {
         imageProperties["FileSize"]=readableFileSize(fileSize)

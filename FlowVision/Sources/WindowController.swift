@@ -324,46 +324,83 @@ extension WindowController: NSToolbarDelegate {
             pathControl.isEditable = false
             pathControl.backgroundColor = .clear
             pathControl.focusRingType = .none
-            //pathControl.translatesAutoresizingMaskIntoConstraints = false
             pathControl.target = self
             pathControl.action = #selector(pathControlClicked(_:))
+            let font = NSFont.systemFont(ofSize: 13, weight: .regular)
             
             if let viewController = contentViewController as? ViewController {
-                let curFolder=viewController.fileDB.curFolder
-                var pathString = ROOT_NAME+curFolder.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!
-
+                let curFolder = viewController.fileDB.curFolder
+                var pathString = curFolder.replacingOccurrences(of: "file:///", with: "")
+                if pathString.hasPrefix("/") {
+                    pathString.removeFirst()
+                }
+                if pathString.hasSuffix("/") {
+                    pathString.removeLast()
+                }
                 let components = pathString.components(separatedBy: "/")
-                let maxNum = 7
-                if components.count > maxNum {
-                    pathShortenStore = components[0..<components.count-maxNum].joined(separator: "/")
-                    let shortenedTitle = ".../" + components[components.count-maxNum..<components.count].joined(separator: "/")
-                    pathString = shortenedTitle
-                } else {
-                    pathShortenStore = ""
+                var pathItems: [CustomPathControlItem] = []
+                
+                for (i,component) in components.enumerated() {
+                    if component == "" {continue}
+                    let item = CustomPathControlItem()
+                    item.title = component.removingPercentEncoding!
+
+                    let componentPath = components[0..<i + 1].joined(separator: "/")
+                    let encodedPath = "file:///\(componentPath)/"
+                    item.myUrl = URL(string: encodedPath)
+
+                    pathItems.append(item)
                 }
                 
-                if let url = URL(string: pathString) {
-                    pathControl.url = url
-                } else {
-                    pathControl.placeholderString = pathString
+                let rootItem = CustomPathControlItem()
+                rootItem.title = ROOT_NAME
+                rootItem.myUrl = URL(string: "file:///")
+                pathItems.insert(rootItem, at: 0)
+                
+                var maxWidth = (window?.frame.width ?? 1000) - 600 // 指定总宽度
+                if viewController.publicVar.profile.getValue(forKey: "isWindowTitleShowStatistics") == "true" {
+                    maxWidth -= viewController.publicVar.titleStatisticInfo.size(withAttributes: [.font: font]).width + 20
                 }
+                var totalWidth: CGFloat = 0
+                var startIndex = pathItems.count - 1
+                
+                // 从后往前计算每个路径项的实际宽度
+                for i in (0..<pathItems.count).reversed() {
+                    let itemWidth = pathItems[i].title.size(withAttributes: [.font: font]).width + 15 // 15为分隔符宽度
+                    totalWidth += itemWidth
+                    if totalWidth > maxWidth {
+                        startIndex = i + 1
+                        break
+                    }
+                }
+
+                // 最后一个时已经超过
+                if startIndex == pathItems.count {
+                    startIndex = pathItems.count - 1
+                }
+                
+                // 如果超过最大字符数,替换前面的为...
+                if totalWidth > maxWidth && startIndex != 0 {
+                    let item = CustomPathControlItem()
+                    item.title = "..."
+                    item.myUrl = pathItems[startIndex].myUrl?.deletingLastPathComponent()
+                    pathItems = [item] + pathItems[startIndex...]
+                }
+                
+                pathItems.last?.myUrl = nil
+
+                pathControl.pathItems = pathItems
             }
-            
-//            for item in pathControl.pathComponentCells() {
-//                item.font = NSFont.systemFont(ofSize: 13, weight: .regular)
-//                item.textColor = NSColor.labelColor
-//            }
             
             for item in pathControl.pathItems {
                 let range = NSMakeRange(0, item.attributedTitle.length)
                 let attributedTitle = NSMutableAttributedString(attributedString: item.attributedTitle)
                 attributedTitle.addAttribute(.foregroundColor, value: NSColor.labelColor, range: range)
+                attributedTitle.addAttribute(.font, value: font, range: range)
                 item.attributedTitle = attributedTitle
             }
             
             toolbarItem.view = pathControl
-            //toolbarItem.minSize = NSSize(width: 200, height: pathControl.fittingSize.height)
-            //toolbarItem.maxSize = NSSize(width: 10000, height: pathControl.fittingSize.height)
             toolbarItem.label = NSLocalizedString("window-title", comment: "窗口标题")
             toolbarItem.paletteLabel = NSLocalizedString("window-title", comment: "窗口标题") 
             toolbarItem.visibilityPriority = .high
@@ -616,23 +653,12 @@ extension WindowController: NSToolbarDelegate {
     
     @objc func pathControlClicked(_ sender: NSPathControl) {
         guard let viewController = contentViewController as? ViewController else {return}
-        if let clickedItem = sender.clickedPathItem {
-            if let itemURL = clickedItem.url {
+        if let clickedItem = sender.clickedPathItem as? CustomPathControlItem {
+            if let itemURL = clickedItem.myUrl {
                 if viewController.publicVar.isInLargeView {
                     viewController.closeLargeImage(0)
                 }
-                var tmpPath = itemURL.path
-                if pathShortenStore.count > 0 {
-                    tmpPath = "/"+pathShortenStore + tmpPath.dropFirst("/...".count)
-                }
-                let rootPrefix = "/"+ROOT_NAME
-                let destAbsPath = "file://"+String(tmpPath.dropFirst(rootPrefix.count)).addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!+"/"
-                //print("1:"+itemURL.path)
-                //print("2:"+pathShortenStore)
-                //print("3:"+destAbsPath)
-                if destAbsPath != viewController.fileDB.curFolder {
-                    viewController.switchDirByDirection(direction: .zero, dest: destAbsPath, doCollapse: true, expandLast: true, skip: false, stackDeep: 0)
-                }
+                viewController.switchDirByDirection(direction: .zero, dest: itemURL.absoluteString, doCollapse: true, expandLast: true, skip: false, stackDeep: 0)
             }
         }
     }
@@ -1322,4 +1348,3 @@ extension WindowController: NSToolbarDelegate {
         viewController.customLayoutStylePrompt()
     }
 }
-
