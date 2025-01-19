@@ -21,31 +21,30 @@
  - Performance optimizations for directories with a large number of images
  - High-quality scaling (reduces moiré and other issues)
  - Support for video thumbnails
+ - Support for HDR display
  - Recursive mode
 
 ## Installation and Usage
 
 ### System Requirements
 
- - macOS 11.0 and Later
+ - macOS 11.0 or Later
 
 ### Privacy and Security
 
  - Open source
  - No Internet connection
- - Provide unsigned official builds
 
 ### Homebrew Install
 
 Initial Installation
 ```
-brew tap netdcy/flowvision
-brew install flowvision --no-quarantine
+brew install --cask flowvision
 ```
-Upgrade ('--no-quarantine' must be added when upgrading or reinstalling)
+Upgrade
 ```
 brew update
-brew upgrade flowvision --no-quarantine
+brew upgrade flowvision
 ```
 
 ## Instructions:
@@ -65,16 +64,6 @@ brew upgrade flowvision --no-quarantine
  - W: Same as the right-click gesture Up
  - A/D: Same as the right-click gesture Left/Right
  - S: Same as the right-click gesture Down
-
-## FAQ
-
-**Q1: Why can't I open the application? I see a warning saying the app is not trusted.**
-
-**A1:** This happens because the app is not notarized by Apple. Please follow the instructions provided in [Apple support article](https://support.apple.com/102445#openanyway) to open the app.
-
-**Q2: Why isn't the application notarized?**
-
-**A2:** Notarizing an app requires an annual $100 fee to Apple. To keep the software free, we haven't notarized it. If you prefer, you can build the app yourself from the source code.
 
 ## Build
 

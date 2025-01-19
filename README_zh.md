@@ -27,6 +27,10 @@
 
  - 支持视频缩略图
 
+ - 支持HDR显示
+
+ - 支持递归模式
+
 ## 安装使用
 
 ### 系统需求
@@ -36,20 +40,18 @@
 ### 隐私与安全性
 
  - 开源软件
- - 无网络连接
- - 提供无签名的官方构建，可自行编译
+ - 无网络请求
 
 ### Homebrew 方式安装
 
 首次安装
 ```
-brew tap netdcy/flowvision
-brew install flowvision --no-quarantine
+brew install --cask flowvision
 ```
-版本升级 (必须添加'--no-quarantine'参数)
+版本升级
 ```
 brew update
-brew upgrade flowvision --no-quarantine
+brew upgrade flowvision
 ```
 
 ## 操作说明
@@ -70,16 +72,6 @@ brew upgrade flowvision --no-quarantine
  - W：同右键手势 向上
  - A/D：同右键手势 向左/右
  - S：同右键手势 向下
-
-## 常见问题
-
-**Q1: 为什么我无法打开这个应用？系统提示应用程序不受信任。**
-
-**A1:** 这是因为该应用程序没有经过Apple的公证。要打开它，请按照 [Apple 支持文档](https://support.apple.com/102445#openanyway) 中的指示进行操作。
-
-**Q2: 为什么应用程序没有经过公证？**
-
-**A2:** 公证应用程序需要每年向Apple支付100美元的费用。为了保持软件免费，我们没有对其进行公证。如果你愿意，可以从提供的源代码自行构建应用程序。
 
 ## 编译
 
