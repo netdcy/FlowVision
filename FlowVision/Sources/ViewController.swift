@@ -44,6 +44,12 @@ class CustomProfile: Codable {
         if dict[key] == nil && key == "isShowThumbnailHDR" {
             return "true"
         }
+        if dict[key] == nil && key == "isWindowTitleUseFullPath" {
+            return "true"
+        }
+        if dict[key] == nil && key == "isWindowTitleShowStatistics" {
+            return "true"
+        }
         return dict[key]!
     }
 
@@ -2791,8 +2797,15 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         let otherCount=(fileDB.db[SortKeyDir(curFolder)]?.fileCount ?? 0) - imageCount - videoCount
         let folderCount=(fileDB.db[SortKeyDir(curFolder)]?.folderCount ?? 0)
         fileDB.unlock()
+
+        var shortTitle = (curFolder as NSString).lastPathComponent.removingPercentEncoding!
         fullTitle = curFolder.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!
-        if folderCount+imageCount+videoCount+otherCount > 0 {
+
+        if publicVar.profile.getValue(forKey: "isWindowTitleUseFullPath") != "true" {
+            fullTitle = shortTitle
+        }
+
+        if folderCount+imageCount+videoCount+otherCount > 0 && publicVar.profile.getValue(forKey: "isWindowTitleShowStatistics") == "true" {
             fullTitle += String(format: " (")
             if folderCount != 0 {
                 fullTitle += String(format: "%d %@ ", folderCount, NSLocalizedString("Folder", comment: "目录"))
@@ -2813,7 +2826,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             fullTitle += String(format: ")")
         }
 
-        var shortTitle = (curFolder as NSString).lastPathComponent.removingPercentEncoding!
         if curFolder == "file:///" {shortTitle = ROOT_NAME}
         view.window?.title = shortTitle
         publicVar.fullTitle = fullTitle
@@ -5617,6 +5629,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     }
 
     func configLayoutStyle(newStyle: CustomProfile ,doNotRefresh: Bool = false){
+        publicVar.profile.setValue(forKey: "isWindowTitleUseFullPath", value: newStyle.getValue(forKey: "isWindowTitleUseFullPath"))
+        publicVar.profile.setValue(forKey: "isWindowTitleShowStatistics", value: newStyle.getValue(forKey: "isWindowTitleShowStatistics"))
         publicVar.profile.isShowThumbnailFilename = newStyle.isShowThumbnailFilename
         publicVar.profile.setValue(forKey: "isShowThumbnailHDR", value: newStyle.getValue(forKey: "isShowThumbnailHDR"))
         publicVar.profile.ThumbnailBorderThickness = newStyle.ThumbnailBorderThickness
@@ -5640,10 +5654,12 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     
     func customLayoutStylePrompt (){
         if let mainWindow = NSApplication.shared.mainWindow {
-            showThumbnailOptionsPanel(on: mainWindow) { [weak self] isShowFilename, isShowHDR, borderThickness, cellPadding, borderRadius, filenameSize in
+            showThumbnailOptionsPanel(on: mainWindow) { [weak self] isUseFullPath, isShowStatistics, isShowFilename, isShowHDR, borderThickness, cellPadding, borderRadius, filenameSize in
                 guard let self = self else { return }
                 
                 let newStyle = CustomProfile()
+                newStyle.setValue(forKey: "isWindowTitleUseFullPath", value: String(isUseFullPath))
+                newStyle.setValue(forKey: "isWindowTitleShowStatistics", value: String(isShowStatistics))
                 newStyle.isShowThumbnailFilename = isShowFilename
                 newStyle.setValue(forKey: "isShowThumbnailHDR", value: String(isShowHDR))
                 newStyle.ThumbnailBorderThickness = borderThickness

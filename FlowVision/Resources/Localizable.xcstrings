@@ -728,17 +728,6 @@
         }
       }
     },
-    "Filename Font Size" : {
-      "comment" : "文件名字体大小",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文件名字体大小"
-          }
-        }
-      }
-    },
     "first-time-use-prompt" : {
       "comment" : "首次使用提示...",
       "localizations" : {
@@ -1917,13 +1906,13 @@
         }
       }
     },
-    "Show HDR Badge(if exist)" : {
-      "comment" : "显示HDR标记(如果存在)",
+    "Show HDR Badge in Thumbnail(if exist)" : {
+      "comment" : "缩略图显示HDR标记(如果存在)",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "显示HDR标记(如果存在)"
+            "value" : "缩略图显示HDR标记(如果存在)"
           }
         }
       }
@@ -1950,13 +1939,24 @@
         }
       }
     },
-    "Show Thumbnail Filename" : {
-      "comment" : "显示缩略图文件名",
+    "Show Statistics in Window Title" : {
+      "comment" : "在窗口标题中显示统计信息",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "显示缩略图文件名"
+            "value" : "在窗口标题中显示统计信息"
+          }
+        }
+      }
+    },
+    "Show Thumbnail Filename" : {
+      "comment" : "缩略图显示文件名",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图显示文件名"
           }
         }
       }
@@ -2626,6 +2626,17 @@
         }
       }
     },
+    "Thumbnail Filename Font Size" : {
+      "comment" : "缩略图文件名字体大小",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图文件名字体大小"
+          }
+        }
+      }
+    },
     "Thumbnail Options" : {
       "comment" : "缩略图选项",
       "localizations" : {
@@ -2650,6 +2661,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "上层文件夹"
+          }
+        }
+      }
+    },
+    "Use Full Path in Window Title" : {
+      "comment" : "在窗口标题中使用完整路径",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在窗口标题中使用完整路径"
           }
         }
       }
