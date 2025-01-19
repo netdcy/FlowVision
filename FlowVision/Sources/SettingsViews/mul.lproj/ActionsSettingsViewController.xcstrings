@@ -38,19 +38,19 @@
       }
     },
     "kUa-1f-s4l.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Press Alt + 12345 to switch to the corresponding profile.\\nPress Alt + Cmd + 12345 to save the current layout and style to the corresponding profile.\\nThe configurations involved in switching include: whether to display the sidebar, view type, sorting method, thumbnail size, and custom styles (such as whether to display file names and the width of the thumbnail border).\"; ObjectID = \"kUa-1f-s4l\";",
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Press Alt + 1~9 to switch to the corresponding profile.\\nPress Alt + Cmd + 1~9 to save the current layout and style to the corresponding profile.\\nThe configurations involved in switching include: whether to display the sidebar, view type, sorting method, thumbnail size, and custom styles (such as whether to display file names and the width of the thumbnail border).\"; ObjectID = \"kUa-1f-s4l\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Press Alt + 12345 to switch to the corresponding profile.\nPress Alt + Cmd + 12345 to save the current layout and style to the corresponding profile.\nThe configurations involved in switching include: whether to display the sidebar, view type, sorting method, thumbnail size, and custom styles (such as whether to display file names and the width of the thumbnail border)."
+            "value" : "Press Alt + 1~9 to switch to the corresponding profile.\nPress Alt + Cmd + 1~9 to save the current layout and style to the corresponding profile.\nThe configurations involved in switching include: whether to display the sidebar, view type, sorting method, thumbnail size, and custom styles (such as whether to display file names and the width of the thumbnail border)."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "按 Alt + 12345 切换到相应配置文件。\n按 Alt + Cmd + 12345 保存当前布局与样式到相应配置文件。\n切换涉及的配置包括：是否显示侧边栏、视图类型、排序方式、缩略图大小、自定义样式（例如是否显示文件名、缩略图边框宽度）。"
+            "value" : "按 Alt + 1~9 切换到相应配置文件。\n按 Alt + Cmd + 1~9 保存当前布局与样式到相应配置文件。\n切换涉及的配置包括：是否显示侧边栏、视图类型、排序方式、缩略图大小、自定义样式（例如是否显示文件名、缩略图边框宽度）。"
           }
         }
       }

@@ -139,7 +139,8 @@ class PublicVar{
         }
     }
     var isNeedChangeLayoutType = false
-    var justifiedLayout = CustomFlowLayout() //JQCollectionViewAlignLayout()
+    var justifiedLayout = CustomFlowLayout()
+    var gridLayout = CustomGridLayout()
     var waterfallLayout = WaterfallLayout()
     //weak var viewController:ViewController?
     var timer = MyTimer()
@@ -421,7 +422,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }else if publicVar.profile.layoutType == .justified {
             collectionView.collectionViewLayout = publicVar.justifiedLayout
         }else if publicVar.profile.layoutType == .grid {
-            collectionView.collectionViewLayout = publicVar.justifiedLayout
+            collectionView.collectionViewLayout = publicVar.gridLayout
         }else {
             collectionView.collectionViewLayout = publicVar.justifiedLayout
         }
@@ -735,16 +736,16 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     }
                 }
                 
-                // 检查按键是否是 Alt+12345 键
-                if (["1","2","3","4","5"].contains(characters)) && isOnlyAltPressed {
+                // 检查按键是否是 Alt+1~9 键
+                if (["1","2","3","4","5","6","7","8","9"].contains(characters)) && isOnlyAltPressed {
                     if !publicVar.isInLargeView {
                         useCustomProfile(characters)
                         return nil
                     }
                 }
                 
-                // 检查按键是否是 Cmd+Alt+12345 键
-                if (["1","2","3","4","5"].contains(characters)) && isCommandPressed && isAltPressed && !isCtrlPressed && !isShiftPressed {
+                // 检查按键是否是 Cmd+Alt+1~9 键
+                if (["1","2","3","4","5","6","7","8","9"].contains(characters)) && isCommandPressed && isAltPressed && !isCtrlPressed && !isShiftPressed {
                     if !publicVar.isInLargeView {
                         setCustomProfileTo(characters)
                         return nil
@@ -2619,8 +2620,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if totalWidth < 25 {totalWidth = 25}
         if publicVar.isInLargeView && globalVar.portableMode {totalWidth = 1000}
         
-        //let totalWidth=collectionView.bounds.width-10
-        //log("totalWidth:",totalWidth)
         let actualThreshold=WIDTH_THRESHOLD*totalWidth
         var sum=0.0
         var lineCount=0
@@ -2647,18 +2646,18 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 guard var originalSize=fileDB.db[SortKeyDir(targetFolder)]!.files[key]!.originalSize else{break}
                 if fileDB.db[SortKeyDir(targetFolder)]!.files[key]!.canBeCalcued != true {break}
 
-                if publicVar.profile.layoutType == .grid { originalSize=DEFAULT_SIZE }
+                //if publicVar.profile.layoutType == .grid { originalSize=DEFAULT_SIZE }
                 sum+=(originalSize.width/originalSize.height)
                 singleIds.append(key)
                 if sum>=actualThreshold || i==fileDB.db[SortKeyDir(targetFolder)]!.files.count-1 {
                     sum=max(sum,actualThreshold)
                     var singleHeight = floor((totalWidth - 2 * (publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailCellPadding) * Double(singleIds.count))/sum)
-                    if publicVar.profile.layoutType == .grid && lastSingleHeight != nil { singleHeight=lastSingleHeight! } //防止最后一行不一样大小
+                    //if publicVar.profile.layoutType == .grid && lastSingleHeight != nil { singleHeight=lastSingleHeight! } //防止最后一行不一样大小
                     lastSingleHeight=singleHeight
                     for singleId in singleIds{
                         var originalSizeSingle=fileDB.db[SortKeyDir(targetFolder)]!.files[singleId]!.originalSize!
                         
-                        if publicVar.profile.layoutType == .grid { originalSizeSingle=DEFAULT_SIZE }
+                        //if publicVar.profile.layoutType == .grid { originalSizeSingle=DEFAULT_SIZE }
                         
                         var singleWidth = floor(originalSizeSingle.width/originalSizeSingle.height*singleHeight)
                         
@@ -2666,6 +2665,15 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                             let numberOfColumns=Double(publicVar.waterfallLayout.numberOfColumns)
                             singleWidth = floor(totalWidth/numberOfColumns-2*(publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailCellPadding))
                             singleHeight = round(originalSizeSingle.height/originalSizeSingle.width*singleWidth)
+                        }
+                        
+                        if publicVar.profile.layoutType == .grid {
+                            let numberOfColumns=Double(publicVar.waterfallLayout.numberOfColumns)
+                            let sideLength = floor(totalWidth/CGFloat(numberOfColumns+1)-2*(publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailCellPadding))
+                            let squareFrame = NSRect(x: 0, y: 0, width: sideLength, height: sideLength)
+                            let newFrame = AVMakeRect(aspectRatio: originalSizeSingle, insideRect: squareFrame)
+                            singleWidth = round(newFrame.width)
+                            singleHeight = round(newFrame.height)
                         }
                         
                         let size=NSSize(width: singleWidth+2*publicVar.profile.ThumbnailBorderThickness, height: singleHeight+2*publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailFilenamePadding)
@@ -3424,7 +3432,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         if publicVar.isNeedChangeLayoutType {
             if publicVar.profile.layoutType == .waterfall {
                 collectionView.collectionViewLayout=publicVar.waterfallLayout
-            }else{
+            }else if publicVar.profile.layoutType == .grid {
+                collectionView.collectionViewLayout=publicVar.gridLayout
+            }else {
                 collectionView.collectionViewLayout=publicVar.justifiedLayout
             }
             publicVar.isNeedChangeLayoutType = false

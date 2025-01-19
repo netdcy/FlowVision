@@ -1043,7 +1043,7 @@ Gw
                                             <real value="250"/>
                                         </holdingPriorities>
                                     </splitView>
-                                    <visualEffectView hidden="YES" fixedFrame="YES" blendingMode="withinWindow" material="popover" state="active" translatesAutoresizingMaskIntoConstraints="NO" id="n6b-Kn-1wp" customClass="CustomEffectView" customModule="FlowVision" customModuleProvider="target">
+                                    <visualEffectView hidden="YES" fixedFrame="YES" blendingMode="withinWindow" material="menu" state="active" translatesAutoresizingMaskIntoConstraints="NO" id="n6b-Kn-1wp" customClass="CustomEffectView" customModule="FlowVision" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="1280" height="720"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </visualEffectView>
