@@ -138,7 +138,7 @@ class SortKey: Comparable {
     static func writeExifInfo(_ sortKey: SortKey) {
         if !sortKey.isDir{
             let ext = ext(sortKey)
-            if globalVar.HandledImageExtensions.contains(ext) {
+            if globalVar.HandledImageAndRawExtensions.contains(ext) {
                 let imageInfo = getImageInfo(url: URL(string: sortKey.path)!)
                 let exifData = imageInfo?.properties?[kCGImagePropertyExifDictionary as String] as? [String: Any]
                 let tiffData = imageInfo?.properties?[kCGImagePropertyTIFFDictionary as String] as? [String: Any]

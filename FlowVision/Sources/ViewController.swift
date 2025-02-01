@@ -2029,11 +2029,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     file.addDate = (try? url.resourceValues(forKeys: [.addedToDirectoryDateKey]).addedToDirectoryDate)
                     
                     let ext = url.pathExtension.lowercased()
-                    if globalVar.HandledImageAndRawExtensions.contains(ext) {
-                        file.imageInfo = getImageInfo(url: url)
-                        
-                    } else if globalVar.HandledVideoExtensions.contains(ext) {
-                        
+                    if globalVar.HandledImageAndRawExtensions.contains(ext) || globalVar.HandledVideoExtensions.contains(ext) {
+                        file.imageInfo = getImageInfo(url: url, needMetadata: true)
                     }
                     let exifData = convertExifData(file: file)
                     var formatedExifData = formatExifData(exifData ?? [:])
@@ -2067,7 +2064,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         text += "\n" + separator + "\n" + videoMetadata
                     }
                     
-                    if globalVar.HandledImageExtensions.contains(url.pathExtension.lowercased()) {
+                    if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
                         func formatDictionary(_ dictionary: [String: Any], indentLevel: Int = 0, outputFormat: String = "json", sort: Bool = true) -> String {
                             let sortedDictionary: [(String, Any)]
                             if sort {
@@ -2121,7 +2118,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     let tagMetadata = tag as! CGImageMetadataTag
                                     
                                     if let cfName = CGImageMetadataTagCopyName(tagMetadata),
-                                       let cfPrefix = CGImageMetadataTagCopyPrefix(tagMetadata) {
+                                       let cfPrefix = CGImageMetadataTagCopyPrefix(tagMetadata),
+                                       String(cfPrefix) != "exif" && String(cfPrefix) != "aux" && String(cfPrefix) != "exifEX" && String(cfPrefix) != "tiff" {
                                         let name = String(cfPrefix) + "::" + String(cfName)
                                         let value = CGImageMetadataTagCopyValue(tagMetadata)
                                         result[name] = value

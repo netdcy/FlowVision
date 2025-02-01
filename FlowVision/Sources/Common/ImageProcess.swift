@@ -835,7 +835,7 @@ func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
         "-select_streams", "v:0",
         "-show_entries", "stream=width,height",
         "-of", "default=noprint_wrappers=1:nokey=1",
-        "-threads", "2",
+        //"-threads", "2",
         url.path
     ]
     
@@ -872,7 +872,7 @@ func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
     return nil
 }
 
-func getImageInfo(url: URL) -> ImageInfo? {
+func getImageInfo(url: URL, needMetadata: Bool = false) -> ImageInfo? {
     //let defaultSize = DEFAULT_SIZE
     if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
         if globalVar.HandledNotNativeSupportedVideoExtensions.contains(url.pathExtension.lowercased()){
@@ -927,15 +927,17 @@ func getImageInfo(url: URL) -> ImageInfo? {
         imageInfo.isHDR = checkIsHDR(imageInfo: imageInfo)
         //print(imageProperties)
         
-        let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil)
-        imageInfo.metadata = metadata
-//        let prefix = "xmp"
-//        let key = "Rating"
-//        if let metadata = metadata,
-//           let tag = CGImageMetadataCopyTagWithPath(metadata, nil, "\(prefix):\(key)" as CFString),
-//           let value = CGImageMetadataTagCopyValue(tag) as? String {
-//            imageInfo.rating = Int(value)
-//        }
+        if needMetadata {
+            let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil)
+            imageInfo.metadata = metadata
+//            let prefix = "xmp"
+//            let key = "Rating"
+//            if let metadata = metadata,
+//               let tag = CGImageMetadataCopyTagWithPath(metadata, nil, "\(prefix):\(key)" as CFString),
+//               let value = CGImageMetadataTagCopyValue(tag) as? String {
+//                imageInfo.rating = Int(value)
+//            }
+        }
         
         return imageInfo
         
@@ -999,7 +1001,7 @@ func readableFileSize(_ bytes: Int) -> String {
 }
 
 func convertExifData(file: FileModel) -> [String: Any]? {
-    
+
     if file.imageInfo == nil {
         file.imageInfo = ImageInfo(nil)
     }
@@ -1025,8 +1027,8 @@ func convertExifData(file: FileModel) -> [String: Any]? {
         imageProperties["FileAddedTime"]=formatDateToCurrentTimeZone(additionDate)
     }
 
-    if let imageSize = file.originalSize {
-        imageProperties["ImageSize"]=String(format: "%.0f", imageSize.width) + " × " + String(format: "%.0f", imageSize.height)
+    if let imageSize = file.imageInfo?.size {
+        imageProperties["Resolution"]=String(format: "%.0f", imageSize.width) + " × " + String(format: "%.0f", imageSize.height)
     }
     
     if let rating = file.imageInfo?.rating {
@@ -1079,7 +1081,7 @@ func formatExifData(_ imageProperties: [String: Any]) -> [(String, Any)] {
     
     var translationMap: [(CFString, String)] = [
         ("FileSize" as CFString, NSLocalizedString("Exif-FileSize", comment: "文件大小")),
-        ("ImageSize" as CFString, NSLocalizedString("Exif-ImageSize", comment: "图像分辨率")),
+        ("Resolution" as CFString, NSLocalizedString("Exif-Resolution", comment: "分辨率")),
         ("FileCreatedTime" as CFString, NSLocalizedString("Exif-FileCreatedTime", comment: "文件创建时间")),
         ("FileModifiedTime" as CFString, NSLocalizedString("Exif-FileModifiedTime", comment: "文件修改时间")),
         ("FileAddedTime" as CFString, NSLocalizedString("Exif-FileAddedTime", comment: "文件添加时间")),

@@ -1157,23 +1157,6 @@
         }
       }
     },
-    "Exif-ImageSize" : {
-      "comment" : "图像分辨率",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Image Size"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "图像分辨率"
-          }
-        }
-      }
-    },
     "Exif-ISOSpeedRatings" : {
       "comment" : "ISO感光度",
       "localizations" : {
@@ -1238,6 +1221,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "星级"
+          }
+        }
+      }
+    },
+    "Exif-Resolution" : {
+      "comment" : "分辨率",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resolution"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分辨率"
           }
         }
       }
