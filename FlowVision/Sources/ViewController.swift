@@ -2546,8 +2546,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
     func showReplaceDialog(for url: URL, isSingle: Bool, isMove: Bool) -> UserChoice {
         let alert = NSAlert()
-        alert.messageText = NSLocalizedString("has-exist-in-dest1", comment: "目标文件夹中已存在名为") + url.lastPathComponent
-                            + NSLocalizedString("has-exist-in-dest2", comment: "的文件。")
+        alert.messageText = String(format: NSLocalizedString("has-exist-in-dest", comment: "目标文件夹中已存在名为xx的文件。"), url.lastPathComponent)
         if isMove {
             alert.informativeText = NSLocalizedString("do-you-want-replace(move)", comment: "你要用正在移动的文件替换它吗？")
         }else{
@@ -4475,8 +4474,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     fileModel.1.folderImages=[NSImage]()
                                 }
                             }else{
-                                print("Null when release memory:\n",lastLRUItem.0)
-                                abort()
+                                if debug {
+                                    print("Null when release memory:\n",lastLRUItem.0)
+                                    abort()
+                                }
                             }
                             LRUqueue.removeLast()
                             fileDB.unlock()

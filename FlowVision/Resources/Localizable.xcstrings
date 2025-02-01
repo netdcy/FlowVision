@@ -6640,7 +6640,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "目录"
+            "value" : "文件夹"
           }
         },
         "zh-Hant" : {
@@ -8854,7 +8854,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新建"
+            "value" : "New"
           }
         },
         "es" : {
@@ -14459,7 +14459,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "文本文件"
+            "value" : "Text File"
           }
         },
         "es" : {
@@ -16442,7 +16442,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هل أنت متأكد أنك تريد نقل هذه الملفات إلى سلة المهملات؟ لم يتم منح إذن \"الأتمتة\" لهذا البرنامج. بعد النقل إلى سلة المهملات، لا يمكن استخدام وظيفة \"استعادة إلى الموقع الأصلي\"."
+            "value" : "هل أنت متأكد أنك تريد نقل هذه الملفات إلى سلة المهملات؟\n\nلم يتم منح إذن \"التشغيل الآلي\" لهذا البرنامج. بعد النقل إلى سلة المهملات، لا يمكن استخدام وظيفة \"إعادة إلى الموقع الأصلي\"."
           }
         },
         "de" : {
@@ -16478,7 +16478,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "これらのファイルをゴミ箱に移動してもよろしいですか？ このプログラムには「オートメーション」権限が与えられていません。ゴミ箱に移動した後、「元の場所に戻す」機能を使用することはできません。"
+            "value" : "これらのファイルをゴミ箱に移動してもよろしいですか？\n\nこのプログラムには「オートメーション」権限が与えられていません。ゴミ箱に移動した後、「元の場所に戻す」機能を使用することはできません。"
           }
         },
         "ko" : {
@@ -16490,7 +16490,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Weet u zeker dat u deze bestanden naar de prullenbak wilt verplaatsen? De toestemming \"Automatisering\" is niet aan dit programma verleend. Na het verplaatsen naar de prullenbak kan de functie \"Herstellen naar originele locatie\" niet worden gebruikt."
+            "value" : "Weet u zeker dat u deze bestanden naar de prullenbak wilt verplaatsen?\n\nDe toestemming \"Automatisering\" is niet aan dit programma verleend. Na het verplaatsen naar de prullenbak kan de functie \"Herstellen naar originele locatie\" niet worden gebruikt."
           }
         },
         "pt-BR" : {
@@ -16502,7 +16502,7 @@
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tem a certeza de que pretende mover estes ficheiros para o lixo? A permissão de \"Automação\" não foi concedida a este programa. Após mover para o lixo, a função \"Restaurar para a Localização Original\" não poderá ser utilizada."
+            "value" : "Tem a certeza de que pretende mover estes ficheiros para o lixo?\n\nA permissão de \"Automação\" não foi concedida a este programa. Após mover para o lixo, a função \"Restaurar para a Localização Original\" não poderá ser utilizada."
           }
         },
         "ru" : {
@@ -16514,7 +16514,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Är du säker på att du vill flytta dessa filer till papperskorgen? Programmets \"Automatisering\" behörighet har inte beviljats. Efter att ha flyttat till papperskorgen kan funktionen \"Återställ till ursprunglig plats\" inte användas."
+            "value" : "Är du säker på att du vill flytta dessa filer till papperskorgen?\n\nProgrammets \"Automatisering\" behörighet har inte beviljats. Efter att ha flyttat till papperskorgen kan funktionen \"Återställ till ursprunglig plats\" inte användas."
           }
         },
         "zh-Hans" : {
@@ -17072,7 +17072,7 @@
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "<translation>Quer substituir pelo ficheiro que está a mover?</translation>"
+            "value" : "Quer substituir pelo ficheiro que está a mover?"
           }
         },
         "ru" : {
@@ -17582,7 +17582,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "انقر نقرًا مزدوجًا على الزر الأيسر لإغلاق الصورة\nاضغط مع الاستمرار على الزر الأيمن أو الأيسر وقم بتمرير العجلة للتكبير أو التصغير"
+            "value" : "انقر نقرًا مزدوجًا على الزر الأيسر لإغلاق الصورة\nاضغط مع الاستمرار على الزر الأيمن أو الأيسر ومرر العجلة للتكبير أو التصغير"
           }
         },
         "de" : {
@@ -17600,19 +17600,19 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Haga doble clic en el botón izquierdo para cerrar la imagen. Mantenga presionado el botón derecho o izquierdo y desplace la rueda para acercar o alejar."
+            "value" : "Haga doble clic en el botón izquierdo para cerrar la imagen.\nMantenga presionado el botón derecho o izquierdo y desplace la rueda para acercar o alejar."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Double-cliquez sur le bouton gauche pour fermer l'image. Maintenez le bouton droit ou gauche et faites défiler la molette pour zoomer ou dézoomer."
+            "value" : "Double-cliquez sur le bouton gauche pour fermer l'image.\nMaintenez le bouton droit ou gauche et faites défiler la molette pour zoomer ou dézoomer."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fare doppio clic sul pulsante sinistro per chiudere l'immagine. Tieni premuto il pulsante destro o sinistro e scorri la rotellina per ingrandire o ridurre."
+            "value" : "Fare doppio clic sul pulsante sinistro per chiudere l'immagine.\nTieni premuto il pulsante destro o sinistro e scorri la rotellina per ingrandire o ridurre."
           }
         },
         "ja" : {
@@ -17630,7 +17630,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dubbelklik op de linkerknop om de afbeelding te sluiten Houd de rechter- of linkerknop ingedrukt en scroll met het wiel om in of uit te zoomen"
+            "value" : "Dubbelklik op de linkerknop om de afbeelding te sluiten.\nHoud de rechter- of linkerknop ingedrukt en scroll met het wiel om in of uit te zoomen."
           }
         },
         "pt-BR" : {
@@ -17648,13 +17648,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Дважды щелкните левой кнопкой, чтобы закрыть изображение. Удерживайте правую или левую кнопку и прокручивайте колесо, чтобы увеличить или уменьшить масштаб."
+            "value" : "Дважды щелкните левой кнопкой, чтобы закрыть изображение. \nУдерживайте правую или левую кнопку и прокручивайте колесо, чтобы увеличить или уменьшить масштаб."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dubbelklicka på vänster knapp för att stänga bilden. Håll nere höger eller vänster knapp och rulla hjulet för att zooma in eller ut."
+            "value" : "Dubbelklicka på vänster knapp för att stänga bilden.\nHåll nere höger eller vänster knapp och rulla hjulet för att zooma in eller ut."
           }
         },
         "zh-Hans" : {
@@ -17666,7 +17666,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "雙擊左鍵關閉圖像。按住右鍵或左鍵並滾動滾輪來放大或縮小。"
+            "value" : "雙擊左鍵關閉圖像。\n按住右鍵或左鍵並滾動滾輪來放大或縮小。"
           }
         }
       }
@@ -17766,192 +17766,97 @@
         }
       }
     },
-    "has-exist-in-dest1" : {
-      "extractionState" : "manual",
+    "has-exist-in-dest" : {
+      "comment" : "目标文件夹中已存在名为xx的文件。",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ملف اسمه \""
+            "value" : "يوجد بالفعل ملف باسم \"%@\" في مجلد الوجهة"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eine Datei mit dem Namen \""
+            "value" : "Im Zielordner existiert bereits eine Datei mit dem Namen \"%@\"."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A file named \""
+            "value" : "A file named \"%@\" already exists in the destination folder."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un archivo llamado \""
+            "value" : "Ya existe un archivo con el nombre \"%@\" en la carpeta de destino."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un fichier nommé \""
+            "value" : "Un fichier nommé \"%@\" existe déjà dans le dossier de destination"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un file chiamato \""
+            "value" : "Esiste già un file con il nome \"%@\" nella cartella di destinazione"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "名前が「」のファイルが"
+            "value" : "宛先フォルダに同名のファイル「%@」が既に存在します"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이름이 \""
+            "value" : "대상 폴더에 \"%@\"라는 파일이 이미 있습니다."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Een bestand met de naam \""
+            "value" : "Er bestaat al een bestand met de naam \"%@\" in de doelmap."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um arquivo chamado \""
+            "value" : "Já existe um arquivo chamado \"%@\" na pasta de destino"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um ficheiro chamado \""
+            "value" : "Já existe um ficheiro chamado \"%@\" na pasta de destino."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Файл с именем \""
+            "value" : "Файл с именем \"%@\" уже существует в целевой папке."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En fil med namnet \""
+            "value" : "En fil med namnet \"%@\" finns redan i målmappen."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "目标文件夹中已存在名为“"
+            "value" : "目标文件夹中已存在名为\"%@\"的文件。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "一個名為 \""
-          }
-        }
-      }
-    },
-    "has-exist-in-dest2" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "موجود بالفعل في مجلد الوجهة"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "existiert bereits im Zielordner"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\" already exists in the destination folder."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ya existe en la carpeta de destino"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\" existe déjà dans le dossier de destination."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "esiste già nella cartella di destinazione"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "既に保存先フォルダーに存在します"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "대상 폴더에 이미 존재합니다"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "bestaat al in de doelmap"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "já existe na pasta de destino"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\" já existe na pasta de destino."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "уже существует в папке назначения"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "redan finns i målmappen"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "”的文件。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "目的地資料夾中已存在"
+            "value" : "目標文件夾中已存在名為\"%@\"的文件。"
           }
         }
       }
@@ -18164,7 +18069,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请输入文件名称："
+            "value" : "Please enter the file name:"
           }
         },
         "es" : {
@@ -19007,13 +18912,13 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "في الوضع المحمول: - عند فتح صورة، يتم تغيير حجم النافذة تلقائيًا لتتناسب مع أبعاد الصورة؛ - عند إغلاق صورة، يتم تغيير حجم النافذة تلقائيًا إلى نسبة من الشاشة"
+            "value" : "في الوضع المحمول: - عند فتح صورة، يتم تغيير حجم النافذة تلقائيًا لتطابق أبعاد الصورة؛ - عند إغلاق صورة، يتم تغيير حجم النافذة تلقائيًا إلى نسبة من الشاشة."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Im tragbaren Modus: - Beim Öffnen eines Bildes passt sich das Fenster automatisch an die Abmessungen des Bildes an; - Beim Schließen eines Bildes passt sich das Fenster automatisch an einen Teil des Bildschirms an"
+            "value" : "Im tragbaren Modus:\n - Beim Öffnen eines Bildes passt sich das Fenster automatisch an die Abmessungen des Bildes an;\n - Beim Schließen eines Bildes passt sich das Fenster automatisch an einen Teil des Bildschirms an"
           }
         },
         "en" : {
@@ -19031,13 +18936,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En mode portable : - Lors de l'ouverture d'une image, la fenêtre se redimensionne automatiquement pour correspondre aux dimensions de l'image; - Lors de la fermeture d'une image, la fenêtre se redimensionne automatiquement à une proportion de l'écran."
+            "value" : "En mode portable :\n - Lors de l'ouverture d'une image, la fenêtre se redimensionne automatiquement pour correspondre aux dimensions de l'image;\n - Lors de la fermeture d'une image, la fenêtre se redimensionne automatiquement à une proportion de l'écran."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In Modalità Portatile: - Quando si apre un'immagine, la finestra si ridimensiona automaticamente per adattarsi alle dimensioni dell'immagine; - Quando si chiude un'immagine, la finestra si ridimensiona automaticamente a una proporzione dello schermo"
+            "value" : "In Modalità Portatile:\n - Quando si apre un'immagine, la finestra si ridimensiona automaticamente per adattarsi alle dimensioni dell'immagine;\n - Quando si chiude un'immagine, la finestra si ridimensiona automaticamente a una proporzione dello schermo"
           }
         },
         "ja" : {
@@ -19055,7 +18960,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In portabele modus: - Bij het openen van een afbeelding wordt het venster automatisch aangepast aan de afmetingen van de afbeelding; - Bij het sluiten van een afbeelding wordt het venster automatisch aangepast aan een deel van het scherm."
+            "value" : "In portabele modus:\n - Bij het openen van een afbeelding wordt het venster automatisch aangepast aan de afmetingen van de afbeelding;\n - Bij het sluiten van een afbeelding wordt het venster automatisch aangepast aan een deel van het scherm."
           }
         },
         "pt-BR" : {
@@ -19079,7 +18984,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I bärbart läge: - När en bild öppnas ändras fönstrets storlek automatiskt för att matcha bildens dimensioner; - När en bild stängs ändras fönstrets storlek automatiskt till en proportion av skärmen"
+            "value" : "I bärbart läge:\n - När en bild öppnas ändras fönstrets storlek automatiskt för att matcha bildens dimensioner;\n - När en bild stängs ändras fönstrets storlek automatiskt till en proportion av skärmen"
           }
         },
         "zh-Hans" : {
@@ -20290,13 +20195,13 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Om naar bestanden in submappen te zoeken, kunt u eerst de \"Recursieve Bladermodus\" inschakelen.\n\nReguliere Expressies (Regex) zijn patronen die worden gebruikt om tekencombinaties in strings te matchen. Het zijn krachtige tekstverwerkingstools die veel worden gebruikt bij taken zoals zoeken, vervangen en tekstontleden. Bijvoorbeeld: ^2024 kan bestanden matchen die beginnen met '2024'; . *modified\\.[^.]+$ kan bestanden matchen die eindigen met 'modified' (de extensie uitgesloten); . *\\.jpg$ kan bestanden matchen met de extensie '.jpg'.\n\nIn \"Recursieve Bladermodus\" kunt u de extra zoekoptie \"Gebruik Volledig Pad\" gebruiken in combinatie met reguliere expressies voor geavanceerde zoekopdrachten. Bijvoorbeeld, als het volledige bestandspad is: /Users/Alice/Pictures/20220101/mypick/001.jpg  \nKunt u de reguliere expressie gebruiken: ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ om alle bestanden te matchen waarvan de namen van bovenliggende mappen \"pick\" bevatten. Meer complexe reguliere expressies kunnen worden gemaakt met de hulp van ChatGPT."
+            "value" : "Om naar bestanden in submappen te zoeken, kunt u eerst de \"Recursieve Bladermodus\" inschakelen.\n\nReguliere Expressies (Regex) zijn patronen die worden gebruikt om tekencombinaties in strings te matchen. Het zijn krachtige tekstverwerkingstools die veel worden gebruikt bij taken zoals zoeken, vervangen en tekstontleden. Bijvoorbeeld:\n^2024 kan bestanden matchen die beginnen met '2024';\n. *modified\\.[^.]+$ kan bestanden matchen die eindigen met 'modified' (de extensie uitgesloten);\n. *\\.jpg$ kan bestanden matchen met de extensie '.jpg'.\n\nIn \"Recursieve Bladermodus\" kunt u de extra zoekoptie \"Gebruik Volledig Pad\" gebruiken in combinatie met reguliere expressies voor geavanceerde zoekopdrachten. Bijvoorbeeld, als het volledige bestandspad is:\n/Users/Alice/Pictures/20220101/mypick/001.jpg\nKunt u de reguliere expressie gebruiken:\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\nom alle bestanden te matchen waarvan de namen van bovenliggende mappen \"pick\" bevatten. Meer complexe reguliere expressies kunnen worden gemaakt met de hulp van ChatGPT."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para pesquisar arquivos em subdiretórios, você pode primeiro habilitar o \"Modo de Navegação Recursiva\".\n\n----------\nExpressões Regulares (Regex) são padrões usados para corresponder combinações de caracteres em strings. Elas são uma ferramenta poderosa de processamento de texto amplamente utilizada em tarefas como busca, substituição e análise de texto. Por exemplo: ^2024 pode corresponder a arquivos que começam com '2024'; .*modified\\.[^.]+$ pode corresponder a arquivos que terminam com 'modified' (excluindo a extensão); .*\\.jpg$ pode corresponder a arquivos com a extensão '.jpg'.\n\n----------\nNo \"Modo de Navegação Recursiva,\" você pode usar a opção de busca adicional \"Usar Caminho Completo\" combinada com expressões regulares para buscas avançadas. Por exemplo, se o caminho completo do arquivo for: /Users/Alice/Pictures/20220101/mypick/001.jpg Você pode usar a expressão regular: ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ para corresponder a todos os arquivos cujos nomes de diretórios pai contenham \"pick.\" Expressões regulares mais complexas podem ser elaboradas com a assistência do ChatGPT."
+            "value" : "Para pesquisar arquivos em subdiretórios, você pode primeiro habilitar o \"Modo de Navegação Recursiva\".\n\n----------\nExpressões Regulares (Regex) são padrões usados para corresponder combinações de caracteres em strings. Elas são uma ferramenta poderosa de processamento de texto amplamente utilizada em tarefas como busca, substituição e análise de texto. Por exemplo:\n^2024 pode corresponder a arquivos que começam com '2024';\n.*modified\\.[^.]+$ pode corresponder a arquivos que terminam com 'modified' (excluindo a extensão);\n.*\\.jpg$ pode corresponder a arquivos com a extensão '.jpg'.\n\n----------\nNo \"Modo de Navegação Recursiva,\" você pode usar a opção de busca adicional \"Usar Caminho Completo\" combinada com expressões regulares para buscas avançadas. Por exemplo, se o caminho completo do arquivo for:\n/Users/Alice/Pictures/20220101/mypick/001.jpg\nVocê pode usar a expressão regular:\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\npara corresponder a todos os arquivos cujos nomes de diretórios pai contenham \"pick.\" Expressões regulares mais complexas podem ser elaboradas com a assistência do ChatGPT."
           }
         },
         "pt-PT" : {
@@ -20326,7 +20231,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "要在子目录中搜索文件，您可以先启用「递归浏览模式」。 \n\n正则表达式（Regex）是用于在字符串中匹配字符组合的模式。它们是一种强大的文本处理工具，广泛用于搜索、替换和文本解析等任务中。例子： ^2024 可以匹配以 '2024' 开头的文件； .*modified\\.[^.]+$ 可以匹配以 'modified' 结尾的文件（不包括扩展名）； .*\\.jpg$ 可以匹配扩展名为 '.jpg' 的文件。  \n\n在「递归浏览模式」中，您可以使用附加搜索选项「使用完整路径」结合正则表达式进行高级搜索。 例如，如果完整文件路径是： /Users/Alice/Pictures/20220101/mypick/001.jpg 您可以使用正则表达式： ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ 来匹配父目录名称包含 \"pick\" 的所有文件。 可以在 ChatGPT 的帮助下制作更复杂的正则表达式。"
+            "value" : "要在子目录中搜索文件，您可以先启用「递归浏览模式」。 \n\n正则表达式（Regex）是用于在字符串中匹配字符组合的模式。它们是一种强大的文本处理工具，广泛用于搜索、替换和文本解析等任务中。例子：\n^2024 可以匹配以 '2024' 开头的文件；\n.*modified\\.[^.]+$ 可以匹配以 'modified' 结尾的文件（不包括扩展名）；\n.*\\.jpg$ 可以匹配扩展名为 '.jpg' 的文件。  \n\n在「递归浏览模式」中，您可以使用附加搜索选项「使用完整路径」结合正则表达式进行高级搜索。 例如，如果完整文件路径是：\n/Users/Alice/Pictures/20220101/mypick/001.jpg\n您可以使用正则表达式：\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\n来匹配父目录名称包含 \"pick\" 的所有文件。 可以在 ChatGPT 的帮助下制作更复杂的正则表达式。"
           }
         }
       }
@@ -20783,13 +20688,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сортировка по информации Exif требует чтения заголовков всех файлов, что может привести к медленной загрузке. Например, эталонная скорость чтения информации о видеофайлах составляет около 20 в секунду. В текущем каталоге содержится %d изображений или видео, с предполагаемым максимальным временем загрузки %d секунд. Вы уверены, что хотите продолжить"
+            "value" : "Сортировка по информации Exif требует чтения заголовков всех файлов, что может привести к медленной загрузке. Например, эталонная скорость чтения информации о видеофайлах составляет около 20 в секунду.\n\nВ текущем каталоге содержится %d изображений или видео, с предполагаемым максимальным временем загрузки %d секунд. Вы уверены, что хотите продолжить"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sortering efter Exif-information kräver läsning av alla filers headers, vilket kan resultera i långsamma laddningstider. Till exempel är referensavläsningshastigheten för videofilinformation cirka 20 per sekund. Den nuvarande katalogen innehåller %d bilder eller videor, med en uppskattad maximal laddningstid på %d sekunder. Är du säker på att du vill fortsätta?"
+            "value" : "Sortering efter Exif-information kräver läsning av alla filers headers, vilket kan resultera i långsamma laddningstider. Till exempel är referensavläsningshastigheten för videofilinformation cirka 20 per sekund. \n\nDen nuvarande katalogen innehåller %d bilder eller videor, med en uppskattad maximal laddningstid på %d sekunder. Är du säker på att du vill fortsätta?"
           }
         },
         "zh-Hans" : {
@@ -20830,13 +20735,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La clasificación por información Exif requiere leer los encabezados de todos los archivos, lo que puede resultar en velocidades de carga lentas. Por ejemplo, la velocidad de lectura de referencia en una unidad de red SMB es de aproximadamente 20 por segundo. El directorio actual está ubicado en una unidad externa y contiene %d imágenes o videos, con un tiempo máximo de carga estimado de %d segundos. ¿Está seguro de que desea continuar?"
+            "value" : "La clasificación por información Exif requiere leer los encabezados de todos los archivos, lo que puede resultar en velocidades de carga lentas. Por ejemplo, la velocidad de lectura de referencia en una unidad de red SMB es de aproximadamente 20 por segundo.\n\nEl directorio actual está ubicado en una unidad externa y contiene %d imágenes o videos, con un tiempo máximo de carga estimado de %d segundos. ¿Está seguro de que desea continuar?"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le tri par informations Exif nécessite la lecture des en-têtes de tous les fichiers, ce qui peut ralentir les vitesses de chargement. Par exemple, la vitesse de lecture de référence sur un lecteur réseau SMB est d'environ 20 par seconde. Le répertoire actuel se trouve sur un lecteur externe et contient %d images ou vidéos, avec un temps de chargement maximal estimé à %d secondes. Êtes-vous sûr de vouloir continuer ?"
+            "value" : "Le tri par informations Exif nécessite la lecture des en-têtes de tous les fichiers, ce qui peut ralentir les vitesses de chargement. Par exemple, la vitesse de lecture de référence sur un lecteur réseau SMB est d'environ 20 par seconde.\n\nLe répertoire actuel se trouve sur un lecteur externe et contient %d images ou vidéos, avec un temps de chargement maximal estimé à %d secondes. Êtes-vous sûr de vouloir continuer ?"
           }
         },
         "it" : {
@@ -20878,13 +20783,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сортировка по информации Exif требует чтения заголовков всех файлов, что может привести к медленной скорости загрузки. Например, эталонная скорость чтения на сетевом диске SMB составляет около 20 в секунду. Текущая директория находится на внешнем диске и содержит %d изображений или видео, с предполагаемым максимальным временем загрузки %d секунд. Вы уверены, что хотите продолжить?"
+            "value" : "Сортировка по информации Exif требует чтения заголовков всех файлов, что может привести к медленной скорости загрузки. Например, эталонная скорость чтения на сетевом диске SMB составляет около 20 в секунду.\n\nТекущая директория находится на внешнем диске и содержит %d изображений или видео, с предполагаемым максимальным временем загрузки %d секунд. Вы уверены, что хотите продолжить?"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sortering efter Exif-information kräver att läsa rubrikerna för alla filer, vilket kan resultera i långsam laddningstid. Till exempel är referensläsningshastigheten på en SMB-nätverksenhet cirka 20 per sekund\n\nDen aktuella katalogen finns på en extern enhet och innehåller %d bilder eller videor, med en uppskattad maximal laddningstid på %d sekunder. Är du säker på att du vill fortsätta?"
+            "value" : "Sortering efter Exif-information kräver att läsa rubrikerna för alla filer, vilket kan resultera i långsam laddningstid. Till exempel är referensläsningshastigheten på en SMB-nätverksenhet cirka 20 per sekund.\n\nDen aktuella katalogen finns på en extern enhet och innehåller %d bilder eller videor, med en uppskattad maximal laddningstid på %d sekunder. Är du säker på att du vill fortsätta?"
           }
         },
         "zh-Hans" : {
@@ -22617,91 +22522,91 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بشأن \"استخدام ترتيب المسار الكامل في الوضع التكراري\": \nعلى سبيل المثال، المسارات النسبية لملفين من الدليل الحالي هي: \n./AAA/2.jpg \n./BBB/1.jpg \nعند الترتيب حسب المسار الكامل، يأتي 2.jpg أولاً، بينما عند الترتيب حسب اسم الملف، يأتي 1.jpg أولاً."
+            "value" : "بخصوص \"استخدام فرز المسار الكامل في الوضع التكراري\"، على سبيل المثال، المسارات النسبية لملفين من الدليل الحالي هي:\n./AAA/2.jpg\n./BBB/1.jpg\nعند الفرز حسب المسار الكامل، يتم وضع 2.jpg أولاً، بينما عند الفرز حسب اسم الملف، يتم وضع 1.jpg أولاً."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bezüglich „Verwendung der vollständigen Pfadsortierung im rekursiven Modus“:\nBeispielsweise sind die relativen Pfade von zwei Dateien aus dem aktuellen Verzeichnis:\n./AAA/2.jpg\n./BBB/1.jpg\nBeim Sortieren nach vollständigem Pfad kommt 2.jpg zuerst, während beim Sortieren nach Dateiname 1.jpg zuerst kommt."
+            "value" : "Hinsichtlich der \"Verwendung der vollständigen Pfad-Sortierung im rekursiven Modus\" sind zum Beispiel die relativen Pfade von zwei Dateien aus dem aktuellen Verzeichnis:\n./AAA/2.jpg\n./BBB/1.jpg\nWenn nach vollständigem Pfad sortiert wird, kommt 2.jpg zuerst, während bei der Sortierung nach Dateiname 1.jpg zuerst kommt."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Regarding \"using full path sorting in recursive mode\":\nFor example, the relative paths of two files from the current directory are:\n./AAA/2.jpg\n./BBB/1.jpg\nWhen sorting by full path, 2.jpg comes first, whereas when sorting by filename, 1.jpg comes first."
+            "value" : "Regarding \"using full path sorting in recursive mode\", for example, the relative paths of two files from the current directory are:\n./AAA/2.jpg\n./BBB/1.jpg\nWhen sorting by full path, 2.jpg comes first, whereas when sorting by filename, 1.jpg comes first."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Con respecto a \"usar ordenación de ruta completa en modo recursivo\":\nPor ejemplo, las rutas relativas de dos archivos desde el directorio actual son:\n./AAA/2.jpg\n./BBB/1.jpg\nAl ordenar por ruta completa, 2.jpg viene primero, mientras que al ordenar por nombre de archivo, 1.jpg viene primero."
+            "value" : "Con respecto a \"usar ordenación por ruta completa en modo recursivo\", por ejemplo, las rutas relativas de dos archivos desde el directorio actual son:\n./AAA/2.jpg\n./BBB/1.jpg\nAl ordenar por ruta completa, 2.jpg va primero, mientras que al ordenar por nombre de archivo, 1.jpg va primero"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Concernant \"l'utilisation du tri par chemin complet en mode récursif\":\nPar exemple, les chemins relatifs de deux fichiers à partir du répertoire courant sont :\n./AAA/2.jpg\n./BBB/1.jpg\nLors du tri par chemin complet, 2.jpg vient en premier, alors que lors du tri par nom de fichier, 1.jpg vient en premier."
+            "value" : "Concernant \"l'utilisation du tri par chemin complet en mode récursif\", par exemple, les chemins relatifs de deux fichiers du répertoire actuel sont :\n./AAA/2.jpg\n./BBB/1.jpg\nLors du tri par chemin complet, 2.jpg vient en premier, alors que lors du tri par nom de fichier, 1.jpg vient en premier."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Riguardo a \"utilizzare l'ordinamento per percorso completo in modalità ricorsiva\": Ad esempio, i percorsi relativi di due file dalla directory corrente sono: ./AAA/2.jpg ./BBB/1.jpg Quando si ordina per percorso completo, 2.jpg viene prima, mentre quando si ordina per nome file, 1.jpg viene prima."
+            "value" : "Per quanto riguarda \"l'ordinamento del percorso completo in modalità ricorsiva\", ad esempio, i percorsi relativi di due file dalla directory corrente sono:\n./AAA/2.jpg\n./BBB/1.jpg\nDurante l'ordinamento per percorso completo, 2.jpg viene prima, mentre durante l'ordinamento per nome file, 1.jpg viene prima."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "「再帰モードでフルパスのソートを使用することについて」 現在のディレクトリから2つのファイルの相対パスは次のとおりです: ./AAA/2.jpg ./BBB/1.jpg フルパスでソートすると2.jpgが先に来て、ファイル名でソートすると1.jpgが先に来ます"
+            "value" : "たとえば、「再帰モードでフルパスを使用したソート」に関して、現在のディレクトリから2つのファイルの相対パスは次のようになります:\n./AAA/2.jpg\n./BBB/1.jpg\nフルパスでソートすると2.jpgが最初になり、ファイル名でソートすると1.jpgが最初になります"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "재귀 모드에서 전체 경로 정렬 사용과 관련하여:\n예를 들어, 현재 디렉토리의 두 파일의 상대 경로는 다음과 같습니다:\n./AAA/2.jpg\n./BBB/1.jpg\n전체 경로로 정렬할 때 2.jpg가 먼저 오지만, 파일 이름으로 정렬할 때는 1.jpg가 먼저 옵니다."
+            "value" : "\"재귀 모드에서 전체 경로 정렬 사용\"에 관해 설명하자면, 예를 들어 현재 디렉토리에서 두 파일의 상대 경로는 다음과 같습니다:\n./AAA/2.jpg\n./BBB/1.jpg\n전체 경로로 정렬할 때는 2.jpg가 먼저 오고, 파일명으로 정렬할 때는 1.jpg가 먼저 옵니다."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Betreffende \"het gebruik van sorteermethode met volledige pad in recursieve modus\":\nBijvoorbeeld, de relatieve paden van twee bestanden vanuit de huidige directory zijn:\n./AAA/2.jpg\n./BBB/1.jpg\nBij sorteren op volledig pad, komt 2.jpg eerst, terwijl bij sorteren op bestandsnaam, 1.jpg eerst komt."
+            "value" : "Betreffende \"volledige pad-sortering in recursieve modus\", bijvoorbeeld, de relatieve paden van twee bestanden vanuit de huidige map zijn:\n./AAA/2.jpg\n./BBB/1.jpg\nBij sorteren op volledig pad komt 2.jpg eerst, terwijl bij sorteren op bestandsnaam 1.jpg eerst komt."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sobre o \"uso de ordenação por caminho completo em modo recursivo\":\nPor exemplo, os caminhos relativos de dois arquivos a partir do diretório atual são:\n./AAA/2.jpg\n./BBB/1.jpg\nAo ordenar por caminho completo, 2.jpg vem primeiro, enquanto ao ordenar por nome de arquivo, 1.jpg vem primeiro."
+            "value" : "Em relação a \"usar classificação por caminho completo no modo recursivo\", por exemplo, os caminhos relativos de dois arquivos do diretório atual são:\n./AAA/2.jpg\n./BBB/1.jpg\nAo classificar por caminho completo, 2.jpg vem primeiro, enquanto ao classificar por nome de arquivo, 1.jpg vem primeiro."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Relativamente ao \"uso da ordenação por caminho completo em modo recursivo\": Por exemplo, os caminhos relativos de dois ficheiros do diretório atual são: ./AAA/2.jpg ./BBB/1.jpg Ao ordenar por caminho completo, 2.jpg vem primeiro, enquanto ao ordenar por nome de ficheiro, 1.jpg vem primeiro."
+            "value" : "Relativamente a \"utilizar a ordenação de caminho completo em modo recursivo\", por exemplo, os caminhos relativos de dois ficheiros a partir do diretório atual são:\n./AAA/2.jpg\n./BBB/1.jpg\nAo ordenar por caminho completo, 2.jpg vem primeiro, enquanto ao ordenar por nome de ficheiro, 1.jpg vem primeiro."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Что касается \"сортировки по полному пути в рекурсивном режиме\":\nНапример, относительные пути двух файлов из текущей директории:\n./AAA/2.jpg\n./BBB/1.jpg\nПри сортировке по полному пути 2.jpg идет первым, тогда как при сортировке по имени файла 1.jpg идет первым."
+            "value" : "Что касается \"использования сортировки по полному пути в рекурсивном режиме\", например, относительные пути двух файлов из текущей директории:\n./AAA/2.jpg\n./BBB/1.jpg\nПри сортировке по полному пути 2.jpg будет первым, тогда как при сортировке по имени файла 1.jpg будет первым."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Angående \"använda fullständig sökvägssortering i rekursivt läge\": Till exempel, de relativa sökvägarna för två filer från den nuvarande katalogen är: ./AAA/2.jpg ./BBB/1.jpg När man sorterar efter fullständig sökväg kommer 2.jpg först, medan när man sorterar efter filnamn, kommer 1.jpg först."
+            "value" : "Angående \"användning av fullständig sökvägssortering i rekursivt läge\", är till exempel de relativa sökvägarna för två filer från den aktuella katalogen:\n./AAA/2.jpg\n./BBB/1.jpg\nNär man sorterar efter fullständig sökväg kommer 2.jpg först, medan vid sortering efter filnamn kommer 1.jpg först."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "关于“递归模式下使用完整路径排序”：\n例如两个文件相对当前目录的路径是\n./AAA/2.jpg\n./BBB/1.jpg\n以完整路径排序时2.jpg是第一个，而以文件名排序时1.jpg是第一个。"
+            "value" : "关于“递归模式下使用完整路径排序”，例如两个文件相对当前目录的路径是\n./AAA/2.jpg\n./BBB/1.jpg\n以完整路径排序时2.jpg是第一个，而以文件名排序时1.jpg是第一个。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "關於“在遞歸模式中使用完整路徑排序”：\n例如，來自當前目錄的兩個文件相對路徑是：\n./AAA/2.jpg\n./BBB/1.jpg\n按完整路徑排序時，2.jpg 在前，而按文件名排序時，1.jpg 在前"
+            "value" : "關於「在遞歸模式下使用完整路徑排序」，例如，當前目錄下兩個文件的相對路徑為：\n./AAA/2.jpg\n./BBB/1.jpg\n當按完整路徑排序時，2.jpg 會在前面，而當按文件名排序時，1.jpg 會在前面。"
           }
         }
       }
