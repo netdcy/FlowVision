@@ -2402,7 +2402,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     
     func handleNewFolder(targetURL: URL? = nil) -> (Bool,URL?) {
         let alert = NSAlert()
-        alert.messageText = NSLocalizedString("new-folder", comment: "新建文件夹")
+        alert.messageText = NSLocalizedString("New Folder", comment: "新建文件夹")
         alert.informativeText = NSLocalizedString("input-new-folder-name", comment: "请输入文件夹名称：")
         alert.alertStyle = .informational
         alert.icon = NSImage(named: NSImage.infoName)// 设置系统通知图标
@@ -4723,7 +4723,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
             }
         }else if isShowReachEndPrompt {
-            largeImageView.showInfo(NSLocalizedString("already-first", comment: "已经是第一张图片"))
+            largeImageView.showInfo(NSLocalizedString("Have Reached the First", comment: "已经是第一张图片"))
         }
     }
     
@@ -4781,7 +4781,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
             }
         }else if isShowReachEndPrompt {
-            largeImageView.showInfo(NSLocalizedString("already-last", comment: "已经是最后一张图片"))
+            largeImageView.showInfo(NSLocalizedString("Have Reached the Last", comment: "已经是最后一张图片"))
         }
     }
     

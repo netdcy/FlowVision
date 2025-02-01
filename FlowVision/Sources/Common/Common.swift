@@ -259,7 +259,7 @@ func renameAlert(url: URL) -> Bool {
     // 创建一个警告对话框
     let alert = NSAlert()
     alert.messageText = NSLocalizedString("Rename", comment: "重命名")
-    alert.informativeText = NSLocalizedString("new-name-for", comment: "请输入新的名称用于") + " \(originalUrl.lastPathComponent):"
+    alert.informativeText = NSLocalizedString("New name for", comment: "请输入新的名称用于") + " \(originalUrl.lastPathComponent):"
     alert.alertStyle = .informational
     alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
     alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))

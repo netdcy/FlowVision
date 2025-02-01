@@ -94,7 +94,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             let menu = NSMenu()
             menu.autoenablesItems = false
             
-            let actionItemOpenInNewTab = menu.addItem(withTitle: NSLocalizedString("open-in-new-tab", comment: "在新标签页中打开"), action: #selector(actOpenInNewTab), keyEquivalent: "")
+            let actionItemOpenInNewTab = menu.addItem(withTitle: NSLocalizedString("Open in New Tab", comment: "在新标签页中打开"), action: #selector(actOpenInNewTab), keyEquivalent: "")
             if isWindowNumMax() {
                 actionItemOpenInNewTab.isEnabled=false
             }else{
@@ -103,14 +103,14 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             
             menu.addItem(NSMenuItem.separator())
             
-            menu.addItem(withTitle: NSLocalizedString("show-in-finder", comment: "在Finder中显示"), action: #selector(actShowInFinder), keyEquivalent: "")
+            menu.addItem(withTitle: NSLocalizedString("Show in Finder", comment: "在Finder中显示"), action: #selector(actShowInFinder), keyEquivalent: "")
             
             let actionItemGetInfo = menu.addItem(withTitle: NSLocalizedString("file-rightmenu-get-info", comment: "显示简介"), action: #selector(actGetInfo), keyEquivalent: "i")
             actionItemGetInfo.keyEquivalentModifierMask = []
             
             menu.addItem(NSMenuItem.separator())
             
-            let actionItemDelete = menu.addItem(withTitle: NSLocalizedString("move-to-trash", comment: "移动到废纸篓"), action: #selector(actDelete), keyEquivalent: "\u{8}")
+            let actionItemDelete = menu.addItem(withTitle: NSLocalizedString("Move to Trash", comment: "移动到废纸篓"), action: #selector(actDelete), keyEquivalent: "\u{8}")
             actionItemDelete.keyEquivalentModifierMask = []
             
             menu.addItem(NSMenuItem.separator())
@@ -125,13 +125,13 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             let actionItemPaste = menu.addItem(withTitle: NSLocalizedString("Paste", comment: "粘贴"), action: #selector(actPaste), keyEquivalent: "v")
             actionItemPaste.isEnabled = canPasteOrMove
             
-            let actionItemMove = menu.addItem(withTitle: NSLocalizedString("move-here", comment: "移动到此"), action: #selector(actMove), keyEquivalent: "v")
+            let actionItemMove = menu.addItem(withTitle: NSLocalizedString("Move Here", comment: "移动到此"), action: #selector(actMove), keyEquivalent: "v")
             actionItemMove.keyEquivalentModifierMask = [.command,.option]
             actionItemMove.isEnabled = canPasteOrMove
 
             menu.addItem(NSMenuItem.separator())
             
-            let actionItemNewFolder = menu.addItem(withTitle: NSLocalizedString("new-folder", comment: "新建文件夹"), action: #selector(actNewFolder), keyEquivalent: "n")
+            let actionItemNewFolder = menu.addItem(withTitle: NSLocalizedString("New Folder", comment: "新建文件夹"), action: #selector(actNewFolder), keyEquivalent: "n")
             actionItemNewFolder.keyEquivalentModifierMask = [.command,.shift]
             
             menu.addItem(NSMenuItem.separator())

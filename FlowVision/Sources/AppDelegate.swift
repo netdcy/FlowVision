@@ -338,7 +338,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     @IBAction func openDocument(_ sender: Any?) {
         let dialog = NSOpenPanel()
         
-        dialog.title                   = NSLocalizedString("choose-a-file-or-folder", comment: "选择一个文件或文件夹")
+        dialog.title                   = NSLocalizedString("Choose a file or folder", comment: "选择一个文件或文件夹")
         dialog.showsResizeIndicator    = true
         dialog.showsHiddenFiles        = false
         dialog.allowsMultipleSelection = false
@@ -380,7 +380,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             favoritesMenu.removeAllItems()
             
             let addFolderMenuItem = NSMenuItem(
-                title: NSLocalizedString("add-cur-folder", comment: "添加当前文件夹"),
+                title: NSLocalizedString("Add Current Folder", comment: "添加当前文件夹"),
                 action: #selector(favoritesAdd(_:)),
                 keyEquivalent: ""
             )
@@ -412,7 +412,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                     
                     // 创建上移项
                     let moveUpMenuItem = NSMenuItem(
-                        title: NSLocalizedString("move-up", comment: "上移"),
+                        title: NSLocalizedString("Move Up", comment: "上移"),
                         action: #selector(moveUpFavorite(_:)),
                         keyEquivalent: ""
                     )
@@ -421,7 +421,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                     
                     // 创建下移项
                     let moveDownMenuItem = NSMenuItem(
-                        title: NSLocalizedString("move-down", comment: "下移"),
+                        title: NSLocalizedString("Move Down", comment: "下移"),
                         action: #selector(moveDownFavorite(_:)),
                         keyEquivalent: ""
                     )

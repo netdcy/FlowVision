@@ -203,7 +203,7 @@ class LargeImageView: NSView {
     
     func showRatio() {
         let ratio=String(Int(imageView.frame.size.width/customZoomSize().width*100))
-        ratioView.showInfo(text: NSLocalizedString("zoom", comment: "缩放")+": "+ratio+"%")
+        ratioView.showInfo(text: NSLocalizedString("Zoom", comment: "缩放")+": "+ratio+"%")
     }
     
     func showInfo(_ info: String, timeOut: Double = 1.0) {
@@ -370,10 +370,10 @@ class LargeImageView: NSView {
             let menu = NSMenu(title: "Custom Menu")
             menu.autoenablesItems = false
             
-            let actionItemClose = menu.addItem(withTitle: NSLocalizedString("close-large-image", comment: "关闭 (双击)"), action: #selector(actClose), keyEquivalent: " ")
+            let actionItemClose = menu.addItem(withTitle: NSLocalizedString("Close (Double Click)", comment: "关闭 (双击)"), action: #selector(actClose), keyEquivalent: " ")
             actionItemClose.keyEquivalentModifierMask = []
             
-            let actionItemOpenInNewTab = menu.addItem(withTitle: NSLocalizedString("open-in-new-tab", comment: "在新标签页中打开"), action: #selector(actOpenInNewTab), keyEquivalent: "")
+            let actionItemOpenInNewTab = menu.addItem(withTitle: NSLocalizedString("Open in New Tab", comment: "在新标签页中打开"), action: #selector(actOpenInNewTab), keyEquivalent: "")
             if isWindowNumMax() {
                 actionItemOpenInNewTab.isEnabled=false
             }else{
@@ -386,14 +386,14 @@ class LargeImageView: NSView {
                 addOpenWithSubMenu(to: menu, for: URL(string: file.path)!)
             }
             
-            menu.addItem(withTitle: NSLocalizedString("show-in-finder", comment: "在Finder中显示"), action: #selector(actShowInFinder), keyEquivalent: "")
+            menu.addItem(withTitle: NSLocalizedString("Show in Finder", comment: "在Finder中显示"), action: #selector(actShowInFinder), keyEquivalent: "")
             
             let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
             actionItemRename.keyEquivalentModifierMask = []
             
             menu.addItem(NSMenuItem.separator())
             
-            let actionItemDelete = menu.addItem(withTitle: NSLocalizedString("move-to-trash", comment: "移动到废纸篓"), action: #selector(actDelete), keyEquivalent: "\u{8}")
+            let actionItemDelete = menu.addItem(withTitle: NSLocalizedString("Move to Trash", comment: "移动到废纸篓"), action: #selector(actDelete), keyEquivalent: "\u{8}")
             actionItemDelete.keyEquivalentModifierMask = []
             
             menu.addItem(NSMenuItem.separator())
@@ -414,7 +414,7 @@ class LargeImageView: NSView {
             
             menu.addItem(NSMenuItem.separator())
             
-            let actionItemShowExif = menu.addItem(withTitle: NSLocalizedString("show-exif", comment: "显示Exif信息"), action: #selector(actShowExif), keyEquivalent: "i")
+            let actionItemShowExif = menu.addItem(withTitle: NSLocalizedString("Show Exif", comment: "显示Exif信息"), action: #selector(actShowExif), keyEquivalent: "i")
             actionItemShowExif.keyEquivalentModifierMask = []
             actionItemShowExif.state = getViewController(self)!.publicVar.isShowExif ? .on : .off
             
@@ -426,10 +426,10 @@ class LargeImageView: NSView {
 
             menu.addItem(NSMenuItem.separator())
             
-            let actionItemRotateR = menu.addItem(withTitle: NSLocalizedString("rotate-clockwise", comment: "顺时针旋转"), action: #selector(actRotateR), keyEquivalent: "e")
+            let actionItemRotateR = menu.addItem(withTitle: NSLocalizedString("Rotate Clockwise", comment: "顺时针旋转"), action: #selector(actRotateR), keyEquivalent: "e")
             actionItemRotateR.keyEquivalentModifierMask = []
             
-            let actionItemRotateL = menu.addItem(withTitle: NSLocalizedString("rotate-counterclockwise", comment: "逆时针旋转"), action: #selector(actRotateL), keyEquivalent: "q")
+            let actionItemRotateL = menu.addItem(withTitle: NSLocalizedString("Rotate Counterclockwise", comment: "逆时针旋转"), action: #selector(actRotateL), keyEquivalent: "q")
             actionItemRotateL.keyEquivalentModifierMask = []
             
             menu.addItem(NSMenuItem.separator())
@@ -522,7 +522,7 @@ class LargeImageView: NSView {
     
     func addOpenWithSubMenu(to menu: NSMenu, for fileUrl: URL) {
         let openWithMenu = NSMenu(title: "openWith")
-        let openWithMenuItem = NSMenuItem(title: NSLocalizedString("open-with", comment: "打开方式"), action: nil, keyEquivalent: "")
+        let openWithMenuItem = NSMenuItem(title: NSLocalizedString("Open With", comment: "打开方式"), action: nil, keyEquivalent: "")
         openWithMenuItem.submenu = openWithMenu
         
         // 获取可以打开文件的应用程序列表

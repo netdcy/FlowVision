@@ -610,7 +610,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 }
                 
                 if (file.type == .folder || file.type == .image) {
-                    var titleTmp = NSLocalizedString("open-in-new-tab", comment: "在新标签页中打开")
+                    var titleTmp = NSLocalizedString("Open in New Tab", comment: "在新标签页中打开")
                     if selectedCount > 1 {
                         titleTmp = NSLocalizedString("open-in-new-tab-this", comment: "在新标签页中打开此项")
                     }
@@ -626,7 +626,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 addOpenWithSubMenu(to: menu)
                 
-                menu.addItem(withTitle: NSLocalizedString("show-in-finder", comment: "在Finder中显示"), action: #selector(actShowInFinder), keyEquivalent: "")
+                menu.addItem(withTitle: NSLocalizedString("Show in Finder", comment: "在Finder中显示"), action: #selector(actShowInFinder), keyEquivalent: "")
                 
                 var getInfoTitle = NSLocalizedString("file-rightmenu-get-info", comment: "显示简介")
                 if selectedCount > 1 {
@@ -655,7 +655,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                         (.random, NSLocalizedString("sort-random", comment: "随机"))
                     ]
 
-                    let sortMenuItem = NSMenuItem(title: NSLocalizedString("sort-by", comment: "排序方式"), action: nil, keyEquivalent: "")
+                    let sortMenuItem = NSMenuItem(title: NSLocalizedString("Sort By", comment: "排序方式"), action: nil, keyEquivalent: "")
                     let sortSubMenu = NSMenu()
                     
                     let folderFirstItem = NSMenuItem(title: NSLocalizedString("Sort Folders First", comment: "文件夹优先排序"), action: #selector(sortFolderFirst(_:)), keyEquivalent: "")
@@ -678,7 +678,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 menu.addItem(NSMenuItem.separator())
                 
-                let actionItemDelete = menu.addItem(withTitle: NSLocalizedString("move-to-trash", comment: "移动到废纸篓"), action: #selector(actDelete), keyEquivalent: "\u{8}")
+                let actionItemDelete = menu.addItem(withTitle: NSLocalizedString("Move to Trash", comment: "移动到废纸篓"), action: #selector(actDelete), keyEquivalent: "\u{8}")
                 actionItemDelete.keyEquivalentModifierMask = []
                 //actionItemDelete.isEnabled = (items.count>0)
                 
@@ -696,7 +696,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 let actionItemPaste = menu.addItem(withTitle: NSLocalizedString("Paste", comment: "粘贴"), action: #selector(actPaste), keyEquivalent: "v")
                 actionItemPaste.isEnabled = canPasteOrMove
                 
-                let actionItemMove = menu.addItem(withTitle: NSLocalizedString("move-here", comment: "移动到此"), action: #selector(actMove), keyEquivalent: "v")
+                let actionItemMove = menu.addItem(withTitle: NSLocalizedString("Move Here", comment: "移动到此"), action: #selector(actMove), keyEquivalent: "v")
                 actionItemMove.keyEquivalentModifierMask = [.command,.option]
                 actionItemMove.isEnabled = canPasteOrMove
                 
@@ -712,7 +712,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 menu.addItem(NSMenuItem.separator())
                 
-                let actionItemNewFolder = menu.addItem(withTitle: NSLocalizedString("new-folder", comment: "新建文件夹"), action: #selector(actNewFolder), keyEquivalent: "n")
+                let actionItemNewFolder = menu.addItem(withTitle: NSLocalizedString("New Folder", comment: "新建文件夹"), action: #selector(actNewFolder), keyEquivalent: "n")
                 actionItemNewFolder.keyEquivalentModifierMask = [.command,.shift]
                 
                 menu.addItem(NSMenuItem.separator())
@@ -830,7 +830,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         guard let fileUrls = getViewController(collectionView!)?.getSelectedURLs() else { return }
 
         let openWithMenu = NSMenu(title: "openWith")
-        let openWithMenuItem = NSMenuItem(title: NSLocalizedString("open-with", comment: "打开方式"), action: nil, keyEquivalent: "")
+        let openWithMenuItem = NSMenuItem(title: NSLocalizedString("Open With", comment: "打开方式"), action: nil, keyEquivalent: "")
         openWithMenuItem.submenu = openWithMenu
         
         // 获取每种文件类型的一个代表 URL

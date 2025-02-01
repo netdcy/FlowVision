@@ -82,7 +82,7 @@ class CustomCollectionView: NSCollectionView {
                     let menu = NSMenu(title: "Custom Menu")
                     menu.autoenablesItems = false
                     
-                    menu.addItem(withTitle: NSLocalizedString("open-in-finder", comment: "在Finder中打开"), action: #selector(actOpenInFinder), keyEquivalent: "")
+                    menu.addItem(withTitle: NSLocalizedString("Open in Finder", comment: "在Finder中打开"), action: #selector(actOpenInFinder), keyEquivalent: "")
                     
                     menu.addItem(NSMenuItem.separator())
                     
@@ -104,7 +104,7 @@ class CustomCollectionView: NSCollectionView {
                             (.random, NSLocalizedString("sort-random", comment: "随机"))
                         ]
 
-                        let sortMenuItem = NSMenuItem(title: NSLocalizedString("sort-by", comment: "排序方式"), action: nil, keyEquivalent: "")
+                        let sortMenuItem = NSMenuItem(title: NSLocalizedString("Sort By", comment: "排序方式"), action: nil, keyEquivalent: "")
                         let sortSubMenu = NSMenu()
                         
                         let folderFirstItem = NSMenuItem(title: NSLocalizedString("Sort Folders First", comment: "文件夹优先排序"), action: #selector(sortFolderFirst(_:)), keyEquivalent: "")
@@ -130,13 +130,13 @@ class CustomCollectionView: NSCollectionView {
                     let actionItemPaste = menu.addItem(withTitle: NSLocalizedString("Paste", comment: "粘贴"), action: #selector(actPaste), keyEquivalent: "v")
                     actionItemPaste.isEnabled = canPasteOrMove
                     
-                    let actionItemMove = menu.addItem(withTitle: NSLocalizedString("move-here", comment: "移动到此"), action: #selector(actMove), keyEquivalent: "v")
+                    let actionItemMove = menu.addItem(withTitle: NSLocalizedString("Move Here", comment: "移动到此"), action: #selector(actMove), keyEquivalent: "v")
                     actionItemMove.keyEquivalentModifierMask = [.command,.option]
                     actionItemMove.isEnabled = canPasteOrMove
 
                     menu.addItem(NSMenuItem.separator())
                     
-                    let actionItemNewFolder = menu.addItem(withTitle: NSLocalizedString("new-folder", comment: "新建文件夹"), action: #selector(actNewFolder), keyEquivalent: "n")
+                    let actionItemNewFolder = menu.addItem(withTitle: NSLocalizedString("New Folder", comment: "新建文件夹"), action: #selector(actNewFolder), keyEquivalent: "n")
                     actionItemNewFolder.keyEquivalentModifierMask = [.command,.shift]
                     
                     menu.addItem(NSMenuItem.separator())

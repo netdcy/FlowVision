@@ -305,8 +305,8 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.maxSize = NSSize(width: 10000, height: titleLabel.fittingSize.height)
             //toolbarItem.minSize = titleLabel.fittingSize
             //toolbarItem.maxSize = titleLabel.fittingSize
-            toolbarItem.label = NSLocalizedString("window-title", comment: "窗口标题")
-            toolbarItem.paletteLabel = NSLocalizedString("window-title", comment: "窗口标题")
+            toolbarItem.label = NSLocalizedString("Window Title", comment: "窗口标题")
+            toolbarItem.paletteLabel = NSLocalizedString("Window Title", comment: "窗口标题")
             toolbarItem.visibilityPriority = .high
             
         case .windowTitleStatistics:
@@ -320,8 +320,8 @@ extension WindowController: NSToolbarDelegate {
 //            toolbarItem.maxSize = NSSize(width: 10000, height: titleLabel.fittingSize.height)
             //toolbarItem.minSize = titleLabel.fittingSize
             //toolbarItem.maxSize = titleLabel.fittingSize
-            toolbarItem.label = NSLocalizedString("window-title", comment: "窗口标题")
-            toolbarItem.paletteLabel = NSLocalizedString("window-title", comment: "窗口标题")
+            toolbarItem.label = NSLocalizedString("Window Title", comment: "窗口标题")
+            toolbarItem.paletteLabel = NSLocalizedString("Window Title", comment: "窗口标题")
             toolbarItem.visibilityPriority = .high
             
         case .pathControl:
@@ -407,8 +407,8 @@ extension WindowController: NSToolbarDelegate {
             }
             
             toolbarItem.view = pathControl
-            toolbarItem.label = NSLocalizedString("window-title", comment: "窗口标题")
-            toolbarItem.paletteLabel = NSLocalizedString("window-title", comment: "窗口标题") 
+            toolbarItem.label = NSLocalizedString("Window Title", comment: "窗口标题")
+            toolbarItem.paletteLabel = NSLocalizedString("Window Title", comment: "窗口标题") 
             toolbarItem.visibilityPriority = .high
             
         case .sidebar:
@@ -435,22 +435,22 @@ extension WindowController: NSToolbarDelegate {
         case .goBack:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "chevron.backward", accessibilityDescription: "")!, target: self, action: #selector(goBackAction(_:)))
             setButtonStyle(button)
-            button.toolTip = NSLocalizedString("go-back", comment: "后退")
+            button.toolTip = NSLocalizedString("Go Back", comment: "后退")
             button.isEnabled = (viewController.publicVar.folderStepStack.count > 0) && (!viewController.publicVar.isInLargeView)
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("go-back", comment: "后退")
-            toolbarItem.paletteLabel = NSLocalizedString("go-back", comment: "后退")
+            toolbarItem.label = NSLocalizedString("Go Back", comment: "后退")
+            toolbarItem.paletteLabel = NSLocalizedString("Go Back", comment: "后退")
             toolbarItem.isNavigational = true
             toolbarItem.visibilityPriority = .low
             
         case .goForward:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "chevron.forward", accessibilityDescription: "")!, target: self, action: #selector(goForwardAction(_:)))
             setButtonStyle(button)
-            button.toolTip = NSLocalizedString("go-forward", comment: "前进")
+            button.toolTip = NSLocalizedString("Go Forward", comment: "前进")
             button.isEnabled = (viewController.publicVar.folderStepForwardStack.count > 0) && (!viewController.publicVar.isInLargeView)
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("go-forward", comment: "前进")
-            toolbarItem.paletteLabel = NSLocalizedString("go-forward", comment: "前进")
+            toolbarItem.label = NSLocalizedString("Go Forward", comment: "前进")
+            toolbarItem.paletteLabel = NSLocalizedString("Go Forward", comment: "前进")
             toolbarItem.isNavigational = true
             toolbarItem.visibilityPriority = .low
             
@@ -490,10 +490,10 @@ extension WindowController: NSToolbarDelegate {
             }
             let button = NSButton(title: "", image: image, target: self, action: #selector(ontopAction(_:)))
             setButtonStyle(button)
-            button.toolTip = NSLocalizedString("pin-window", comment: "置顶")
+            button.toolTip = NSLocalizedString("Pin Window", comment: "置顶")
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("pin-window", comment: "置顶")
-            toolbarItem.paletteLabel = NSLocalizedString("pin-window", comment: "置顶")
+            toolbarItem.label = NSLocalizedString("Pin Window", comment: "置顶")
+            toolbarItem.paletteLabel = NSLocalizedString("Pin Window", comment: "置顶")
             toolbarItem.visibilityPriority = .standard
 
         case .isEnableHDR:
@@ -521,46 +521,46 @@ extension WindowController: NSToolbarDelegate {
             }
             let button = NSButton(title: "", image: image, target: self, action: #selector(showinfoAction(_:)))
             setButtonStyle(button)
-            button.toolTip = NSLocalizedString("show-info", comment: "显示信息")
+            button.toolTip = NSLocalizedString("Show Info", comment: "显示信息")
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("show-info", comment: "显示信息")
-            toolbarItem.paletteLabel = NSLocalizedString("show-info", comment: "显示信息")
+            toolbarItem.label = NSLocalizedString("Show Info", comment: "显示信息")
+            toolbarItem.paletteLabel = NSLocalizedString("Show Info", comment: "显示信息")
             toolbarItem.visibilityPriority = .standard
             
         case .rotateL:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "arrow.counterclockwise", accessibilityDescription: "")!, target: self, action: #selector(rotateLAction(_:)))
             setButtonStyle(button)
-            button.toolTip = NSLocalizedString("rotate-counterclockwise", comment: "逆时针旋转")
+            button.toolTip = NSLocalizedString("Rotate Counterclockwise", comment: "逆时针旋转")
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("rotate-counterclockwise", comment: "逆时针旋转")
-            toolbarItem.paletteLabel = NSLocalizedString("rotate-counterclockwise", comment: "逆时针旋转")
+            toolbarItem.label = NSLocalizedString("Rotate Counterclockwise", comment: "逆时针旋转")
+            toolbarItem.paletteLabel = NSLocalizedString("Rotate Counterclockwise", comment: "逆时针旋转")
             toolbarItem.visibilityPriority = .low
             
         case .rotateR:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "arrow.clockwise", accessibilityDescription: "")!, target: self, action: #selector(rotateRAction(_:)))
             setButtonStyle(button)
-            button.toolTip = NSLocalizedString("rotate-clockwise", comment: "顺时针旋转")
+            button.toolTip = NSLocalizedString("Rotate Clockwise", comment: "顺时针旋转")
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("rotate-clockwise", comment: "顺时针旋转")
-            toolbarItem.paletteLabel = NSLocalizedString("rotate-clockwise", comment: "顺时针旋转")
+            toolbarItem.label = NSLocalizedString("Rotate Clockwise", comment: "顺时针旋转")
+            toolbarItem.paletteLabel = NSLocalizedString("Rotate Clockwise", comment: "顺时针旋转")
             toolbarItem.visibilityPriority = .low
             
         case .zoomIn:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "plus", accessibilityDescription: "")!, target: self, action: #selector(zoomInAction(_:)))
             setButtonStyle(button)
-            button.toolTip = NSLocalizedString("zoom-in", comment: "放大")
+            button.toolTip = NSLocalizedString("Zoom In", comment: "放大")
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("zoom-in", comment: "放大")
-            toolbarItem.paletteLabel = NSLocalizedString("zoom-in", comment: "放大")
+            toolbarItem.label = NSLocalizedString("Zoom In", comment: "放大")
+            toolbarItem.paletteLabel = NSLocalizedString("Zoom In", comment: "放大")
             toolbarItem.visibilityPriority = .low
             
         case .zoomOut:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "minus", accessibilityDescription: "")!, target: self, action: #selector(zoomOutAction(_:)))
             setButtonStyle(button)
-            button.toolTip = NSLocalizedString("zoom-out", comment: "缩小")
+            button.toolTip = NSLocalizedString("Zoom Out", comment: "缩小")
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("zoom-out", comment: "缩小")
-            toolbarItem.paletteLabel = NSLocalizedString("zoom-out", comment: "缩小")
+            toolbarItem.label = NSLocalizedString("Zoom Out", comment: "缩小")
+            toolbarItem.paletteLabel = NSLocalizedString("Zoom Out", comment: "缩小")
             toolbarItem.visibilityPriority = .low
             
         case .sort:
@@ -602,19 +602,19 @@ extension WindowController: NSToolbarDelegate {
                 //.foregroundColor: titleFontColor
             ])
             button.attributedTitle = attributedTitle
-            button.toolTip = NSLocalizedString("sort-type", comment: "排序方式")
+            button.toolTip = NSLocalizedString("Sort Order", comment: "排序方式")
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("sort-type", comment: "排序方式")
-            toolbarItem.paletteLabel = NSLocalizedString("sort-type", comment: "排序方式")
+            toolbarItem.label = NSLocalizedString("Sort Order", comment: "排序方式")
+            toolbarItem.paletteLabel = NSLocalizedString("Sort Order", comment: "排序方式")
             toolbarItem.visibilityPriority = .low
             
         case .thumbSize:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "photo", accessibilityDescription: "")!, target: self, action: #selector(showThumbSizeMenu(_:)))
             setButtonStyle(button)
-            button.toolTip = NSLocalizedString("thumb-size", comment: "缩略图大小")
+            button.toolTip = NSLocalizedString("Thumbnail Size", comment: "缩略图大小")
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("thumb-size", comment: "缩略图大小")
-            toolbarItem.paletteLabel = NSLocalizedString("thumb-size", comment: "缩略图大小")
+            toolbarItem.label = NSLocalizedString("Thumbnail Size", comment: "缩略图大小")
+            toolbarItem.paletteLabel = NSLocalizedString("Thumbnail Size", comment: "缩略图大小")
             toolbarItem.visibilityPriority = .low
             
         case .isRecursiveMode:
@@ -639,10 +639,10 @@ extension WindowController: NSToolbarDelegate {
         case .newtab:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "rectangle.badge.plus", accessibilityDescription: "")!, target: self, action: #selector(newtabAction(_:)))
             setButtonStyle(button)
-            button.toolTip = NSLocalizedString("new-tab", comment: "新标签页")
+            button.toolTip = NSLocalizedString("New Tab", comment: "新标签页")
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("new-tab", comment: "新标签页")
-            toolbarItem.paletteLabel = NSLocalizedString("new-tab", comment: "新标签页")
+            toolbarItem.label = NSLocalizedString("New Tab", comment: "新标签页")
+            toolbarItem.paletteLabel = NSLocalizedString("New Tab", comment: "新标签页")
             toolbarItem.visibilityPriority = .high
             
         case NSToolbarItem.Identifier("CustomSeparator"):
@@ -850,7 +850,7 @@ extension WindowController: NSToolbarDelegate {
         let favoritesMenu = NSMenu()
         
         let addFolderMenuItem = NSMenuItem(
-            title: NSLocalizedString("add-cur-folder", comment: "添加当前文件夹"),
+            title: NSLocalizedString("Add Current Folder", comment: "添加当前文件夹"),
             action: #selector(favoritesAdd(_:)),
             keyEquivalent: ""
         )
@@ -882,7 +882,7 @@ extension WindowController: NSToolbarDelegate {
                 
                 // 创建上移项
                 let moveUpMenuItem = NSMenuItem(
-                    title: NSLocalizedString("move-up", comment: "上移"),
+                    title: NSLocalizedString("Move Up", comment: "上移"),
                     action: #selector(moveUpFavorite(_:)),
                     keyEquivalent: ""
                 )
@@ -891,7 +891,7 @@ extension WindowController: NSToolbarDelegate {
                 
                 // 创建下移项
                 let moveDownMenuItem = NSMenuItem(
-                    title: NSLocalizedString("move-down", comment: "下移"),
+                    title: NSLocalizedString("Move Down", comment: "下移"),
                     action: #selector(moveDownFavorite(_:)),
                     keyEquivalent: ""
                 )
@@ -1045,7 +1045,7 @@ extension WindowController: NSToolbarDelegate {
         let menu = NSMenu()
         menu.autoenablesItems = false
 
-        let actionItemOntop = menu.addItem(withTitle: NSLocalizedString("pin-window", comment: "置顶"), action: #selector(ontopAction), keyEquivalent: "t")
+        let actionItemOntop = menu.addItem(withTitle: NSLocalizedString("Pin Window", comment: "置顶"), action: #selector(ontopAction), keyEquivalent: "t")
         actionItemOntop.keyEquivalentModifierMask = []
         if let window = window {
             actionItemOntop.state = (window.level == .floating) ? .on : .off
@@ -1119,16 +1119,16 @@ extension WindowController: NSToolbarDelegate {
         
         menu.addItem(NSMenuItem.separator())
         
-        let maximizeWindow = menu.addItem(withTitle: NSLocalizedString("maximizeWindow", comment: "最大化窗口"), action: #selector(maximizeWindow), keyEquivalent: "1")
+        let maximizeWindow = menu.addItem(withTitle: NSLocalizedString("Maximize Window", comment: "最大化窗口"), action: #selector(maximizeWindow), keyEquivalent: "1")
         maximizeWindow.keyEquivalentModifierMask = []
         
         let optimizeWindow = menu.addItem(withTitle: NSLocalizedString("optimizeWindow", comment: "合适窗口大小"), action: #selector(optimizeWindow), keyEquivalent: "2")
         optimizeWindow.keyEquivalentModifierMask = []
         
-        let adjustWindowActual = menu.addItem(withTitle: NSLocalizedString("adjustWindowActual", comment: "调整窗口至图片实际大小"), action: #selector(adjustWindowActual), keyEquivalent: "3")
+        let adjustWindowActual = menu.addItem(withTitle: NSLocalizedString("Adjust Window to Actual Image Size", comment: "调整窗口至图片实际大小"), action: #selector(adjustWindowActual), keyEquivalent: "3")
         adjustWindowActual.keyEquivalentModifierMask = []
         
-        let adjustWindowCurrent = menu.addItem(withTitle: NSLocalizedString("adjustWindowCurrent", comment: "调整窗口至图片当前大小"), action: #selector(adjustWindowCurrent), keyEquivalent: "4")
+        let adjustWindowCurrent = menu.addItem(withTitle: NSLocalizedString("Adjust Window to Current Image Size", comment: "调整窗口至图片当前大小"), action: #selector(adjustWindowCurrent), keyEquivalent: "4")
         adjustWindowCurrent.keyEquivalentModifierMask = []
         
         let adjustWindowToCenter = menu.addItem(withTitle: NSLocalizedString("Center the Window", comment: "将窗口居中"), action: #selector(adjustWindowToCenter), keyEquivalent: "5")
