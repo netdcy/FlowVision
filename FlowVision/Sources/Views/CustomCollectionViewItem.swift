@@ -259,8 +259,18 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     func generateTooltip(filePath: String, type: FileType, fileSize: Int?, imageSize: NSSize?, creationDate: Date?, modificationDate: Date?, addDate: Date?) -> String {
+        //当前目录
+        let curFolder = getViewController(collectionView!)!.fileDB.curFolder.removingPercentEncoding!
+
         // 获取文件名
         let fileName = (filePath as NSString).lastPathComponent
+        
+        //获取相对路径
+        var relativePath = "./" + filePath.replacingOccurrences(of: curFolder, with: "")
+        if relativePath.hasSuffix("/") {
+            relativePath = String(relativePath.dropLast())
+        }
+        relativePath = relativePath.replacingOccurrences(of: fileName, with: "")
         
         // 准备局部化字符串
         let nameLabel = NSLocalizedString("Name", comment: "名称")
@@ -274,12 +284,18 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         let creationDateLabel = NSLocalizedString("Date Created", comment: "创建日期")
         let modificationDateLabel = NSLocalizedString("Date Modified", comment: "修改日期")
         let addDateLabel = NSLocalizedString("Date Added", comment: "添加日期")
+        let relativePathLabel = NSLocalizedString("Relative Path", comment: "相对路径")
         
         // 生成Tooltip字符串的数组
         var tooltipParts: [String] = []
         
         // 添加文件名
         tooltipParts.append("\(nameLabel): \(fileName)")
+        
+        // 添加相对路径
+        if getViewController(collectionView!)!.publicVar.isRecursiveMode {
+            tooltipParts.append("\(relativePathLabel): \(relativePath)")
+        }
         
         // 如果文件大小存在，添加文件大小
         if let fileSize = fileSize {

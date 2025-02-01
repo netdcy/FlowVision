@@ -1617,7 +1617,7 @@
       }
     },
     "Include Folders" : {
-      "comment" : "是否包含文件夹",
+      "comment" : "包含文件夹",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1628,7 +1628,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "是否包含文件夹"
+            "value" : "包含文件夹"
           }
         }
       }
@@ -2495,7 +2495,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“递归浏览模式”时，在目录树中选择文件夹后，缩略图区域将显示文件夹及其子目录下的所有文件。勾选“是否包含文件夹”时，也将显示所有子文件夹本身。\n\n扫描部分系统目录或网络驱动器时，程序可能产生卡顿。在此模式下请尽量避免切换到顶层目录。\n\n另外，此模式下应用不会监听文件系统变化，因此如有改动（修改和删除等），请手动刷新。"
+            "value" : "“递归浏览模式”时，在目录树中选择文件夹后，缩略图区域将显示文件夹及其子目录下的所有文件。勾选“包含文件夹”时，也将显示所有子文件夹本身。\n\n扫描部分系统目录或网络驱动器时，程序可能产生卡顿。在此模式下请尽量避免切换到顶层目录。\n\n另外，此模式下应用不会监听文件系统变化，因此如有改动（修改和删除等），请手动刷新。"
           }
         }
       }
@@ -2564,6 +2564,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正则表达式"
+          }
+        }
+      }
+    },
+    "Relative Path" : {
+      "comment" : "相对路径",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Relative Path"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相对路径"
           }
         }
       }
