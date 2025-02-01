@@ -49,6 +49,7 @@ class DrawingView: NSView {
         containerView = NSView()
         containerView.wantsLayer = true
         containerView.isHidden = true
+        containerView.alphaValue = 0
         containerView.layer?.backgroundColor = hexToNSColor(hex: "#000000",alpha: 0.45).cgColor
         containerView.layer?.cornerRadius = 6.0
         containerView.layer?.masksToBounds = true
@@ -82,21 +83,21 @@ class DrawingView: NSView {
         containerView.addSubview(statusLabel)
     }
     
-//    override func hitTest(_ point: NSPoint) -> NSView? {
-//        let hitView = super.hitTest(point)
-//        if hitView == self {
-//            // 如果点击的是DrawingView，但不需要处理事件，则返回nil，让事件传递到下面的视图
-//            return nil
-//        }
-//        return hitView
-//    }
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        let hitView = super.hitTest(point)
+        if hitView == self {
+            // 如果点击的是DrawingView，但不需要处理事件，则返回nil，让事件传递到下面的视图
+            return nil
+        }
+        return hitView
+    }
     
     func _rightMouseDown(with event: NSEvent) {
         path = NSBezierPath()  // 开始一个新的绘图路径
         path?.lineWidth = lineWidth
         let location = convert(event.locationInWindow, from: nil)
         path?.move(to: location)
-        //super.rightMouseDown(with: event)  // 继续传递事件
+        super.rightMouseDown(with: event)  // 继续传递事件
     }
     
     func _rightMouseDragged(with event: NSEvent) {
@@ -104,13 +105,13 @@ class DrawingView: NSView {
         let location = convert(event.locationInWindow, from: nil)
         path.line(to: location)
         needsDisplay = true
-        //super.rightMouseDragged(with: event)  // 继续传递事件
+        super.rightMouseDragged(with: event)  // 继续传递事件
     }
     
     func _rightMouseUp(with event: NSEvent) {
         path = nil  // 清除路径
         needsDisplay = true  // 需要重新绘制，以清除视图
-        //super.rightMouseUp(with: event)  // 继续传递事件
+        super.rightMouseUp(with: event)  // 继续传递事件
     }
     
     override func draw(_ dirtyRect: NSRect) {

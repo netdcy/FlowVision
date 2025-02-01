@@ -1153,13 +1153,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if event.window != self.view.window {
                 return event
             }
-            if publicVar.isInLargeView {
-                //self.largeImageView.rightMouseUp(with: event)
-            }else{
-                self.drawingView?._rightMouseUp(with: event)
+            if self.coreAreaView.frame.contains(event.locationInWindow) {
+                if publicVar.isInLargeView {
+                    self.largeImageView.rightMouseUp(with: event)
+                }else{
+                    self.drawingView?._rightMouseUp(with: event)
+                }
+                return nil  // 不传递事件
+            } else {
+                return event  // 继续传递事件
             }
-            return event  // 返回 nil 则不传递事件
-            //return nil
         }
         eventMonitorRightMouseDown = NSEvent.addLocalMonitorForEvents(matching: .rightMouseDown) { [weak self] event in
             guard let self=self else{return event}
@@ -1168,13 +1171,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if event.window != self.view.window {
                 return event
             }
-            if publicVar.isInLargeView {
-                //self.largeImageView.rightMouseDown(with: event)
-            }else{
-                self.drawingView?._rightMouseDown(with: event)
+            if self.coreAreaView.frame.contains(event.locationInWindow) {
+                if publicVar.isInLargeView {
+                    self.largeImageView.rightMouseDown(with: event)
+                }else{
+                    self.drawingView?._rightMouseDown(with: event)
+                }
+                return nil  // 不传递事件
+            } else {
+                return event  // 继续传递事件
             }
-            return event  // 返回 nil 则不传递事件
-            //return nil
         }
         eventMonitorRightMouseDragged = NSEvent.addLocalMonitorForEvents(matching: .rightMouseDragged) { [weak self] event in
             guard let self=self else{return event}
@@ -1183,13 +1189,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if event.window != self.view.window {
                 return event
             }
-            if publicVar.isInLargeView {
-                //self.largeImageView.rightMouseDragged(with: event)
-            }else{
-                self.drawingView?._rightMouseDragged(with: event)
+            if self.coreAreaView.frame.contains(event.locationInWindow) {
+                if publicVar.isInLargeView {
+                    self.largeImageView.rightMouseDragged(with: event)
+                }else{
+                    self.drawingView?._rightMouseDragged(with: event)
+                }
+                return nil  // 不传递事件
+            } else {
+                return event  // 继续传递事件
             }
-            return event  // 返回 nil 则不传递事件
-            //return nil
         }
         
         //=========结束事件监听配置==========
@@ -5485,12 +5494,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if directionHistory.count > 0 {
 //            drawingView?.containerView.isHidden=false
             
-            NSAnimationContext.runAnimationGroup({ context in
-                context.duration = 0.2
-                drawingView?.containerView.animator().alphaValue = 1
-                drawingView?.containerView.animator().isHidden = false
-            }, completionHandler: {
-            })
+            if drawingView?.containerView.isHidden == true {
+                drawingView?.containerView.isHidden = false
+                NSAnimationContext.runAnimationGroup({ context in
+                    context.duration = 0.2
+                    drawingView?.containerView.animator().alphaValue = 1
+                }, completionHandler: {
+                })
+            }
         }
         
         if directionHistory.count == 1 {
