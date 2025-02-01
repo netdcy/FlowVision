@@ -1430,7 +1430,7 @@
       }
     },
     "Folder" : {
-      "comment" : "目录",
+      "comment" : "文件夹\n目录",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1701,6 +1701,23 @@
         }
       }
     },
+    "input-new-textfile-name" : {
+      "comment" : "请输入文件名称：",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请输入文件名称："
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请输入文件名称："
+          }
+        }
+      }
+    },
     "Invalid current path" : {
       "comment" : "当前路径无效",
       "localizations" : {
@@ -1939,6 +1956,23 @@
         }
       }
     },
+    "New" : {
+      "comment" : "新建",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新建"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新建"
+          }
+        }
+      }
+    },
     "New Folder" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1986,6 +2020,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "新标签页"
+          }
+        }
+      }
+    },
+    "New Text File" : {
+      "comment" : "新建文本文件",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新建文本文件"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新建文本文件"
           }
         }
       }
@@ -3839,6 +3890,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "跟随系统主题"
+          }
+        }
+      }
+    },
+    "Text File" : {
+      "comment" : "文本文件",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文本文件"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文本文件"
           }
         }
       }

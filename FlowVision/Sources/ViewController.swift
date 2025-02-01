@@ -2645,6 +2645,75 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         return (false,nil)
     }
+
+    func handleNewTextFile(targetURL: URL? = nil) -> (Bool,URL?) {
+        let alert = NSAlert()
+        alert.messageText = NSLocalizedString("New Text File", comment: "新建文本文件")
+        alert.informativeText = NSLocalizedString("input-new-textfile-name", comment: "请输入文件名称：")
+        alert.alertStyle = .informational
+        alert.icon = NSImage(named: NSImage.infoName)// 设置系统通知图标
+        
+        // 添加一个文本输入框
+        let inputTextField = NSTextField(frame: NSRect(x: 0, y: 0, width: 200, height: 24))
+        if let textFieldCell = inputTextField.cell as? NSTextFieldCell {
+            textFieldCell.usesSingleLineMode = true
+            textFieldCell.wraps = false
+            textFieldCell.isScrollable = true
+        }
+        alert.accessoryView = inputTextField
+        
+        alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
+        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
+        
+        let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
+        publicVar.isKeyEventEnabled=false
+        DispatchQueue.main.async {
+            _ = inputTextField.becomeFirstResponder()
+        }
+        let response = alert.runModal()
+        publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
+        
+        if response == .alertFirstButtonReturn {
+            var fileName = inputTextField.stringValue
+            
+            if !fileName.isEmpty {
+                // 如果用户没有输入扩展名，则加.txt后缀
+                if !fileName.contains(".") {
+                    fileName += ".txt"
+                }
+                
+                fileDB.lock()
+                let curFolder = fileDB.curFolder
+                fileDB.unlock()
+                
+                var destinationURL = URL(string: curFolder)
+                if targetURL != nil {destinationURL=targetURL}
+                guard let destinationURL=destinationURL else {return (false,nil)}
+                
+                let newFileURL = destinationURL.appendingPathComponent(fileName)
+                
+                // 检查是否存在同名文件
+                if FileManager.default.fileExists(atPath: newFileURL.path) {
+                    showAlert(message: NSLocalizedString("renaming-conflict", comment: "该名称的文件已存在，请选择其他名称。"))
+                }else{
+                    // 执行新建操作
+                    do {
+                        // 创建空文本文件
+                        try "".write(to: newFileURL, atomically: true, encoding: .utf8)
+                        
+                        // 文件更改计数
+                        publicVar.fileChangedCount += 1
+                        
+                        log("新建文本文件成功: \(newFileURL.path)")
+                        return (true,newFileURL)
+                    } catch {
+                        log("新建文本文件失败: \(error)")
+                    }
+                }
+            }
+        }
+        return (false,nil)
+    }
     
     // 系统主题变化时会触发此方法
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -2749,7 +2818,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     override func viewDidLayout() {
         super.viewDidLayout()
-        //collectionViewSizeChanged()
+        
+        //调整搜索框位置
+        if let searchOverlay = searchOverlay,
+           let containerView = searchOverlay.containerView {
+            searchOverlay.frame = view.bounds
+            containerView.frame.origin.x = searchOverlay.bounds.width - containerView.frame.width - 30
+            containerView.frame.origin.y = searchOverlay.bounds.height - containerView.frame.height - 20
+        }
     }
     
     func splitView(_ splitView: NSSplitView, resizeSubviewsWithOldSize oldSize: NSSize) {
@@ -6299,14 +6375,25 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             overlay.wantsLayer = true
             overlay.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.0).cgColor
             
+            let caseSensitiveCheckboxTitle = NSLocalizedString("Case Sensitive", comment: "区分大小写")
+            let caseSensitiveCheckboxWidth = 25 + caseSensitiveCheckboxTitle.size(withAttributes: [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]).width
+            let regexCheckboxTitle = NSLocalizedString("Regex", comment: "正则表达式")
+            let regexCheckboxWidth = 25 + regexCheckboxTitle.size(withAttributes: [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]).width
+            let fullPathCheckboxTitle = NSLocalizedString("Use Full Path", comment: "使用完整路径")
+            let fullPathCheckboxWidth = 25 + fullPathCheckboxTitle.size(withAttributes: [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]).width
+            let filterButtonTitle = NSLocalizedString("Apply Filter", comment: "执行过滤")
+            let filterButtonFont = NSFont.systemFont(ofSize: 12.6)
+            let filterButtonWidth = 25 + filterButtonTitle.size(withAttributes: [.font: filterButtonFont]).width.rounded()
             // 用于整体调整宽度
-            let withAdjust = publicVar.isRecursiveMode ? 100 : 0
+            var withAdjust = caseSensitiveCheckboxWidth + regexCheckboxWidth + filterButtonWidth
+            withAdjust += publicVar.isRecursiveMode ? fullPathCheckboxWidth : 0
+            withAdjust += -80
             
             // 创建搜索框容器视图 - 增加高度以容纳两行
-            let containerView = NSView(frame: NSRect(x: 0, y: 0, width: 410+withAdjust, height: 66))
+            let containerView = NSView(frame: NSRect(x: 0, y: 0, width: 210+withAdjust, height: 66))
             
             // 创建搜索框 - 放在上面一行
-            searchField = NSSearchField(frame: NSRect(x: 5, y: 31, width: 400+withAdjust, height: 30))
+            searchField = NSSearchField(frame: NSRect(x: 5, y: 31, width: 200+withAdjust, height: 30))
             searchField?.placeholderString = NSLocalizedString("Search...", comment: "搜索...")
             searchField?.stringValue = search_searchText
             searchField?.delegate = self
@@ -6315,44 +6402,35 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             searchField?.focusRingType = .none
             
             // 创建区分大小写复选框 - 放在下面一行
-            let caseSensitiveCheckboxTitle = NSLocalizedString("Case Sensitive", comment: "区分大小写")
-            let caseSensitiveCheckboxWidth = 25 + caseSensitiveCheckboxTitle.size(withAttributes: [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]).width
             let caseSensitiveCheckbox = NSButton(checkboxWithTitle: caseSensitiveCheckboxTitle, target: self, action: #selector(caseSensitiveCheckboxChanged(_:)))
             caseSensitiveCheckbox.frame = NSRect(x: 5, y: 6, width: caseSensitiveCheckboxWidth, height: 20)
             caseSensitiveCheckbox.state = search_isCaseSensitive ? .on : .off
             
             // 创建正则表达式复选框 - 放在下面一行
-            let regexCheckboxTitle = NSLocalizedString("Regex", comment: "正则表达式")
-            let regexCheckboxWidth = 25 + regexCheckboxTitle.size(withAttributes: [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]).width
             let regexCheckbox = NSButton(checkboxWithTitle: regexCheckboxTitle, target: self, action: #selector(regexCheckboxChanged(_:)))
             regexCheckbox.frame = NSRect(x: 5 + caseSensitiveCheckboxWidth + 5, y: 6, width: regexCheckboxWidth, height: 20)
             regexCheckbox.state = search_useRegex ? .on : .off
             
             // 创建使用完整路径复选框 - 放在正则表达式复选框后面
-            let fullPathCheckboxTitle = NSLocalizedString("Use Full Path", comment: "使用完整路径")
-            let fullPathCheckboxWidth = 25 + fullPathCheckboxTitle.size(withAttributes: [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]).width
             let fullPathCheckbox = NSButton(checkboxWithTitle: fullPathCheckboxTitle, target: self, action: #selector(fullPathCheckboxChanged(_:)))
             fullPathCheckbox.frame = NSRect(x: 5 + caseSensitiveCheckboxWidth + 5 + regexCheckboxWidth + 5, y: 6, width: fullPathCheckboxWidth, height: 20)
             fullPathCheckbox.state = search_isUseFullPath ? .on : .off
             
             // 创建向前搜索按钮 - 放在下面一行
-            let prevButton = NSButton(frame: NSRect(x: 347+withAdjust, y: 3, width: 30, height: 25))
+            let prevButton = NSButton(frame: NSRect(x: 147+withAdjust, y: 3, width: 30, height: 25))
             prevButton.bezelStyle = .regularSquare
             prevButton.image = NSImage(systemSymbolName: "chevron.left", accessibilityDescription: nil)
             prevButton.target = self
             prevButton.action = #selector(prevButtonClicked(_:))
             
             // 创建向后搜索按钮 - 放在下面一行
-            let nextButton = NSButton(frame: NSRect(x: 377+withAdjust, y: 3, width: 30, height: 25))
+            let nextButton = NSButton(frame: NSRect(x: 177+withAdjust, y: 3, width: 30, height: 25))
             nextButton.bezelStyle = .regularSquare
             nextButton.image = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: nil)
             nextButton.target = self
             nextButton.action = #selector(nextButtonClicked(_:))
 
             // 创建执行过滤按钮 - 放在正则表达式复选框后面
-            let filterButtonTitle = NSLocalizedString("Apply Filter", comment: "执行过滤")
-            let filterButtonFont = NSFont.systemFont(ofSize: 12.6)
-            let filterButtonWidth = 25 + filterButtonTitle.size(withAttributes: [.font: filterButtonFont]).width.rounded()
             let filterButtonX = prevButton.frame.origin.x - filterButtonWidth
             let filterButton = NSButton(frame: NSRect(x: filterButtonX, y: 3, width: filterButtonWidth, height: 25))
             filterButton.title = filterButtonTitle
@@ -6385,6 +6463,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             // 设置容器视图位置
             containerView.frame.origin.x = view.bounds.width - containerView.frame.width - 30
             containerView.frame.origin.y = view.bounds.height - containerView.frame.height - 20
+            //另外注意在viewDidLayout()中实时调整位置
             
             overlay.addSubview(containerView)
             

@@ -101,8 +101,25 @@ class CustomCollectionView: NSCollectionView {
                     
                     menu.addItem(NSMenuItem.separator())
             
-                    let actionItemNewFolder = menu.addItem(withTitle: NSLocalizedString("New Folder", comment: "新建文件夹"), action: #selector(actNewFolder), keyEquivalent: "n")
-                    actionItemNewFolder.keyEquivalentModifierMask = [.command,.shift]
+                    // 创建"新建"子菜单
+                    let newMenu = NSMenu()
+                    let newMenuItem = NSMenuItem(title: NSLocalizedString("New", comment: "新建"), action: nil, keyEquivalent: "")
+                    newMenuItem.submenu = newMenu
+                    
+                    // 添加新建文件夹选项
+                    let newFolderItem = newMenu.addItem(withTitle: NSLocalizedString("Folder", comment: "文件夹"), 
+                                                       action: #selector(actNewFolder), 
+                                                       keyEquivalent: "n")
+                    newFolderItem.keyEquivalentModifierMask = [.command, .shift]
+
+                    newMenu.addItem(NSMenuItem.separator())
+                    
+                    // 添加新建文本文件选项
+                    let newTextFileItem = newMenu.addItem(withTitle: NSLocalizedString("Text File", comment: "文本文件"), 
+                                                        action: #selector(actNewTextFile), 
+                                                        keyEquivalent: "")
+                    
+                    menu.addItem(newMenuItem)
             
                     menu.addItem(NSMenuItem.separator())
                     
@@ -157,5 +174,10 @@ class CustomCollectionView: NSCollectionView {
         task.launchPath = "/usr/bin/open"
         task.arguments = ["-a", "Terminal", url.path]
         task.launch()
+    }
+
+    // 添加新建文本文件的动作处理方法
+    @objc func actNewTextFile() {
+        getViewController(self)?.handleNewTextFile()
     }
 }
