@@ -167,9 +167,10 @@ func showAlert(message: String) {
     alert.alertStyle = .warning
     alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
     alert.icon = NSImage(named: NSImage.cautionName)
+    let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
     getMainViewController()!.publicVar.isKeyEventEnabled=false
     alert.runModal()
-    getMainViewController()!.publicVar.isKeyEventEnabled=true
+    getMainViewController()!.publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
 }
 
 func showInformation(title: String, message: String) {
@@ -179,9 +180,10 @@ func showInformation(title: String, message: String) {
     alert.alertStyle = .informational
     alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
     alert.icon = NSImage(named: NSImage.infoName)
+    let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
     getMainViewController()!.publicVar.isKeyEventEnabled=false
     alert.runModal()
-    getMainViewController()!.publicVar.isKeyEventEnabled=true
+    getMainViewController()!.publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
 }
 
 func showInformationLong(title: String, message: String, width: CGFloat = 400) {
@@ -226,9 +228,10 @@ func showInformationLong(title: String, message: String, width: CGFloat = 400) {
     textField.frame = NSRect(x: 0, y: 0, width: width, height: height)
     alert.accessoryView = textField
     
+    let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
     getMainViewController()!.publicVar.isKeyEventEnabled=false
     alert.runModal()
-    getMainViewController()!.publicVar.isKeyEventEnabled=true
+    getMainViewController()!.publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
 }
 
 func showInformationCopy(title: String, message: String) {
@@ -240,9 +243,10 @@ func showInformationCopy(title: String, message: String) {
     alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
     alert.icon = NSImage(named: NSImage.infoName)
     
+    let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
     getMainViewController()!.publicVar.isKeyEventEnabled = false
     let response = alert.runModal()
-    getMainViewController()!.publicVar.isKeyEventEnabled = true
+    getMainViewController()!.publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
 
     if response == .alertFirstButtonReturn {
         let pasteboard = NSPasteboard.general
@@ -276,6 +280,7 @@ func renameAlert(url: URL) -> Bool {
     alert.accessoryView = inputTextField
     
     // 显示对话框
+    let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
     getMainViewController()!.publicVar.isKeyEventEnabled=false
     DispatchQueue.main.async {
         // 判断是否是文件夹
@@ -293,7 +298,7 @@ func renameAlert(url: URL) -> Bool {
         }
     }
     let response = alert.runModal()
-    getMainViewController()!.publicVar.isKeyEventEnabled=true
+    getMainViewController()!.publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
     
     // 根据用户的选择处理结果
     if response == .alertFirstButtonReturn { // OK按钮
@@ -891,10 +896,10 @@ class ThumbnailOptionsWindow: NSWindow {
 // Function to display the panel as a sheet
 func showThumbnailOptionsPanel(on parentWindow: NSWindow, completion: @escaping (Bool, Bool, Bool, Bool, Double, Double, Double, Double, Double, Double, Bool) -> Void) {
     let thumbnailOptionsWindow = ThumbnailOptionsWindow()
-    
+    let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
     getMainViewController()!.publicVar.isKeyEventEnabled=false
     parentWindow.beginSheet(thumbnailOptionsWindow) { response in
-        getMainViewController()!.publicVar.isKeyEventEnabled=true
+        getMainViewController()!.publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
         if response == .OK {
             completion(thumbnailOptionsWindow.isWindowTitleUseFullPath,
                       thumbnailOptionsWindow.isWindowTitleShowStatistics,

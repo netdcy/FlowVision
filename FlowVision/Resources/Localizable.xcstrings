@@ -137,6 +137,17 @@
         }
       }
     },
+    "Apply Filter" : {
+      "comment" : "执行过滤",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "执行过滤"
+          }
+        }
+      }
+    },
     "ask-to-delete" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -235,6 +246,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消"
+          }
+        }
+      }
+    },
+    "Cancel Filter" : {
+      "comment" : "取消过滤",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消过滤"
           }
         }
       }
@@ -1231,7 +1253,7 @@
       }
     },
     "Exit Recursive Mode" : {
-      "comment" : "退出递归模式",
+      "comment" : "退出递归模式\n退出递归浏览模式",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -2663,6 +2685,23 @@
         }
       }
     },
+    "search-help" : {
+      "comment" : "关于搜索的说明",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To enable file search within subdirectories, first activate \"Recursive Browse Mode.\"\n\nAt this point, you can additionally use the search option \"use full path\" combined with regular expressions for advanced searches.\n For example, if the full file path is:  \n/Users/Alice/Pictures/20220101/mypick/001.jpg   \nYou can use the regular expression:  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\nto match all files whose parent directory names contain \"pick.\" For more complex regular expressions, you can use ChatGPT to assist in generation."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要实现对子目录中文件的搜索，可先启用“递归浏览模式”。\n\n此时可额外使用搜索选项“使用完整路径”，再结合正则表达式实现高级搜索。\n例如，文件完整路径为：\n/Users/Alice/Pictures/20220101/mypick/001.jpg  \n可使用正则表达式：\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\n匹配所有父目录名含有“pick”的文件，更复杂的正则表达式可使用ChatGPT辅助生成。"
+          }
+        }
+      }
+    },
     "Search..." : {
       "comment" : "搜索...",
       "localizations" : {
@@ -3690,6 +3729,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "上层文件夹"
+          }
+        }
+      }
+    },
+    "Use Full Path" : {
+      "comment" : "使用完整路径",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用完整路径"
           }
         }
       }

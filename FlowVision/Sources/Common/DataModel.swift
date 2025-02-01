@@ -324,6 +324,7 @@ class DirModel {
     var isMemClearedToAvoidRemainingTask: Bool = false
     var keepScrollPos: Bool = false
     var isRecursiveMode: Bool = false
+    var isFiltered: Bool = false
     var lock: NSLock = NSLock()
     
     func changeSortType(_ sortType: SortType, isSortFolderFirst: Bool){

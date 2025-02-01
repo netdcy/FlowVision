@@ -141,13 +141,13 @@ class PublicVar{
     var isInLargeView: Bool = false {
         didSet {
             if !isInInitStage {
-                getViewController(refView)?.setCollectionViewTooltip()
+                viewController.setCollectionViewTooltip()
                 updateToolbar()
                 if globalVar.portableMode {
-                    getViewController(refView)?.adjustWindowPortable(firstShowThumb: true, animate: false)
+                    viewController.adjustWindowPortable(firstShowThumb: true, animate: false)
                 }
                 if !isInLargeView {
-                    getViewController(refView)?.recalcIfHasChangedSize()
+                    viewController.recalcIfHasChangedSize()
                 }
             }
         }
@@ -160,13 +160,12 @@ class PublicVar{
     var isOutlineViewFirstResponder: Bool = false
     var isShowExif: Bool = false {
         didSet {
-            if let largeImageView = getViewController(refView)?.largeImageView,
-               let url = URL(string: largeImageView.file.path),
+            if let largeImageView = viewController.largeImageView,
                isShowExif && largeImageView.exifTextView.textItems.isEmpty{
                 let exifData = convertExifData(file: largeImageView.file)
                 largeImageView.updateTextItems(formatExifData(exifData ?? [:]))
             }
-            getViewController(refView)?.largeImageView.exifTextView.isHidden = !isShowExif
+            viewController.largeImageView.exifTextView.isHidden = !isShowExif
             updateToolbar()
         }
     }
@@ -181,6 +180,14 @@ class PublicVar{
     var isInStageTwoProgress = false
     var isInStageThreeProgress = false
     var isInSearchState = false
+    var isFilenameFilterOn = false
+    var isCurrentFolderFiltered: Bool {
+        viewController.fileDB.lock()
+        let curFolder = viewController.fileDB.curFolder
+        let isFiltered = viewController.fileDB.db[SortKeyDir(curFolder)]?.isFiltered ?? false
+        viewController.fileDB.unlock()
+        return isFiltered
+    }
     
     var HandledImageAndRawExtensions: [String] = []
     var HandledVideoExtensions: [String] = []
@@ -207,18 +214,17 @@ class PublicVar{
     
     var selectedUrls2 = [URL]()
     func selectedUrls() -> [URL] {
-        var urls = getViewController(refView)?.getSelectedURLs() ?? []
+        var urls = viewController.getSelectedURLs()
         if urls.count == 0,
-           getViewController(refView)?.publicVar.isInLargeView == true,
-           let path=getViewController(refView)?.largeImageView.file.path,
-           let url=URL(string: path){
+           viewController.publicVar.isInLargeView == true,
+           let url=URL(string: viewController.largeImageView.file.path){
             urls.append(url)
         }
         return urls
     }
     
     func updateToolbar(){
-        if let windowController = (getViewController(refView)?.view.window?.windowController) as? WindowController {
+        if let windowController = (viewController.view.window?.windowController) as? WindowController {
             windowController.updateToolbar()
         }
     }
@@ -1914,9 +1920,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
         var response: NSApplication.ModalResponse = .alertFirstButtonReturn
         if isShowPrompt || !ifHasPermission || VolumeManager.shared.isExternalVolume(urls.first!) {
+            let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
             publicVar.isKeyEventEnabled=false
             response = alert.runModal()
-            publicVar.isKeyEventEnabled=true
+            publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
         }
 
         if response == .alertFirstButtonReturn {
@@ -2195,6 +2202,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         var shouldReplaceAll = false
         var shouldSkipAll = false
         
+        let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
         publicVar.isKeyEventEnabled = false
         for item in items {
             guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { continue }
@@ -2242,7 +2250,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         shouldSkipAll = true
                         continue
                     case .cancel:
-                        publicVar.isKeyEventEnabled = true
+                        publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
                         return
                     }
                 }
@@ -2255,7 +2263,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
             }
         }
-        publicVar.isKeyEventEnabled = true
+        publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
     }
     
     func handleMoveToDownload() {
@@ -2300,6 +2308,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         var shouldReplaceAll = false
         var shouldSkipAll = false
         
+        let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
         publicVar.isKeyEventEnabled = false
         for item in items {
             guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { continue }
@@ -2348,7 +2357,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         shouldSkipAll = true
                         continue
                     case .cancel:
-                        publicVar.isKeyEventEnabled = true
+                        publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
                         return
                     }
                 }
@@ -2361,7 +2370,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
             }
         }
-        publicVar.isKeyEventEnabled = true
+        publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
     }
 
     func getUniqueDestinationURL(for url: URL) -> URL {
@@ -2447,12 +2456,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
         alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
         
+        let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
         publicVar.isKeyEventEnabled=false
         DispatchQueue.main.async {
             _ = inputTextField.becomeFirstResponder()
         }
         let response = alert.runModal()
-        publicVar.isKeyEventEnabled=true
+        publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
         
         if response == .alertFirstButtonReturn {
             let folderName = inputTextField.stringValue
@@ -3124,6 +3134,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let defaults = UserDefaults.standard
         defaults.set(nextFolder, forKey: "lastFolder")
 
+        //重置搜索过滤
+        publicVar.isFilenameFilterOn = false
     }
     
     func showScanAlert(fileCount: Int, imageCount: Int, videoCount: Int) -> Bool {
@@ -3208,6 +3220,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }catch{}
         }
         
+        //搜索过滤
+        let searchText = searchField?.stringValue ?? ""
+        if publicVar.isFilenameFilterOn && searchText != "" {
+            contents = contents.filter { url in
+                if let fileName = getFileNameForSearch(path: url.absoluteString) {
+                    return isSearchMatch(fileName: fileName, searchText: searchText)
+                }
+                return true
+            }
+        }
+        
         //过滤隐藏文件
         contents = contents.filter { url in
 
@@ -3279,6 +3302,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         fileDB.db[SortKeyDir(folderURL.absoluteString)]!.ver = fileDB.ver
         if !skip {
+            fileDB.db[SortKeyDir(folderURL.absoluteString)]?.isFiltered = publicVar.isFilenameFilterOn //文件过滤
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.folderCount=subFolders.count
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.fileCount=fileCount
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.imageCount=imageCount
@@ -5956,10 +5980,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         // 使用 beginSheetModal 替代 runModal
         if let window = view.window {
+            let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
             publicVar.isKeyEventEnabled=false
             alert.beginSheetModal(for: window) { [weak self] response in
                 guard let self = self else { return }
-                publicVar.isKeyEventEnabled=true
+                publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
                 if response == .alertFirstButtonReturn {
                     var path = inputTextField.stringValue
                     // 如果被''或者""包裹则去掉
@@ -6060,12 +6085,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             overlay.wantsLayer = true
             overlay.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.0).cgColor
             
+            // 用于整体调整宽度
+            let withAdjust = publicVar.isRecursiveMode ? 100 : 0
+            
             // 创建搜索框容器视图 - 增加高度以容纳两行
-            let containerView = NSView(frame: NSRect(x: 0, y: 0, width: 380, height: 66))
+            let containerView = NSView(frame: NSRect(x: 0, y: 0, width: 410+withAdjust, height: 66))
             
             // 创建搜索框 - 放在上面一行
-            searchField = NSSearchField(frame: NSRect(x: 5, y: 31, width: 370, height: 30))
+            searchField = NSSearchField(frame: NSRect(x: 5, y: 31, width: 400+withAdjust, height: 30))
             searchField?.placeholderString = NSLocalizedString("Search...", comment: "搜索...")
+            searchField?.stringValue = search_searchText
             searchField?.delegate = self
             searchField?.target = self
             searchField?.action = #selector(searchFieldDidChange(_:))
@@ -6076,33 +6105,66 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let caseSensitiveCheckboxWidth = 25 + caseSensitiveCheckboxTitle.size(withAttributes: [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]).width
             let caseSensitiveCheckbox = NSButton(checkboxWithTitle: caseSensitiveCheckboxTitle, target: self, action: #selector(caseSensitiveCheckboxChanged(_:)))
             caseSensitiveCheckbox.frame = NSRect(x: 5, y: 6, width: caseSensitiveCheckboxWidth, height: 20)
-            caseSensitiveCheckbox.state = .off
+            caseSensitiveCheckbox.state = search_isCaseSensitive ? .on : .off
             
             // 创建正则表达式复选框 - 放在下面一行
             let regexCheckboxTitle = NSLocalizedString("Regex", comment: "正则表达式")
             let regexCheckboxWidth = 25 + regexCheckboxTitle.size(withAttributes: [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]).width
             let regexCheckbox = NSButton(checkboxWithTitle: regexCheckboxTitle, target: self, action: #selector(regexCheckboxChanged(_:)))
-            regexCheckbox.frame = NSRect(x: 5 + caseSensitiveCheckboxWidth + 10, y: 6, width: regexCheckboxWidth, height: 20)
-            regexCheckbox.state = .off
+            regexCheckbox.frame = NSRect(x: 5 + caseSensitiveCheckboxWidth + 5, y: 6, width: regexCheckboxWidth, height: 20)
+            regexCheckbox.state = search_useRegex ? .on : .off
+            
+            // 创建使用完整路径复选框 - 放在正则表达式复选框后面
+            let fullPathCheckboxTitle = NSLocalizedString("Use Full Path", comment: "使用完整路径")
+            let fullPathCheckboxWidth = 25 + fullPathCheckboxTitle.size(withAttributes: [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]).width
+            let fullPathCheckbox = NSButton(checkboxWithTitle: fullPathCheckboxTitle, target: self, action: #selector(fullPathCheckboxChanged(_:)))
+            fullPathCheckbox.frame = NSRect(x: 5 + caseSensitiveCheckboxWidth + 5 + regexCheckboxWidth + 5, y: 6, width: fullPathCheckboxWidth, height: 20)
+            fullPathCheckbox.state = search_isUseFullPath ? .on : .off
             
             // 创建向前搜索按钮 - 放在下面一行
-            let prevButton = NSButton(frame: NSRect(x: 317, y: 3, width: 30, height: 25))
+            let prevButton = NSButton(frame: NSRect(x: 347+withAdjust, y: 3, width: 30, height: 25))
             prevButton.bezelStyle = .regularSquare
             prevButton.image = NSImage(systemSymbolName: "chevron.left", accessibilityDescription: nil)
             prevButton.target = self
             prevButton.action = #selector(prevButtonClicked(_:))
             
             // 创建向后搜索按钮 - 放在下面一行
-            let nextButton = NSButton(frame: NSRect(x: 347, y: 3, width: 30, height: 25))
+            let nextButton = NSButton(frame: NSRect(x: 377+withAdjust, y: 3, width: 30, height: 25))
             nextButton.bezelStyle = .regularSquare
             nextButton.image = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: nil)
             nextButton.target = self
             nextButton.action = #selector(nextButtonClicked(_:))
+
+            // 创建执行过滤按钮 - 放在正则表达式复选框后面
+            let filterButtonTitle = NSLocalizedString("Apply Filter", comment: "执行过滤")
+            let filterButtonFont = NSFont.systemFont(ofSize: 12.6)
+            let filterButtonWidth = 25 + filterButtonTitle.size(withAttributes: [.font: filterButtonFont]).width.rounded()
+            let filterButtonX = prevButton.frame.origin.x - filterButtonWidth
+            let filterButton = NSButton(frame: NSRect(x: filterButtonX, y: 3, width: filterButtonWidth, height: 25))
+            filterButton.title = filterButtonTitle
+            filterButton.font = filterButtonFont
+            filterButton.bezelStyle = .regularSquare
+            filterButton.target = self
+            filterButton.action = #selector(filterButtonClicked(_:))
+
+            // 创建问号按钮 - 放在过滤按钮左边
+            let helpButtonX = filterButtonX - 25 // 5是按钮间距
+            let helpButton = NSButton(frame: NSRect(x: helpButtonX, y: 4, width: 24, height: 24))
+            helpButton.bezelStyle = .circular
+            helpButton.title = "?"
+            helpButton.font = NSFont.systemFont(ofSize: 15, weight: .regular)
+            helpButton.target = self
+            helpButton.action = #selector(helpButtonClicked(_:))
             
             // 添加所有控件到容器视图
             containerView.addSubview(searchField!)
             containerView.addSubview(regexCheckbox)
-            containerView.addSubview(caseSensitiveCheckbox)  // 添加新的复选框
+            containerView.addSubview(caseSensitiveCheckbox)
+            if publicVar.isRecursiveMode {
+                containerView.addSubview(fullPathCheckbox)
+            }
+            containerView.addSubview(helpButton)
+            containerView.addSubview(filterButton)
             containerView.addSubview(prevButton)
             containerView.addSubview(nextButton)
             
@@ -6140,28 +6202,34 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         publicVar.isKeyEventEnabled = false
         publicVar.isInSearchState = true
-        searchOverlay?.isHidden = false
+        //searchOverlay?.isHidden = false
         searchField?.becomeFirstResponder()
     }
 
     @objc private func closeSearchOverlay() {
-        //searchOverlay?.removeFromSuperview()
-        //searchOverlay = nil
-        //searchField = nil
-        
         publicVar.isKeyEventEnabled = true
         publicVar.isInSearchState = false
-        if searchOverlay?.isHidden == false {
-            searchOverlay?.isHidden = true
+//        if searchOverlay?.isHidden == false {
+//            searchOverlay?.isHidden = true
+//            view.window?.makeFirstResponder(collectionView)
+//        }
+        if searchOverlay != nil {
+            searchOverlay?.removeFromSuperview()
+            searchOverlay = nil
+            searchField = nil
             view.window?.makeFirstResponder(collectionView)
         }
     }
     
     private func getFileNameForSearch(path: String) -> String? {
-        if path.hasSuffix("/") {
-            return path.dropLast().components(separatedBy: "/").last?.removingPercentEncoding
+        if search_isUseFullPath && publicVar.isRecursiveMode {
+            return path.removingPercentEncoding?.replacingOccurrences(of: "file://", with: "")
+        } else {
+            if path.hasSuffix("/") {
+                return path.dropLast().components(separatedBy: "/").last?.removingPercentEncoding
+            }
+            return path.components(separatedBy: "/").last?.removingPercentEncoding
         }
-        return path.components(separatedBy: "/").last?.removingPercentEncoding
     }
 
     private func performSearch(searchText: String, isEnterKey: Bool, isReverse: Bool = false) {
@@ -6277,10 +6345,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     private func isSearchMatch(fileName: String, searchText: String) -> Bool {
-        if useRegex {
+        if search_useRegex {
             // 使用正则表达式进行匹配
             do {
-                let options: NSRegularExpression.Options = isCaseSensitive ? [] : [.caseInsensitive]
+                let options: NSRegularExpression.Options = search_isCaseSensitive ? [] : [.caseInsensitive]
                 let regex = try NSRegularExpression(pattern: searchText, options: options)
                 let range = NSRange(location: 0, length: fileName.utf16.count)
                 return regex.firstMatch(in: fileName, options: [], range: range) != nil
@@ -6290,7 +6358,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         } else {
             // 使用普通文本匹配
-            if isCaseSensitive {
+            if search_isCaseSensitive {
                 return fileName.contains(searchText)
             } else {
                 return fileName.lowercased().contains(searchText.lowercased())
@@ -6300,6 +6368,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
     @objc private func searchFieldDidChange(_ sender: NSSearchField) {
         let searchText = sender.stringValue
+        search_searchText = searchText
         performSearch(searchText: searchText, isEnterKey: false)
     }
 
@@ -6317,18 +6386,20 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     // 选项状态
-    private var useRegex: Bool = false
-    private var isCaseSensitive: Bool = false
+    private var search_searchText: String = ""
+    private var search_useRegex: Bool = false
+    private var search_isCaseSensitive: Bool = false
+    private var search_isUseFullPath: Bool = false
 
     @objc private func regexCheckboxChanged(_ sender: NSButton) {
-        useRegex = (sender.state == .on)
+        search_useRegex = (sender.state == .on)
         // 当切换正则表达式选项时，重新执行搜索
         let searchText = searchField?.stringValue ?? ""
         performSearch(searchText: searchText, isEnterKey: false)
     }
 
     @objc private func caseSensitiveCheckboxChanged(_ sender: NSButton) {
-        isCaseSensitive = (sender.state == .on)
+        search_isCaseSensitive = (sender.state == .on)
         // 当切换区分大小写选项时，重新执行搜索
         let searchText = searchField?.stringValue ?? ""
         performSearch(searchText: searchText, isEnterKey: false)
@@ -6342,6 +6413,34 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     @objc private func nextButtonClicked(_ sender: NSButton) {
         let searchText = searchField?.stringValue ?? ""
         performSearch(searchText: searchText, isEnterKey: true, isReverse: false)
+    }
+
+    @objc private func helpButtonClicked(_ sender: NSButton) {
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("search-help", comment: "关于搜索的说明"))
+    }
+
+    @objc private func filterButtonClicked(_ sender: NSButton) {
+        applyFilter()
+    }
+    
+    func applyFilter(isReset: Bool = false) {
+        if isReset {
+            searchField?.stringValue = ""
+        }
+        let searchText = searchField?.stringValue ?? ""
+        publicVar.isFilenameFilterOn = searchText == "" ? false : true
+        refreshCollectionView()
+        DispatchQueue.main.async { [weak self] in
+            self?.setLoadThumbPriority(ifNeedVisable: true)
+        }
+    }
+
+    // 添加新的响应方法
+    @objc private func fullPathCheckboxChanged(_ sender: NSButton) {
+        search_isUseFullPath = (sender.state == .on)
+        // 当切换使用完整路径选项时，重新执行搜索
+        let searchText = searchField?.stringValue ?? ""
+        performSearch(searchText: searchText, isEnterKey: false)
     }
 
 }

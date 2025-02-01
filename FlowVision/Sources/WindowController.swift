@@ -205,6 +205,7 @@ extension NSToolbarItem.Identifier {
     static let favorites = NSToolbarItem.Identifier("com.example.favorites")
     static let thumbSize = NSToolbarItem.Identifier("com.example.thumbSize")
     static let isRecursiveMode = NSToolbarItem.Identifier("com.example.isRecursiveMode")
+    static let isSearchFilterOn = NSToolbarItem.Identifier("com.example.isSearchFilterOn")
     static let isEnableHDR = NSToolbarItem.Identifier("com.example.isEnableHDR")
 }
 
@@ -248,6 +249,9 @@ extension WindowController: NSToolbarDelegate {
                     identifiers.append(.windowTitle)
                 }
                 
+                if viewController.publicVar.isCurrentFolderFiltered {
+                    identifiers.append(.isSearchFilterOn)
+                }
                 if viewController.publicVar.isRecursiveMode {
                     identifiers.append(.isRecursiveMode)
                 }
@@ -364,6 +368,12 @@ extension WindowController: NSToolbarDelegate {
                 pathItems.insert(rootItem, at: 0)
                 
                 var maxWidth = (window?.frame.width ?? 1000) - 600 // 指定总宽度
+                if viewController.publicVar.isCurrentFolderFiltered {
+                    maxWidth -= 45
+                }
+                if viewController.publicVar.isRecursiveMode {
+                    maxWidth -= 45
+                }
                 if viewController.publicVar.profile.getValue(forKey: "isWindowTitleShowStatistics") == "true" {
                     maxWidth -= viewController.publicVar.titleStatisticInfo.size(withAttributes: [.font: font]).width + 20
                 }
@@ -617,14 +627,24 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.paletteLabel = NSLocalizedString("Thumbnail Size", comment: "缩略图大小")
             toolbarItem.visibilityPriority = .low
             
+        case .isSearchFilterOn:
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "f.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleSearchFilter(_:)))
+            setButtonStyle(button)
+            //button.showsBorderOnlyWhileMouseInside = false
+            button.toolTip = NSLocalizedString("Cancel Filter", comment: "取消过滤")
+            toolbarItem.view = button
+            toolbarItem.label = NSLocalizedString("Cancel Filter", comment: "取消过滤")
+            toolbarItem.paletteLabel = NSLocalizedString("Cancel Filter", comment: "取消过滤")
+            toolbarItem.visibilityPriority = .low
+            
         case .isRecursiveMode:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "r.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleRecursiveMode(_:)))
             setButtonStyle(button)
             //button.showsBorderOnlyWhileMouseInside = false
-            button.toolTip = NSLocalizedString("Recursive Mode", comment: "递归浏览模式")
+            button.toolTip = NSLocalizedString("Exit Recursive Mode", comment: "退出递归浏览模式")
             toolbarItem.view = button
-            toolbarItem.label = NSLocalizedString("Recursive Mode", comment: "递归浏览模式")
-            toolbarItem.paletteLabel = NSLocalizedString("Recursive Mode", comment: "递归浏览模式")
+            toolbarItem.label = NSLocalizedString("Exit Recursive Mode", comment: "退出递归浏览模式")
+            toolbarItem.paletteLabel = NSLocalizedString("Exit Recursive Mode", comment: "退出递归浏览模式")
             toolbarItem.visibilityPriority = .low
             
         case .more:
@@ -1337,6 +1357,11 @@ extension WindowController: NSToolbarDelegate {
     
     @objc func portableModeInfo(_ sender: NSMenuItem){
         showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("portable-mode-info", comment: "对于便携模式的说明..."), width: 300)
+    }
+    
+    @objc func toggleSearchFilter(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.applyFilter(isReset: true)
     }
     
     @objc func toggleRecursiveMode(_ sender: NSMenuItem){
