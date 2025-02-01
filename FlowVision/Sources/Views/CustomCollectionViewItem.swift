@@ -11,7 +11,6 @@ import AVFoundation
 class CustomCollectionViewItem: NSCollectionViewItem {
     
     @IBOutlet weak var imageViewObj: CustomThumbImageView!
-    @IBOutlet weak var imageViewRef: CustomThumbImageView!
     @IBOutlet weak var imageNameField: NSTextField!
     @IBOutlet weak var imageLabel: NSTextField!
     @IBOutlet weak var videoFlag: NSImageView!
@@ -470,8 +469,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
         let newX = style.ThumbnailBorderThickness
         let newY = style.ThumbnailBorderThickness + tmpFilenamePadding
-        let newWidth = imageViewRef.frame.width + 12.0 - 2*style.ThumbnailBorderThickness
-        let newHeight = imageViewRef.frame.height + 12.0 + 18.0 - 2*style.ThumbnailBorderThickness - tmpFilenamePadding
+        let refWidth = view.frame.width - 12.0
+        let refHeight = view.frame.height - 12.0 - 18.0
+        let newWidth = refWidth + 12.0 - 2*style.ThumbnailBorderThickness
+        let newHeight = refHeight + 12.0 + 18.0 - 2*style.ThumbnailBorderThickness - tmpFilenamePadding
         let newFrame = NSRect(x: newX, y: newY, width: newWidth, height: newHeight)
         
         imageViewObj.frame = newFrame
