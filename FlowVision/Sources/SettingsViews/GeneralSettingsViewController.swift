@@ -32,15 +32,40 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
         // 初始化 NSPopUpButton 的选项
         let autoTitle = NSLocalizedString("Auto", comment: "自动")
         languagePopUpButton.removeAllItems()
-        languagePopUpButton.addItems(withTitles: [autoTitle, "English", "简体中文"])
-        
+        languagePopUpButton.addItems(withTitles: [autoTitle, "Arabic(العربية)", "Chinese Simplified(简体中文)", "Chinese Traditional(繁體中文)", "Dutch(Nederlands)", "English(English)", "French(Français)", "German(Deutsch)", "Italian(Italiano)", "Japanese(日本語)", "Korean(한국어)", "Portuguese Brazil(Português)", "Portuguese Portugal(Português)", "Russian(Русский)", "Spanish(Español)", "Swedish(Svenska)"])
         // 设置初始选择
         if let languageCodes = UserDefaults.standard.array(forKey: "AppleLanguages") as? [String], let firstLanguage = languageCodes.first {
             switch firstLanguage {
             case let lang where lang.hasPrefix("en"):
-                languagePopUpButton.selectItem(withTitle: "English")
+                languagePopUpButton.selectItem(withTitle: "English(English)")
             case let lang where lang.hasPrefix("zh-Hans"):
-                languagePopUpButton.selectItem(withTitle: "简体中文")
+                languagePopUpButton.selectItem(withTitle: "Chinese Simplified(简体中文)")
+            case let lang where lang.hasPrefix("zh-Hant"):
+                languagePopUpButton.selectItem(withTitle: "Chinese Traditional(繁體中文)")
+            case let lang where lang.hasPrefix("es"):
+                languagePopUpButton.selectItem(withTitle: "Spanish(Español)")
+            case let lang where lang.hasPrefix("fr"):
+                languagePopUpButton.selectItem(withTitle: "French(Français)")
+            case let lang where lang.hasPrefix("de"):
+                languagePopUpButton.selectItem(withTitle: "German(Deutsch)")
+            case let lang where lang.hasPrefix("ja"):
+                languagePopUpButton.selectItem(withTitle: "Japanese(日本語)")
+            case let lang where lang.hasPrefix("pt-BR"):
+                languagePopUpButton.selectItem(withTitle: "Portuguese Brazil(Português)")
+            case let lang where lang.hasPrefix("pt-PT"):
+                languagePopUpButton.selectItem(withTitle: "Portuguese Portugal(Português)")
+            case let lang where lang.hasPrefix("ru"):
+                languagePopUpButton.selectItem(withTitle: "Russian(Русский)")
+            case let lang where lang.hasPrefix("ko"):
+                languagePopUpButton.selectItem(withTitle: "Korean(한국어)")
+            case let lang where lang.hasPrefix("it"):
+                languagePopUpButton.selectItem(withTitle: "Italian(Italiano)")
+            case let lang where lang.hasPrefix("ar"):
+                languagePopUpButton.selectItem(withTitle: "Arabic(العربية)")
+            case let lang where lang.hasPrefix("nl"):
+                languagePopUpButton.selectItem(withTitle: "Dutch(Nederlands)")
+            case let lang where lang.hasPrefix("sv"):
+                languagePopUpButton.selectItem(withTitle: "Swedish(Svenska)")
             default:
                 languagePopUpButton.selectItem(withTitle: autoTitle)
             }
@@ -54,10 +79,36 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
         let autoTitle = NSLocalizedString("Auto", comment: "自动")
         
         switch selectedTitle {
-        case "English":
+        case "English(English)":
             UserDefaults.standard.set(["en"], forKey: "AppleLanguages")
-        case "简体中文":
+        case "Chinese Simplified(简体中文)":
             UserDefaults.standard.set(["zh-Hans"], forKey: "AppleLanguages")
+        case "Chinese Traditional(繁體中文)":
+            UserDefaults.standard.set(["zh-Hant"], forKey: "AppleLanguages")
+        case "Spanish(Español)":
+            UserDefaults.standard.set(["es"], forKey: "AppleLanguages")
+        case "French(Français)":
+            UserDefaults.standard.set(["fr"], forKey: "AppleLanguages")
+        case "German(Deutsch)":
+            UserDefaults.standard.set(["de"], forKey: "AppleLanguages")
+        case "Japanese(日本語)":
+            UserDefaults.standard.set(["ja"], forKey: "AppleLanguages")
+        case "Portuguese Brazil(Português)":
+            UserDefaults.standard.set(["pt-BR"], forKey: "AppleLanguages")
+        case "Portuguese Portugal(Português)":
+            UserDefaults.standard.set(["pt-PT"], forKey: "AppleLanguages")
+        case "Russian(Русский)":
+            UserDefaults.standard.set(["ru"], forKey: "AppleLanguages")
+        case "Korean(한국어)":
+            UserDefaults.standard.set(["ko"], forKey: "AppleLanguages")
+        case "Italian(Italiano)":
+            UserDefaults.standard.set(["it"], forKey: "AppleLanguages")
+        case "Arabic(العربية)":
+            UserDefaults.standard.set(["ar"], forKey: "AppleLanguages")
+        case "Dutch(Nederlands)":
+            UserDefaults.standard.set(["nl"], forKey: "AppleLanguages")
+        case "Swedish(Svenska)":
+            UserDefaults.standard.set(["sv"], forKey: "AppleLanguages")
         case autoTitle:
             UserDefaults.standard.removeObject(forKey: "AppleLanguages")
         default:

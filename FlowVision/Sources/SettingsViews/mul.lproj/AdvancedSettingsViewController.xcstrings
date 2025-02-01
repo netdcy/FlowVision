@@ -5,10 +5,82 @@
       "comment" : "Class = \"NSButtonCell\"; title = \"Do Not Use FFmpeg\"; ObjectID = \"1V0-bu-KPz\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عدم استخدام  FFmpeg"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FFmpeg nicht verwenden"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Do Not Use FFmpeg"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No usar FFmpeg"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne pas utiliser FFmpeg"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non utilizzare FFmpeg"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FFmpegを使用しない"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FFmpeg 사용 안 함"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gebruik FFmpeg Niet"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não Usar FFmpeg"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não Usar FFmpeg"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не использовать FFmpeg"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Använd inte FFmpeg"
           }
         },
         "zh-Hans" : {
@@ -16,23 +88,11 @@
             "state" : "translated",
             "value" : "不使用FFmpeg"
           }
-        }
-      }
-    },
-    "a8Q-Mw-3Xn.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Memory Usage Limit:\"; ObjectID = \"a8Q-Mw-3Xn\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Memory Usage Limit:"
-          }
         },
-        "zh-Hans" : {
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "内存使用限制："
+            "value" : "不要使用FFmpeg"
           }
         }
       }
@@ -41,10 +101,82 @@
       "comment" : "Class = \"NSTextFieldCell\"; title = \"For mechanical hard drives and network drives, it is recommended to set it to 1. For external SSDs, this value can be increased appropriately.\"; ObjectID = \"A97-Bz-qH3\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بالنسبة لمحركات الأقراص الصلبة الميكانيكية ومحركات الشبكة، يُوصى بتعيينها إلى 1. بالنسبة لمحركات الأقراص الصلبة الخارجية SSDs، يمكن زيادة هذه القيمة بشكل مناسب."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für mechanische Festplatten und Netzlaufwerke wird empfohlen, den Wert auf 1 zu setzen. Bei externen SSDs kann dieser Wert angemessen erhöht werden."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "For mechanical hard drives and network drives, it is recommended to set it to 1. For external SSDs, this value can be increased appropriately."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para discos duros mecánicos y unidades de red, se recomienda configurarlo en 1. Para SSDs externos, este valor se puede aumentar apropiadamente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour les disques durs mécaniques et les lecteurs réseau, il est recommandé de le régler sur 1. Pour les SSD externes, cette valeur peut être augmentée de manière appropriée."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per i dischi rigidi meccanici e le unità di rete, si consiglia di impostarlo su 1. Per gli SSD esterni, questo valore può essere aumentato adeguatamente."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "機械式ハードドライブとネットワークドライブの場合、1に設定することをお勧めします。外部SSDの場合、この値を適切に増やすことができます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기계식 하드 드라이브와 네트워크 드라이브의 경우 1로 설정하는 것이 권장됩니다 외부 SSD의 경우 이 값을 적절히 증가시킬 수 있습니다"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voor mechanische harde schijven en netwerkschijven wordt aanbevolen deze op 1 in te stellen. Voor externe SSD's kan deze waarde passend verhoogd worden."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para discos rígidos mecânicos e unidades de rede, é recomendável defini-lo como 1. Para SSDs externos, esse valor pode ser aumentado adequadamente."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para discos rígidos mecânicos e unidades de rede, é recomendável defini-lo para 1. Para SSDs externos, este valor pode ser aumentado adequadamente."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для механических жестких дисков и сетевых накопителей рекомендуется установить значение 1 Для внешних SSD это значение можно увеличить при необходимости"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "För mekaniska hårddiskar och nätverksenheter rekommenderas det att ställa in den på 1. För externa SSD-enheter kan detta värde ökas lämpligt."
           }
         },
         "zh-Hans" : {
@@ -52,23 +184,11 @@
             "state" : "translated",
             "value" : "对于机械硬盘和网络驱动器建议设置为1，对于外置SSD可适当增大。"
           }
-        }
-      }
-    },
-    "bnu-AS-zpg.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Load Dynamic Library:\"; ObjectID = \"bnu-AS-zpg\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Load Dynamic Library:"
-          }
         },
-        "zh-Hans" : {
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "加载动态库："
+            "value" : "對於機械硬碟和網路磁碟機，建議設定為1。對於外接式固態硬碟，此數值可以適當增加。"
           }
         }
       }
@@ -77,9 +197,81 @@
       "comment" : "Class = \"NSTextFieldCell\"; title = \"4\"; ObjectID = \"EWL-HL-RdL\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "4"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "4"
           }
         },
@@ -88,23 +280,11 @@
             "state" : "translated",
             "value" : "4"
           }
-        }
-      }
-    },
-    "fpm-qG-HXc.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Thumbnail Threads:\\n（External Volumes）\"; ObjectID = \"fpm-qG-HXc\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Thumbnail Threads:\n（External Volumes）"
-          }
         },
-        "zh-Hans" : {
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "缩略图线程数：\n（外部卷）"
+            "value" : "4"
           }
         }
       }
@@ -113,16 +293,94 @@
       "comment" : "Class = \"NSTextFieldCell\"; title = \"This setting applies to internal SSD. It is recommended to set it between 4 and 8.\"; ObjectID = \"FwL-1J-M3z\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ينطبق هذا الإعداد على SSD الداخلي. يُوصى بتعيينه بين 4 و 8."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Einstellung gilt für die interne SSD. Es wird empfohlen, sie zwischen 4 und 8 festzulegen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "This setting applies to internal SSD. It is recommended to set it between 4 and 8."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta configuración se aplica al SSD interno. Se recomienda configurarlo entre 4 y 8."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce paramètre s'applique au SSD interne. Il est recommandé de le régler entre 4 et 8."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questa impostazione si applica all'SSD interno. Si consiglia di impostarla tra 4 e 8."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この設定は内部SSDに適用されます。4から8の間に設定することをお勧めします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 설정은 내부 SSD에 적용됩니다 설정 값은 4에서 8 사이로 권장됩니다"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze instelling geldt voor interne SSD. Het wordt aanbevolen om deze tussen 4 en 8 in te stellen."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta configuração se aplica ao SSD interno. Recomenda-se ajustá-la entre 4 e 8."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essa configuração aplica-se ao SSD interno. Recomenda-se defini-la entre 4 e 8."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот параметр применяется к внутреннему SSD. Рекомендуется установить его в пределах от 4 до 8."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denna inställning gäller den interna SSD:n. Det rekommenderas att ställa in den mellan 4 och 8."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "此设置应用于内置SSD。建议设置为4~8。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此設定僅適用於內部SSD。建議設置在4到8之間"
           }
         }
       }
@@ -131,16 +389,94 @@
       "comment" : "Class = \"NSButtonCell\"; title = \"Use FFmpeg for More Video Format Thumbnails\"; ObjectID = \"G15-Qe-p8C\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استخدم FFmpeg لمزيد من مصغرات تنسيقات الفيديو"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwenden Sie FFmpeg für mehr Videoformat-Thumbnails"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Use FFmpeg for More Video Format Thumbnails"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar FFmpeg para Más Miniaturas de Formato de Video"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utiliser FFmpeg pour plus de vignettes de formats vidéo"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa FFmpeg per Più Anteprime di Formati Video"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FFmpegを使用してより多くのビデオ形式のサムネイルを作成"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FFmpeg 사용하여 더 많은 비디오 형식 썸네일 보기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gebruik FFmpeg voor Meer Videobestandsminiaturen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar FFmpeg para Mais Miniaturas de Formato de Vídeo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar FFmpeg para Mais Miniaturas de Formatos de Vídeo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Использовать FFmpeg для эскизов большего числа видеоформатов"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Använd FFmpeg för fler videoformatminiatyrer"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用FFmpeg支持更多视频格式缩略图"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 FFmpeg 生成更多影片格式縮圖"
           }
         }
       }
@@ -149,10 +485,82 @@
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Folder Search Depth:\\n(External Volumes)\"; ObjectID = \"L44-0u-7JE\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عمق البحث في المجلد: (الأقراص الخارجية)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordner-Suchtiefe:\n(Externe Volumes)"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Folder Search Depth:\n(External Volumes)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profundidad de Búsqueda en Carpetas:\n(Unidades Externas)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profondeur de recherche des dossiers :\n(Volumes externes)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profondità di ricerca cartella: (Volume esterni)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダー検索深度：(外部ボリューム)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "폴더 검색 깊이:\n(외부 볼륨)"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mapzoekdiepte:\n(Externe volumes)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profundidade da Pesquisa de Pasta: (Volumes Externos)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profundidade da Pesquisa de Pastas:\n(Unidades Externas)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Глубина поиска в папках: (внешние тома)"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mappsökningsdjup: (Externa volymer)"
           }
         },
         "zh-Hans" : {
@@ -160,59 +568,11 @@
             "state" : "translated",
             "value" : "文件夹搜索深度：\n（外部卷）"
           }
-        }
-      }
-    },
-    "lIW-EQ-tyL.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"When the application's memory usage exceeds the limit, the thumbnail rendering cache in each directory will be cleared sequentially based on the last accessed time.\"; ObjectID = \"lIW-EQ-tyL\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "When the application's memory usage exceeds the limit, the thumbnail rendering cache in each directory will be cleared sequentially based on the last accessed time."
-          }
         },
-        "zh-Hans" : {
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "当程序内存使用量超过限制后，将按最后浏览时间依次清理各目录的缩略图渲染缓存。"
-          }
-        }
-      }
-    },
-    "o1C-Ac-oMz.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"The application has built-in FFmpeg library. If exception occurs while generating video thumbnails, please try to disable this option or uncheck \\\"Show Video Files\\\".\"; ObjectID = \"o1C-Ac-oMz\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "The application has built-in FFmpeg library. If exception occurs while generating video thumbnails, please try to disable this option or uncheck \"Show Video Files\"."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "应用已内置FFmpeg库。如果在生成视频缩略图时产生异常，请尝试关闭此选项，或者取消勾选“显示视频文件”。"
-          }
-        }
-      }
-    },
-    "qvY-7X-FWO.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"8\"; ObjectID = \"qvY-7X-FWO\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "8"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "8"
+            "value" : "資料夾搜尋深度：\n（外部磁碟）"
           }
         }
       }
@@ -221,16 +581,94 @@
       "comment" : "Class = \"NSTextFieldCell\"; title = \"The number of subfolder levels to search when generating folder thumbnails. If set to 0, folder thumbnails will not be generated, and the directory tree will not indicate whether subfolders exist by left-side arrow.\"; ObjectID = \"Tb5-5a-q2X\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عدد مستويات المجلدات الفرعية للبحث عند إنشاء صور مصغرة للمجلدات. إذا تم تعيينه إلى 0، لن يتم إنشاء صور مصغرة للمجلدات، ولن يشير شجرة الدليل إلى ما إذا كانت المجلدات الفرعية موجودة بالسهم الجانبي الأيسر."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anzahl der Unterordner-Ebenen, die beim Erstellen von Ordner-Thumbnails durchsucht werden. Wenn auf 0 gesetzt, werden keine Ordner-Thumbnails erstellt, und der Verzeichnisbaum zeigt nicht durch einen Pfeil auf der linken Seite an, ob Unterordner existieren."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "The number of subfolder levels to search when generating folder thumbnails. If set to 0, folder thumbnails will not be generated, and the directory tree will not indicate whether subfolders exist by left-side arrow."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El número de niveles de subcarpetas a buscar al generar miniaturas de carpetas. Si se establece en 0, no se generarán miniaturas de carpetas y el árbol de directorios no indicará si existen subcarpetas mediante la flecha del lado izquierdo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le nombre de niveaux de sous-dossiers à explorer lors de la génération des vignettes de dossier. S'il est réglé sur 0, les vignettes de dossier ne seront pas générées et l'arborescence ne indiquera pas si des sous-dossiers existent par une flèche à gauche."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il numero di livelli di sottocartella da cercare durante la generazione delle anteprime delle cartelle. Se impostato su 0, le anteprime delle cartelle non verranno generate e l'albero delle directory non indicherà se esistono sottocartelle con la freccia sul lato sinistro."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダサムネイルを生成するときに検索するサブフォルダーのレベル数 0に設定するとフォルダサムネイルは生成されずディレクトリツリーは左側の矢印でサブフォルダーの存在を示しません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "폴더 축소판을 생성할 때 검색할 하위 폴더 수준의 수입니다. 0으로 설정하면 폴더 축소판이 생성되지 않으며, 디렉터리 트리가 왼쪽 화살표를 통해 하위 폴더의 존재 여부를 표시하지 않습니다"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het aantal niveaus van submappen om te doorzoeken bij het genereren van mapminiaturen. Als dit is ingesteld op 0, worden er geen mapminiaturen gegenereerd en geeft de directorystructuur niet aan of er submappen bestaan door een pijl aan de linkerkant."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O número de níveis de subpastas a serem pesquisados ao gerar miniaturas de pastas. Se definido como 0, miniaturas de pasta não serão geradas e a árvore de diretórios não indicará se subpastas existem através de seta no lado esquerdo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O número de níveis de subpasta a pesquisar ao gerar miniaturas de pastas. Se definido como 0, as miniaturas de pastas não serão geradas, e a árvore de diretórios não indicará se existem subpastas através da seta do lado esquerdo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Количество уровней подпапок для поиска при создании эскизов папок. Если установлено значение 0, эскизы папок не будут создаваться, а дерево каталогов не будет указывать, существуют ли подпапки, стрелкой слева."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antalet undermappsnivåer att söka igenom vid generering av mappminiatyrer. Om den ställs in på 0 kommer inga mappminiatyrer att genereras, och mappträdet kommer inte att visa om undermappar existerar genom vänstersidospil."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "生成文件夹缩略图时，搜索子文件夹的层数。设置为0时，不生成文件夹缩略图，且目录树中将不能通过左侧箭头区分是否有子文件夹。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要搜尋的子資料夾層數以生成資料夾縮圖。若設定為0，不會生成資料夾縮圖，且目錄樹不會以左側箭頭指示是否存在子資料夾。"
           }
         }
       }
@@ -239,13 +677,91 @@
       "comment" : "Class = \"NSTextFieldCell\"; title = \"0\"; ObjectID = \"U1E-PH-Kdi\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "0"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "0"
@@ -257,16 +773,94 @@
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Folder Search Depth:\"; ObjectID = \"UN1-r8-SEh\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عمق البحث في المجلد:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suchttiefe für Ordner:"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Folder Search Depth:"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profundidad de Búsqueda de Carpetas:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profondeur de recherche des dossiers :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profondità di ricerca cartella:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダー検索の深さ:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "폴더 검색 깊이:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mapvestigingszoekdiepte:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profundidade da Pesquisa na Pasta:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profundidade de Pesquisa de Pasta:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Глубина поиска в папке:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mappsökningsdjup:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "文件夹搜索深度："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "資料夾搜索深度："
           }
         }
       }
@@ -275,10 +869,82 @@
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Thumbnail Threads:\"; ObjectID = \"UWB-wJ-kV4\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المصغرات:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniaturansichten:"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Thumbnail Threads:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilos de Miniaturas:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fils de vignettes :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Argomenti delle miniature:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サムネイルスレッド："
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "썸네일 스레드:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatuur threads:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tópicos de Miniaturas:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tópicos das Miniaturas:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эскизы потоков:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatyrtrådar:"
           }
         },
         "zh-Hans" : {
@@ -286,23 +952,11 @@
             "state" : "translated",
             "value" : "缩略图线程数："
           }
-        }
-      }
-    },
-    "v0X-zl-sTc.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"For network drives, it is recommended to set it to 0 (do not generate folder thumbnails).\"; ObjectID = \"v0X-zl-sTc\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "For network drives, it is recommended to set it to 0 (do not generate folder thumbnails)."
-          }
         },
-        "zh-Hans" : {
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "对于网络驱动器建议设置为0(不生成文件夹缩略图)。"
+            "value" : "縮略圖執行緒"
           }
         }
       }
@@ -311,16 +965,94 @@
       "comment" : "Class = \"NSTextFieldCell\"; title = \"e.g. 4G\"; ObjectID = \"VVf-Z7-kSI\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مثل 4G"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "z. B. 4G"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "e.g. 4G"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "p. ej. 4G"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "par exemple, 4G"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "es. 4G"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "例：4G"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "예: 4G"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bijv. 4G"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "por exemplo, 4G"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "por exemplo, 4G"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "например, 4G"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "t.ex. 4G"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "e.g. 4G"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "例如 4G"
           }
         }
       }
@@ -329,13 +1061,91 @@
       "comment" : "Class = \"NSTextFieldCell\"; title = \"1\"; ObjectID = \"WIz-pH-xsE\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "1"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "1"
@@ -347,16 +1157,766 @@
       "comment" : "Class = \"NSTextFieldCell\"; title = \"These settings apply to external volumes, including external drives, network drives, and other mounted directories.\"; ObjectID = \"YPT-xM-oyn\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تنطبق هذه الإعدادات على وحدات التخزين الخارجية، بما في ذلك محركات الأقراص الخارجية ومحركات الشبكة والمجلدات المثبتة الأخرى."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Einstellungen gelten für externe Volumes, einschließlich externer Laufwerke, Netzwerklaufwerke und anderer eingebundener Verzeichnisse."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "These settings apply to external volumes, including external drives, network drives, and other mounted directories."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estas configuraciones se aplican a volúmenes externos, incluidas unidades externas, unidades de red y otros directorios montados."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ces paramètres s'appliquent aux volumes externes, y compris les lecteurs externes, les lecteurs réseau et autres répertoires montés."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queste impostazioni si applicano ai volumi esterni, inclusi dischi esterni, unità di rete e altre directory montate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これらの設定は、外部ドライブ、ネットワークドライブ、その他のマウントされたディレクトリを含む外部ボリュームに適用されます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 설정은 외장 드라이브, 네트워크 드라이브 및 기타 마운트된 디렉토리를 포함한 외부 볼륨에 적용됩니다"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze instellingen zijn van toepassing op externe volumes, waaronder externe schijven, netwerkschijven en andere gekoppelde mappen."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essas configurações se aplicam a volumes externos, incluindo unidades externas, unidades de rede e outros diretórios montados."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estas definições aplicam-se a volumes externos, incluindo drives externas, drives de rede e outros diretórios montados."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эти настройки применяются к внешним томам, включая внешние накопители, сетевые диски и другие монтированные каталоги."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dessa inställningar gäller externa volymer, inklusive externa enheter, nätverksenheter och andra monterade kataloger."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "此处设置应用于外部卷，包括外置驱动器、网络驱动器和其它挂载目录。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這些設定適用於外部卷，包括外接硬碟、網路磁碟機和其他掛載的目錄"
+          }
+        }
+      }
+    },
+    "a8Q-Mw-3Xn.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Memory Usage Limit:\"; ObjectID = \"a8Q-Mw-3Xn\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حد استخدام الذاكرة:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speichernutzungslimit:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Memory Usage Limit:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Límite de uso de memoria:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite d'utilisation de la mémoire :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite utilizzo memoria:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メモリ使用量の制限:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메모리 사용 제한:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limiet gebruik geheugen:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite de Uso de Memória:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite de Uso de Memória:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лимит использования памяти:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Begränsning av minnesanvändning:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内存使用限制："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "記憶體使用上限："
+          }
+        }
+      }
+    },
+    "bnu-AS-zpg.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Load Dynamic Library:\"; ObjectID = \"bnu-AS-zpg\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحميل المكتبة الديناميكية:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dynamische Bibliothek laden:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Load Dynamic Library:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargar biblioteca dinámica:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charger la bibliothèque dynamique :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carica Libreria Dinamica:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動的ライブラリをロード:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동적 라이브러리 로드:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dynamische bibliotheek laden:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregar Biblioteca Dinâmica:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregar Biblioteca Dinâmica:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузить динамическую библиотеку:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladda dynamiskt bibliotek:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加载动态库："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "載入動態庫:"
+          }
+        }
+      }
+    },
+    "fpm-qG-HXc.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Thumbnail Threads:\\n（External Volumes）\"; ObjectID = \"fpm-qG-HXc\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مصغرات المواضيع: (الأقراص الخارجية)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniaturansichten Threads:\\n（Externe Volumes）"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Thumbnail Threads:\n（External Volumes）"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilos en miniatura:\n（Volúmenes externos）"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Threads de miniatures :\\n（Volumes externes）"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thread delle miniature:\n（Volumi esterni）"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サムネイルスレッド：\\n（外部ボリューム）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미리보기 스레드:\n(외부 볼륨)"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatuur Draadtaken:\n（Externe Volumes）"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniaturas de Threads:\n（Volumes Externos）"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tópicos de Miniaturas:\n（Volumes Externos）"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эскизы потоков:\n（Внешние тома）"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatyrtrådar:\n（Externa volymer）"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图线程数：\n（外部卷）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "縮略圖執行緒： （外部卷）"
+          }
+        }
+      }
+    },
+    "lIW-EQ-tyL.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"When the application's memory usage exceeds the limit, the thumbnail rendering cache in each directory will be cleared sequentially based on the last accessed time.\"; ObjectID = \"lIW-EQ-tyL\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عندما يتجاوز استخدام ذاكرة التطبيق الحد المسموح به، ستتم مسح ذاكرة التخزين المؤقت للتصوير المصغر في كل دليل تسلسليًا بناءً على آخر وقت تم الوصول فيه إليها."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn die Speichernutzung der Anwendung das Limit überschreitet, wird der Thumbnail-Rendering-Cache in jedem Verzeichnis basierend auf der letzten Zugriffszeit nacheinander geleert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "When the application's memory usage exceeds the limit, the thumbnail rendering cache in each directory will be cleared sequentially based on the last accessed time."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando el uso de memoria de la aplicación excede el límite, la caché de renderizado de miniaturas en cada directorio se borrará secuencialmente según el tiempo de último acceso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lorsque l'utilisation de la mémoire de l'application dépasse la limite, le cache de rendu des vignettes dans chaque répertoire sera effacé séquentiellement en fonction du dernier temps d'accès"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando l'uso della memoria dell'applicazione supera il limite, la cache di rendering delle miniature in ciascuna directory sarà cancellata in sequenza in base all'ultima volta di accesso"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリケーションのメモリ使用量が制限を超えた場合、各ディレクトリのサムネイルレンダリングキャッシュは最後にアクセスされた時間に基づいて順次クリアされます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "애플리케이션의 메모리 사용량이 제한을 초과하면 각 디렉터리의 썸네일 렌더링 캐시는 마지막으로 접근한 시간을 기준으로 순차적으로 삭제됩니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wanneer het geheugenverbruik van de applicatie de limiet overschrijdt, wordt de cache voor het renderen van miniaturen in elke map opeenvolgend gewist op basis van de laatst toegangsdatum."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando o uso de memória do aplicativo exceder o limite, o cache de renderização de miniaturas em cada diretório será limpo sequencialmente com base no horário de último acesso."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando a utilização de memória da aplicação exceder o limite, a cache de renderização de miniaturas em cada diretório será limpa sequencialmente com base no tempo de último acesso."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Когда использование памяти приложением превышает ограничение, кэш миниатюр в каждом каталоге будет поочередно очищаться на основе времени последнего доступа."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "När applikationens minnesanvändning överskrider gränsen kommer miniatyrrenderingscachen i varje katalog att rensas sekventiellt baserat på senaste åtkomsttid."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当程序内存使用量超过限制后，将按最后浏览时间依次清理各目录的缩略图渲染缓存。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當應用程式的記憶體使用量超過限制時，將根據最後存取時間依序清除每個目錄的縮圖渲染快取。"
+          }
+        }
+      }
+    },
+    "o1C-Ac-oMz.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"The application has built-in FFmpeg library. If exception occurs while generating video thumbnails, please try to disable this option or uncheck \\\"Show Video Files\\\".\"; ObjectID = \"o1C-Ac-oMz\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتوي التطبيق على مكتبة FFmpeg مدمجة. إذا حدث استثناء أثناء إنشاء صور مصغرة للفيديو، يرجى محاولة تعطيل هذا الخيار أو إلغاء تحديد \"إظهار ملفات الفيديو\"."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anwendung hat eine integrierte FFmpeg-Bibliothek. Wenn beim Erstellen von Videothumbnails eine Ausnahme auftritt, versuchen Sie bitte, diese Option zu deaktivieren oder \"Videodateien anzeigen\" abzuwählen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The application has built-in FFmpeg library. If exception occurs while generating video thumbnails, please try to disable this option or uncheck \"Show Video Files\"."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aplicación tiene una biblioteca de FFmpeg integrada. Si se produce una excepción al generar miniaturas de video, intente desactivar esta opción o desmarcar \"Mostrar archivos de video\"."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'application intègre une bibliothèque FFmpeg. Si une exception se produit lors de la génération de vignettes vidéo, essayez de désactiver cette option ou de décocher \"Afficher les fichiers vidéo\""
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'applicazione ha una libreria FFmpeg incorporata. Se si verifica un'eccezione durante la generazione delle anteprime video, prova a disabilitare questa opzione o deseleziona \"Mostra file video\"."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリケーションにはFFmpegライブラリが組み込まれています ビデオサムネイルを生成中に例外が発生した場合は、このオプションを無効にするか「ビデオファイルを表示」をオフにしてみてください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "응용 프로그램에는 내장된 FFmpeg 라이브러리가 있습니다. 비디오 썸네일 생성 중 예외가 발생하면 이 옵션을 비활성화하거나 \"비디오 파일 표시\" 옵션을 해제해 보세요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De applicatie heeft een ingebouwde FFmpeg-bibliotheek. Als er een uitzondering optreedt tijdens het genereren van videominiaturen, probeer dan deze optie uit te schakelen of \"Videobestanden weergeven\" uit te vinken."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O aplicativo possui a biblioteca FFmpeg embutida. Se ocorrer uma exceção ao gerar miniaturas de vídeo, tente desabilitar esta opção ou desmarcar \"Mostrar arquivos de vídeo\"."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A aplicação tem a biblioteca FFmpeg incorporada Se ocorrer uma exceção ao gerar miniaturas de vídeo, por favor, tente desativar esta opção ou desmarcar \"Mostrar Ficheiros de Vídeo\""
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Программа имеет встроенную библиотеку FFmpeg. Если возникает исключение при создании эскизов видео, попробуйте отключить эту опцию или снять флажок \"Показывать видеофайлы\""
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applikationen har ett inbyggt FFmpeg-bibliotek. Om undantag uppstår när videominiatyrer genereras, prova att inaktivera detta alternativ eller avmarkera \"Visa videofiler\"."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用已内置FFmpeg库。如果在生成视频缩略图时产生异常，请尝试关闭此选项，或者取消勾选“显示视频文件”。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "應用程式內建了FFmpeg庫。如果在生成視頻縮略圖時發生異常，請嘗試停用此選項或取消選中「顯示視頻文件」"
+          }
+        }
+      }
+    },
+    "qvY-7X-FWO.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"8\"; ObjectID = \"qvY-7X-FWO\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "٨"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "8"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
+          }
+        }
+      }
+    },
+    "v0X-zl-sTc.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"For network drives, it is recommended to set it to 0 (do not generate folder thumbnails).\"; ObjectID = \"v0X-zl-sTc\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بالنسبة لمحركات الأقراص الشبكية، يُوصى بتعيينها إلى 0 (لا تقم بإنشاء صور مصغرة للمجلدات)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für Netzlaufwerke wird empfohlen, den Wert auf 0 zu setzen (keine Ordner-Miniaturansichten generieren)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "For network drives, it is recommended to set it to 0 (do not generate folder thumbnails)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para las unidades de red, se recomienda configurarlo en 0 (no generar miniaturas de carpetas)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour les lecteurs réseau, il est recommandé de le régler sur 0 (ne pas générer de miniatures de dossiers)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per le unità di rete, si consiglia di impostarlo a 0 (non generare miniature delle cartelle)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ネットワークドライブの場合は、0に設定することをお勧めします（フォルダーのサムネイルを生成しない）。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "네트워크 드라이브의 경우 0으로 설정하는 것이 권장됩니다 (폴더 썸네일을 생성하지 않음)."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voor netwerkschijven wordt aanbevolen deze in te stellen op 0 (geen mappenminiatuurweergaven genereren)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para unidades de rede, é recomendado definir como 0 (não gerar miniaturas de pastas)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para unidades de rede, é recomendado definir para 0 (não gerar miniaturas de pastas)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для сетевых дисков рекомендуется установить значение 0 (не создавать эскизы папок)"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "För nätverksenheter rekommenderas det att sätta den till 0 (generera inte mappminiatyrer)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对于网络驱动器建议设置为0(不生成文件夹缩略图)。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "對於網絡磁碟機，建議將其設置為0（不生成資料夾縮圖）"
           }
         }
       }

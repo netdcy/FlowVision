@@ -1,86 +1,86 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "diV-0n-cUs.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Keyboard Shortcuts:\"; ObjectID = \"diV-0n-cUs\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Keyboard Shortcuts:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "键盘按键："
-          }
-        }
-      }
-    },
-    "jjU-gf-0lm.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Double-click to open/close the image. \\nHold down the right/left mouse button and scroll the wheel to zoom.\\nHold down the middle mouse button and drag to move the window.\\nLong press the left mouse button to switch to 100% zoom.\\nLong press the right mouse button to fit the image to the view.\"; ObjectID = \"jjU-gf-0lm\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Double-click to open/close the image. \nHold down the right/left mouse button and scroll the wheel to zoom.\nHold down the middle mouse button and drag to move the window.\nLong press the left mouse button to switch to 100% zoom.\nLong press the right mouse button to fit the image to the view."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "双击打开/关闭图片。\n按住右键/左键滚动滚轮可以缩放。\n按住中键拖动可以移动窗口。\n长按左键切换 100%缩放。\n长按右键切换缩放到视图。"
-          }
-        }
-      }
-    },
-    "kUa-1f-s4l.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Press Alt + 1~9 to switch to the corresponding profile.\\nPress Alt + Cmd + 1~9 to save the current layout and style to the corresponding profile.\\nThe configurations involved in switching include: whether to display the sidebar, view type, sorting method, thumbnail size, and custom styles (such as whether to display file names and the width of the thumbnail border).\"; ObjectID = \"kUa-1f-s4l\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Press Alt + 1~9 to switch to the corresponding profile.\nPress Alt + Cmd + 1~9 to save the current layout and style to the corresponding profile.\nThe configurations involved in switching include: whether to display the sidebar, view type, sorting method, thumbnail size, and custom styles (such as whether to display file names and the width of the thumbnail border)."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "按 Alt + 1~9 切换到相应配置文件。\n按 Alt + Cmd + 1~9 保存当前布局与样式到相应配置文件。\n切换涉及的配置包括：是否显示侧边栏、视图类型、排序方式、缩略图大小、自定义样式（例如是否显示文件名、缩略图边框宽度）。"
-          }
-        }
-      }
-    },
-    "p6V-rJ-gwR.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Image Viewing:\"; ObjectID = \"p6V-rJ-gwR\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Image Viewing:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "图像浏览："
-          }
-        }
-      }
-    },
     "Ple-dV-Ujq.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"In image view: W/S/A/D correspond to right-click gestures up/down/left/right.\\nIn thumbnail view: W/S zoom in/zoom out, A/D previous/next image.\"; ObjectID = \"Ple-dV-Ujq\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "في عرض الصورة: يتوافق W/S/A/D مع إيماءات النقر الأيمن لأعلى/لأسفل/لليسار/ليمين  \nفي عرض المصغرات: يكبر/يصغر W/S، الصورة السابقة/التالية A/D"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Bildansichtsmodus: W/S/A/D entsprechen den Rechtsklick-Gesten oben/unten/links/rechts.\nIm Vorschaumodus: W/S vergrößern/verkleinern, A/D vorheriges/nächstes Bild."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "In image view: W/S/A/D correspond to right-click gestures up/down/left/right.\nIn thumbnail view: W/S zoom in/zoom out, A/D previous/next image."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En vista de imagen: W/S/A/D corresponden a gestos de clic derecho arriba/abajo/izquierda/derecha. En vista de miniaturas: W/S acercar/alejar, A/D imagen anterior/siguiente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En mode vue d'image : W/S/A/D correspondent aux gestes de clic droit haut/bas/gauche/droite\nEn mode vignette : W/S zoom avant/arrière, A/D image précédente/suivante"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In visualizzazione immagine: W/S/A/D corrispondono ai gesti del tasto destro su/giù/sinistra/destra. In visualizzazione miniature: W/S ingrandisci/rimpicciolisci, A/D immagine precedente/successiva."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像ビューで: W/S/A/Dは右クリックジェスチャーの上下左右に対応します。サムネイルビューで: W/Sで拡大/縮小、A/Dで前/次の画像。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지 보기에서: W/S/A/D는 마우스 오른쪽 버튼 클릭 제스처 상/하/좌/우에 해당합니다.  \n썸네일 보기에서: W/S는 확대/축소, A/D는 이전/다음 이미지입니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In afbeeldingsweergave: W/S/A/D komen overeen met rechterklikgebaren omhoog/omlaag/links/rechts In miniatuuweergave: W/S inzoomen/uitzoomen, A/D vorige/volgende afbeelding"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No modo de visualização de imagem: W/S/A/D correspondem aos gestos do botão direito do mouse para cima/baixo/esquerda/direita. No modo de visualização em miniatura: W/S ampliam/reduzem, A/D imagem anterior/próxima."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na visualização de imagens: W/S/A/D correspondem aos gestos de clique direito para cima/baixo/esquerda/direita\nNa visualização de miniaturas: W/S aumentar/diminuir o zoom, A/D imagem anterior/seguinte"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В режиме просмотра изображений: W/S/A/D соответствуют жестам правой кнопки мыши вверх/вниз/влево/вправо. В режиме просмотра миниатюр: W/S увеличение/уменьшение, A/D предыдущее/следующее изображение."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I bildvy: W/S/A/D motsvarar högerklicksgester upp/ned/vänster/höger. I miniatyrvy: W/S zooma in/zooma ut, A/D föregående/nästa bild."
           }
         },
         "zh-Hans" : {
@@ -88,23 +88,11 @@
             "state" : "translated",
             "value" : "浏览大图时：W/S/A/D 等同于右键手势上/下/左/右。\n缩略图视图时：W/S 放大/缩小，A/D 上一张/下一张"
           }
-        }
-      }
-    },
-    "qK4-Oc-vMt.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Right-Click Gestures:\"; ObjectID = \"qK4-Oc-vMt\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Right-Click Gestures:"
-          }
         },
-        "zh-Hans" : {
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "右键手势："
+            "value" : "在圖像視圖中：W/S/A/D 對應於右鍵手勢上/下/左/右 在縮略圖視圖中：W/S 放大/縮小，A/D 上一張/下一張圖像"
           }
         }
       }
@@ -113,16 +101,574 @@
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Profile Switching:\"; ObjectID = \"VtW-9m-Sj8\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التبديل بين الملفات الشخصية:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profilwechsel:"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Profile Switching:"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambio de Perfil:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changement de profil :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambio profilo:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プロファイル切り替え:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "프로필 전환:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profielwissel:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alternância de Perfil:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alternar Perfil:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переключение профиля:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profilväxling:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "配置切换："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "配置檔切換："
+          }
+        }
+      }
+    },
+    "diV-0n-cUs.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Keyboard Shortcuts:\"; ObjectID = \"diV-0n-cUs\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختصارات لوحة المفاتيح:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tastenkombinationen:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Keyboard Shortcuts:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atajos de teclado:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raccourcis clavier :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scorciatoie da tastiera:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キーボードショートカット:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키보드 단축키:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toetsenbord sneltoetsen:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atalhos de Teclado:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atalhos de Teclado:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Горячие клавиши:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tangentbordsgenvägar:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "键盘按键："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鍵盤快捷鍵："
+          }
+        }
+      }
+    },
+    "jjU-gf-0lm.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Double-click to open/close the image. \\nHold down the right/left mouse button and scroll the wheel to zoom.\\nHold down the middle mouse button and drag to move the window.\\nLong press the left mouse button to switch to 100% zoom.\\nLong press the right mouse button to fit the image to the view.\"; ObjectID = \"jjU-gf-0lm\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انقر نقرًا مزدوجًا لفتح/إغلاق الصورة. اضغط باستمرار على زر الفأرة الأيمن/الأيسر وقم بتمرير العجلة للتكبير. اضغط باستمرار على زر الفأرة الأوسط واسحب لتحريك النافذة. اضغط مطولاً على زر الفأرة الأيسر للتبديل إلى تكبير 100%. اضغط مطولاً على زر الفأرة الأيمن لتلائم الصورة العرض."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doppelklicken, um das Bild zu öffnen/schließen. Halten Sie die rechte/linke Maustaste gedrückt und scrollen Sie das Rad, um zu zoomen. Halten Sie die mittlere Maustaste gedrückt und ziehen Sie, um das Fenster zu verschieben. Halten Sie die linke Maustaste lange gedrückt, um auf 100 % Zoom zu wechseln. Halten Sie die rechte Maustaste lange gedrückt, um das Bild an die Ansicht anzupassen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Double-click to open/close the image. \nHold down the right/left mouse button and scroll the wheel to zoom.\nHold down the middle mouse button and drag to move the window.\nLong press the left mouse button to switch to 100% zoom.\nLong press the right mouse button to fit the image to the view."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doble clic para abrir/cerrar la imagen. Mantén presionado el botón derecho/izquierdo del ratón y desplaza la rueda para hacer zoom. Mantén presionado el botón central del ratón y arrastra para mover la ventana. Mantén presionado el botón izquierdo del ratón para cambiar al zoom al 100%. Mantén presionado el botón derecho del ratón para ajustar la imagen a la vista."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double-cliquez pour ouvrir/fermer l'image  \nMaintenez enfoncé le bouton droit/gauche de la souris et faites défiler la molette pour zoomer  \nMaintenez enfoncé le bouton central de la souris et faites glisser pour déplacer la fenêtre  \nMaintenez enfoncé le bouton gauche de la souris pour passer à un zoom de 100%  \nMaintenez enfoncé le bouton droit de la souris pour adapter l'image à l'affichage"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fare doppio clic per aprire/chiudere l'immagine. Tieni premuto il pulsante destro/sinistro del mouse e scorri la rotellina per zoomare. Tieni premuto il pulsante centrale del mouse e trascina per muovere la finestra. Premi a lungo il pulsante sinistro del mouse per passare allo zoom al 100%. Premi a lungo il pulsante destro del mouse per adattare l'immagine alla vista."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像を開閉するにはダブルクリック。 ズームするには右/左のマウスボタンを押しながらホイールをスクロール。 ウィンドウを移動するには中ボタンを押しながらドラッグ。 左ボタンを長押しして100%ズームに切り替え。 右ボタンを長押しして画像を表示に合わせる。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지를 열거나 닫으려면 더블 클릭하세요. 확대하려면 오른쪽/왼쪽 마우스 버튼을 누른 상태에서 휠을 스크롤하세요. 창을 이동하려면 가운데 마우스 버튼을 누른 상태에서 드래그하세요. 100% 확대를 위해 왼쪽 마우스 버튼을 길게 누르세요. 이미지 크기를 보기 맞춤으로 조정하려면 오른쪽 마우스 버튼을 길게 누르세요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dubbelklik om de afbeelding te openen/sluiten. Houd de rechter/linker muisknop ingedrukt en scroll met het wiel om in te zoomen. Houd de middelste muisknop ingedrukt en sleep om het venster te verplaatsen. Houd de linker muisknop lang ingedrukt om naar 100% zoom te schakelen. Houd de rechter muisknop lang ingedrukt om de afbeelding aan te passen aan de weergave."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique duas vezes para abrir/fechar a imagem. \nMantenha o botão direito/esquerdo do mouse pressionado e role a roda para dar zoom.\nMantenha o botão do meio do mouse pressionado e arraste para mover a janela.\nPressione longamente o botão esquerdo do mouse para alternar para zoom de 100%.\nPressione longamente o botão direito do mouse para ajustar a imagem à visualização."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique duas vezes para abrir/fechar a imagem. Mantenha o botão direito/esquerdo do rato pressionado e role a roda para fazer zoom. Mantenha pressionado o botão do meio do rato e arraste para mover a janela. Pressione longamente o botão esquerdo do rato para mudar para zoom de 100%. Pressione longamente o botão direito do rato para ajustar a imagem à vista."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дважды щелкните, чтобы открыть/закрыть изображение. \nУдерживайте правую/левую кнопку мыши и прокручивайте колесо для увеличения.\nУдерживайте среднюю кнопку мыши и перетащите, чтобы переместить окно.\nДолгое нажатие на левую кнопку мыши переключает на 100% увеличение.\nДолгое нажатие на правую кнопку мыши подгоняет изображение по размеру окна."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dubbelklicka för att öppna/stänga bilden. \nHåll ned höger/vänster musknapp och rulla hjulet för att zooma.\nHåll ned mittenknappen och dra för att flytta fönstret.\nHåll vänster musknapp nedtryckt för att växla till 100% zoom.\nHåll höger musknapp nedtryckt för att anpassa bilden till vyn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "双击打开/关闭图片。\n按住右键/左键滚动滚轮可以缩放。\n按住中键拖动可以移动窗口。\n长按左键切换 100%缩放。\n长按右键切换缩放到视图。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "雙擊以開啟/關閉圖片。 按住右鍵/左鍵並滾動滾輪以縮放。 按住中鍵並拖曳以移動窗口。 長按左鍵切換至100%縮放。 長按右鍵使圖片適合視窗顯示。"
+          }
+        }
+      }
+    },
+    "kUa-1f-s4l.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Press Alt + 1~9 to switch to the corresponding profile.\\nPress Alt + Cmd + 1~9 to save the current layout and style to the corresponding profile.\\nThe configurations involved in switching include: whether to display the sidebar, view type, sorting method, thumbnail size, and custom styles (such as whether to display file names and the width of the thumbnail border).\"; ObjectID = \"kUa-1f-s4l\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اضغط على Alt + 1~9 للانتقال إلى الملف الشخصي المقابل اضغط على Alt + Cmd + 1~9 لحفظ التصميم والنمط الحاليين في الملف الشخصي المقابل تتضمن التكوينات عند التبديل: ما إذا كان سيتم عرض الشريط الجانبي، نوع العرض، طريقة الفرز، حجم الصورة المصغرة، والأنماط المخصصة (مثل ما إذا كان سيتم عرض أسماء الملفات وعرض حدود الصورة المصغرة)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drücken Sie Alt + 1~9, um zum entsprechenden Profil zu wechseln.  \nDrücken Sie Alt + Cmd + 1~9, um das aktuelle Layout und den Stil im entsprechenden Profil zu speichern.  \nDie bei einem Wechsel betroffenen Konfigurationen umfassen: ob die Seitenleiste angezeigt wird, Anzeigetyp, Sortiermethode, Miniaturgröße und benutzerdefinierte Stile (wie zum Beispiel, ob Dateinamen angezeigt werden und die Breite des Miniaturrahmens)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Press Alt + 1~9 to switch to the corresponding profile.\nPress Alt + Cmd + 1~9 to save the current layout and style to the corresponding profile.\nThe configurations involved in switching include: whether to display the sidebar, view type, sorting method, thumbnail size, and custom styles (such as whether to display file names and the width of the thumbnail border)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presiona Alt + 1~9 para cambiar al perfil correspondiente.  \nPresiona Alt + Cmd + 1~9 para guardar el diseño y estilo actuales en el perfil correspondiente.  \nLas configuraciones involucradas en el cambio incluyen: si mostrar la barra lateral, tipo de vista, método de clasificación, tamaño de la miniatura y estilos personalizados (como si mostrar los nombres de archivo y el ancho del borde de la miniatura)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appuyez sur Alt + 1~9 pour passer au profil correspondant. Appuyez sur Alt + Cmd + 1~9 pour enregistrer la disposition et le style actuels dans le profil correspondant. Les configurations impliquées dans le changement incluent : afficher ou non la barre latérale, le type de vue, la méthode de tri, la taille des vignettes, et les styles personnalisés (comme afficher ou non les noms de fichiers et la largeur de la bordure des vignettes)."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premi Alt + 1~9 per passare al profilo corrispondente Premi Alt + Cmd + 1~9 per salvare il layout e lo stile attuali nel profilo corrispondente Le configurazioni coinvolte nel passaggio includono: se visualizzare la barra laterale, il tipo di vista, il metodo di ordinamento, la dimensione delle miniature e gli stili personalizzati (come se visualizzare i nomi dei file e la larghezza del bordo della miniatura)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alt + 1〜9 を押して対応するプロファイルに切り替えます Alt + Cmd + 1〜9 を押して現在のレイアウトとスタイルを対応するプロファイルに保存します 切り替えに関与する設定にはサイドバーを表示するか否かビュータイプソート方法サムネイルサイズカスタムスタイル（ファイル名を表示するかどうかやサムネイル枠の幅など）が含まれます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alt + 1~9를 눌러 해당 프로필로 전환하세요. Alt + Cmd + 1~9를 눌러 현재 레이아웃과 스타일을 해당 프로필에 저장하세요. 전환 시 포함되는 구성 요소는 사이드바 표시 여부, 보기 유형, 정렬 방법, 썸네일 크기 및 사용자 정의 스타일(파일 이름 표시 여부 및 썸네일 테두리 너비 등)입니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Druk op Alt + 1~9 om over te schakelen naar het overeenkomstige profiel  \nDruk op Alt + Cmd + 1~9 om de huidige indeling en stijl op te slaan in het overeenkomstige profiel  \nDe configuraties die bij het schakelen betrokken zijn, zijn onder andere: of de zijbalk wordt weergegeven, weergavetype, sorteermethode, miniatuurgrootte en aangepaste stijlen (zoals of bestandsnamen worden weergegeven en de breedte van de miniatuurrand)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pressione Alt + 1~9 para alternar para o perfil correspondente Pressione Alt + Cmd + 1~9 para salvar o layout e o estilo atuais no perfil correspondente As configurações envolvidas na troca incluem: exibir ou não a barra lateral, tipo de visualização, método de ordenação, tamanho da miniatura e estilos personalizados (como exibir ou não os nomes dos arquivos e a largura da borda da miniatura)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregue Alt + 1~9 para mudar para o perfil correspondente.  \nCarregue Alt + Cmd + 1~9 para guardar a disposição e estilo atuais no perfil correspondente.  \nAs configurações envolvidas na mudança incluem: se deve mostrar a barra lateral, tipo de visualização, método de ordenação, tamanho da miniatura e estilos personalizados (como se deve mostrar os nomes dos ficheiros e a largura da borda da miniatura)."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажмите Alt + 1~9, чтобы переключиться на соответствующий профиль.  \nНажмите Alt + Cmd + 1~9, чтобы сохранить текущую раскладку и стиль в соответствующий профиль.  \nКонфигурации, участвующие в переключении, включают: отображение боковой панели, тип просмотра, метод сортировки, размер миниатюр и пользовательские стили (например, отображать ли имена файлов и ширину границы миниатюры)."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryck på Alt + 1~9 för att byta till motsvarande profil. Tryck på Alt + Cmd + 1~9 för att spara aktuell layout och stil till motsvarande profil. Konfigurationerna som är involverade i bytet inkluderar: om sidopanelen ska visas, vytyp, sorteringsmetod, miniatyrbildsstorlek och anpassade stilar (till exempel om filnamn ska visas och bredden på miniatyrbildens kant)."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按 Alt + 1~9 切换到相应配置文件。\n按 Alt + Cmd + 1~9 保存当前布局与样式到相应配置文件。\n切换涉及的配置包括：是否显示侧边栏、视图类型、排序方式、缩略图大小、自定义样式（例如是否显示文件名、缩略图边框宽度）。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按 Alt + 1～9 切換到對應的配置檔案  \n按 Alt + Cmd + 1～9 保存當前佈局和樣式到對應的配置檔案  \n切換涉及的配置包括：是否顯示側邊欄、檢視類型、排序方式、縮圖大小、自定樣式（如是否顯示檔案名稱及縮圖邊框寬度）"
+          }
+        }
+      }
+    },
+    "p6V-rJ-gwR.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Image Viewing:\"; ObjectID = \"p6V-rJ-gwR\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عرض الصور:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildanzeige:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Image Viewing:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visualización de imágenes:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affichage d'image :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visualizzazione delle immagini:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像閲覧:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지 보기:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afbeelding bekijken:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visualização de Imagem:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visualização de Imagem:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Просмотр изображений:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildvisning:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图像浏览："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "圖片查看："
+          }
+        }
+      }
+    },
+    "qK4-Oc-vMt.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Right-Click Gestures:\"; ObjectID = \"qK4-Oc-vMt\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إيماءات النقر بالزر الأيمن:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechtsklick-Gesten:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Right-Click Gestures:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestos de clic derecho:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestes du clic droit :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesti controllo-Click:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右クリックジェスチャー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오른쪽 클릭 제스처:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klik met de rechtermuisknop-bewegingen:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestos do Botão Direito:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestos de Clique com o Botão Direito:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жесты правой кнопкой мыши:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Högerklicksgester:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右键手势："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右鍵手勢："
           }
         }
       }
@@ -131,16 +677,94 @@
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk).\\nUp: Switch to the parent directory.\\nDown: Return to the previous directory.\\nUp-Right/Up-Left: Switch to the next/previous folder with images at the same level as the current folder.\\nDown-Right: Close the tab/window.\"; ObjectID = \"xau-nf-fbD\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يمين/يسار: التبديل إلى المجلد التالي/السابق الذي يحتوي على صور/فيديوهات (مكافئ منطقياً للمجلد التالي عند فرز جميع المجلدات على القرص).  \nأعلى: التبديل إلى الدليل الرئيسي.  \nأسفل: الرجوع إلى الدليل السابق.  \nأعلى-يمين/أعلى-يسار: التبديل إلى المجلد التالي/السابق الذي يحتوي على صور في نفس المستوى مثل المجلد الحالي.  \nأسفل-يمين: إغلاق التبويب/النافذة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechts/Links: Wechseln zum nächsten/vorherigen Ordner mit Bildern/Videos (logisch gleichbedeutend mit dem nächsten Ordner beim Sortieren aller Ordner auf der Festplatte) Oben: Wechseln zum übergeordneten Verzeichnis Unten: Zurückkehren zum vorherigen Verzeichnis Oben-Rechts/Oben-Links: Wechseln zum nächsten/vorherigen Ordner mit Bildern auf derselben Ebene wie der aktuelle Ordner Unten-Rechts: Tab/Fenster schließen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk).\nUp: Switch to the parent directory.\nDown: Return to the previous directory.\nUp-Right/Up-Left: Switch to the next/previous folder with images at the same level as the current folder.\nDown-Right: Close the tab/window."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Derecha/Izquierda: Cambiar a la siguiente/anterior carpeta con imágenes/videos (equivale lógicamente a la siguiente carpeta al ordenar todas las carpetas en el disco).  \nArriba: Cambiar al directorio principal.  \nAbajo: Volver al directorio anterior.  \nArriba-Derecha/Arriba-Izquierda: Cambiar a la siguiente/anterior carpeta con imágenes al mismo nivel que la carpeta actual.  \nAbajo-Derecha: Cerrar la pestaña/ventana."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Droite/Gauche : Passer au dossier suivant/précédent contenant des images/vidéos (logiquement équivalent au dossier suivant lors du tri de tous les dossiers sur le disque). Haut : Passer au répertoire parent. Bas : Retourner au répertoire précédent. Haut-Droite/Haut-Gauche : Passer au dossier suivant/précédent contenant des images au même niveau que le dossier actuel. Bas-Droite : Fermer l'onglet/fenêtre."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Destra/Sinistra: Passa alla cartella successiva/precedente con immagini/video (equivalente logico alla cartella successiva quando si ordinano tutte le cartelle sul disco) Su: Passa alla directory principale Giù: Torna alla directory precedente Su-Destra/Su-Sinistra: Passa alla cartella successiva/precedente con immagini allo stesso livello della cartella corrente Giù-Destra: Chiudi la scheda/finestra"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右/左: 画像/動画が含まれる次/前のフォルダーに切り替えます（ディスク上のすべてのフォルダーを並べ替えた場合の次のフォルダーに論理的に相当します）。  \n上: 親ディレクトリに切り替えます。  \n下: 前のディレクトリに戻ります。  \n上-右/上-左: 現在のフォルダと同じレベルの次/前のフォルダに切り替えます。  \n下-右: タブ/ウィンドウを閉じます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오른쪽/왼쪽: 이미지/비디오가 있는 다음/이전 폴더로 전환 (디스크의 모든 폴더를 정렬할 때 논리적으로 다음 폴더와 동일).\n위쪽: 상위 디렉토리로 전환.\n아래쪽: 이전 디렉토리로 돌아가기.\n위쪽-오른쪽/위쪽-왼쪽: 현재 폴더와 같은 수준에서 이미지가 있는 다음/이전 폴더로 전환.\n아래쪽-오른쪽: 탭/창 닫기."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechts/Links: Overschakelen naar de volgende/vorige map met afbeeldingen/video's (logisch gelijk aan de volgende map bij het sorteren van alle mappen op de schijf)  \nOmhoog: Overschakelen naar de bovenliggende map  \nOmlaag: Terugkeren naar de vorige map  \nOmhoog-Rechts/Omhoog-Links: Overschakelen naar de volgende/vorige map met afbeeldingen op hetzelfde niveau als de huidige map  \nOmlaag-Rechts: Sluit het tabblad/venster"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direita/Esquerda: Mude para a próxima/pasta anterior com imagens/vídeos (logicamente equivalente à próxima pasta ao classificar todas as pastas no disco).  \nPara Cima: Mude para o diretório pai.  \nPara Baixo: Volte para o diretório anterior.  \nCima-Direita/Cima-Esquerda: Mude para a próxima/pasta anterior com imagens no mesmo nível que a pasta atual.  \nBaixo-Direita: Feche a aba/janela.  "
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direita/Esquerda: Alternar para a próxima/anterior pasta com imagens/vídeos (logicamente equivalente à próxima pasta ao ordenar todas as pastas no disco).  \nCima: Alternar para o diretório superior.  \nBaixo: Retornar ao diretório anterior.  \nCima-Direita/Cima-Esquerda: Alternar para a próxima/anterior pasta com imagens ao mesmo nível que a pasta atual.  \nBaixo-Direita: Fechar o separador/janela."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вправо/Влево: Переключиться на следующую/предыдущую папку с изображениями/видео (логически эквивалентно следующей папке при сортировке всех папок на диске) Вверх: Переключиться на родительский каталог Вниз: Вернуться в предыдущий каталог Вверх-Вправо/Вверх-Влево: Переключиться на следующую/предыдущую папку с изображениями на том же уровне, что и текущая папка Вниз-Вправо: Закрыть вкладку/окно"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Höger/Vänster: Växla till nästa/föregående mapp med bilder/videor (logiskt motsvarande nästa mapp när alla mappar på disken sorteras) Upp: Växla till överordnad katalog. Ner: Återgå till föregående katalog. Upp-Höger/Upp-Vänster: Växla till nästa/föregående mapp med bilder på samma nivå som den aktuella mappen. Ner-Höger: Stäng fliken/fönstret."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "向右/左：切换到下一个/上一个有图片/视频的文件夹(逻辑上等同于将整个磁盘中的文件夹排序后的下一个)。\n向上：切换到上级目录。\n向下：返回到上一次的目录。\n向上右/上左：切换到与当前文件夹平级的下一个/上一个有图片的文件夹。\n向下右：关闭当前标签页/窗口。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右/左：切換到下一個/上一個包含圖片/視頻的資料夾（邏輯上等同於在磁碟上對所有資料夾排序時的下一個資料夾）。 上：切換到上級目錄。 下：返回到上一個目錄。 上右/上左：切換到與當前資料夾同一層次的下一個/上一個包含圖片的資料夾。 下右：關閉標籤頁/視窗。"
           }
         }
       }
