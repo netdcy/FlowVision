@@ -20,13 +20,15 @@ extension Map {
 
 class SortKeyFile: SortKey, NSCopying {
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = SortKeyFile(path, createDate: createDate, modDate: modDate, addDate: addDate, size: size, isDir: isDir, isInSameDir: isInSameDir, sortType: sortType, isSortFolderFirst: isSortFolderFirst)
+        let copy = SortKeyFile(path, createDate: createDate, modDate: modDate, addDate: addDate, size: size, isDir: isDir, isInSameDir: isInSameDir, sortType: sortType, isSortFolderFirst: isSortFolderFirst, isSortUseFullPath: isSortUseFullPath)
         return copy
     }
 }
 
 class SortKeyDir: SortKey {
-    
+    override init(_ path: String, createDate: Date = Date(), modDate: Date = Date(), addDate: Date = Date() , size: Int = 0, isDir: Bool = false, isInSameDir: Bool = false, needGetProperties: Bool = false, sortType: SortType = .pathA, isSortFolderFirst: Bool = true, isSortUseFullPath: Bool = true) {
+        super.init(path, createDate: createDate, modDate: modDate, addDate: addDate, size: size, isDir: isDir, isInSameDir: isInSameDir, needGetProperties: needGetProperties, sortType: sortType, isSortFolderFirst: isSortFolderFirst, isSortUseFullPath: isSortUseFullPath)
+    }
 }
 
 class SortKey: Comparable {
@@ -39,11 +41,12 @@ class SortKey: Comparable {
     var isInSameDir: Bool
     var sortType: SortType
     var isSortFolderFirst: Bool
+    var isSortUseFullPath: Bool
     var seed: Int
     
     static var keyTransformedDict = Dictionary<String,[String]>()
     
-    init(_ path: String, createDate: Date = Date(), modDate: Date = Date(), addDate: Date = Date() , size: Int = 0, isDir: Bool = false, isInSameDir: Bool = false, needGetProperties: Bool = false, sortType: SortType = .pathA, isSortFolderFirst: Bool = true) {
+    init(_ path: String, createDate: Date = Date(), modDate: Date = Date(), addDate: Date = Date() , size: Int = 0, isDir: Bool = false, isInSameDir: Bool = false, needGetProperties: Bool = false, sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool) {
         self.path = path
         self.createDate = createDate
         self.modDate = modDate
@@ -53,6 +56,7 @@ class SortKey: Comparable {
         self.isInSameDir = isInSameDir
         self.sortType = sortType
         self.isSortFolderFirst = isSortFolderFirst
+        self.isSortUseFullPath = isSortUseFullPath
         self.seed = globalVar.randomSeed
         
         if needGetProperties,
@@ -223,6 +227,30 @@ class SortKey: Comparable {
         if lhs_paths.count==0 { return true }
         if rhs_paths.count==0 { return false }
         
+        // 先按文件名比较，后按其完整路径（去掉文件名部分）来比较
+        if !lhs.isSortUseFullPath && !rhs.isSortUseFullPath {
+            let lhsFileName = lhs_paths.last ?? ""
+            let rhsFileName = rhs_paths.last ?? ""
+            
+            if lhsFileName != rhsFileName {
+                return localCompare(lhsFileName, rhsFileName)
+            }
+            
+            // 如果文件名相同，则比较去掉文件名部分的路径
+            let lhsPathWithoutFileName = lhs_paths.dropLast()
+            let rhsPathWithoutFileName = rhs_paths.dropLast()
+            
+            for i in 0..<min(lhsPathWithoutFileName.count, rhsPathWithoutFileName.count) {
+                if lhsPathWithoutFileName[i] == rhsPathWithoutFileName[i] { continue }
+                if localCompare(lhsPathWithoutFileName[i], rhsPathWithoutFileName[i]) {
+                    return true
+                } else {
+                    return false
+                }
+            }
+            return lhsPathWithoutFileName.count < rhsPathWithoutFileName.count
+        }
+        
         if lhs.isInSameDir && rhs.isInSameDir && lhs_paths.count==rhs_paths.count {
             return localCompare(lhs_paths[lhs_paths.count-1],rhs_paths[rhs_paths.count-1])
         }
@@ -327,13 +355,14 @@ class DirModel {
     var isFiltered: Bool = false
     var lock: NSLock = NSLock()
     
-    func changeSortType(_ sortType: SortType, isSortFolderFirst: Bool){
+    func changeSortType(_ sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool){
         let oldFiles=files
         files=Map<SortKeyFile,FileModel>()
         for oldFile in oldFiles {
             if let tmpKey=oldFile.0.copy() as? SortKeyFile{
                 tmpKey.sortType=sortType
                 tmpKey.isSortFolderFirst=isSortFolderFirst
+                tmpKey.isSortUseFullPath=isSortUseFullPath
                 files[tmpKey]=oldFile.1
             }
         }

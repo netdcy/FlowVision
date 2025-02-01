@@ -830,6 +830,10 @@ extension WindowController: NSToolbarDelegate {
         let folderFirstItem = NSMenuItem(title: NSLocalizedString("Sort Folders First", comment: "文件夹优先排序"), action: #selector(sortFolderFirst(_:)), keyEquivalent: "")
         folderFirstItem.state = viewController.publicVar.profile.isSortFolderFirst ? .on : .off
         menu.addItem(folderFirstItem)
+
+        let sortUseFullPathItem = NSMenuItem(title: NSLocalizedString("Sort Using Full Path In Recursive Mode", comment: "在递归模式下使用完整路径排序"), action: #selector(sortUseFullPath(_:)), keyEquivalent: "")
+        sortUseFullPathItem.state = viewController.publicVar.profile.isSortUseFullPath ? .on : .off
+        menu.addItem(sortUseFullPathItem)
         
         menu.addItem(NSMenuItem.separator())
         
@@ -855,13 +859,19 @@ extension WindowController: NSToolbarDelegate {
     @objc func sortFolderFirst(_ sender: NSMenuItem) {
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.publicVar.profile.isSortFolderFirst.toggle()
-        viewController.changeSortType(sortType: viewController.publicVar.profile.sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst)
+        viewController.changeSortType(sortType: viewController.publicVar.profile.sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst, isSortUseFullPath: viewController.publicVar.profile.isSortUseFullPath)
+    }
+    
+    @objc func sortUseFullPath(_ sender: NSMenuItem) {
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.publicVar.profile.isSortUseFullPath.toggle()
+        viewController.changeSortType(sortType: viewController.publicVar.profile.sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst, isSortUseFullPath: viewController.publicVar.profile.isSortUseFullPath)
     }
     
     @objc func sortItems(_ sender: NSMenuItem) {
         guard let sortType = sender.representedObject as? SortType else { return }
         guard let viewController = contentViewController as? ViewController else {return}
-        viewController.changeSortType(sortType: sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst)
+        viewController.changeSortType(sortType: sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst, isSortUseFullPath: viewController.publicVar.profile.isSortUseFullPath)
     }
     
     @objc func favoritesAction(_ sender: Any?) {

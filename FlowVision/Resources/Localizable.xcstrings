@@ -3146,6 +3146,23 @@
         }
       }
     },
+    "Sort Using Full Path In Recursive Mode" : {
+      "comment" : "在递归模式下使用完整路径排序",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sort Using Full Path In Recursive Mode"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在递归模式下使用完整路径排序"
+          }
+        }
+      }
+    },
     "sort-addDateA" : {
       "comment" : "添加日期",
       "localizations" : {

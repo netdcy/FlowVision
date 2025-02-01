@@ -663,6 +663,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     let folderFirstItem = NSMenuItem(title: NSLocalizedString("Sort Folders First", comment: "文件夹优先排序"), action: #selector(sortFolderFirst(_:)), keyEquivalent: "")
                     folderFirstItem.state = (getViewController(collectionView!)?.publicVar.profile.isSortFolderFirst == false) ? .off : .on
                     sortSubMenu.addItem(folderFirstItem)
+
+                    let useFullPathItem = NSMenuItem(title: NSLocalizedString("Sort Using Full Path In Recursive Mode", comment: "在递归模式下使用完整路径排序"), action: #selector(sortUseFullPath(_:)), keyEquivalent: "")
+                    useFullPathItem.state = (getViewController(collectionView!)?.publicVar.profile.isSortUseFullPath == false) ? .off : .on
+                    sortSubMenu.addItem(useFullPathItem)
                     
                     sortSubMenu.addItem(NSMenuItem.separator())
                     
@@ -733,13 +737,19 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     @objc func sortItems(_ sender: NSMenuItem) {
         guard let viewController = getViewController(collectionView!) else {return}
         guard let sortType = sender.representedObject as? SortType else { return }
-        getViewController(collectionView!)?.changeSortType(sortType: sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst)
+        getViewController(collectionView!)?.changeSortType(sortType: sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst, isSortUseFullPath: viewController.publicVar.profile.isSortUseFullPath)
     }
     
     @objc func sortFolderFirst(_ sender: NSMenuItem) {
         guard let viewController = getViewController(collectionView!) else {return}
         viewController.publicVar.profile.isSortFolderFirst.toggle()
-        viewController.changeSortType(sortType: viewController.publicVar.profile.sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst)
+        viewController.changeSortType(sortType: viewController.publicVar.profile.sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst, isSortUseFullPath: viewController.publicVar.profile.isSortUseFullPath)
+    }
+
+    @objc func sortUseFullPath(_ sender: NSMenuItem) {
+        guard let viewController = getViewController(collectionView!) else {return}
+        viewController.publicVar.profile.isSortUseFullPath.toggle()
+        viewController.changeSortType(sortType: viewController.publicVar.profile.sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst, isSortUseFullPath: viewController.publicVar.profile.isSortUseFullPath)
     }
     
     @objc func actRefresh() {

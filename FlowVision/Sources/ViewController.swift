@@ -21,6 +21,7 @@ class CustomProfile: Codable {
     //排序
     var sortType: SortType = .pathA
     var isSortFolderFirst: Bool = true
+    var isSortUseFullPath = true
     
     //缩略图大小
     var thumbSize = 512
@@ -458,21 +459,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }else{
             publicVar.isEnableHDR = false
         }
-//        if let layoutType: LayoutType = UserDefaults.standard.enumValue(forKey: "layoutType"){
-//            publicVar.layoutType=layoutType
-//        }
-//        if let thumbSize = UserDefaults.standard.value(forKey: "thumbSize") as? Int {
-//            publicVar.profile.thumbSize = thumbSize
-//        }
-//        if let isDirTreeHidden = UserDefaults.standard.value(forKey: "isDirTreeHidden") as? Bool {
-//            publicVar.profile.isDirTreeHidden=isDirTreeHidden
-//        }
-//        if let sortType: SortType = UserDefaults.standard.enumValue(forKey: "sortType"){
-//            publicVar.profile.sortType=sortType
-//        }
-//        if let isSortFolderFirst = UserDefaults.standard.value(forKey: "isSortFolderFirst") as? Bool {
-//            publicVar.profile.isSortFolderFirst = isSortFolderFirst
-//        }
         publicVar.profile = CustomProfile.loadFromUserDefaults(withKey: "CustomStyle_v2_current")
         
         //-----结束读取配置------
@@ -1314,16 +1300,18 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
     }
     
-    func changeSortType(sortType: SortType, isSortFolderFirst: Bool, doNotRefresh: Bool = false){
+    func changeSortType(sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool, doNotRefresh: Bool = false){
         fileDB.lock()
         publicVar.profile.sortType = sortType
         publicVar.profile.isSortFolderFirst = isSortFolderFirst
+        publicVar.profile.isSortUseFullPath = isSortUseFullPath
 //        UserDefaults.standard.setEnum(publicVar.profile.sortType, forKey: "sortType")
 //        UserDefaults.standard.set(publicVar.profile.isSortFolderFirst, forKey: "isSortFolderFirst")
+//        UserDefaults.standard.set(publicVar.profile.isSortUseFullPath, forKey: "isSortUseFullPath")
         publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
         globalVar.randomSeed = Int.random(in: 0...Int.max)
         for dirModel in fileDB.db {
-            dirModel.1.changeSortType(publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst)
+            dirModel.1.changeSortType(publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)
         }
         fileDB.unlock()
         if !doNotRefresh {
@@ -3391,10 +3379,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 var fileSortKey:SortKeyFile
                 let isDir:Bool
                 if filePath.hasSuffix("_FolderMark") {
-                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst)
+                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)
                     isDir=true
                 }else{
-                    fileSortKey=SortKeyFile(filePath, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst)
+                    fileSortKey=SortKeyFile(filePath, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)
                     isDir=false
                 }
                 //读取文件大小日期
@@ -3557,9 +3545,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let filename=publicVar.openFromFinderPath
             //log(filename)
             fileDB.lock()
-            if let index=fileDB.db[SortKeyDir(path)]?.files.index(forKey: SortKeyFile(filename, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst)),
+            if let index=fileDB.db[SortKeyDir(path)]?.files.index(forKey: SortKeyFile(filename, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)),
                let offset=fileDB.db[SortKeyDir(path)]?.files.offset(of: index),
-               let file=fileDB.db[SortKeyDir(path)]?.files[SortKeyFile(filename, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst)],
+               let file=fileDB.db[SortKeyDir(path)]?.files[SortKeyFile(filename, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)],
                let url=URL(string: file.path),
                let totalCount=fileDB.db[SortKeyDir(path)]?.files.count,
                let fileCount=fileDB.db[SortKeyDir(path)]?.fileCount
@@ -4891,7 +4879,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let folderPath=fileDB.curFolder
         let imageCount=fileDB.db[SortKeyDir(folderPath)]?.imageCount ?? 0
         if imageCount != 0{
-            if let idInImage=fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst)]?.idInImage {
+            if let idInImage=fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)]?.idInImage {
                 //fullTitle += " | " + String(format: "(%d/%d)",idInImage+1,imageCount)
                 fullTitle += " " + String(format: "(%d/%d)",idInImage+1,imageCount)
                 publicVar.lastLargeImageIdInImage=idInImage
@@ -5965,8 +5953,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             toggleSidebar()
         }
         //排序
-        if newStyle.sortType != publicVar.profile.sortType || newStyle.isSortFolderFirst != publicVar.profile.isSortFolderFirst || newStyle.sortType == .random {
-            changeSortType(sortType: newStyle.sortType, isSortFolderFirst: newStyle.isSortFolderFirst, doNotRefresh: true)
+        if newStyle.sortType != publicVar.profile.sortType || newStyle.isSortFolderFirst != publicVar.profile.isSortFolderFirst || newStyle.isSortUseFullPath != publicVar.profile.isSortUseFullPath || newStyle.sortType == .random {
+            changeSortType(sortType: newStyle.sortType, isSortFolderFirst: newStyle.isSortFolderFirst, isSortUseFullPath: newStyle.isSortUseFullPath, doNotRefresh: true)
         }
         //缩略图大小
         if newStyle.thumbSize != publicVar.profile.thumbSize {
