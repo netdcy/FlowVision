@@ -52,7 +52,7 @@ class CustomImageView: NSImageView {
                     viewController.refreshTreeView()
                 }
                 if !(sender.draggingSource is CustomCollectionView) {
-                    viewController.refreshAll()
+                    viewController.refreshAll(needLoadThumbPriority: true)
                 }
                 return true
             }else{

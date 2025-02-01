@@ -139,11 +139,7 @@ class CustomCollectionView: NSCollectionView {
     @objc func actRefresh() {
         LargeImageProcessor.clearCache()
         ThumbImageProcessor.clearCache()
-        getViewController(self)?.refreshAll([.all])
-        DispatchQueue.main.async { [weak self] in
-            guard let self=self else {return}
-            getViewController(self)?.setLoadThumbPriority(ifNeedVisable: true)
-        }
+        getViewController(self)?.refreshAll([.all], needLoadThumbPriority: true)
     }
 
     @objc func actCopyPath() {

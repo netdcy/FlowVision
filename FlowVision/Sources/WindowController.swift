@@ -1048,7 +1048,7 @@ extension WindowController: NSToolbarDelegate {
         UserDefaults.standard.set(viewController.publicVar.isPreferInternalThumb, forKey: "isPreferInternalThumb")
         UserDefaults.standard.set(viewController.publicVar.isGenHdThumb, forKey: "isGenHdThumb")
         ThumbImageProcessor.clearCache()
-        viewController.refreshCollectionView([.all], dryRun: true)
+        viewController.refreshCollectionView([.all], dryRun: true, needLoadThumbPriority: false)
     }
 
     @objc func normalThumbAction(_ sender: NSMenuItem){
@@ -1058,7 +1058,7 @@ extension WindowController: NSToolbarDelegate {
         UserDefaults.standard.set(viewController.publicVar.isPreferInternalThumb, forKey: "isPreferInternalThumb")
         UserDefaults.standard.set(viewController.publicVar.isGenHdThumb, forKey: "isGenHdThumb")
         ThumbImageProcessor.clearCache()
-        viewController.refreshCollectionView([.all], dryRun: true)
+        viewController.refreshCollectionView([.all], dryRun: true, needLoadThumbPriority: false)
     }
     
     @objc func genHdThumbAction(_ sender: NSMenuItem){
@@ -1068,7 +1068,7 @@ extension WindowController: NSToolbarDelegate {
         UserDefaults.standard.set(viewController.publicVar.isGenHdThumb, forKey: "isGenHdThumb")
         UserDefaults.standard.set(viewController.publicVar.isPreferInternalThumb, forKey: "isPreferInternalThumb")
         ThumbImageProcessor.clearCache()
-        viewController.refreshCollectionView([.all], dryRun: true)
+        viewController.refreshCollectionView([.all], dryRun: true, needLoadThumbPriority: false)
     }
     
     @objc func genHdThumbInfoAction(_ sender: NSMenuItem){

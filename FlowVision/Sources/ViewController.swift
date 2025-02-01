@@ -618,10 +618,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }else{
                         LargeImageProcessor.clearCache()
                         ThumbImageProcessor.clearCache()
-                        refreshAll([.all])
-                        DispatchQueue.main.async { [weak self] in
-                            self?.setLoadThumbPriority(ifNeedVisable: true)
-                        }
+                        refreshAll([.all], needLoadThumbPriority: true)
                         return nil
                     }
                 }
@@ -1269,7 +1266,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             fileDB.lock()
             fileDB.curFolder=lastFolder!
             fileDB.unlock()
-            refreshAll()
+            refreshAll(needLoadThumbPriority: false)
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 setWindowTitle()
@@ -1312,11 +1309,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         fileDB.unlock()
         if !doNotRefresh {
-            refreshCollectionView(dryRun: true)
-        }
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            setLoadThumbPriority(ifNeedVisable: true)
+            refreshCollectionView(dryRun: true, needLoadThumbPriority: true)
         }
     }
 
@@ -1413,48 +1406,48 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             showText = NSLocalizedString("Enable Recursive Mode", comment: "开启递归模式")
         }
         coreAreaView.showInfo(showText, timeOut: 1.0, cannotBeCleard: true)
-        refreshCollectionView()
+        refreshCollectionView(needLoadThumbPriority: true)
     }
     
     func toggleRecursiveContainFolder(){
         publicVar.isRecursiveContainFolder.toggle()
         UserDefaults.standard.set(publicVar.isRecursiveContainFolder, forKey: "isRecursiveContainFolder")
         if publicVar.isRecursiveMode {
-            refreshCollectionView()
+            refreshCollectionView(needLoadThumbPriority: true)
         }
     }
     
     func toggleIsShowHiddenFile(){
         publicVar.isShowHiddenFile.toggle()
         UserDefaults.standard.set(publicVar.isShowHiddenFile, forKey: "isShowHiddenFile")
-        refreshAll()
+        refreshAll(needLoadThumbPriority: true)
     }
     
     func toggleIsShowAllTypeFile(){
         publicVar.isShowAllTypeFile.toggle()
         UserDefaults.standard.set(publicVar.isShowAllTypeFile, forKey: "isShowAllTypeFile")
-        refreshAll()
+        refreshAll(needLoadThumbPriority: true)
     }
     
     func toggleIsShowImageFile(){
         publicVar.isShowImageFile.toggle()
         UserDefaults.standard.set(publicVar.isShowImageFile, forKey: "isShowImageFile")
         publicVar.setFileExtensions()
-        refreshCollectionView()
+        refreshCollectionView(needLoadThumbPriority: true)
     }
     
     func toggleIsShowRawFile(){
         publicVar.isShowRawFile.toggle()
         UserDefaults.standard.set(publicVar.isShowRawFile, forKey: "isShowRawFile")
         publicVar.setFileExtensions()
-        refreshCollectionView()
+        refreshCollectionView(needLoadThumbPriority: true)
     }
     
     func toggleIsShowVideoFile(){
         publicVar.isShowVideoFile.toggle()
         UserDefaults.standard.set(publicVar.isShowVideoFile, forKey: "isShowVideoFile")
         publicVar.setFileExtensions()
-        refreshCollectionView()
+        refreshCollectionView(needLoadThumbPriority: true)
     }
     
     func adjustWindowToCenter(animate: Bool = true) {
@@ -1722,10 +1715,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
         if !doNotRefresh {
-            refreshCollectionView(dryRun: true)
-            DispatchQueue.main.async { [weak self] in
-                self?.setLoadThumbPriority(ifNeedVisable: true)
-            }
+            refreshCollectionView(dryRun: true, needLoadThumbPriority: true)
         }
     }
     
@@ -1737,10 +1727,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
         if !doNotRefresh {
-            refreshCollectionView(dryRun: true)
-            DispatchQueue.main.async { [weak self] in
-                self?.setLoadThumbPriority(ifNeedVisable: true)
-            }
+            refreshCollectionView(dryRun: true, needLoadThumbPriority: true)
         }
     }
     
@@ -1752,10 +1739,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
         if !doNotRefresh {
-            refreshCollectionView(dryRun: true)
-            DispatchQueue.main.async { [weak self] in
-                self?.setLoadThumbPriority(ifNeedVisable: true)
-            }
+            refreshCollectionView(dryRun: true, needLoadThumbPriority: true)
         }
     }
     
@@ -1768,10 +1752,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.updateToolbar()
         publicVar.isNeedChangeLayoutType = true
         if !doNotRefresh {
-            refreshCollectionView(dryRun: true)
-            DispatchQueue.main.async { [weak self] in
-                self?.setLoadThumbPriority(ifNeedVisable: true)
-            }
+            refreshCollectionView(dryRun: true, needLoadThumbPriority: true)
         }
     }
     
@@ -1781,7 +1762,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
         changeWaterfallLayoutNumberOfColumns()
         if !doNotRefresh {
-            refreshCollectionView(dryRun: true)
+            refreshCollectionView(dryRun: true, needLoadThumbPriority: true)
         }
     }
     
@@ -2643,18 +2624,18 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 collectionView.layer?.backgroundColor = hexToNSColor(hex: "#FFFFFF").cgColor
             }
             if(lastTheme != theme){
-                refreshAll(dryRun: true)
+                refreshAll(dryRun: true, needLoadThumbPriority: false)
             }
             lastTheme=theme
         }
     }
     
-    func refreshAll(_ reloadThumbType: [FileType] = [], dryRun: Bool = false, needStopAutoScroll: Bool = true){
+    func refreshAll(_ reloadThumbType: [FileType] = [], dryRun: Bool = false, needStopAutoScroll: Bool = true, needLoadThumbPriority: Bool){
         refreshTreeView()
-        refreshCollectionView(reloadThumbType, dryRun: dryRun, needStopAutoScroll: needStopAutoScroll)
+        refreshCollectionView(reloadThumbType, dryRun: dryRun, needStopAutoScroll: needStopAutoScroll, needLoadThumbPriority: needLoadThumbPriority)
     }
     
-    func refreshCollectionView(_ reloadThumbType: [FileType] = [], dryRun: Bool = false, needStopAutoScroll: Bool = true){
+    func refreshCollectionView(_ reloadThumbType: [FileType] = [], dryRun: Bool = false, needStopAutoScroll: Bool = true, needLoadThumbPriority: Bool){
         fileDB.lock()
         let curFolder = fileDB.curFolder
         if let files = fileDB.db[SortKeyDir(curFolder)]?.files {
@@ -2669,6 +2650,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         fileDB.unlock()
         switchDirByDirection(direction: .zero, doCollapse: false, skip: dryRun, stackDeep: 0, dryRun: dryRun, needStopAutoScroll: needStopAutoScroll)
+        
+        if needLoadThumbPriority {
+            DispatchQueue.main.async { [weak self] in
+                self?.setLoadThumbPriority(ifNeedVisable: true)
+            }
+        }
     }
     
     func refreshTreeView(){
@@ -5540,7 +5527,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             guard let self = self else { return }
             folderMonitorTimer?.invalidate()
             folderMonitorTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { [weak self] _ in
-                self?.refreshAll(needStopAutoScroll: false)
+                self?.refreshAll(needStopAutoScroll: false, needLoadThumbPriority: true)
             }
         }
     }
@@ -6052,7 +6039,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         changeWaterfallLayoutNumberOfColumns()
         if !doNotRefresh {
-            refreshCollectionView(dryRun: true)
+            refreshCollectionView(dryRun: true, needLoadThumbPriority: true)
         }
     }
     
@@ -6124,7 +6111,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //样式
         configLayoutStyle(newStyle: newStyle, doNotRefresh: true)
         
-        refreshCollectionView(dryRun: true)
+        refreshCollectionView(dryRun: true, needLoadThumbPriority: true)
     }
     
     func showCmdShiftGWindow(){
@@ -6601,10 +6588,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         let searchText = searchField?.stringValue ?? ""
         publicVar.isFilenameFilterOn = searchText == "" ? false : true
-        refreshCollectionView()
-        DispatchQueue.main.async { [weak self] in
-            self?.setLoadThumbPriority(ifNeedVisable: true)
-        }
+        refreshCollectionView(needLoadThumbPriority: true)
     }
 
     // 添加新的响应方法

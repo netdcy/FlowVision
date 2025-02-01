@@ -171,7 +171,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
     }
     
     @objc func refreshAll() {
-        getViewController(self)?.refreshAll()
+        getViewController(self)?.refreshAll(needLoadThumbPriority: true)
     }
     
     @objc func actOpenInNewTab() {
