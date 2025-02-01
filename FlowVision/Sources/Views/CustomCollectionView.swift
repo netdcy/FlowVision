@@ -111,7 +111,7 @@ class CustomCollectionView: NSCollectionView {
                         folderFirstItem.state = (getViewController(self)?.publicVar.profile.isSortFolderFirst == false) ? .off : .on
                         sortSubMenu.addItem(folderFirstItem)
                         
-                        let useFullPathItem = NSMenuItem(title: NSLocalizedString("Sort Using Full Path In Recursive Mode", comment: "在递归模式下使用完整路径排序"), action: #selector(sortUseFullPath(_:)), keyEquivalent: "")
+                        let useFullPathItem = NSMenuItem(title: NSLocalizedString("Sort Using Full Path In Recursive Mode", comment: "递归模式下使用完整路径排序"), action: #selector(sortUseFullPath(_:)), keyEquivalent: "")
                         useFullPathItem.state = (getViewController(self)?.publicVar.profile.isSortUseFullPath == false) ? .off : .on
                         sortSubMenu.addItem(useFullPathItem)
                         

@@ -588,13 +588,17 @@ extension WindowController: NSToolbarDelegate {
                     title = NSLocalizedString("sort-label-date", comment: "日期")
                 case .random:
                     title = NSLocalizedString("sort-label-random", comment: "随机")
+                case .exifDateA,.exifDateZ:
+                    title = NSLocalizedString("sort-label-exifDate", comment: "Exif日期")
+                case .exifPixelA,.exifPixelZ:
+                    title = NSLocalizedString("sort-label-exifPixel", comment: "Exif像素")
                 }
                 switch viewController.publicVar.profile.sortType {
-                case .pathA,.extA,.sizeA,.createDateA,.modDateA,.addDateA:
+                case .pathA,.extA,.sizeA,.createDateA,.modDateA,.addDateA,.exifDateA,.exifPixelA:
                     //image = NSImage(systemSymbolName: "arrow.up", accessibilityDescription: "")!
                     //image = NSImage(systemSymbolName: "arrowtriangle.up", accessibilityDescription: "")!
                     image = NSImage(systemSymbolName: "chevron.up.circle", accessibilityDescription: "")!
-                case .pathZ,.extZ,.sizeZ,.createDateZ,.modDateZ,.addDateZ:
+                case .pathZ,.extZ,.sizeZ,.createDateZ,.modDateZ,.addDateZ,.exifDateZ,.exifPixelZ:
                     image = NSImage(systemSymbolName: "chevron.down.circle", accessibilityDescription: "")!
                 case .random:
                     //image = NSImage(systemSymbolName: "arrow.up.arrow.down.circle", accessibilityDescription: "")!
@@ -825,13 +829,20 @@ extension WindowController: NSToolbarDelegate {
             (.random, NSLocalizedString("sort-random", comment: "随机"))
         ]
         
+        let exifSortTypes: [(SortType, String)] = [
+            (.exifDateA, NSLocalizedString("sort-exifDateA", comment: "Exif日期")),
+            (.exifDateZ, NSLocalizedString("sort-exifDateZ", comment: "Exif日期(倒序)")),
+            (.exifPixelA, NSLocalizedString("sort-exifPixelA", comment: "Exif像素数")),
+            (.exifPixelZ, NSLocalizedString("sort-exifPixelZ", comment: "Exif像素数(倒序)"))
+        ]
+        
         let menu = NSMenu()
         
         let folderFirstItem = NSMenuItem(title: NSLocalizedString("Sort Folders First", comment: "文件夹优先排序"), action: #selector(sortFolderFirst(_:)), keyEquivalent: "")
         folderFirstItem.state = viewController.publicVar.profile.isSortFolderFirst ? .on : .off
         menu.addItem(folderFirstItem)
 
-        let sortUseFullPathItem = NSMenuItem(title: NSLocalizedString("Sort Using Full Path In Recursive Mode", comment: "在递归模式下使用完整路径排序"), action: #selector(sortUseFullPath(_:)), keyEquivalent: "")
+        let sortUseFullPathItem = NSMenuItem(title: NSLocalizedString("Sort Using Full Path In Recursive Mode", comment: "递归模式下使用完整路径排序"), action: #selector(sortUseFullPath(_:)), keyEquivalent: "")
         sortUseFullPathItem.state = viewController.publicVar.profile.isSortUseFullPath ? .on : .off
         menu.addItem(sortUseFullPathItem)
         
@@ -845,6 +856,22 @@ extension WindowController: NSToolbarDelegate {
             menuItem.state = curSortType == sortType ? .on : .off
             menu.addItem(menuItem)
         }
+        
+        // 添加 EXIF 排序子菜单
+        let exifSubmenu = NSMenu()
+        let exifMenuItem = NSMenuItem(title: NSLocalizedString("Sort by EXIF Info", comment: "根据Exif信息排序"), action: nil, keyEquivalent: "")
+        exifMenuItem.submenu = exifSubmenu
+        
+        for (sortType, title) in exifSortTypes {
+            let menuItem = NSMenuItem(title: title, action: #selector(sortItems(_:)), keyEquivalent: "")
+            menuItem.target = self
+            menuItem.representedObject = sortType
+            let curSortType = viewController.publicVar.profile.sortType
+            menuItem.state = curSortType == sortType ? .on : .off
+            exifSubmenu.addItem(menuItem)
+        }
+        
+        menu.addItem(exifMenuItem)
         
         if let button = sender as? NSButton {
             let buttonFrame = button.convert(button.bounds, to: nil)
@@ -1117,7 +1144,26 @@ extension WindowController: NSToolbarDelegate {
         }
         
         menu.addItem(NSMenuItem.separator())
+
+        let recursiveMode = menu.addItem(withTitle: NSLocalizedString("Recursive Mode", comment: "递归浏览模式"), action: #selector(toggleRecursiveMode), keyEquivalent: "r")
+        recursiveMode.keyEquivalentModifierMask = [.command, .shift]
+        recursiveMode.state = (viewController.publicVar.isRecursiveMode) ? .on : .off
+
+        let recursiveContainFolder = menu.addItem(withTitle: NSLocalizedString("Include Folders", comment: "是否包含文件夹"), action: #selector(toggleRecursiveContainFolder), keyEquivalent: "")
+        recursiveContainFolder.state = (viewController.publicVar.isRecursiveContainFolder) ? .on : .off
         
+        let recursiveModeInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(recursiveModeInfo), keyEquivalent: "")
+        
+        menu.addItem(NSMenuItem.separator())
+        
+        let portableMode = menu.addItem(withTitle: NSLocalizedString("Portable Browsing Mode", comment: "便携浏览模式"), action: #selector(togglePortableMode), keyEquivalent: "~")
+        portableMode.keyEquivalentModifierMask = []
+        portableMode.state = globalVar.portableMode ? .on : .off
+        
+        let portableModeInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(portableModeInfo), keyEquivalent: "")
+        
+        menu.addItem(NSMenuItem.separator())
+
         var autoScrollMenuText = NSLocalizedString("Enable Automatic Scroll", comment: "启用自动滚动")
         if viewController.autoScrollTimer != nil {
             autoScrollMenuText = NSLocalizedString("Disable Automatic Scroll", comment: "停止自动滚动")
@@ -1131,25 +1177,6 @@ extension WindowController: NSToolbarDelegate {
         }
         let autoPlay = menu.addItem(withTitle: autoPlayMenuText, action: #selector(toggleAutoPlay), keyEquivalent: "")
         autoPlay.isEnabled = viewController.publicVar.isInLargeView
-        
-        menu.addItem(NSMenuItem.separator())
-
-        let recursiveMode = menu.addItem(withTitle: NSLocalizedString("Recursive Mode", comment: "递归浏览模式"), action: #selector(toggleRecursiveMode), keyEquivalent: "r")
-        recursiveMode.keyEquivalentModifierMask = [.command, .shift]
-        recursiveMode.state = (viewController.publicVar.isRecursiveMode) ? .on : .off
-
-        let recursiveContainFolder = menu.addItem(withTitle: NSLocalizedString("Include Folders", comment: "包含文件夹"), action: #selector(toggleRecursiveContainFolder), keyEquivalent: "")
-        recursiveContainFolder.state = (viewController.publicVar.isRecursiveContainFolder) ? .on : .off
-        
-        let recursiveModeInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(recursiveModeInfo), keyEquivalent: "")
-        
-        menu.addItem(NSMenuItem.separator())
-        
-        let portableMode = menu.addItem(withTitle: NSLocalizedString("Portable Browsing Mode", comment: "便携浏览模式"), action: #selector(togglePortableMode), keyEquivalent: "~")
-        portableMode.keyEquivalentModifierMask = []
-        portableMode.state = globalVar.portableMode ? .on : .off
-        
-        let portableModeInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(portableModeInfo), keyEquivalent: "")
         
         menu.addItem(NSMenuItem.separator())
         

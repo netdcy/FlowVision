@@ -43,6 +43,8 @@ class SortKey: Comparable {
     var isSortFolderFirst: Bool
     var isSortUseFullPath: Bool
     var seed: Int
+    var exifDate: Date = Date(timeIntervalSince1970: 0)
+    var exifPixel: Int = 0
     
     static var keyTransformedDict = Dictionary<String,[String]>()
     
@@ -77,6 +79,9 @@ class SortKey: Comparable {
                     self.addDate=tmp
                 }
             }catch{}
+            
+            SortKey.writeExifInfo(self)
+            
         }
     }
     
@@ -123,7 +128,52 @@ class SortKey: Comparable {
     }
     
     func ext() -> String {
-        return (self.path as NSString).pathExtension
+        return SortKey.ext(self)
+    }
+    
+    static func ext(_ sortKey: SortKey) -> String {
+        return (sortKey.path as NSString).pathExtension.lowercased()
+    }
+    
+    static func writeExifInfo(_ sortKey: SortKey) {
+        if !sortKey.isDir{
+            let ext = ext(sortKey)
+            if globalVar.HandledImageExtensions.contains(ext) {
+                let imageInfo = getImageInfo(url: URL(string: sortKey.path)!)
+                let exifData = imageInfo?.properties?[kCGImagePropertyExifDictionary as String] as? [String: Any]
+                let tiffData = imageInfo?.properties?[kCGImagePropertyTIFFDictionary as String] as? [String: Any]
+                //拍摄时间
+                var dateTimeString = exifData?[kCGImagePropertyExifDateTimeOriginal as String] as? String
+                if dateTimeString == nil { //以数字化时间为备选
+                    dateTimeString = exifData?[kCGImagePropertyExifDateTimeDigitized as String] as? String
+                }
+                if dateTimeString == nil {//以TIFF时间为备选
+                    dateTimeString = tiffData?[kCGImagePropertyTIFFDateTime as String] as? String
+                }
+                if let dateTimeString = dateTimeString {
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
+                    if let date = dateFormatter.date(from: dateTimeString) {
+                        sortKey.exifDate = date
+                    }
+                }
+                //分辨率
+                if let size = imageInfo?.size {
+                    sortKey.exifPixel = Int(size.width * size.height)
+                }
+            }
+            if globalVar.HandledVideoExtensions.contains(ext) {
+                //TODO: 处理视频拍摄时间、像素
+                //注意treeTraversal中对耗时的警告统计要包括
+            }
+        }
+        
+        if sortKey.exifDate == Date(timeIntervalSince1970: 0) {
+            sortKey.exifDate = Date(timeIntervalSince1970: 1)
+        }
+        if sortKey.exifPixel == 0 {
+            sortKey.exifPixel = 1
+        }
     }
     
     static func < (lhs: SortKey, rhs: SortKey) -> Bool {
@@ -173,6 +223,40 @@ class SortKey: Comparable {
             let lhs_hash=hashFunction(fileName: lhs.path, seed: lhs.seed)
             let rhs_hash=hashFunction(fileName: rhs.path, seed: rhs.seed)
             return lhs_hash<rhs_hash
+        }
+        
+        //Exif日期排序
+        if lhs.sortType == .exifDateA || lhs.sortType == .exifDateZ {
+            if lhs.exifDate == Date(timeIntervalSince1970: 0) {
+                writeExifInfo(lhs)
+            }
+            if rhs.exifDate == Date(timeIntervalSince1970: 0) {
+                writeExifInfo(rhs)
+            }
+            if lhs.sortType == .exifDateA {
+                if lhs.exifDate == rhs.exifDate {return lhs.path<rhs.path}
+                return lhs.exifDate < rhs.exifDate
+            }else if lhs.sortType == .exifDateZ {
+                if lhs.exifDate == rhs.exifDate {return lhs.path<rhs.path}
+                return lhs.exifDate > rhs.exifDate
+            }
+        }
+        
+        //Exif像素数排序
+        if lhs.sortType == .exifPixelA || lhs.sortType == .exifPixelZ {
+            if lhs.exifPixel == 0 {
+                writeExifInfo(lhs)
+            }
+            if rhs.exifPixel == 0 {
+                writeExifInfo(rhs)
+            }
+            if lhs.sortType == .exifPixelA {
+                if lhs.exifPixel == rhs.exifPixel {return lhs.path<rhs.path}
+                return lhs.exifPixel < rhs.exifPixel
+            }else if lhs.sortType == .exifPixelZ {
+                if lhs.exifPixel == rhs.exifPixel {return lhs.path<rhs.path}
+                return lhs.exifPixel > rhs.exifPixel
+            }
         }
         
         //以文件名排序

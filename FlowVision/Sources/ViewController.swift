@@ -1305,9 +1305,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.profile.sortType = sortType
         publicVar.profile.isSortFolderFirst = isSortFolderFirst
         publicVar.profile.isSortUseFullPath = isSortUseFullPath
-//        UserDefaults.standard.setEnum(publicVar.profile.sortType, forKey: "sortType")
-//        UserDefaults.standard.set(publicVar.profile.isSortFolderFirst, forKey: "isSortFolderFirst")
-//        UserDefaults.standard.set(publicVar.profile.isSortUseFullPath, forKey: "isSortUseFullPath")
         publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
         globalVar.randomSeed = Int.random(in: 0...Int.max)
         for dirModel in fileDB.db {
@@ -3153,7 +3150,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         alert.informativeText = String(format: NSLocalizedString("scanned-files", comment: "当前已扫描 %d 个文件，其中图像 %d 个，视频 %d 个。是否继续？"), fileCount, imageCount, videoCount)
         alert.addButton(withTitle: NSLocalizedString("Continue", comment: "继续"))
         alert.addButton(withTitle: NSLocalizedString("Stop", comment: "停止"))
-        return alert.runModal() == .alertFirstButtonReturn
+        
+        let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
+        publicVar.isKeyEventEnabled = false
+        let response = alert.runModal()
+        publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
+        
+        return response == .alertFirstButtonReturn
     }
     
     func scanFiles(at folderURL: URL, contents: inout [URL],  properties: [URLResourceKey]) {
@@ -3276,7 +3279,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         var videoCount=0
         var imageCount=0
         var searchCount=0
-        let fileContents = contents.filter { url in
+        var fileContents = contents.filter { url in
             guard let isDirectoryResourceValue = try? url.resourceValues(forKeys: [.isDirectoryKey]), let isDirectory = isDirectoryResourceValue.isDirectory else {
                 return false
             }
@@ -3296,6 +3299,32 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 searchCount+=1
             }
         }
+        
+        //Exif排序时间警告
+        if publicVar.profile.sortType == .exifDateA || publicVar.profile.sortType == .exifDateZ
+            || publicVar.profile.sortType == .exifPixelA || publicVar.profile.sortType == .exifPixelZ {
+            if imageCount > 100 && VolumeManager.shared.isExternalVolume(folderURL) {
+                let alert = NSAlert()
+                alert.icon = NSImage(named: NSImage.infoName)
+                alert.messageText = NSLocalizedString("Scan Prompt", comment: "扫描提示")
+                alert.informativeText = String(format: NSLocalizedString("sort-exif-warning", comment: "针对exif排序耗时的警告"), imageCount, Int(Double(imageCount)/20.0))
+                alert.addButton(withTitle: NSLocalizedString("Continue", comment: "继续"))
+                alert.addButton(withTitle: NSLocalizedString("Stop", comment: "停止"))
+                
+                let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
+                publicVar.isKeyEventEnabled = false
+                let response = alert.runModal()
+                publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
+                
+                if response != .alertFirstButtonReturn {
+                    contents.removeAll()
+                    fileContents.removeAll()
+                    subFolders.removeAll()
+                    filesUrlInFolder.removeAll()
+                }
+            }
+        }
+        
         //好像没必要排序
         var filesInFolder = filesUrlInFolder.map{$0.absoluteString}
         let fileCount=filesInFolder.count
@@ -5705,7 +5734,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     viewController.closeLargeImage(0)
                 }
             }else{
-                if !globalVar.HandledImageAndRawExtensions.contains(urls[0].pathExtension) {return} //限制文件类型
+                if !globalVar.HandledImageAndRawExtensions.contains(urls[0].pathExtension.lowercased()) {return} //限制文件类型
                 folderPath=""+urls[0].deletingLastPathComponent().absoluteString
                 path=""+urls[0].absoluteString
                 viewController.publicVar.openFromFinderPath=path
