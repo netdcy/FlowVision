@@ -746,6 +746,33 @@ func getResizedImageUsingCI(url: URL, size: NSSize? = nil, rotate: Int = 0, useH
     return nil
 }
 
+func getVideoMetadataFFmpeg(for url: URL) -> String? {
+
+    // 构建 ffprobe 命令的参数数组
+    let ffprobeArgs: [String] = [
+        "-v", "error",
+        "-print_format", "json",
+        "-show_format",
+        "-show_streams",
+        "-pretty",
+        url.path
+    ]
+    
+    if !FFmpegKitWrapper.shared.getIfLoaded() {
+        return nil
+    }
+    
+    if let session = FFmpegKitWrapper.shared.executeFFprobeCommand(ffprobeArgs) {
+        if let output = FFmpegKitWrapper.shared.getOutput(from: session) {
+            // 解析 ffprobe 的输出
+            return output
+        }
+    } else {
+        log("FFprobe execution failed")
+    }
+    return nil
+}
+
 func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
     // 构建 ffprobe 命令来获取视频流的宽度和高度
     //let ffprobeCommand = "-v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1:nokey=1 '\(url.path)'"
@@ -848,8 +875,8 @@ func getImageInfo(url: URL) -> ImageInfo? {
         imageInfo.isHDR = checkIsHDR(imageInfo: imageInfo)
         //print(imageProperties)
         
-//        let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil)
-//        imageInfo.metadata = metadata
+        let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil)
+        imageInfo.metadata = metadata
 //        let prefix = "xmp"
 //        let key = "Rating"
 //        if let metadata = metadata,

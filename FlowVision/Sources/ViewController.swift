@@ -2035,7 +2035,134 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         if urls.isEmpty {return}
         
-        var result = StatisticInfo()
+        if urls.count == 1 {
+            let url = urls[0]
+            var isDirectory: ObjCBool = false
+            if FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) {
+                if !isDirectory.boolValue {
+                    let file = FileModel(path: "", ver: 0)
+                    file.path = url.absoluteString
+                    file.fileSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize)
+                    file.createDate = (try? url.resourceValues(forKeys: [.creationDateKey]).creationDate)
+                    file.modDate = (try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate)
+                    file.addDate = (try? url.resourceValues(forKeys: [.addedToDirectoryDateKey]).addedToDirectoryDate)
+                    
+                    let ext = url.pathExtension.lowercased()
+                    if globalVar.HandledImageAndRawExtensions.contains(ext) {
+                        file.imageInfo = getImageInfo(url: url)
+                        
+                    } else if globalVar.HandledVideoExtensions.contains(ext) {
+                        
+                    }
+                    let exifData = convertExifData(file: file)
+                    var formatedExifData = formatExifData(exifData ?? [:])
+                    formatedExifData.insert((NSLocalizedString("File Path", comment: "文件路径"),url.path), at: 0)
+                    
+                    let separator = "--------------------"
+                    
+                    func formatExifDataAligned(_ exifData: [(String, Any)]) -> String {
+                        
+                        let font = NSFont.systemFont(ofSize: NSFont.systemFontSize)
+                        // 计算最长的key的长度
+                        let maxKeyLength = exifData.map { $0.0.size(withAttributes: [.font: font]).width }.max() ?? 0
+                        
+                        // 格式化每一行，使冒号对齐
+                        let formattedLines = exifData.map { (key, value) -> String in
+                            if key == "-" {
+                                return separator
+                            }
+                            let keyLength = key.size(withAttributes: [.font: font]).width
+                            let padding = String(repeating: " ", count: Int((maxKeyLength - keyLength) / " ".size(withAttributes: [.font: font]).width))
+                            return "\(key):\(padding) \(value)"
+                        }
+                        
+                        return formattedLines.joined(separator: "\n")
+                    }
+                    
+                    var text = formatExifDataAligned(formatedExifData)
+                    
+                    if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()),
+                       let videoMetadata = getVideoMetadataFFmpeg(for: url) {
+                        text += "\n" + separator + "\n" + videoMetadata
+                    }
+                    
+                    if globalVar.HandledImageExtensions.contains(url.pathExtension.lowercased()) {
+                        func formatDictionary(_ dictionary: [String: Any], indentLevel: Int = 0, outputFormat: String = "json", sort: Bool = true) -> String {
+                            let sortedDictionary: [(String, Any)]
+                            if sort {
+                                sortedDictionary = dictionary.sorted { $0.key < $1.key }
+                            } else {
+                                sortedDictionary = Array(dictionary)
+                            }
+                            
+                            // 添加错误处理和防护
+                            if outputFormat == "json" {
+                                do {
+                                    let sortedDict = Dictionary(uniqueKeysWithValues: sortedDictionary)
+                                    // 移除不能被JSON序列化的值
+                                    let serializableDict = sortedDict.filter { (_, value) in
+                                        JSONSerialization.isValidJSONObject([value])
+                                    }
+                                    let jsonData = try JSONSerialization.data(withJSONObject: serializableDict, options: [.prettyPrinted, .sortedKeys])
+                                    if let jsonString = String(data: jsonData, encoding: .utf8) {
+                                        return jsonString
+                                    }
+                                } catch {
+                                    print("JSON serialization error: \(error)")
+                                }
+                                return "{}"
+                            } else {
+                                let indent = String(repeating: "  ", count: indentLevel)
+                                var formattedString = ""
+                                for (key, value) in sortedDictionary {
+                                    if let nestedDict = value as? [String: Any] {
+                                        formattedString += "\(indent)\(key):\n"
+                                        formattedString += formatDictionary(nestedDict, indentLevel: indentLevel + 1, outputFormat: outputFormat, sort: sort)
+                                    } else {
+                                        formattedString += "\(indent)\(key): \(value)\n"
+                                    }
+                                }
+                                return formattedString
+                            }
+                        }
+
+                        if let properties = file.imageInfo?.properties {
+                            if properties.count > 0 {
+                                text += "\n" + separator + "\n" + formatDictionary(properties).replacingOccurrences(of: "\\/", with: "/")
+                            }
+                        }
+                        if let metadata = file.imageInfo?.metadata,
+                           let tags = CGImageMetadataCopyTags(metadata) as NSArray? {
+                            
+                            var result = [String: Any]()
+                            for tag in tags {
+                                if CFGetTypeID(tag.self as CFTypeRef) == CGImageMetadataTagGetTypeID() {
+                                    let tagMetadata = tag as! CGImageMetadataTag
+                                    
+                                    if let cfName = CGImageMetadataTagCopyName(tagMetadata),
+                                       let cfPrefix = CGImageMetadataTagCopyPrefix(tagMetadata) {
+                                        let name = String(cfPrefix) + "::" + String(cfName)
+                                        let value = CGImageMetadataTagCopyValue(tagMetadata)
+                                        result[name] = value
+                                    }
+                                }
+                            }
+                            if result.count > 0 {
+                                text += "\n" + separator + "\n" + formatDictionary(result).replacingOccurrences(of: "\\/", with: "/")
+                            }
+                        }
+                    }
+                    
+                    showInformationLong(title: NSLocalizedString("File Info", comment: "文件信息"), message: text, width: 400)
+                    
+                    return
+                }
+            }
+        }
+        
+        //以下是针对非单个图像、视频文件的处理
+        
+        let result = StatisticInfo()
         
         for url in urls {
             var isDirectory: ObjCBool = false
@@ -2057,7 +2184,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         showInformation(title: NSLocalizedString("Statistic", comment: "统计信息"), message: result.description)
-        
     }
     
     func getFolderStatistic(_ folderURL: URL, result: StatisticInfo) {

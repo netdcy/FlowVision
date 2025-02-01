@@ -1327,6 +1327,40 @@
         }
       }
     },
+    "File Info" : {
+      "comment" : "文件信息",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File Info"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件信息"
+          }
+        }
+      }
+    },
+    "File Path" : {
+      "comment" : "文件路径",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File Path"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件路径"
+          }
+        }
+      }
+    },
     "file-rightmenu-get-info" : {
       "comment" : "显示简介",
       "localizations" : {

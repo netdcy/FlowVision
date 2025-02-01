@@ -186,7 +186,7 @@ func showInformation(title: String, message: String) {
     getMainViewController()!.publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
 }
 
-func showInformationLong(title: String, message: String, width: CGFloat = 400) {
+func showInformationLongDeprecate(title: String, message: String, width: CGFloat = 400) {
     let alert = NSAlert()
     alert.messageText = title
     //alert.informativeText = message
@@ -232,6 +232,71 @@ func showInformationLong(title: String, message: String, width: CGFloat = 400) {
     getMainViewController()!.publicVar.isKeyEventEnabled=false
     alert.runModal()
     getMainViewController()!.publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
+}
+
+func showInformationLong(title: String, message: String, width: CGFloat = 400) {
+    let alert = NSAlert()
+    alert.messageText = title
+    alert.alertStyle = .informational
+    alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
+    alert.icon = NSImage(named: NSImage.infoName)
+    
+    // 创建滚动视图
+    let scrollView = NSScrollView()
+    scrollView.hasVerticalScroller = true
+    scrollView.hasHorizontalScroller = false
+    scrollView.autohidesScrollers = true
+    scrollView.drawsBackground = false  // 设置滚动视图背景为透明
+    
+    // 设置文本视图
+    let textField = NSTextView(frame: NSRect(x: 0, y: 0, width: width - 20, height: 0))
+    textField.isEditable = false
+    textField.backgroundColor = .clear  // 设置文本视图背景为透明
+    textField.drawsBackground = false   // 确保文本视图不绘制背景
+    textField.isSelectable = true
+    textField.textColor = NSColor.headerTextColor
+    
+    // 创建段落样式并设置行间距
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.lineSpacing = 1.2
+    
+    // 使用富文本设置内容和样式
+    let attributedString = NSAttributedString(
+        string: message,
+        attributes: [
+            .font: NSFont.systemFont(ofSize: 11.5),
+            .foregroundColor: NSColor.headerTextColor,
+            .paragraphStyle: paragraphStyle
+        ]
+    )
+    textField.textStorage?.setAttributedString(attributedString)
+    
+    // 配置文本视图容器
+    textField.isVerticallyResizable = true
+    textField.isHorizontallyResizable = false
+    textField.textContainer?.widthTracksTextView = true
+    textField.textContainer?.containerSize = NSSize(width: width - 20, height: CGFloat.greatestFiniteMagnitude)
+    textField.layoutManager?.ensureLayout(for: textField.textContainer!)
+    
+    // 设置滚动视图的大小
+    let contentSize = textField.layoutManager?.usedRect(for: textField.textContainer!).size ?? .zero
+    // 添加一点额外的高度来防止不必要的滚动条
+    let height = min(max(contentSize.height + 5, 50), 400)  // 添加5个点的额外空间
+    scrollView.frame = NSRect(x: 0, y: 0, width: width, height: height)
+    
+    // 设置文本视图的frame，同样添加额外空间
+    textField.frame = NSRect(x: 0, y: 0, width: width - 20, height: contentSize.height + 5)
+    
+    // 设置滚动视图
+    scrollView.documentView = textField
+    
+    // 设置为警告框的附件视图
+    alert.accessoryView = scrollView
+    
+    let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
+    getMainViewController()!.publicVar.isKeyEventEnabled = false
+    alert.runModal()
+    getMainViewController()!.publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
 }
 
 func showInformationCopy(title: String, message: String) {
