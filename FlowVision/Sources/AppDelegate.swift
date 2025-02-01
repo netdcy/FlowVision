@@ -36,7 +36,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     @IBOutlet weak var toggleIsShowVideoFileMenuItem: NSMenuItem!
     @IBOutlet weak var toggleIsShowAllTypeFileMenuItem: NSMenuItem!
     @IBOutlet weak var deselectMenuItem: NSMenuItem!
-    @IBOutlet weak var gotoFolderMenuItem: NSMenuItem!
     
     var commonParentPath=""
     
@@ -531,17 +530,24 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 return false
             }
         }
-        //限制最大窗口数量
+        //新建标签页限制最大窗口数量
         if menuItem.action == #selector(fileNewTab(_:)) && isWindowNumMax() {
             return false
         }
-        //限制最大窗口数量
+        //根据图片大小调整窗口
         if menuItem.action == #selector(adjustWindowActual(_:)) || menuItem.action == #selector(adjustWindowCurrent(_:)) {
             if !mainViewController.publicVar.isInLargeView {
                 return false
             }
         }
+        //复制、删除
         if menuItem.action == #selector(editCopy(_:)) || menuItem.action == #selector(editDelete(_:)) {
+            if mainViewController.publicVar.isKeyEventEnabled == false {
+                return false
+            }
+            if !mainViewController.publicVar.isOutlineViewFirstResponder && !mainViewController.publicVar.isCollectionViewFirstResponder {
+                return false
+            }
             //如果焦点在OutlineView
             if mainViewController.publicVar.isOutlineViewFirstResponder{
                 if mainViewController.outlineView.getFirstSelectedUrl() == nil {
@@ -555,7 +561,34 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 }
             }
         }
+        //粘贴、移动
+        if menuItem.action == #selector(editPaste(_:)) || menuItem.action == #selector(editMove(_:)) {
+            if mainViewController.publicVar.isKeyEventEnabled == false {
+                return false
+            }
+            if !mainViewController.publicVar.isOutlineViewFirstResponder && !mainViewController.publicVar.isCollectionViewFirstResponder {
+                return false
+            }
+            if mainViewController.publicVar.isInLargeView {
+                return false
+            }
+            let pasteboard = NSPasteboard.general
+            let types = pasteboard.types ?? []
+            if !types.contains(.fileURL) {
+                return false
+            }
+        }
+        //选择全部、搜索
+        if menuItem.action == #selector(selectAll(_:)) || menuItem.action == #selector(showSearch(_:)) {
+            if mainViewController.publicVar.isInLargeView {
+                return false
+            }
+        }
+        //取消选择
         if menuItem.action == #selector(deselectAll(_:)) {
+            if mainViewController.publicVar.isInLargeView {
+                return false
+            }
             //如果焦点在CollectionView
             if mainViewController.publicVar.isCollectionViewFirstResponder{
                 if mainViewController.publicVar.selectedUrls().count == 0 {
@@ -565,13 +598,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 return false
             }
         }
-        if menuItem.action == #selector(editPaste(_:)) || menuItem.action == #selector(editMove(_:)) {
-            let pasteboard = NSPasteboard.general
-            let types = pasteboard.types ?? []
-            if !types.contains(.fileURL) {
-                return false
-            }
-        }
+        //是否是显示全部文件类型
         if menuItem.action == #selector(toggleIsShowImageFile(_:)) || menuItem.action == #selector(toggleIsShowRawFile(_:)) || menuItem.action == #selector(toggleIsShowVideoFile(_:)) {
             if mainViewController.publicVar.isShowAllTypeFile {
                 return false
@@ -670,10 +697,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
     
     @IBAction func editDelete(_ sender: NSMenuItem){
-        guard let mainViewController=getMainViewController() else{return}
         //注意：由于未知原因有时无法触发，因此主要在按键监听里处理
+        guard let mainViewController=getMainViewController() else{return}
         if mainViewController.publicVar.isInLargeView {
-            mainViewController.handleCopy()
+            mainViewController.handleDelete()
         }else{
             //如果焦点在OutlineView
             if mainViewController.publicVar.isOutlineViewFirstResponder{
@@ -816,8 +843,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         getMainViewController()?.customLayoutStylePrompt()
     }
     
+    @IBAction func selectAll(_ sender: NSMenuItem){
+        //getMainViewController()?.collectionView.selectAll(nil)
+        NSApp.keyWindow?.firstResponder?.selectAll(nil)
+    }
+    
     @IBAction func deselectAll(_ sender: NSMenuItem){
-        getMainViewController()?.deselectAll()
+        //主要由按键监听处理
+        getMainViewController()?.collectionView.deselectAll(nil)
+    }
+    
+    @IBAction func showSearch(_ sender: NSMenuItem){
+        getMainViewController()?.showSearchOverlay()
     }
 }
 

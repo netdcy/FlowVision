@@ -273,6 +273,17 @@
         }
       }
     },
+    "Case Sensitive" : {
+      "comment" : "区分大小写",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "区分大小写"
+          }
+        }
+      }
+    },
     "Center the Window" : {
       "comment" : "将窗口居中",
       "localizations" : {
@@ -711,6 +722,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "启用HDR"
+          }
+        }
+      }
+    },
+    "Enable Recursive Mode" : {
+      "comment" : "开启递归模式",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启递归模式"
           }
         }
       }
@@ -1204,6 +1226,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "元数据时间"
+          }
+        }
+      }
+    },
+    "Exit Recursive Mode" : {
+      "comment" : "退出递归模式",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出递归模式"
           }
         }
       }
@@ -2449,6 +2482,17 @@
         }
       }
     },
+    "Regex" : {
+      "comment" : "正则表达式",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正则表达式"
+          }
+        }
+      }
+    },
     "Rename" : {
       "comment" : "重命名",
       "localizations" : {
@@ -2615,6 +2659,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前已扫描 %d 个文件，其中图像 %d 个，视频 %d 个。是否继续？"
+          }
+        }
+      }
+    },
+    "Search..." : {
+      "comment" : "搜索...",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索..."
           }
         }
       }

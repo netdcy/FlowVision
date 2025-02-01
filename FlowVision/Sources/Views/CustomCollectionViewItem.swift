@@ -335,7 +335,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         //定义失去焦点时的边框颜色
         var focusColor = NSColor.systemGray //失焦
-        if getViewController(collectionView!)!.publicVar.isCollectionViewFirstResponder{
+        if getViewController(collectionView!)!.publicVar.isCollectionViewFirstResponder || getViewController(collectionView!)!.publicVar.isInSearchState {
             focusColor = NSColor.controlAccentColor //聚焦
         } else if style.ThumbnailBorderThickness == 0 {
             focusColor = NSColor.black
@@ -353,9 +353,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor //填充
         }else{
             if theme == .darkAqua {
-                imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#505050").cgColor //填充
+                //imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#505050").cgColor //填充
+                imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#404040").cgColor //填充
             }else{
-                imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#CECECE").cgColor //填充
+                //imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#CECECE").cgColor //填充
+                imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#DDDDDD").cgColor //填充
             }
         }
         

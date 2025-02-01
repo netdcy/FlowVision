@@ -180,6 +180,7 @@ class PublicVar{
     var isInStageOneProgress = false
     var isInStageTwoProgress = false
     var isInStageThreeProgress = false
+    var isInSearchState = false
     
     var HandledImageAndRawExtensions: [String] = []
     var HandledVideoExtensions: [String] = []
@@ -223,7 +224,7 @@ class PublicVar{
     }
 }
 
-class ViewController: NSViewController, NSSplitViewDelegate {
+class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelegate {
     
     @IBOutlet weak var collectionView: CustomCollectionView!
     @IBOutlet weak var mainScrollView: NSScrollView!
@@ -340,7 +341,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     var autoPlayTimer: Timer? // 定时器，用于控制自动播放的节奏
     var autoPlayInterval: TimeInterval = 0 // 播放间隔，初始设置为0，用户输入后更新
     var isAutoPlaying: Bool = false // 自动播放是否正在进行的标志
-
+    
+    private var searchField: NSSearchField?
+    private var searchOverlay: SearchOverlayView?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -626,6 +630,14 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     }
                 }
                 
+                // 检查按键是否是 Command+Shift+"R" 键
+                if characters == "r" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
+                    if !publicVar.isInLargeView{
+                        toggleRecursiveMode()
+                        return nil
+                    }
+                }
+                
                 // 检查按键是否是 Command+[ 键
                 if characters == "[" && isCommandPressed {
                     switchDirByDirection(direction: .back, stackDeep: 0)
@@ -721,7 +733,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         closeLargeImage(0)
                         return nil
                     }else{
-                        deselectAll()
+                        if publicVar.isCollectionViewFirstResponder{
+                            collectionView.deselectAll(nil)
+                        }
                         return nil
                     }
                 }
@@ -1080,6 +1094,15 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             // 处理弹出重命名对话框、OCR状态的复制粘贴操作
             if (!publicVar.isKeyEventEnabled || largeImageView.isInOcrState) && event.modifierFlags.contains(.command) {
                 switch event.charactersIgnoringModifiers {
+                case "a":
+                    if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.selectAll(_:))) {
+                        responder.perform(#selector(NSText.selectAll(_:)), with: nil)
+                        return nil // 事件已处理，返回 nil 以防止传递给下一个响应者
+                    } else {
+                        // 处理自定义 Command+A 操作
+                        log("Custom Command+A action")
+                        return nil // 事件已处理，返回 nil 以防止传递给下一个响应者
+                    }
                 case "c":
                     if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.copy(_:))) {
                         responder.perform(#selector(NSText.copy(_:)), with: nil)
@@ -1381,6 +1404,11 @@ class ViewController: NSViewController, NSSplitViewDelegate {
     
     func toggleRecursiveMode(){
         publicVar.isRecursiveMode.toggle()
+        var showText = NSLocalizedString("Exit Recursive Mode", comment: "退出递归模式")
+        if publicVar.isRecursiveMode {
+            showText = NSLocalizedString("Enable Recursive Mode", comment: "开启递归模式")
+        }
+        coreAreaView.showInfo(showText, timeOut: 1.0, cannotBeCleard: true)
         refreshCollectionView()
     }
     
@@ -2974,6 +3002,9 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         //停止自动播放
         stopAutoPlay()
+        
+        //关闭搜索窗口
+        //closeSearchOverlay()
 
         stopWatchingDirectory()
         collectionView.deselectAll(nil)
@@ -4604,10 +4635,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         }
     }
     
-    func deselectAll(){
-        collectionView.deselectAll(nil)
-    }
-    
     func handleScrollWheel(_ event: NSEvent) {
         //log("触控板:",event.scrollingDeltaY,event.scrollingDeltaX)
         //log("滚轮的:",event.deltaY)
@@ -6008,6 +6035,313 @@ class ViewController: NSViewController, NSSplitViewDelegate {
             }
         }
     }
+    
+    class SearchOverlayView: NSView {
+        //weak var searchField: NSSearchField?
+        weak var containerView: NSView?
+        weak var viewController: ViewController?
+        
+        override func mouseDown(with event: NSEvent) {
+            let location = event.locationInWindow
+            let point = convert(location, from: nil)
+            
+            if let containerView = containerView, !containerView.frame.contains(point) {
+                viewController?.closeSearchOverlay()
+            }
+        }
+    }
+
+    func showSearchOverlay() {
+        if publicVar.isInLargeView {return}
+        if searchOverlay == nil {
+
+            // 创建半透明背景，使用自定义 SearchOverlayView
+            let overlay = SearchOverlayView(frame: view.bounds)
+            overlay.wantsLayer = true
+            overlay.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.0).cgColor
+            
+            // 创建搜索框容器视图 - 增加高度以容纳两行
+            let containerView = NSView(frame: NSRect(x: 0, y: 0, width: 380, height: 66))
+            
+            // 创建搜索框 - 放在上面一行
+            searchField = NSSearchField(frame: NSRect(x: 5, y: 31, width: 370, height: 30))
+            searchField?.placeholderString = NSLocalizedString("Search...", comment: "搜索...")
+            searchField?.delegate = self
+            searchField?.target = self
+            searchField?.action = #selector(searchFieldDidChange(_:))
+            searchField?.focusRingType = .none
+            
+            // 创建区分大小写复选框 - 放在下面一行
+            let caseSensitiveCheckboxTitle = NSLocalizedString("Case Sensitive", comment: "区分大小写")
+            let caseSensitiveCheckboxWidth = 25 + caseSensitiveCheckboxTitle.size(withAttributes: [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]).width
+            let caseSensitiveCheckbox = NSButton(checkboxWithTitle: caseSensitiveCheckboxTitle, target: self, action: #selector(caseSensitiveCheckboxChanged(_:)))
+            caseSensitiveCheckbox.frame = NSRect(x: 5, y: 6, width: caseSensitiveCheckboxWidth, height: 20)
+            caseSensitiveCheckbox.state = .off
+            
+            // 创建正则表达式复选框 - 放在下面一行
+            let regexCheckboxTitle = NSLocalizedString("Regex", comment: "正则表达式")
+            let regexCheckboxWidth = 25 + regexCheckboxTitle.size(withAttributes: [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]).width
+            let regexCheckbox = NSButton(checkboxWithTitle: regexCheckboxTitle, target: self, action: #selector(regexCheckboxChanged(_:)))
+            regexCheckbox.frame = NSRect(x: 5 + caseSensitiveCheckboxWidth + 10, y: 6, width: regexCheckboxWidth, height: 20)
+            regexCheckbox.state = .off
+            
+            // 创建向前搜索按钮 - 放在下面一行
+            let prevButton = NSButton(frame: NSRect(x: 317, y: 3, width: 30, height: 25))
+            prevButton.bezelStyle = .regularSquare
+            prevButton.image = NSImage(systemSymbolName: "chevron.left", accessibilityDescription: nil)
+            prevButton.target = self
+            prevButton.action = #selector(prevButtonClicked(_:))
+            
+            // 创建向后搜索按钮 - 放在下面一行
+            let nextButton = NSButton(frame: NSRect(x: 347, y: 3, width: 30, height: 25))
+            nextButton.bezelStyle = .regularSquare
+            nextButton.image = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: nil)
+            nextButton.target = self
+            nextButton.action = #selector(nextButtonClicked(_:))
+            
+            // 添加所有控件到容器视图
+            containerView.addSubview(searchField!)
+            containerView.addSubview(regexCheckbox)
+            containerView.addSubview(caseSensitiveCheckbox)  // 添加新的复选框
+            containerView.addSubview(prevButton)
+            containerView.addSubview(nextButton)
+            
+            // 设置容器视图位置
+            containerView.frame.origin.x = view.bounds.width - containerView.frame.width - 30
+            containerView.frame.origin.y = view.bounds.height - containerView.frame.height - 20
+            
+            overlay.addSubview(containerView)
+            
+            // 设置引用
+            overlay.containerView = containerView
+            overlay.viewController = self
+            searchOverlay = overlay
+            
+            view.addSubview(searchOverlay!)
+            
+        }
+        
+        if let containerView = searchOverlay?.containerView {
+            // 设置样式
+            containerView.wantsLayer = true
+            containerView.layer?.cornerRadius = 8
+            containerView.layer?.masksToBounds = false
+            let theme = NSApp.effectiveAppearance.name
+            if theme == .darkAqua {
+                containerView.layer?.backgroundColor = hexToNSColor(hex: "#404040", alpha: 0.8).cgColor
+            } else {
+                containerView.layer?.backgroundColor = hexToNSColor(hex: "#EEEEEE", alpha: 0.9).cgColor
+            }
+            containerView.layer?.shadowColor = NSColor.black.withAlphaComponent(0.4).cgColor
+            containerView.layer?.shadowOffset = CGSize(width: 1.3, height: -1.3)
+            containerView.layer?.shadowRadius = 2.5
+            containerView.layer?.shadowOpacity = 1
+        }
+        
+        publicVar.isKeyEventEnabled = false
+        publicVar.isInSearchState = true
+        searchOverlay?.isHidden = false
+        searchField?.becomeFirstResponder()
+    }
+
+    @objc private func closeSearchOverlay() {
+        //searchOverlay?.removeFromSuperview()
+        //searchOverlay = nil
+        //searchField = nil
+        
+        publicVar.isKeyEventEnabled = true
+        publicVar.isInSearchState = false
+        if searchOverlay?.isHidden == false {
+            searchOverlay?.isHidden = true
+            view.window?.makeFirstResponder(collectionView)
+        }
+    }
+    
+    private func getFileNameForSearch(path: String) -> String? {
+        if path.hasSuffix("/") {
+            return path.dropLast().components(separatedBy: "/").last?.removingPercentEncoding
+        }
+        return path.components(separatedBy: "/").last?.removingPercentEncoding
+    }
+
+    private func performSearch(searchText: String, isEnterKey: Bool, isReverse: Bool = false) {
+        // 如果搜索文本为空，不执行搜索
+        if searchText.isEmpty {
+            return
+        }
+        
+        // 获取当前选中的索引
+        let currentSelectedIndex = collectionView.selectionIndexPaths.first?.item ?? -1
+        
+        fileDB.lock()
+        let files = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files ?? [:]
+        
+        // 检查当前选中项是否符合搜索条件
+        if let currentIndex = collectionView.selectionIndexPaths.first?.item,
+           let currentFileName = getFileNameForSearch(path: files.element(atOffset: currentIndex).1.path),
+           isSearchMatch(fileName: currentFileName, searchText: searchText) {
+            if isEnterKey {
+                // 查找下一个或上一个匹配项
+                var foundIndex: Int?
+                if isReverse {
+                    for (index, file) in files.enumerated().reversed() {
+                        if let fileName = getFileNameForSearch(path: file.1.path) {
+                            if isSearchMatch(fileName: fileName, searchText: searchText) && index < currentSelectedIndex {
+                                foundIndex = index
+                                break
+                            }
+                        }
+                    }
+                    
+                    // 如果到头了，则跳转到末尾，直到当前项之后（从而实现循环跳转）
+                    if foundIndex == nil {
+                        for (index, file) in files.enumerated().reversed() {
+                            if let fileName = getFileNameForSearch(path: file.1.path) {
+                                if isSearchMatch(fileName: fileName, searchText: searchText) && index >= currentSelectedIndex {
+                                    foundIndex = index
+                                    break
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    for (index, file) in files.enumerated() {
+                        if let fileName = getFileNameForSearch(path: file.1.path) {
+                            if isSearchMatch(fileName: fileName, searchText: searchText) && index > currentSelectedIndex {
+                                foundIndex = index
+                                break
+                            }
+                        }
+                    }
+                    
+                    // 如果到底了，则跳转到开头，直到当前项之前（从而实现循环跳转）
+                    if foundIndex == nil {
+                        for (index, file) in files.enumerated() {
+                            if let fileName = getFileNameForSearch(path: file.1.path) {
+                                if isSearchMatch(fileName: fileName, searchText: searchText) && index <= currentSelectedIndex {
+                                    foundIndex = index
+                                    break
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                fileDB.unlock()
+                
+                // 如果找到匹配项，选中并滚动到该项
+                if let index = foundIndex {
+                    if index >= 0 && index < collectionView.numberOfItems(inSection: 0) {
+                        let indexPath = IndexPath(item: index, section: 0)
+                        collectionView.deselectAll(nil)
+                        collectionView.scrollToItems(at: [indexPath], scrollPosition: .nearestHorizontalEdge)
+                        collectionView.reloadData()
+                        collectionView.selectItems(at: [indexPath], scrollPosition: [])
+                        setLoadThumbPriority(indexPath: indexPath, ifNeedVisable: false)
+                    }
+                }
+                
+                return
+            } else {
+                fileDB.unlock()
+                return
+            }
+        } else {
+            // 当前选中项不符合搜索条件，取消所有选择
+            collectionView.deselectAll(nil)
+        }
+        
+        // 从头开始查找第一个匹配项
+        var foundIndex: Int?
+        for (index, file) in files.enumerated() {
+            if let fileName = getFileNameForSearch(path: file.1.path) {
+                if isSearchMatch(fileName: fileName, searchText: searchText) {
+                    foundIndex = index
+                    break
+                }
+            }
+        }
+        fileDB.unlock()
+        
+        // 如果找到匹配项，选中并滚动到该项
+        if let index = foundIndex {
+            if index >= 0 && index < collectionView.numberOfItems(inSection: 0) {
+                let indexPath = IndexPath(item: index, section: 0)
+                collectionView.deselectAll(nil)
+                collectionView.scrollToItems(at: [indexPath], scrollPosition: .nearestHorizontalEdge)
+                collectionView.reloadData()
+                collectionView.selectItems(at: [indexPath], scrollPosition: [])
+                setLoadThumbPriority(indexPath: indexPath, ifNeedVisable: false)
+            }
+        }
+    }
+    
+    private func isSearchMatch(fileName: String, searchText: String) -> Bool {
+        if useRegex {
+            // 使用正则表达式进行匹配
+            do {
+                let options: NSRegularExpression.Options = isCaseSensitive ? [] : [.caseInsensitive]
+                let regex = try NSRegularExpression(pattern: searchText, options: options)
+                let range = NSRange(location: 0, length: fileName.utf16.count)
+                return regex.firstMatch(in: fileName, options: [], range: range) != nil
+            } catch {
+                // 如果正则表达式无效，返回false
+                return false
+            }
+        } else {
+            // 使用普通文本匹配
+            if isCaseSensitive {
+                return fileName.contains(searchText)
+            } else {
+                return fileName.lowercased().contains(searchText.lowercased())
+            }
+        }
+    }
+
+    @objc private func searchFieldDidChange(_ sender: NSSearchField) {
+        let searchText = sender.stringValue
+        performSearch(searchText: searchText, isEnterKey: false)
+    }
+
+    func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+        if commandSelector == #selector(NSResponder.insertNewline(_:)) {
+            let searchText = searchField?.stringValue ?? ""
+            let isShiftPressed = NSEvent.modifierFlags.contains(.shift)
+            performSearch(searchText: searchText, isEnterKey: true, isReverse: isShiftPressed)
+            return true
+        } else if commandSelector == #selector(NSResponder.cancelOperation(_:)) {
+            closeSearchOverlay()
+            return true
+        }
+        return false
+    }
+    
+    // 选项状态
+    private var useRegex: Bool = false
+    private var isCaseSensitive: Bool = false
+
+    @objc private func regexCheckboxChanged(_ sender: NSButton) {
+        useRegex = (sender.state == .on)
+        // 当切换正则表达式选项时，重新执行搜索
+        let searchText = searchField?.stringValue ?? ""
+        performSearch(searchText: searchText, isEnterKey: false)
+    }
+
+    @objc private func caseSensitiveCheckboxChanged(_ sender: NSButton) {
+        isCaseSensitive = (sender.state == .on)
+        // 当切换区分大小写选项时，重新执行搜索
+        let searchText = searchField?.stringValue ?? ""
+        performSearch(searchText: searchText, isEnterKey: false)
+    }
+
+    @objc private func prevButtonClicked(_ sender: NSButton) {
+        let searchText = searchField?.stringValue ?? ""
+        performSearch(searchText: searchText, isEnterKey: true, isReverse: true)
+    }
+
+    @objc private func nextButtonClicked(_ sender: NSButton) {
+        let searchText = searchField?.stringValue ?? ""
+        performSearch(searchText: searchText, isEnterKey: true, isReverse: false)
+    }
+
 }
-
-
