@@ -1127,6 +1127,9 @@ extension WindowController: NSToolbarDelegate {
         let recursiveMode = menu.addItem(withTitle: NSLocalizedString("Recursive Mode", comment: "递归浏览模式"), action: #selector(toggleRecursiveMode), keyEquivalent: "r")
         recursiveMode.keyEquivalentModifierMask = [.command, .shift]
         recursiveMode.state = (viewController.publicVar.isRecursiveMode) ? .on : .off
+
+        let recursiveContainFolder = menu.addItem(withTitle: NSLocalizedString("Include Folders", comment: "包含文件夹"), action: #selector(toggleRecursiveContainFolder), keyEquivalent: "")
+        recursiveContainFolder.state = (viewController.publicVar.isRecursiveContainFolder) ? .on : .off
         
         let recursiveModeInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(recursiveModeInfo), keyEquivalent: "")
         
@@ -1367,6 +1370,11 @@ extension WindowController: NSToolbarDelegate {
     @objc func toggleRecursiveMode(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.toggleRecursiveMode()
+    }
+    
+    @objc func toggleRecursiveContainFolder(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleRecursiveContainFolder()
     }
     
     @objc func recursiveModeInfo(_ sender: NSMenuItem){

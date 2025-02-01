@@ -140,6 +140,12 @@
     "Apply Filter" : {
       "comment" : "执行过滤",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apply Filter"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -253,6 +259,12 @@
     "Cancel Filter" : {
       "comment" : "取消过滤",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel Filter"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -298,6 +310,12 @@
     "Case Sensitive" : {
       "comment" : "区分大小写",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Case Sensitive"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -751,6 +769,12 @@
     "Enable Recursive Mode" : {
       "comment" : "开启递归模式",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable Recursive Mode"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1255,6 +1279,12 @@
     "Exit Recursive Mode" : {
       "comment" : "退出递归模式\n退出递归浏览模式",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exit Recursive Mode"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1582,6 +1612,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "图像尺寸"
+          }
+        }
+      }
+    },
+    "Include Folders" : {
+      "comment" : "包含文件夹",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Include Folders"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "包含文件夹"
           }
         }
       }
@@ -2442,13 +2489,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In \"Recursive Mode\", after selecting a folder in the directory tree, the thumbnail area will display all files within the folder and its subdirectories.\n\nWhen scanning certain system directories or network drives, the program may experience lag."
+            "value" : "In \"recursive browsing mode\", after selecting a folder in the directory tree, the thumbnail area will display all files within the folder and its subdirectories. When \"Include folders\" is checked, all subfolders themselves will also be displayed.\n\nWhen scanning certain system directories or network drives, the program may experience lag. Please try to avoid switching to the top-level directory in this mode.\n\nAdditionally, in this mode, the application does not monitor file system changes, so if there are any modifications (such as edits or deletions), please refresh manually."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“递归浏览模式”时，在目录树中选择文件夹后，缩略图区域将显示文件夹及其子目录下的所有文件。\n\n扫描部分系统目录或网络驱动器时，程序可能产生卡顿。"
+            "value" : "“递归浏览模式”时，在目录树中选择文件夹后，缩略图区域将显示文件夹及其子目录下的所有文件。勾选“包含文件夹”时，也将显示所有子文件夹本身。\n\n扫描部分系统目录或网络驱动器时，程序可能产生卡顿。在此模式下请尽量避免切换到顶层目录。\n\n另外，此模式下应用不会监听文件系统变化，因此如有改动（修改和删除等），请手动刷新。"
           }
         }
       }
@@ -2507,6 +2554,12 @@
     "Regex" : {
       "comment" : "正则表达式",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regex"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2691,13 +2744,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To enable file search within subdirectories, first activate \"Recursive Browse Mode.\"\n\nAt this point, you can additionally use the search option \"use full path\" combined with regular expressions for advanced searches.\n For example, if the full file path is:  \n/Users/Alice/Pictures/20220101/mypick/001.jpg   \nYou can use the regular expression:  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\nto match all files whose parent directory names contain \"pick.\" For more complex regular expressions, you can use ChatGPT to assist in generation."
+            "value" : "To enable file search within subdirectories, first activate \"Recursive Browse Mode.\"\n\nAt this point, you can additionally use the search option \"use full path\" combined with regular expressions for advanced searches.\n For example, if the full file path is:  \n/Users/Alice/Pictures/20220101/mypick/001.jpg   \nYou can use the regular expression:  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\nto match all files whose parent directory names contain \"pick.\" For more complex regular expressions, you can use ChatGPT to assist in writing them."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "要实现对子目录中文件的搜索，可先启用“递归浏览模式”。\n\n此时可额外使用搜索选项“使用完整路径”，再结合正则表达式实现高级搜索。\n例如，文件完整路径为：\n/Users/Alice/Pictures/20220101/mypick/001.jpg  \n可使用正则表达式：\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\n匹配所有父目录名含有“pick”的文件，更复杂的正则表达式可使用ChatGPT辅助生成。"
+            "value" : "要实现对子目录中文件的搜索，可先启用“递归浏览模式”。\n\n此时可额外使用搜索选项“使用完整路径”，再结合正则表达式实现高级搜索。\n例如，文件完整路径为：\n/Users/Alice/Pictures/20220101/mypick/001.jpg  \n可使用正则表达式：\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\n匹配所有父目录名含有“pick”的文件，更复杂的正则表达式可使用ChatGPT辅助编写。"
           }
         }
       }
@@ -2705,6 +2758,12 @@
     "Search..." : {
       "comment" : "搜索...",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3736,6 +3795,12 @@
     "Use Full Path" : {
       "comment" : "使用完整路径",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use Full Path"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",

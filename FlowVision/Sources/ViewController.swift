@@ -116,6 +116,7 @@ class PublicVar{
 
     var isLargeImageFitWindow = true
     var isRecursiveMode = false
+    var isRecursiveContainFolder = false
     var isShowHiddenFile = false
     var isShowAllTypeFile = false
     var isShowImageFile = true
@@ -448,6 +449,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         if let isEnableHDR = UserDefaults.standard.value(forKey: "isEnableHDR") as? Bool {
             publicVar.isEnableHDR = isEnableHDR
+        }
+        if let isRecursiveContainFolder = UserDefaults.standard.value(forKey: "isRecursiveContainFolder") as? Bool {
+            publicVar.isRecursiveContainFolder = isRecursiveContainFolder
         }
         if #available(macOS 14.0, *) {
             //
@@ -1425,6 +1429,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         coreAreaView.showInfo(showText, timeOut: 1.0, cannotBeCleard: true)
         refreshCollectionView()
+    }
+    
+    func toggleRecursiveContainFolder(){
+        publicVar.isRecursiveContainFolder.toggle()
+        UserDefaults.standard.set(publicVar.isRecursiveContainFolder, forKey: "isRecursiveContainFolder")
+        if publicVar.isRecursiveMode {
+            refreshCollectionView()
+        }
     }
     
     func toggleIsShowHiddenFile(){
@@ -3171,7 +3183,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         while let url = enumerator?.nextObject() as? URL {
             let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) ?? false
-            if !isDirectory {
+            if !isDirectory || publicVar.isRecursiveContainFolder {
                 contents.append(url)
                 fileCount += 1
                 if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
