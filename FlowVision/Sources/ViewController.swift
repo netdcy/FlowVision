@@ -1197,7 +1197,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
     }
     
-    deinit {
+    func prepareForDeinit() {
         // 在这里执行清理工作
         log("ViewController is being deinitialized")
         
@@ -1226,6 +1226,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             NotificationCenter.default.removeObserver(self, name: NSScrollView.didEndLiveScrollNotification, object: scrollView)
         }
         
+        //停止监控
+        stopWatchingDirectory()
+        
         // 取消所有未完成的异步任务
         largeImageLoadTask?.cancel()
         largeImageLoadTask = nil
@@ -1244,12 +1247,24 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         autoScrollTimer?.invalidate()
         autoScrollTimer = nil
         
-        //停止监控
-        stopWatchingDirectory()
-        
         //工作线程结束标志
         willTerminate=true
 
+        //产生空任务，防止等待信号量导致窗口无法销毁
+        readInfoTaskPoolSemaphore.signal()
+        loadImageTaskPoolSemaphore.signal()
+        
+        //清空数据库
+        fileDB.lock()
+        for (_,dirModel) in fileDB.db {
+            for (_,fileModel) in dirModel.files {
+                fileModel.image=nil
+                fileModel.folderImages=[NSImage]()
+            }
+            //dirModel.files.removeAll()
+        }
+        //fileDB.db.removeAll()
+        fileDB.unlock()
     }
     
     func afterFinishLoad(_ openFolder: String? = nil){

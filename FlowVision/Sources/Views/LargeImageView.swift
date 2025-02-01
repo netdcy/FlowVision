@@ -711,7 +711,7 @@ class LargeImageView: NSView {
         sharingServicePicker.show(relativeTo: rect, of: self, preferredEdge: .maxX)
     }
     
-    deinit {
+    func prepareForDeinit() {
         if let gesture = magnificationGesture {
             self.removeGestureRecognizer(gesture)
         }

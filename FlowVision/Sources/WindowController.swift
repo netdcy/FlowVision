@@ -70,7 +70,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
         log("结束windowDidLoad")
     }
     
-    deinit {
+    func prepareForDeinit() {
         NotificationCenter.default.removeObserver(self, name: NSWindow.willCloseNotification, object: window)
     }
     
@@ -93,26 +93,13 @@ class WindowController: NSWindowController, NSWindowDelegate {
                 appDelegate.removeWindowController(self)
             }
         }
-        // 在窗口关闭时执行你的代码，例如，保存数据、释放资源等
+        
+        // 在窗口关闭时执行清理，例如，保存数据、释放资源等
         if let viewController = contentViewController as? ViewController {
-            //供其它线程参考的终止状态
-            viewController.willTerminate=true
-            //产生空任务，防止等待信号量导致窗口无法销毁
-            viewController.readInfoTaskPoolSemaphore.signal()
-            viewController.loadImageTaskPoolSemaphore.signal()
-            //清空数据库
-            let fileDB = viewController.fileDB
-            fileDB.lock()
-            for (_,dirModel) in fileDB.db {
-                for (_,fileModel) in dirModel.files {
-                    fileModel.image=nil
-                    fileModel.folderImages=[NSImage]()
-                }
-                //dirModel.files.removeAll()
-            }
-            //fileDB.db.removeAll()
-            fileDB.unlock()
+            viewController.largeImageView.prepareForDeinit()
+            viewController.prepareForDeinit()
         }
+        self.prepareForDeinit()
         
         globalVar.windowNum -= 1
         log("Window closed, remain: " + String(globalVar.windowNum))
