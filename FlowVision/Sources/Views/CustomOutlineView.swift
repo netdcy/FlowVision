@@ -130,14 +130,13 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             actionItemMove.isEnabled = canPasteOrMove
 
             menu.addItem(NSMenuItem.separator())
-            
-            let actionItemNewFolder = menu.addItem(withTitle: NSLocalizedString("New Folder", comment: "新建文件夹"), action: #selector(actNewFolder), keyEquivalent: "n")
-            actionItemNewFolder.keyEquivalentModifierMask = [.command,.shift]
+
+            let actionItemOpenInTerminal = menu.addItem(withTitle: NSLocalizedString("Open in Terminal", comment: "在终端中打开"), action: #selector(actOpenInTerminal), keyEquivalent: "")
             
             menu.addItem(NSMenuItem.separator())
 
-            // 在终端中打开
-            let actionItemOpenInTerminal = menu.addItem(withTitle: NSLocalizedString("Open in Terminal", comment: "在终端中打开"), action: #selector(actOpenInTerminal), keyEquivalent: "")
+            let actionItemNewFolder = menu.addItem(withTitle: NSLocalizedString("New Folder", comment: "新建文件夹"), action: #selector(actNewFolder), keyEquivalent: "n")
+            actionItemNewFolder.keyEquivalentModifierMask = [.command,.shift]
             
             menu.addItem(NSMenuItem.separator())
             

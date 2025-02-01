@@ -3146,23 +3146,6 @@
         }
       }
     },
-    "Sort By" : {
-      "comment" : "排序方式",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sort By"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "排序方式"
-          }
-        }
-      }
-    },
     "Sort by EXIF Info" : {
       "comment" : "根据Exif信息排序",
       "localizations" : {
