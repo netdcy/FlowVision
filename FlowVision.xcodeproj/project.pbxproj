@@ -88,7 +88,6 @@
 		F70F9FC02BAFE7B300C50CDD /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		F70F9FC22BAFE85D00C50CDD /* CustomCollectionViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewManager.swift; sourceTree = "<group>"; };
 		F71DCEB82BD425D6006E5B1E /* CustomOutlineViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomOutlineViewManager.swift; sourceTree = "<group>"; };
-		F724648B2BF3577E001A8883 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		F73865D22C37B97500837FE4 /* CustomCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionView.swift; sourceTree = "<group>"; };
 		F73865D42C37B9B800837FE4 /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		F73865D62C37BB2900837FE4 /* CustomOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomOutlineView.swift; sourceTree = "<group>"; };
@@ -122,6 +121,7 @@
 		F7790ED62BA5FB6A00406D35 /* CustomCollectionViewItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomCollectionViewItem.xib; sourceTree = "<group>"; };
 		F78960F12BDCC26B00C2571B /* LargeImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeImageView.swift; sourceTree = "<group>"; };
 		F78960F52BDFFE9200C2571B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F78D1A692D432DCE00741908 /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/Main.xcstrings; sourceTree = "<group>"; };
 		F78FAB0C2C0EE94D00FE66CC /* CustomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageView.swift; sourceTree = "<group>"; };
 		F795AC6D2C196B80004B487F /* CustomSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSplitView.swift; sourceTree = "<group>"; };
 		F7A075502BA1D716009C47A6 /* FlowVisionDbg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowVisionDbg.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -415,7 +415,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				F7A0755A2BA1D717009C47A6 /* Base */,
-				F724648B2BF3577E001A8883 /* zh-Hans */,
+				F78D1A692D432DCE00741908 /* mul */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";

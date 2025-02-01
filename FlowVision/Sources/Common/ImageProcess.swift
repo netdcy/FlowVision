@@ -993,47 +993,47 @@ func approximateFraction(_ value: Double, withPrecision precision: Double = 1.0e
 }
 
 func formatExifData(_ imageProperties: [String: Any]) -> [(String, Any)] {
-    var isUseChinese=false
-    if Bundle.main.preferredLocalizations.first == "zh-Hans"{
-        isUseChinese=true
+    var isUseMultiLang=true
+    if Bundle.main.preferredLocalizations.first != "en"{
+        isUseMultiLang=true
     }
     
     var translationMap: [(CFString, String)] = [
-        ("FileSize" as CFString, "文件大小"),
-        ("ImageSize" as CFString, "图像分辨率"),
-        ("FileCreatedTime" as CFString, "文件创建时间"),
-        ("FileModifiedTime" as CFString, "文件修改时间"),
-        ("FileAddedTime" as CFString, "文件添加时间"),
-        ("Rating" as CFString, "星级"),
+        ("FileSize" as CFString, NSLocalizedString("Exif-FileSize", comment: "文件大小")),
+        ("ImageSize" as CFString, NSLocalizedString("Exif-ImageSize", comment: "图像分辨率")),
+        ("FileCreatedTime" as CFString, NSLocalizedString("Exif-FileCreatedTime", comment: "文件创建时间")),
+        ("FileModifiedTime" as CFString, NSLocalizedString("Exif-FileModifiedTime", comment: "文件修改时间")),
+        ("FileAddedTime" as CFString, NSLocalizedString("Exif-FileAddedTime", comment: "文件添加时间")),
+        ("Rating" as CFString, NSLocalizedString("Exif-Rating", comment: "星级")),
         
         ("-" as CFString, "-"),
         
-        (kCGImagePropertyExifDateTimeOriginal, "拍摄时间"),
-        (kCGImagePropertyExifDateTimeDigitized, "数字化时间"),
-        (kCGImagePropertyTIFFDateTime, "元数据时间"),
+        (kCGImagePropertyExifDateTimeOriginal, NSLocalizedString("Exif-DateTimeOriginal", comment: "拍摄时间")),
+        (kCGImagePropertyExifDateTimeDigitized, NSLocalizedString("Exif-DateTimeDigitized", comment: "数字化时间")),
+        (kCGImagePropertyTIFFDateTime, NSLocalizedString("Exif-TIFFDateTime", comment: "元数据时间")),
         
-        (kCGImagePropertyExifExposureTime, "曝光时间"),
-        (kCGImagePropertyExifISOSpeedRatings, "ISO值"),
-        (kCGImagePropertyExifFNumber, "光圈值 (FNumber)"),
-        (kCGImagePropertyExifApertureValue, "光圈值 (Aperture)"),
-        (kCGImagePropertyExifFlash, "闪光灯"),
-        (kCGImagePropertyExifFocalLength, "焦距"),
+        (kCGImagePropertyExifExposureTime, NSLocalizedString("Exif-ExposureTime", comment: "曝光时间")),
+        (kCGImagePropertyExifISOSpeedRatings, NSLocalizedString("Exif-ISOSpeedRatings", comment: "ISO感光度")),
+        (kCGImagePropertyExifFNumber, NSLocalizedString("Exif-FNumber", comment: "光圈值 (FNumber)")),
+        (kCGImagePropertyExifApertureValue, NSLocalizedString("Exif-ApertureValue", comment: "光圈值 (Aperture)")),
+        (kCGImagePropertyExifFlash, NSLocalizedString("Exif-Flash", comment: "闪光灯")),
+        (kCGImagePropertyExifFocalLength, NSLocalizedString("Exif-FocalLength", comment: "焦距")),
         
-        (kCGImagePropertyExifLensModel, "镜头型号"),
-        (kCGImagePropertyTIFFModel, "相机型号"),
-        (kCGImagePropertyTIFFMake, "制造商"),
+        (kCGImagePropertyExifLensModel, NSLocalizedString("Exif-LensModel", comment: "镜头型号")),
+        (kCGImagePropertyTIFFModel, NSLocalizedString("Exif-CameraModel", comment: "相机型号")),
+        (kCGImagePropertyTIFFMake, NSLocalizedString("Exif-CameraMaker", comment: "制造商")),
         
-        (kCGImagePropertyTIFFSoftware, "软件"),
-        (kCGImagePropertyTIFFArtist, "作者"),
+        (kCGImagePropertyTIFFSoftware, NSLocalizedString("Exif-Software", comment: "软件")),
+        (kCGImagePropertyTIFFArtist, NSLocalizedString("Exif-Artist", comment: "作者")),
         
-        (kCGImagePropertyColorModel, "色彩空间"),
-        (kCGImagePropertyProfileName, "配置文件名称"),
-        (kCGImagePropertyDepth, "位深度"),
-        ("custom-HDR" as CFString, "HDR")
+        (kCGImagePropertyColorModel, NSLocalizedString("Exif-ColorModel", comment: "色彩空间")),
+        (kCGImagePropertyProfileName, NSLocalizedString("Exif-ProfileName", comment: "配置文件名称")),
+        (kCGImagePropertyDepth, NSLocalizedString("Exif-Depth", comment: "位深度")),
+        ("HDR Mode" as CFString, "HDR")
     ]
     
     for i in 0..<translationMap.count {
-        if !isUseChinese {
+        if !isUseMultiLang {
             translationMap[i].1 = translationMap[i].0 as String
         }
     }
@@ -1071,8 +1071,8 @@ func formatExifData(_ imageProperties: [String: Any]) -> [(String, Any)] {
                 }
             case kCGImagePropertyExifFlash:
                 if let flashValue = value as? Int {
-                    if isUseChinese {
-                        formattedData.append((translationKey, flashValue == 0 ? "未使用" : "开启"))
+                    if isUseMultiLang {
+                        formattedData.append((translationKey, flashValue == 0 ? NSLocalizedString("Exif-Flash-Off", comment: "未使用") : NSLocalizedString("Exif-Flash-On", comment: "开启")))
                     }else{
                         formattedData.append((translationKey, flashValue == 0 ? "Off" : "On"))
                     }
@@ -1092,7 +1092,7 @@ func formatExifData(_ imageProperties: [String: Any]) -> [(String, Any)] {
             if key == kCGImagePropertyTIFFDateTime {
                 if let dateTime = value as? String,
                    let timeAsDate = parseExifDateTime(dateTimeString: dateTime) {
-                    formattedData.append((isUseChinese ? translationKey : "DateTimeMetadata", formatDateToCurrentTimeZone(timeAsDate)))
+                    formattedData.append((isUseMultiLang ? translationKey : "DateTimeMetadata", formatDateToCurrentTimeZone(timeAsDate)))
                 }
             }else if key == kCGImagePropertyTIFFArtist {
                 if let artist = value as? String {
