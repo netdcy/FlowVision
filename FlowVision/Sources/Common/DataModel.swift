@@ -200,19 +200,19 @@ class SortKey: Comparable {
             if lhs.createDate == rhs.createDate {return lhs.path<rhs.path}
             return lhs.createDate < rhs.createDate
         }else if lhs.sortType == .createDateZ {
-            if lhs.createDate == rhs.createDate {return lhs.path<rhs.path}
+            if lhs.createDate == rhs.createDate {return lhs.path>rhs.path}
             return lhs.createDate > rhs.createDate
         }else if lhs.sortType == .modDateA {
             if lhs.modDate == rhs.modDate {return lhs.path<rhs.path}
             return lhs.modDate < rhs.modDate
         }else if lhs.sortType == .modDateZ {
-            if lhs.modDate == rhs.modDate {return lhs.path<rhs.path}
+            if lhs.modDate == rhs.modDate {return lhs.path>rhs.path}
             return lhs.modDate > rhs.modDate
         }else if lhs.sortType == .addDateA {
             if lhs.addDate == rhs.addDate {return lhs.path<rhs.path}
             return lhs.addDate < rhs.addDate
         }else if lhs.sortType == .addDateZ {
-            if lhs.addDate == rhs.addDate {return lhs.path<rhs.path}
+            if lhs.addDate == rhs.addDate {return lhs.path>rhs.path}
             return lhs.addDate > rhs.addDate
         }else if lhs.sortType == .extA {
             if lhs.ext() == rhs.ext() {return lhs.path<rhs.path}
@@ -241,7 +241,7 @@ class SortKey: Comparable {
                 if lhs.exifDate == rhs.exifDate {return lhs.path<rhs.path}
                 return lhs.exifDate < rhs.exifDate
             }else if lhs.sortType == .exifDateZ {
-                if lhs.exifDate == rhs.exifDate {return lhs.path<rhs.path}
+                if lhs.exifDate == rhs.exifDate {return lhs.path>rhs.path}
                 return lhs.exifDate > rhs.exifDate
             }
         }
