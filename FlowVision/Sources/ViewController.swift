@@ -4378,7 +4378,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         ifCantDetectMemUse = totalCount > memUseLimit * 2
                     }
                     
-                    if (overTime > 600 && LRUqueue.count >= 2) || (Int(memUse) > memUseLimit) {
+                    var debug = false
+#if DEBUG
+                    debug = true //用来在debug环境复现问题
+#endif
+                    
+                    if (overTime > 600 && LRUqueue.count >= 2) || (Int(memUse) > memUseLimit) || (debug && LRUqueue.count >= 2) {
                         log("Memory free:", level: .warn)
                         log(lastLRUItem.0.removingPercentEncoding, level: .warn)
                         //由于先置目录再请求缩略图，所以此处可保证安全
@@ -4386,10 +4391,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         if(lastLRUItem.0 != fileDB.curFolder){
                             //不是当前目录
                             fileDB.lock()
-                            fileDB.db[SortKeyDir(lastLRUItem.0)]!.isMemClearedToAvoidRemainingTask=true
-                            for fileModel in fileDB.db[SortKeyDir(lastLRUItem.0)]!.files {
-                                fileModel.1.image=nil
-                                fileModel.1.folderImages=[NSImage]()
+                            //TODO: Why这里可能为null？
+                            if let dirModel = fileDB.db[SortKeyDir(lastLRUItem.0)] {
+                                dirModel.isMemClearedToAvoidRemainingTask=true
+                                for fileModel in dirModel.files {
+                                    fileModel.1.image=nil
+                                    fileModel.1.folderImages=[NSImage]()
+                                }
+                            }else{
+                                print("Null when release memory:\n",lastLRUItem.0)
+                                abort()
                             }
                             LRUqueue.removeLast()
                             fileDB.unlock()
@@ -4431,13 +4442,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             
                             if indexMax > indexMin {
                                 fileDB.lock()
-                                fileDB.db[SortKeyDir(lastLRUItem.0)]!.isMemClearedToAvoidRemainingTask=true
-                                for fileModel in fileDB.db[SortKeyDir(lastLRUItem.0)]!.files {
-                                    // 如果不在任一范围内,才清除缩略图
-                                    if (fileModel.1.id < indexMin || fileModel.1.id > indexMax) &&
-                                        (fileModel.1.id < indexMinOfLarge || fileModel.1.id > indexMaxOfLarge) {
-                                        fileModel.1.image=nil
-                                        fileModel.1.folderImages=[NSImage]()
+                                if let dirModel = fileDB.db[SortKeyDir(lastLRUItem.0)] {
+                                    dirModel.isMemClearedToAvoidRemainingTask=true
+                                    for fileModel in dirModel.files {
+                                        // 如果不在任一范围内,才清除缩略图
+                                        if (fileModel.1.id < indexMin || fileModel.1.id > indexMax) &&
+                                            (fileModel.1.id < indexMinOfLarge || fileModel.1.id > indexMaxOfLarge) {
+                                            fileModel.1.image=nil
+                                            fileModel.1.folderImages=[NSImage]()
+                                        }
                                     }
                                 }
                                 fileDB.unlock()
@@ -4481,8 +4494,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         }
         
-        if index != nil {
-            LRUqueue.remove(at: index!)
+        if let index = index {
+            LRUqueue.remove(at: index)
         }
         LRUqueue.insert((path,DispatchTime.now(),count), at: 0)
         fileDB.unlock()
