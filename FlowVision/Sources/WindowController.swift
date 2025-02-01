@@ -832,6 +832,8 @@ extension WindowController: NSToolbarDelegate {
         let sortUseFullPathItem = NSMenuItem(title: NSLocalizedString("Sort Using Full Path In Recursive Mode", comment: "递归模式下使用完整路径排序"), action: #selector(sortUseFullPath(_:)), keyEquivalent: "")
         sortUseFullPathItem.state = viewController.publicVar.profile.isSortUseFullPath ? .on : .off
         menu.addItem(sortUseFullPathItem)
+
+        let sortReadme = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(sortReadmeAction), keyEquivalent: "")
         
         menu.addItem(NSMenuItem.separator())
         
@@ -868,6 +870,10 @@ extension WindowController: NSToolbarDelegate {
             let menuLocation = NSEvent.mouseLocation
             menu.popUp(positioning: nil, at: menuLocation, in: nil)
         }
+    }
+
+    @objc func sortReadmeAction(_ sender: NSMenuItem) {
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("sort-readme", comment: "排序说明..."))
     }
     
     @objc func sortFolderFirst(_ sender: NSMenuItem) {
@@ -989,7 +995,7 @@ extension WindowController: NSToolbarDelegate {
         let isGenHdThumb = menu.addItem(withTitle: NSLocalizedString("Always Generate HD Thumbnails", comment: "总是生成高清缩略图"), action: #selector(genHdThumbAction), keyEquivalent: "")
         isGenHdThumb.state = (viewController.publicVar.isGenHdThumb) ? .on : .off
         
-        let actionItemSettings = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(genHdThumbInfoAction), keyEquivalent: "")
+        let thumbReadme = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(thumbReadmeAction), keyEquivalent: "")
         
         menu.addItem(NSMenuItem.separator())
         
@@ -1058,7 +1064,7 @@ extension WindowController: NSToolbarDelegate {
         viewController.refreshCollectionView([.all], dryRun: true, needLoadThumbPriority: false)
     }
     
-    @objc func genHdThumbInfoAction(_ sender: NSMenuItem){
+    @objc func thumbReadmeAction(_ sender: NSMenuItem){
         showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("gen-thumb-info", comment: "对于高清缩略图的说明..."))
     }
     

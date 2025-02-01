@@ -3288,13 +3288,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sorting by Exif information requires reading the headers of all files, which may result in slow loading speeds. For example, the reference reading speed for video file information is about 10 per second.\n\nThe current directory contains %d images or videos, with an estimated maximum loading time of %d seconds. Are you sure you want to continue?"
+            "value" : "Sorting by Exif information requires reading the headers of all files, which may result in slow loading speeds. For example, the reference reading speed for video file information is about 20 per second.\n\nThe current directory contains %d images or videos, with an estimated maximum loading time of %d seconds. Are you sure you want to continue?"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "由于按Exif信息排序需要读取所有文件头部信息，可能造成加载速度缓慢。例如视频文件信息参考读取速度约为10个/秒。\n\n当前目录包含 %d 个图像或视频，预计最大载入耗时 %d 秒，您确定要继续吗？"
+            "value" : "由于按Exif信息排序需要读取所有文件头部信息，可能造成加载速度缓慢。例如视频文件信息参考读取速度约为20个/秒。\n\n当前目录包含 %d 个图像或视频，预计最大载入耗时 %d 秒，您确定要继续吗？"
           }
         }
       }
@@ -3618,6 +3618,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "随机"
+          }
+        }
+      }
+    },
+    "sort-readme" : {
+      "comment" : "排序说明...",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regarding \"using full path sorting in recursive mode\":\nFor example, the relative paths of two files from the current directory are:\n./AAA/2.jpg\n./BBB/1.jpg\nWhen sorting by full path, 2.jpg comes first, whereas when sorting by filename, 1.jpg comes first."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关于“递归模式下使用完整路径排序”：\n例如两个文件相对当前目录的路径是\n./AAA/2.jpg\n./BBB/1.jpg\n以完整路径排序时2.jpg是第一个，而以文件名排序时1.jpg是第一个。"
           }
         }
       }

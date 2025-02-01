@@ -1313,6 +1313,27 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func changeSortType(sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool, doNotRefresh: Bool = false){
+        
+        //Exif排序时间警告
+        if sortType == .exifDateA || sortType == .exifDateZ
+            || sortType == .exifPixelA || sortType == .exifPixelZ {
+            
+            var imageCount = 0
+            var videoCount = 0
+            
+            fileDB.lock()
+            let curFolder = fileDB.curFolder
+            if let dirModel = fileDB.db[SortKeyDir(curFolder)] {
+                imageCount = dirModel.imageCount
+                videoCount = dirModel.videoCount
+            }
+            fileDB.unlock()
+            
+            if let folderURL = URL(string: curFolder), isExifSortTimeExceedCancel(folderURL: folderURL, imageCount: imageCount, videoCount: videoCount) {
+                return //提前结束
+            }
+        }
+        
         fileDB.lock()
         publicVar.profile.sortType = sortType
         publicVar.profile.isSortFolderFirst = isSortFolderFirst
@@ -3322,7 +3343,34 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
 
     }
-
+    
+    func isExifSortTimeExceedCancel(folderURL: URL, imageCount: Int, videoCount: Int) -> Bool {
+        let networkTimeConsume: Double = Double(imageCount+videoCount)/10.0
+        let localTimeConsume: Double = Double(imageCount)/2000.0 + Double(videoCount)/20.0
+        
+        if (networkTimeConsume > 10 && VolumeManager.shared.isExternalVolume(folderURL)) || localTimeConsume > 10 {
+            let alert = NSAlert()
+            alert.icon = NSImage(named: NSImage.infoName)
+            alert.messageText = NSLocalizedString("Scan Prompt", comment: "扫描提示")
+            if VolumeManager.shared.isExternalVolume(folderURL) {
+                alert.informativeText = String(format: NSLocalizedString("sort-exif-network-warning", comment: "针对网络驱动exif排序耗时的警告"), imageCount + videoCount, Int(networkTimeConsume))
+            }else{
+                alert.informativeText = String(format: NSLocalizedString("sort-exif-local-warning", comment: "针对本地exif排序耗时的警告"), imageCount + videoCount, Int(localTimeConsume))
+            }
+            alert.addButton(withTitle: NSLocalizedString("Continue", comment: "继续"))
+            alert.addButton(withTitle: NSLocalizedString("Stop", comment: "停止"))
+            
+            let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
+            publicVar.isKeyEventEnabled = false
+            let response = alert.runModal()
+            publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
+            
+            if response != .alertFirstButtonReturn {
+                return true
+            }
+        }
+        return false
+    }
     
     func treeTraversal(folderURL: URL, round: Int, initURL: URL, direction: GestureDirection, sameLevel: Bool = false, skip: Bool = false, dryRun: Bool = false) {
         //guard let root = root else { return }
@@ -3429,31 +3477,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //Exif排序时间警告
         if publicVar.profile.sortType == .exifDateA || publicVar.profile.sortType == .exifDateZ
             || publicVar.profile.sortType == .exifPixelA || publicVar.profile.sortType == .exifPixelZ {
-            let networkTimeConsume: Double = Double(imageCount+videoCount)/10.0
-            let localTimeConsume: Double = Double(imageCount)/2000.0 + Double(videoCount)/10.0
-            if (networkTimeConsume > 10 && VolumeManager.shared.isExternalVolume(folderURL)) || localTimeConsume > 10 {
-                let alert = NSAlert()
-                alert.icon = NSImage(named: NSImage.infoName)
-                alert.messageText = NSLocalizedString("Scan Prompt", comment: "扫描提示")
-                if VolumeManager.shared.isExternalVolume(folderURL) {
-                    alert.informativeText = String(format: NSLocalizedString("sort-exif-network-warning", comment: "针对网络驱动exif排序耗时的警告"), imageCount + videoCount, Int(networkTimeConsume))
-                }else{
-                    alert.informativeText = String(format: NSLocalizedString("sort-exif-local-warning", comment: "针对本地exif排序耗时的警告"), imageCount + videoCount, Int(localTimeConsume))
-                }
-                alert.addButton(withTitle: NSLocalizedString("Continue", comment: "继续"))
-                alert.addButton(withTitle: NSLocalizedString("Stop", comment: "停止"))
-                
-                let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
-                publicVar.isKeyEventEnabled = false
-                let response = alert.runModal()
-                publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
-                
-                if response != .alertFirstButtonReturn {
-                    contents.removeAll()
-                    fileContents.removeAll()
-                    subFolders.removeAll()
-                    filesUrlInFolder.removeAll()
-                }
+            
+            if isExifSortTimeExceedCancel(folderURL: folderURL, imageCount: imageCount, videoCount: videoCount) {
+                contents.removeAll()
+                fileContents.removeAll()
+                subFolders.removeAll()
+                filesUrlInFolder.removeAll()
             }
         }
         
