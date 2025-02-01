@@ -163,8 +163,12 @@ class SortKey: Comparable {
                 }
             }
             if globalVar.HandledVideoExtensions.contains(ext) {
-                //TODO: 处理视频拍摄时间、像素
-                //注意treeTraversal中对耗时的警告统计要包括
+                if let (width,height,date) = getVideoResolutionAndDateFFmpeg(for: URL(string: sortKey.path)!) {
+                    sortKey.exifPixel = width*height
+                    if let date = date {
+                        sortKey.exifDate = date
+                    }
+                }
             }
         }
         

@@ -3282,19 +3282,36 @@
         }
       }
     },
-    "sort-exif-warning" : {
-      "comment" : "针对exif排序耗时的警告",
+    "sort-exif-local-warning" : {
+      "comment" : "针对本地exif排序耗时的警告",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sorting by Exif information requires reading the header of all files, which may result in slow loading speeds. For example, the reference reading speed on an SMB network drive is approximately 20 files per second.\n\nThe current directory is located on an external drive and contains %d images. The maximum estimated loading time is %d seconds. Are you sure you want to continue?"
+            "value" : "Sorting by Exif information requires reading the headers of all files, which may result in slow loading speeds. For example, the reference reading speed for video file information is about 10 per second.\n\nThe current directory contains %d images or videos, with an estimated maximum loading time of %d seconds. Are you sure you want to continue?"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "由于按Exif信息排序需要读取所有文件头部信息，可能造成加载速度缓慢。例如SMB网络驱动器中参考读取速度约为20个/秒。\n\n当前目录位于外部驱动器，且包含 %d 个图像，预计最大载入耗时 %d 秒，您确定要继续吗？"
+            "value" : "由于按Exif信息排序需要读取所有文件头部信息，可能造成加载速度缓慢。例如视频文件信息参考读取速度约为10个/秒。\n\n当前目录包含 %d 个图像或视频，预计最大载入耗时 %d 秒，您确定要继续吗？"
+          }
+        }
+      }
+    },
+    "sort-exif-network-warning" : {
+      "comment" : "针对网络驱动exif排序耗时的警告",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorting by Exif information requires reading the headers of all files, which may result in slow loading speeds. For example, the reference reading speed on an SMB network drive is about 20 per second.\n\nThe current directory is located on an external drive and contains %d images or videos, with an estimated maximum loading time of %d seconds. Are you sure you want to continue?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由于按Exif信息排序需要读取所有文件头部信息，可能造成加载速度缓慢。例如SMB网络驱动器中参考读取速度约为20个/秒。\n\n当前目录位于外部驱动器，且包含 %d 个图像或视频，预计最大载入耗时 %d 秒，您确定要继续吗？"
           }
         }
       }

@@ -773,6 +773,58 @@ func getVideoMetadataFFmpeg(for url: URL) -> String? {
     return nil
 }
 
+func getVideoResolutionAndDateFFmpeg(for url: URL) -> (Int,Int,Date?)? {
+
+    // 构建 ffprobe 命令的参数数组
+    let ffprobeArgs: [String] = [
+        "-v", "error",
+        "-show_entries", "stream=width,height:format_tags=creation_time",
+        "-of", "default=noprint_wrappers=1:nokey=0",
+        url.path
+    ]
+    
+    if !FFmpegKitWrapper.shared.getIfLoaded() {
+        return nil
+    }
+    
+    if let session = FFmpegKitWrapper.shared.executeFFprobeCommand(ffprobeArgs) {
+        if let output = FFmpegKitWrapper.shared.getOutput(from: session) {
+            // 解析 ffprobe 的输出
+            var width = 0
+            var height = 0
+            var creationTime: Date?
+
+            let lines = output.split(separator: "\n")
+            for line in lines {
+                let parts = line.split(separator: "=")
+                if parts.count == 2 {
+                    let key = parts[0]
+                    let value = parts[1]
+                    
+                    if key == "width", let w = Int(value), w > 0, width == 0 {
+                        width = w
+                    } else if key == "height", let h = Int(value), h > 0, height == 0 {
+                        height = h
+                    } else if key == "TAG:creation_time" {
+                        let dateFormatter = DateFormatter()
+                        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ"
+                        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+                        creationTime = dateFormatter.date(from: String(value))
+                    }
+                    
+                    if width > 0 && height > 0 && creationTime != nil {
+                        break
+                    }
+                }
+            }
+            return (width,height,creationTime)
+        }
+    } else {
+        log("FFprobe execution failed")
+    }
+    return nil
+}
+
 func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
     // 构建 ffprobe 命令来获取视频流的宽度和高度
     //let ffprobeCommand = "-v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1:nokey=1 '\(url.path)'"

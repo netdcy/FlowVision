@@ -3429,11 +3429,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //Exif排序时间警告
         if publicVar.profile.sortType == .exifDateA || publicVar.profile.sortType == .exifDateZ
             || publicVar.profile.sortType == .exifPixelA || publicVar.profile.sortType == .exifPixelZ {
-            if imageCount > 100 && VolumeManager.shared.isExternalVolume(folderURL) {
+            let networkTimeConsume: Double = Double(imageCount+videoCount)/10.0
+            let localTimeConsume: Double = Double(imageCount)/2000.0 + Double(videoCount)/10.0
+            if (networkTimeConsume > 10 && VolumeManager.shared.isExternalVolume(folderURL)) || localTimeConsume > 10 {
                 let alert = NSAlert()
                 alert.icon = NSImage(named: NSImage.infoName)
                 alert.messageText = NSLocalizedString("Scan Prompt", comment: "扫描提示")
-                alert.informativeText = String(format: NSLocalizedString("sort-exif-warning", comment: "针对exif排序耗时的警告"), imageCount, Int(Double(imageCount)/20.0))
+                if VolumeManager.shared.isExternalVolume(folderURL) {
+                    alert.informativeText = String(format: NSLocalizedString("sort-exif-network-warning", comment: "针对网络驱动exif排序耗时的警告"), imageCount + videoCount, Int(networkTimeConsume))
+                }else{
+                    alert.informativeText = String(format: NSLocalizedString("sort-exif-local-warning", comment: "针对本地exif排序耗时的警告"), imageCount + videoCount, Int(localTimeConsume))
+                }
                 alert.addButton(withTitle: NSLocalizedString("Continue", comment: "继续"))
                 alert.addButton(withTitle: NSLocalizedString("Stop", comment: "停止"))
                 
