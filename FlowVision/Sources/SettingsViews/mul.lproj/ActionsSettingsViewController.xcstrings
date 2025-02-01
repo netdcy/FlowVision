@@ -74,19 +74,19 @@
       }
     },
     "Ple-dV-Ujq.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"W: Same as the right-click gesture Up.\\nA/D: Same as the right-click gesture Left/Right.\\nS: Same as the right-click gesture Down.\"; ObjectID = \"Ple-dV-Ujq\";",
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"In image view: W/S/A/D correspond to right-click gestures up/down/left/right.\\nIn thumbnail view: W/S zoom in/zoom out, A/D previous/next image.\"; ObjectID = \"Ple-dV-Ujq\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "W: Same as the right-click gesture Up.\nA/D: Same as the right-click gesture Left/Right.\nS: Same as the right-click gesture Down."
+            "value" : "In image view: W/S/A/D correspond to right-click gestures up/down/left/right.\nIn thumbnail view: W/S zoom in/zoom out, A/D previous/next image."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "W：同右键手势-向上。\nA/D：同右键手势-向左/右。\nS：同右键手势-向下。"
+            "value" : "浏览大图时：W/S/A/D 等同于右键手势上/下/左/右。\n缩略图视图时：W/S 放大/缩小，A/D 上一张/下一张"
           }
         }
       }

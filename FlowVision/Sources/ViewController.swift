@@ -526,7 +526,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         eventMonitorScrollWheel = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { [weak self] event in
             guard let self=self else{return event}
             //if getMainViewController() != self {return event}
-            // 检查事件的窗口是否是当前窗口
+            // 检查事件的窗口是否是激活窗口
             if event.window != self.view.window {
                 return event
             }
@@ -624,14 +624,6 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                         }
                         return nil
                     }
-                }
-
-                // 检查按键是否是 Command+Shift+G 键
-                if characters == "g" && isCommandPressed && isShiftPressed {
-                    DispatchQueue.main.async { [weak self] in
-                        self?.showCmdShiftGWindow()
-                    }
-                    return nil
                 }
                 
                 // 检查按键是否是 Command+[ 键
@@ -1128,7 +1120,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         eventMonitorRightMouseUp = NSEvent.addLocalMonitorForEvents(matching: .rightMouseUp) { [weak self] event in
             guard let self=self else{return event}
             //if getMainViewController() != self {return event}
-            // 检查事件的窗口是否是当前窗口
+            // 检查事件的窗口是否是激活窗口
             if event.window != self.view.window {
                 return event
             }
@@ -1143,7 +1135,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         eventMonitorRightMouseDown = NSEvent.addLocalMonitorForEvents(matching: .rightMouseDown) { [weak self] event in
             guard let self=self else{return event}
             //if getMainViewController() != self {return event}
-            // 检查事件的窗口是否是当前窗口
+            // 检查事件的窗口是否是激活窗口
             if event.window != self.view.window {
                 return event
             }
@@ -1158,7 +1150,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         eventMonitorRightMouseDragged = NSEvent.addLocalMonitorForEvents(matching: .rightMouseDragged) { [weak self] event in
             guard let self=self else{return event}
             //if getMainViewController() != self {return event}
-            // 检查事件的窗口是否是当前窗口
+            // 检查事件的窗口是否是激活窗口
             if event.window != self.view.window {
                 return event
             }
@@ -4108,7 +4100,7 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                 let memUse = reportTotalMemoryUsage()
                 //let memPhyUse = reportPhyMemoryUsage()
                 
-                //log("Memory usage: "+String(memUse))
+                //log("Memory usage: "+String(memUse), level: .warn)
                 
                 if LRUqueue.count >= 1 {
                     guard let lastLRUItem = LRUqueue.last else {continue}
@@ -4133,8 +4125,8 @@ class ViewController: NSViewController, NSSplitViewDelegate {
                     }
                     
                     if (overTime > 600 && LRUqueue.count >= 2) || (Int(memUse) > memUseLimit) {
-                        log("Memory free:")
-                        log(lastLRUItem.0.removingPercentEncoding)
+                        log("Memory free:", level: .warn)
+                        log(lastLRUItem.0.removingPercentEncoding, level: .warn)
                         //由于先置目录再请求缩略图，所以此处可保证安全
                         
                         if(lastLRUItem.0 != fileDB.curFolder){
@@ -5937,10 +5929,10 @@ class ViewController: NSViewController, NSSplitViewDelegate {
         
         // 使用 beginSheetModal 替代 runModal
         if let window = view.window {
-            getMainViewController()!.publicVar.isKeyEventEnabled=false
+            publicVar.isKeyEventEnabled=false
             alert.beginSheetModal(for: window) { [weak self] response in
                 guard let self = self else { return }
-                getMainViewController()!.publicVar.isKeyEventEnabled=true
+                publicVar.isKeyEventEnabled=true
                 if response == .alertFirstButtonReturn {
                     var path = inputTextField.stringValue
                     // 如果被''或者""包裹则去掉

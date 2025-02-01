@@ -39,7 +39,7 @@
 
 Initial Installation
 ```
-brew install --cask flowvision
+brew install flowvision
 ```
 Upgrade
 ```

@@ -36,6 +36,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     @IBOutlet weak var toggleIsShowVideoFileMenuItem: NSMenuItem!
     @IBOutlet weak var toggleIsShowAllTypeFileMenuItem: NSMenuItem!
     @IBOutlet weak var deselectMenuItem: NSMenuItem!
+    @IBOutlet weak var gotoFolderMenuItem: NSMenuItem!
     
     var commonParentPath=""
     
@@ -694,6 +695,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     
     @IBAction func fileNewFolder(_ sender: NSMenuItem){
         getMainViewController()?.handleNewFolder()
+    }
+    
+    @IBAction func gotoFolder(_ sender: NSMenuItem){
+        getMainViewController()?.showCmdShiftGWindow()
     }
     
     @IBAction func filePrint(_ sender: NSMenuItem){

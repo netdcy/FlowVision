@@ -46,7 +46,7 @@
 
 首次安装
 ```
-brew install --cask flowvision
+brew install flowvision
 ```
 版本升级
 ```

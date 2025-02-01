@@ -81,6 +81,11 @@
                                                 <action selector="fileNewFolder:" target="Voe-Tx-rLC" id="cc6-GJ-16i"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Go To Folder..." keyEquivalent="G" id="zA0-N5-kvv">
+                                            <connections>
+                                                <action selector="gotoFolder:" target="Voe-Tx-rLC" id="rLI-cw-X0n"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Open…" keyEquivalent="o" id="IAo-SY-fd9">
                                             <connections>
                                                 <action selector="openDocument:" target="Voe-Tx-rLC" id="lCn-W9-bCn"/>
