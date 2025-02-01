@@ -2795,13 +2795,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To enable file search within subdirectories, first activate \"Recursive Browse Mode.\"\n\nAt this point, you can additionally use the search option \"use full path\" combined with regular expressions for advanced searches.\n For example, if the full file path is:  \n/Users/Alice/Pictures/20220101/mypick/001.jpg   \nYou can use the regular expression:  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\nto match all files whose parent directory names contain \"pick.\" For more complex regular expressions, you can use ChatGPT to assist in writing them."
+            "value" : "To search for files in subdirectories, you can first enable \"Recursive Browsing Mode.\"\n\n----------\nRegular Expressions (Regex) are patterns used to match character combinations in strings. They are a powerful text processing tool widely used in tasks like searching, replacing, and text parsing.\nFor example:\n^2024 can match files that start with '2024';\n.*modified\\.[^.]+$ can match files ending with 'modified' (excluding the extension);\n.*\\.jpg$ can match files with the extension '.jpg'.\n\n----------\nIn \"Recursive Browsing Mode,\" you can use the additional search option \"Use Full Path\" combined with regular expressions for advanced searches.\nFor example, if the full file path is:\n/Users/Alice/Pictures/20220101/mypick/001.jpg  \nYou can use the regular expression:\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\nto match all files whose parent directory names contain \"pick.\" More complex regular expressions can be crafted with the assistance of ChatGPT."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "要实现对子目录中文件的搜索，可先启用“递归浏览模式”。\n\n此时可额外使用搜索选项“使用完整路径”，再结合正则表达式实现高级搜索。\n例如，文件完整路径为：\n/Users/Alice/Pictures/20220101/mypick/001.jpg  \n可使用正则表达式：\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\n匹配所有父目录名含有“pick”的文件，更复杂的正则表达式可使用ChatGPT辅助编写。"
+            "value" : "要实现对子目录中文件的搜索，可先启用“递归浏览模式”。\n\n----------\n正则表达式（Regular Expression）是一种用于匹配字符串中字符组合的模式。它是一种强大的文本处理工具，广泛应用于搜索、替换和文本解析等任务中。\n例如：\n^2024 可以匹配以'2024'开头的文件；\n.*modified\\.[^.]+$ 可以匹配以'modified'结尾的文件（不论扩展名）；\n.*\\.jpg$ 可以匹配扩展名为'.jpg'的文件。\n\n----------\n“递归浏览模式”下可额外使用搜索选项“使用完整路径”，再结合正则表达式实现高级搜索。\n例如，文件完整路径为：\n/Users/Alice/Pictures/20220101/mypick/001.jpg  \n可使用正则表达式：\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\n匹配所有父目录名含有“pick”的文件，更复杂的正则表达式可使用ChatGPT辅助编写。"
           }
         }
       }
