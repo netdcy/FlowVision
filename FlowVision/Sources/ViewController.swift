@@ -1884,27 +1884,27 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             
             switch direction {
             case .leftArrow: // Left arrow key
-                if itemCenter.x < currentCenter.x && (itemCenter.y == currentCenter.y || publicVar.profile.layoutType == .waterfall) {
-                    distance = hypot(currentCenter.x - itemCenter.x, itemCenter.y - currentCenter.y)
+                if itemCenter.x < currentCenter.x && (abs(itemCenter.y - currentCenter.y) <= 1 || publicVar.profile.layoutType == .waterfall) {
                     valid = true
                 }
             case .rightArrow: // Right arrow key
-                if itemCenter.x > currentCenter.x && (itemCenter.y == currentCenter.y || publicVar.profile.layoutType == .waterfall) {
-                    distance = hypot(currentCenter.x - itemCenter.x, itemCenter.y - currentCenter.y)
+                if itemCenter.x > currentCenter.x && (abs(itemCenter.y - currentCenter.y) <= 1 || publicVar.profile.layoutType == .waterfall) {
                     valid = true
                 }
             case .downArrow: // Up arrow key (Adjusted to move up)
-                if itemCenter.y > currentCenter.y && (itemCenter.x == currentCenter.x || publicVar.profile.layoutType != .waterfall) {
-                    distance = hypot(currentCenter.x - itemCenter.x, itemCenter.y - currentCenter.y)
+                if itemCenter.y > currentCenter.y && (abs(itemCenter.x - currentCenter.x) <= 1 || publicVar.profile.layoutType == .justified) {
                     valid = true
                 }
             case .upArrow: // Down arrow key (Adjusted to move down)
-                if itemCenter.y < currentCenter.y && (itemCenter.x == currentCenter.x || publicVar.profile.layoutType != .waterfall) {
-                    distance = hypot(currentCenter.x - itemCenter.x, currentCenter.y - itemCenter.y)
+                if itemCenter.y < currentCenter.y && (abs(itemCenter.x - currentCenter.x) <= 1 || publicVar.profile.layoutType == .justified) {
                     valid = true
                 }
             default:
                 break
+            }
+            
+            if valid {
+                distance = hypot(currentCenter.x - itemCenter.x, currentCenter.y - itemCenter.y)
             }
             
             if valid && distance < closestDistance {
@@ -6388,7 +6388,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             // 用于整体调整宽度
             var withAdjust = caseSensitiveCheckboxWidth + regexCheckboxWidth + filterButtonWidth
             withAdjust += publicVar.isRecursiveMode ? fullPathCheckboxWidth : 0
-            withAdjust += -80
+            withAdjust += -50
             
             // 创建搜索框容器视图 - 增加高度以容纳两行
             let containerView = NSView(frame: NSRect(x: 0, y: 0, width: 210+withAdjust, height: 66))

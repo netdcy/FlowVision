@@ -97,6 +97,102 @@
         }
       }
     },
+    "a8Q-Mw-3Xn.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Memory Usage Limit:\"; ObjectID = \"a8Q-Mw-3Xn\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حد استخدام الذاكرة:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speichernutzungslimit:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Memory Usage Limit:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Límite de uso de memoria:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite d'utilisation de la mémoire :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite utilizzo memoria:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メモリ使用量の制限:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메모리 사용 제한:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limiet gebruik geheugen:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite de Uso de Memória:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite de Uso de Memória:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лимит использования памяти:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Begränsning av minnesanvändning:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内存使用限制："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "記憶體使用上限："
+          }
+        }
+      }
+    },
     "A97-Bz-qH3.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"For mechanical hard drives and network drives, it is recommended to set it to 1. For external SSDs, this value can be increased appropriately.\"; ObjectID = \"A97-Bz-qH3\";",
       "extractionState" : "extracted_with_value",
@@ -193,6 +289,102 @@
         }
       }
     },
+    "bnu-AS-zpg.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Load Dynamic Library:\"; ObjectID = \"bnu-AS-zpg\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحميل المكتبة الديناميكية:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dynamische Bibliothek laden:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Load Dynamic Library:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargar biblioteca dinámica:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charger la bibliothèque dynamique :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carica libreria dinamica:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動的ライブラリをロード:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동적 라이브러리 로드:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dynamische bibliotheek laden:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregar Biblioteca Dinâmica:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregar Biblioteca Dinâmica:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузить динамическую библиотеку:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladda dynamiskt bibliotek:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加载动态库："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "載入動態庫:"
+          }
+        }
+      }
+    },
     "EWL-HL-RdL.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"4\"; ObjectID = \"EWL-HL-RdL\";",
       "extractionState" : "extracted_with_value",
@@ -285,6 +477,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "4"
+          }
+        }
+      }
+    },
+    "fpm-qG-HXc.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Thumbnail Threads:\\n(External Volumes)\"; ObjectID = \"fpm-qG-HXc\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مصغرات المواضيع:\n(الأقراص الخارجية)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniaturansichten-Threads:\n(Externe Volumes)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Thumbnail Threads:\n(External Volumes)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilos de miniaturas:\n(Volúmenes externos)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fils de vignettes :\n(Volumes externes)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thread delle miniature:\n(Volumi esterni)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サムネイルスレッド:\n(外部ボリューム)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "섬네일 스레드:  \n(외부 볼륨)"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatuur threads:\n(Externe volumes)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tópicos em Miniatura:\n(Volumes Externos)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Threads de Miniaturas:\n(Volumes Externos)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Потоки для миниатюр:\n(Внешние тома)"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatyrtrådar:\n(Externa volymer)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图线程数：\n（外部卷）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "縮略圖執行緒：\n（外部卷）"
           }
         }
       }
@@ -488,13 +776,13 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "عمق البحث في المجلد: (الأقراص الخارجية)"
+            "value" : "عمق البحث في المجلد:  \n(الأقراص الخارجية)"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ordner-Suchtiefe:\n(Externe Volumes)"
+            "value" : "Suchttiefe für Ordner:\n(Externe Volumes)"
           }
         },
         "en" : {
@@ -506,25 +794,25 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Profundidad de Búsqueda en Carpetas:\n(Unidades Externas)"
+            "value" : "Profundidad de Búsqueda de Carpetas:\n(Volúmenes externos)"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Profondeur de recherche des dossiers :\n(Volumes externes)"
+            "value" : "Profondeur de recherche de dossier :\n(Volumes externes)"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Profondità di ricerca cartella: (Volume esterni)"
+            "value" : "Profondità di ricerca cartella:\n(Volumi esterni)"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "フォルダー検索深度：(外部ボリューム)"
+            "value" : "フォルダ検索の深さ:\n(外部ボリューム)"
           }
         },
         "ko" : {
@@ -542,25 +830,25 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Profundidade da Pesquisa de Pasta: (Volumes Externos)"
+            "value" : "Profundidade da Pesquisa de Pasta:\n(Volumes Externos)"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Profundidade da Pesquisa de Pastas:\n(Unidades Externas)"
+            "value" : "Profundidade da Pesquisa de Pasta:\n(Volumes Externos)"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Глубина поиска в папках: (внешние тома)"
+            "value" : "Глубина поиска папок:\n(Внешние тома)"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mappsökningsdjup: (Externa volymer)"
+            "value" : "Mappsökningsdjup:\n(Externa volymer)"
           }
         },
         "zh-Hans" : {
@@ -572,967 +860,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "資料夾搜尋深度：\n（外部磁碟）"
-          }
-        }
-      }
-    },
-    "Tb5-5a-q2X.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"The number of subfolder levels to search when generating folder thumbnails. If set to 0, folder thumbnails will not be generated, and the directory tree will not indicate whether subfolders exist by left-side arrow.\"; ObjectID = \"Tb5-5a-q2X\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "عدد مستويات المجلدات الفرعية للبحث عند إنشاء صور مصغرة للمجلدات. إذا تم تعيينه إلى 0، لن يتم إنشاء صور مصغرة للمجلدات، ولن يشير شجرة الدليل إلى ما إذا كانت المجلدات الفرعية موجودة بالسهم الجانبي الأيسر."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die Anzahl der Unterordner-Ebenen, die beim Erstellen von Ordner-Thumbnails durchsucht werden. Wenn auf 0 gesetzt, werden keine Ordner-Thumbnails erstellt, und der Verzeichnisbaum zeigt nicht durch einen Pfeil auf der linken Seite an, ob Unterordner existieren."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "The number of subfolder levels to search when generating folder thumbnails. If set to 0, folder thumbnails will not be generated, and the directory tree will not indicate whether subfolders exist by left-side arrow."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El número de niveles de subcarpetas a buscar al generar miniaturas de carpetas. Si se establece en 0, no se generarán miniaturas de carpetas y el árbol de directorios no indicará si existen subcarpetas mediante la flecha del lado izquierdo."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le nombre de niveaux de sous-dossiers à explorer lors de la génération des vignettes de dossier. S'il est réglé sur 0, les vignettes de dossier ne seront pas générées et l'arborescence ne indiquera pas si des sous-dossiers existent par une flèche à gauche."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Il numero di livelli di sottocartella da cercare durante la generazione delle anteprime delle cartelle. Se impostato su 0, le anteprime delle cartelle non verranno generate e l'albero delle directory non indicherà se esistono sottocartelle con la freccia sul lato sinistro."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "フォルダサムネイルを生成するときに検索するサブフォルダーのレベル数 0に設定するとフォルダサムネイルは生成されずディレクトリツリーは左側の矢印でサブフォルダーの存在を示しません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "폴더 축소판을 생성할 때 검색할 하위 폴더 수준의 수입니다. 0으로 설정하면 폴더 축소판이 생성되지 않으며, 디렉터리 트리가 왼쪽 화살표를 통해 하위 폴더의 존재 여부를 표시하지 않습니다"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Het aantal niveaus van submappen om te doorzoeken bij het genereren van mapminiaturen. Als dit is ingesteld op 0, worden er geen mapminiaturen gegenereerd en geeft de directorystructuur niet aan of er submappen bestaan door een pijl aan de linkerkant."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O número de níveis de subpastas a serem pesquisados ao gerar miniaturas de pastas. Se definido como 0, miniaturas de pasta não serão geradas e a árvore de diretórios não indicará se subpastas existem através de seta no lado esquerdo."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O número de níveis de subpasta a pesquisar ao gerar miniaturas de pastas. Se definido como 0, as miniaturas de pastas não serão geradas, e a árvore de diretórios não indicará se existem subpastas através da seta do lado esquerdo."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Количество уровней подпапок для поиска при создании эскизов папок. Если установлено значение 0, эскизы папок не будут создаваться, а дерево каталогов не будет указывать, существуют ли подпапки, стрелкой слева."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Antalet undermappsnivåer att söka igenom vid generering av mappminiatyrer. Om den ställs in på 0 kommer inga mappminiatyrer att genereras, och mappträdet kommer inte att visa om undermappar existerar genom vänstersidospil."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "生成文件夹缩略图时，搜索子文件夹的层数。设置为0时，不生成文件夹缩略图，且目录树中将不能通过左侧箭头区分是否有子文件夹。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "要搜尋的子資料夾層數以生成資料夾縮圖。若設定為0，不會生成資料夾縮圖，且目錄樹不會以左側箭頭指示是否存在子資料夾。"
-          }
-        }
-      }
-    },
-    "U1E-PH-Kdi.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"0\"; ObjectID = \"U1E-PH-Kdi\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "0"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        }
-      }
-    },
-    "UN1-r8-SEh.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Folder Search Depth:\"; ObjectID = \"UN1-r8-SEh\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "عمق البحث في المجلد:"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suchttiefe für Ordner:"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Folder Search Depth:"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Profundidad de Búsqueda de Carpetas:"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Profondeur de recherche des dossiers :"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Profondità di ricerca cartella:"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "フォルダー検索の深さ:"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "폴더 검색 깊이:"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mapvestigingszoekdiepte:"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Profundidade da Pesquisa na Pasta:"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Profundidade de Pesquisa de Pasta:"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Глубина поиска в папке:"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mappsökningsdjup:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文件夹搜索深度："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "資料夾搜索深度："
-          }
-        }
-      }
-    },
-    "UWB-wJ-kV4.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Thumbnail Threads:\"; ObjectID = \"UWB-wJ-kV4\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "المصغرات:"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniaturansichten:"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Thumbnail Threads:"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hilos de Miniaturas:"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fils de vignettes :"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Argomenti delle miniature:"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サムネイルスレッド："
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "썸네일 스레드:"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniatuur threads:"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tópicos de Miniaturas:"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tópicos das Miniaturas:"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Эскизы потоков:"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniatyrtrådar:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "缩略图线程数："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "縮略圖執行緒"
-          }
-        }
-      }
-    },
-    "VVf-Z7-kSI.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"e.g. 4G\"; ObjectID = \"VVf-Z7-kSI\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "مثل 4G"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "z. B. 4G"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "e.g. 4G"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "p. ej. 4G"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "par exemple, 4G"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "es. 4G"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "例：4G"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "예: 4G"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "bijv. 4G"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "por exemplo, 4G"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "por exemplo, 4G"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "например, 4G"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "t.ex. 4G"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "e.g. 4G"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "例如 4G"
-          }
-        }
-      }
-    },
-    "WIz-pH-xsE.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"1\"; ObjectID = \"WIz-pH-xsE\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "1"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1"
-          }
-        }
-      }
-    },
-    "YPT-xM-oyn.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"These settings apply to external volumes, including external drives, network drives, and other mounted directories.\"; ObjectID = \"YPT-xM-oyn\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تنطبق هذه الإعدادات على وحدات التخزين الخارجية، بما في ذلك محركات الأقراص الخارجية ومحركات الشبكة والمجلدات المثبتة الأخرى."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diese Einstellungen gelten für externe Volumes, einschließlich externer Laufwerke, Netzwerklaufwerke und anderer eingebundener Verzeichnisse."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "These settings apply to external volumes, including external drives, network drives, and other mounted directories."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estas configuraciones se aplican a volúmenes externos, incluidas unidades externas, unidades de red y otros directorios montados."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ces paramètres s'appliquent aux volumes externes, y compris les lecteurs externes, les lecteurs réseau et autres répertoires montés."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Queste impostazioni si applicano ai volumi esterni, inclusi dischi esterni, unità di rete e altre directory montate"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "これらの設定は、外部ドライブ、ネットワークドライブ、その他のマウントされたディレクトリを含む外部ボリュームに適用されます"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 설정은 외장 드라이브, 네트워크 드라이브 및 기타 마운트된 디렉토리를 포함한 외부 볼륨에 적용됩니다"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deze instellingen zijn van toepassing op externe volumes, waaronder externe schijven, netwerkschijven en andere gekoppelde mappen."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Essas configurações se aplicam a volumes externos, incluindo unidades externas, unidades de rede e outros diretórios montados."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estas definições aplicam-se a volumes externos, incluindo drives externas, drives de rede e outros diretórios montados."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Эти настройки применяются к внешним томам, включая внешние накопители, сетевые диски и другие монтированные каталоги."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dessa inställningar gäller externa volymer, inklusive externa enheter, nätverksenheter och andra monterade kataloger."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此处设置应用于外部卷，包括外置驱动器、网络驱动器和其它挂载目录。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "這些設定適用於外部卷，包括外接硬碟、網路磁碟機和其他掛載的目錄"
-          }
-        }
-      }
-    },
-    "a8Q-Mw-3Xn.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Memory Usage Limit:\"; ObjectID = \"a8Q-Mw-3Xn\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "حد استخدام الذاكرة:"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Speichernutzungslimit:"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Memory Usage Limit:"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Límite de uso de memoria:"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limite d'utilisation de la mémoire :"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limite utilizzo memoria:"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "メモリ使用量の制限:"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "메모리 사용 제한:"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limiet gebruik geheugen:"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limite de Uso de Memória:"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limite de Uso de Memória:"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Лимит использования памяти:"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Begränsning av minnesanvändning:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "内存使用限制："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "記憶體使用上限："
-          }
-        }
-      }
-    },
-    "bnu-AS-zpg.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Load Dynamic Library:\"; ObjectID = \"bnu-AS-zpg\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تحميل المكتبة الديناميكية:"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dynamische Bibliothek laden:"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Load Dynamic Library:"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cargar biblioteca dinámica:"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Charger la bibliothèque dynamique :"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carica Libreria Dinamica:"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "動的ライブラリをロード:"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "동적 라이브러리 로드:"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dynamische bibliotheek laden:"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carregar Biblioteca Dinâmica:"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carregar Biblioteca Dinâmica:"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Загрузить динамическую библиотеку:"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ladda dynamiskt bibliotek:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "加载动态库："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "載入動態庫:"
-          }
-        }
-      }
-    },
-    "fpm-qG-HXc.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Thumbnail Threads:\\n（External Volumes）\"; ObjectID = \"fpm-qG-HXc\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "مصغرات المواضيع: (الأقراص الخارجية)"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniaturansichten Threads:\\n（Externe Volumes）"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Thumbnail Threads:\n（External Volumes）"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hilos en miniatura:\n（Volúmenes externos）"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Threads de miniatures :\\n（Volumes externes）"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thread delle miniature:\n（Volumi esterni）"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サムネイルスレッド：\\n（外部ボリューム）"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "미리보기 스레드:\n(외부 볼륨)"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniatuur Draadtaken:\n（Externe Volumes）"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniaturas de Threads:\n（Volumes Externos）"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tópicos de Miniaturas:\n（Volumes Externos）"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Эскизы потоков:\n（Внешние тома）"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniatyrtrådar:\n（Externa volymer）"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "缩略图线程数：\n（外部卷）"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "縮略圖執行緒： （外部卷）"
+            "value" : "資料夾搜尋深度：\n（外部卷）"
           }
         }
       }
@@ -1825,6 +1153,390 @@
         }
       }
     },
+    "Tb5-5a-q2X.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"The number of subfolder levels to search when generating folder thumbnails. If set to 0, folder thumbnails will not be generated, and the directory tree will not indicate whether subfolders exist by left-side arrow.\"; ObjectID = \"Tb5-5a-q2X\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عدد مستويات المجلدات الفرعية للبحث عند إنشاء صور مصغرة للمجلدات. إذا تم تعيينه إلى 0، لن يتم إنشاء صور مصغرة للمجلدات، ولن يشير شجرة الدليل إلى ما إذا كانت المجلدات الفرعية موجودة بالسهم الجانبي الأيسر."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anzahl der Unterordner-Ebenen, die beim Erstellen von Ordner-Thumbnails durchsucht werden. Wenn auf 0 gesetzt, werden keine Ordner-Thumbnails erstellt, und der Verzeichnisbaum zeigt nicht durch einen Pfeil auf der linken Seite an, ob Unterordner existieren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The number of subfolder levels to search when generating folder thumbnails. If set to 0, folder thumbnails will not be generated, and the directory tree will not indicate whether subfolders exist by left-side arrow."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El número de niveles de subcarpetas a buscar al generar miniaturas de carpetas. Si se establece en 0, no se generarán miniaturas de carpetas y el árbol de directorios no indicará si existen subcarpetas mediante la flecha del lado izquierdo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le nombre de niveaux de sous-dossiers à explorer lors de la génération des vignettes de dossier. S'il est réglé sur 0, les vignettes de dossier ne seront pas générées et l'arborescence ne indiquera pas si des sous-dossiers existent par une flèche à gauche."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il numero di livelli di sottocartella da cercare durante la generazione delle anteprime delle cartelle. Se impostato su 0, le anteprime delle cartelle non verranno generate e l'albero delle directory non indicherà se esistono sottocartelle con la freccia sul lato sinistro."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダサムネイルを生成するときに検索するサブフォルダーのレベル数 0に設定するとフォルダサムネイルは生成されずディレクトリツリーは左側の矢印でサブフォルダーの存在を示しません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "폴더 축소판을 생성할 때 검색할 하위 폴더 수준의 수입니다. 0으로 설정하면 폴더 축소판이 생성되지 않으며, 디렉터리 트리가 왼쪽 화살표를 통해 하위 폴더의 존재 여부를 표시하지 않습니다"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het aantal niveaus van submappen om te doorzoeken bij het genereren van mapminiaturen. Als dit is ingesteld op 0, worden er geen mapminiaturen gegenereerd en geeft de directorystructuur niet aan of er submappen bestaan door een pijl aan de linkerkant."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O número de níveis de subpastas a serem pesquisados ao gerar miniaturas de pastas. Se definido como 0, miniaturas de pasta não serão geradas e a árvore de diretórios não indicará se subpastas existem através de seta no lado esquerdo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O número de níveis de subpasta a pesquisar ao gerar miniaturas de pastas. Se definido como 0, as miniaturas de pastas não serão geradas, e a árvore de diretórios não indicará se existem subpastas através da seta do lado esquerdo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Количество уровней подпапок для поиска при создании эскизов папок. Если установлено значение 0, эскизы папок не будут создаваться, а дерево каталогов не будет указывать, существуют ли подпапки, стрелкой слева."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antalet undermappsnivåer att söka igenom vid generering av mappminiatyrer. Om den ställs in på 0 kommer inga mappminiatyrer att genereras, och mappträdet kommer inte att visa om undermappar existerar genom vänstersidospil."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生成文件夹缩略图时，搜索子文件夹的层数。设置为0时，不生成文件夹缩略图，且目录树中将不能通过左侧箭头区分是否有子文件夹。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要搜尋的子資料夾層數以生成資料夾縮圖。若設定為0，不會生成資料夾縮圖，且目錄樹不會以左側箭頭指示是否存在子資料夾。"
+          }
+        }
+      }
+    },
+    "U1E-PH-Kdi.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"0\"; ObjectID = \"U1E-PH-Kdi\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "0"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        }
+      }
+    },
+    "UN1-r8-SEh.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Folder Search Depth:\"; ObjectID = \"UN1-r8-SEh\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عمق البحث في المجلد:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suchttiefe für Ordner:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Folder Search Depth:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profundidad de Búsqueda de Carpetas:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profondeur de recherche de dossier :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profondità di ricerca cartella:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダー検索の深さ:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "폴더 검색 깊이:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mapzoekdiepte:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profundidade da Pesquisa na Pasta:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profundidade de Pesquisa de Pasta:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Глубина поиска папок:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mappsökningsdjup:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件夹搜索深度："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "資料夾搜索深度："
+          }
+        }
+      }
+    },
+    "UWB-wJ-kV4.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Thumbnail Threads:\"; ObjectID = \"UWB-wJ-kV4\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مصغرات المواضيع:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniaturansichten-Threads:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Thumbnail Threads:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilos de Miniaturas:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fils de vignettes :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thread delle miniature:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サムネイルスレッド："
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "썸네일 스레드:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatuur threads:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tópicos de Miniatura:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Threads de Miniaturas:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Потоки для миниатюр:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatyrtrådar:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图线程数："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "縮略圖執行緒"
+          }
+        }
+      }
+    },
     "v0X-zl-sTc.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"For network drives, it is recommended to set it to 0 (do not generate folder thumbnails).\"; ObjectID = \"v0X-zl-sTc\";",
       "extractionState" : "extracted_with_value",
@@ -1917,6 +1629,294 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "對於網絡磁碟機，建議將其設置為0（不生成資料夾縮圖）"
+          }
+        }
+      }
+    },
+    "VVf-Z7-kSI.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"e.g. 4G\"; ObjectID = \"VVf-Z7-kSI\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مثل 4G"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "z. B. 4G"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "e.g. 4G"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "p. ej. 4G"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "par exemple, 4G"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "es. 4G"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "例：4G"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "예: 4G"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bijv. 4G"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "por exemplo, 4G"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "por exemplo, 4G"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "например, 4G"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "t.ex. 4G"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. 4G"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "例如 4G"
+          }
+        }
+      }
+    },
+    "WIz-pH-xsE.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"1\"; ObjectID = \"WIz-pH-xsE\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "1"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        }
+      }
+    },
+    "YPT-xM-oyn.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"These settings apply to external volumes, including external drives, network drives, and other mounted directories.\"; ObjectID = \"YPT-xM-oyn\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تنطبق هذه الإعدادات على وحدات التخزين الخارجية، بما في ذلك محركات الأقراص الخارجية ومحركات الشبكة والمجلدات المثبتة الأخرى."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Einstellungen gelten für externe Volumes, einschließlich externer Laufwerke, Netzwerklaufwerke und anderer eingebundener Verzeichnisse."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "These settings apply to external volumes, including external drives, network drives, and other mounted directories."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estas configuraciones se aplican a volúmenes externos, incluidas unidades externas, unidades de red y otros directorios montados."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ces paramètres s'appliquent aux volumes externes, y compris les lecteurs externes, les lecteurs réseau et autres répertoires montés."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queste impostazioni si applicano ai volumi esterni, inclusi dischi esterni, unità di rete e altre directory montate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これらの設定は、外部ドライブ、ネットワークドライブ、その他のマウントされたディレクトリを含む外部ボリュームに適用されます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 설정은 외장 드라이브, 네트워크 드라이브 및 기타 마운트된 디렉토리를 포함한 외부 볼륨에 적용됩니다"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze instellingen zijn van toepassing op externe volumes, waaronder externe schijven, netwerkschijven en andere gekoppelde mappen."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essas configurações se aplicam a volumes externos, incluindo unidades externas, unidades de rede e outros diretórios montados."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estas definições aplicam-se a volumes externos, incluindo drives externas, drives de rede e outros diretórios montados."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эти настройки применяются к внешним томам, включая внешние накопители, сетевые диски и другие монтированные каталоги."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dessa inställningar gäller externa volymer, inklusive externa enheter, nätverksenheter och andra monterade kataloger."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此处设置应用于外部卷，包括外置驱动器、网络驱动器和其它挂载目录。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這些設定適用於外部卷，包括外接硬碟、網路磁碟機和其他掛載的目錄"
           }
         }
       }
