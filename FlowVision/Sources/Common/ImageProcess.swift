@@ -441,28 +441,57 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         let asset = AVAsset(url: url)
         let imageGenerator = AVAssetImageGenerator(asset: asset)
         imageGenerator.appliesPreferredTrackTransform = true  // 保证图像的正确方向
+        //imageGenerator.requestedTimeToleranceBefore = .zero
+        //imageGenerator.requestedTimeToleranceAfter = .zero
+        imageGenerator.requestedTimeToleranceBefore = CMTime(seconds: 0.1, preferredTimescale: 600)
+        imageGenerator.requestedTimeToleranceAfter = CMTime(seconds: 0.1, preferredTimescale: 600)
 
         let durationSeconds = asset.duration.seconds
         
-        let time: CMTime
+        // 尝试多个时间点，直到找到合适的帧
+        let timePoints: [Double]
         if durationSeconds < 60 {
-            time = CMTime(seconds: 2, preferredTimescale: 600)  // 获取第2秒的帧作为缩略图
-        }else{
-            time = CMTime(seconds: durationSeconds/2, preferredTimescale: 600)
+            timePoints = [1, 2, 5, 10]
+        } else {
+            timePoints = [
+                durationSeconds * 0.10,
+                durationSeconds * 0.25,
+                durationSeconds * 0.50,
+                durationSeconds * 0.75
+            ]
         }
         
-        let cgImage: CGImage
-        do {
-            cgImage = try imageGenerator.copyCGImage(at: time, actualTime: nil)
-            let thumbnail = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
+        var bestFrame: (image: CGImage, brightness: Double)? = nil
+        
+        for seconds in timePoints {
+            let time = CMTime(seconds: seconds, preferredTimescale: 600)
+            do {
+                let cgImage = try imageGenerator.copyCGImage(at: time, actualTime: nil)
+                let brightness = getFrameBrightness(cgImage)
+                
+                // 检查帧是否为黑屏或过暗
+                if brightness >= 0.1 {
+                    let thumbnail = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
+                    return thumbnail
+                }
+                
+                // 更新最佳帧
+                if bestFrame == nil || brightness > bestFrame!.brightness {
+                    bestFrame = (cgImage, brightness)
+                }
+            } catch {
+                continue
+            }
+        }
+        
+        // 如果有最佳帧（即使不够亮）也使用它
+        if let bestFrame = bestFrame {
+            let thumbnail = NSImage(cgImage: bestFrame.image, size: NSSize(width: bestFrame.image.width, height: bestFrame.image.height))
             return thumbnail
-        } catch {
-            //log(error.localizedDescription)
-            return getVideoThumbnailFFmpeg(for: url)
-            //return getFileTypeIcon(url: url)
-            //return nil
         }
         
+        // 如果所有尝试都失败，则使用FFmpeg方案
+        return getVideoThumbnailFFmpeg(for: url)
     }else if (globalVar.HandledImageAndRawExtensions+["pdf"]).contains(url.pathExtension.lowercased()) { //处理其它缩略图
         //使用原图的格式
         if ["gif", "svg"].contains(url.pathExtension.lowercased()){
@@ -1513,4 +1542,40 @@ class ThumbImageProcessor {
     static func clearCache() {
         cache.removeAllObjects()
     }
+}
+
+func getFrameBrightness(_ cgImage: CGImage) -> Double {
+    let width = cgImage.width
+    let height = cgImage.height
+    let bytesPerRow = width * 4
+    let totalBytes = bytesPerRow * height
+    
+    var rawData = [UInt8](repeating: 0, count: totalBytes)
+    let context = CGContext(data: &rawData,
+                          width: width,
+                          height: height,
+                          bitsPerComponent: 8,
+                          bytesPerRow: bytesPerRow,
+                          space: CGColorSpaceCreateDeviceRGB(),
+                          bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+    
+    context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+    
+    // 计算平均亮度
+    var totalBrightness: Double = 0
+    var samplesCount = 0
+    let samplingStep = max(1, (width * height) / 1000) // 采样步长，避免处理所有像素
+    
+    for i in stride(from: 0, to: totalBytes, by: samplingStep * 4) {
+        let r = Double(rawData[i])
+        let g = Double(rawData[i + 1])
+        let b = Double(rawData[i + 2])
+        
+        // 计算亮度 (使用人眼感知的权重)
+        let brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255.0
+        totalBrightness += brightness
+        samplesCount += 1
+    }
+    
+    return totalBrightness / Double(samplesCount)
 }
