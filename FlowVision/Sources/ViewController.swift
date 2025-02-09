@@ -3305,6 +3305,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         fileDB.unlock()
         var startFolder=lastFolder
         if direction == .zero && dest != "" { startFolder = dest }
+        if !(direction == .zero && lastFolder == startFolder) {
+            //重置递归模式
+            publicVar.isRecursiveMode = false
+            //重置搜索过滤
+            publicVar.isFilenameFilterOn = false
+        }
         
         treeTraversal(folderURL: URL(string: startFolder)!, round: searchFolderRound, initURL: URL(string: startFolder)!, direction: direction,
                           sameLevel: secondDirection == .down, skip: skip, dryRun: dryRun)
@@ -3362,8 +3368,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let defaults = UserDefaults.standard
         defaults.set(nextFolder, forKey: "lastFolder")
 
-        //重置搜索过滤
-        publicVar.isFilenameFilterOn = false
     }
     
     func showScanAlert(fileCount: Int, imageCount: Int, videoCount: Int) -> Bool {
@@ -3421,7 +3425,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     func isExifSortTimeExceedCancel(folderURL: URL, imageCount: Int, videoCount: Int) -> Bool {
         let networkTimeConsume: Double = Double(imageCount+videoCount)/10.0
-        let localTimeConsume: Double = Double(imageCount)/2000.0 + Double(videoCount)/20.0
+        let localTimeConsume: Double = Double(imageCount)/2000.0 + Double(videoCount)/10.0
         
         if (networkTimeConsume > 10 && VolumeManager.shared.isExternalVolume(folderURL)) || localTimeConsume > 10 {
             let alert = NSAlert()
@@ -3482,7 +3486,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         //搜索过滤
-        let searchText = searchField?.stringValue ?? ""
+        let searchText = searchField?.stringValue ?? search_searchText
         if publicVar.isFilenameFilterOn && searchText != "" {
             contents = contents.filter { url in
                 if let fileName = getFileNameForSearch(path: url.absoluteString) {
