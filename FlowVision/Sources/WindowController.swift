@@ -19,9 +19,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
         self.window?.delegate = self
         
         window?.title = "FlowVision"
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(saveWindowState), name: NSWindow.willCloseNotification, object: window)
-        
+
         if let window = self.window {
             // 设置标题栏和工具栏合并效果
             window.titleVisibility = .hidden
@@ -56,6 +54,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
             if let frameString = UserDefaults.standard.string(forKey: "windowFrame") {
                 let frame = NSRectFromString(frameString)
                 window?.setFrame(frame, display: true)
+                log("Set window frame to:",frame)
                 if let viewController = contentViewController as? ViewController {
                     viewController.changeWaterfallLayoutNumberOfColumns()
                 }
@@ -71,10 +70,10 @@ class WindowController: NSWindowController, NSWindowDelegate {
     }
     
     func prepareForDeinit() {
-        NotificationCenter.default.removeObserver(self, name: NSWindow.willCloseNotification, object: window)
+        saveWindowState()
     }
     
-    @objc func saveWindowState() {
+    func saveWindowState() {
         guard let window = self.window else { return }
         if let viewController = contentViewController as? ViewController {
             if viewController.publicVar.isInLargeView {
