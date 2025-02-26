@@ -162,14 +162,21 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             imageViewObj.isFolder = false
         }
 
-        let isShowThumbnailHDR = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailHDR") == "true"
-        if (file.imageInfo?.isHDR ?? false) && isShowThumbnailHDR {
+        let isShowThumbnailBadge = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailBadge") == "true"
+        let isRawImage = globalVar.HandledRawExtensions.contains(imageViewObj.url?.pathExtension.lowercased() ?? "noExtention")
+        if isRawImage {
+            imageLabel.stringValue="RAW"
+        }else if (file.imageInfo?.isHDR ?? false) {
             imageLabel.stringValue="HDR"
+        }else{
+            imageLabel.stringValue=""
+        }
+        if imageLabel.stringValue != "" && isShowThumbnailBadge {
             imageLabel.sizeToFit() // 先调整文字大小
             imageLabel.frame.origin.x = imageViewObj.frame.origin.x + imageViewObj.frame.width - imageLabel.frame.width - 5
             imageLabel.frame.origin.y = imageViewObj.frame.origin.y + imageViewObj.frame.height - imageLabel.frame.height - 5
             imageLabel.isHidden=false
-        }else{
+        } else {
             imageLabel.isHidden=true
         }
         

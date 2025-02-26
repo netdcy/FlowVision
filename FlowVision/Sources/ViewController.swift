@@ -74,7 +74,7 @@ class CustomProfile: Codable {
     private var dict: [String: String] = [:]
 
     func getValue(forKey key: String) -> String {
-        if dict[key] == nil && key == "isShowThumbnailHDR" {
+        if dict[key] == nil && key == "isShowThumbnailBadge" {
             return "true"
         }
         if dict[key] == nil && key == "isWindowTitleUseFullPath" {
@@ -6155,7 +6155,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.profile.setValue(forKey: "isWindowTitleShowStatistics", value: newStyle.getValue(forKey: "isWindowTitleShowStatistics"))
         
         // 通用布局
-        publicVar.profile.setValue(forKey: "isShowThumbnailHDR", value: newStyle.getValue(forKey: "isShowThumbnailHDR"))
+        publicVar.profile.setValue(forKey: "isShowThumbnailBadge", value: newStyle.getValue(forKey: "isShowThumbnailBadge"))
         publicVar.profile.isShowThumbnailFilename = newStyle.isShowThumbnailFilename
         publicVar.profile.ThumbnailFilenameSize = newStyle.ThumbnailFilenameSize
         publicVar.profile._thumbnailCellPadding = newStyle.ThumbnailCellPadding
@@ -6179,7 +6179,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     func customLayoutStylePrompt (){
         if let mainWindow = NSApplication.shared.mainWindow {
-            showThumbnailOptionsPanel(on: mainWindow) { [weak self] isUseFullPath, isShowStatistics, isShowHDR, isShowFilename, filenameSize, cellPadding, borderRadiusInGrid, borderRadius, borderThickness, lineSpaceAdjust, showShadow in
+            showThumbnailOptionsPanel(on: mainWindow) { [weak self] isUseFullPath, isShowStatistics, isShowBadge, isShowFilename, filenameSize, cellPadding, borderRadiusInGrid, borderRadius, borderThickness, lineSpaceAdjust, showShadow in
                 guard let self = self else { return }
                 
                 let newStyle = CustomProfile()
@@ -6188,7 +6188,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 newStyle.setValue(forKey: "isWindowTitleShowStatistics", value: String(isShowStatistics))
                 
                 // 通用布局
-                newStyle.setValue(forKey: "isShowThumbnailHDR", value: String(isShowHDR))
+                newStyle.setValue(forKey: "isShowThumbnailBadge", value: String(isShowBadge))
                 newStyle.isShowThumbnailFilename = isShowFilename
                 newStyle.ThumbnailFilenameSize = filenameSize
                 newStyle._thumbnailCellPadding = cellPadding

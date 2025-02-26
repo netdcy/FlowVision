@@ -692,8 +692,8 @@ class ThumbnailOptionsWindow: NSWindow {
     private var initialWindowTitleShowStatistics: Bool {
         return initialProfile.getValue(forKey: "isWindowTitleShowStatistics") == "true"
     }
-    private var initialShowThumbnailHDR: Bool {
-        return initialProfile.getValue(forKey: "isShowThumbnailHDR") == "true"
+    private var initialShowThumbnailBadge: Bool {
+        return initialProfile.getValue(forKey: "isShowThumbnailBadge") == "true"
     }
     private var initialShowThumbnailFilename: Bool {
         return initialProfile.isShowThumbnailFilename
@@ -723,7 +723,7 @@ class ThumbnailOptionsWindow: NSWindow {
     // Variables to store current settings
     var isWindowTitleUseFullPath: Bool
     var isWindowTitleShowStatistics: Bool
-    var isShowThumbnailHDR: Bool
+    var isShowThumbnailBadge: Bool
     var isShowThumbnailFilename: Bool
     var thumbnailFilenameSize: Double
     var thumbnailCellPadding: Double
@@ -741,7 +741,7 @@ class ThumbnailOptionsWindow: NSWindow {
         let profile = getMainViewController()!.publicVar.profile
         isWindowTitleUseFullPath = profile.getValue(forKey: "isWindowTitleUseFullPath") == "true"
         isWindowTitleShowStatistics = profile.getValue(forKey: "isWindowTitleShowStatistics") == "true"
-        isShowThumbnailHDR = profile.getValue(forKey: "isShowThumbnailHDR") == "true"
+        isShowThumbnailBadge = profile.getValue(forKey: "isShowThumbnailBadge") == "true"
         isShowThumbnailFilename = profile.isShowThumbnailFilename
         thumbnailFilenameSize = profile.ThumbnailFilenameSize
         thumbnailCellPadding = profile._thumbnailCellPadding
@@ -795,7 +795,7 @@ class ThumbnailOptionsWindow: NSWindow {
         // Create labeled controls
         let windowTitleFullPathCheckboxView = createLabeledCheckbox(label: NSLocalizedString("Use Full Path in Window Title", comment: "在窗口标题中使用完整路径"), isChecked: isWindowTitleUseFullPath)
         let windowTitleStatsCheckboxView = createLabeledCheckbox(label: NSLocalizedString("Show Statistics in Window Title", comment: "在窗口标题中显示统计信息"), isChecked: isWindowTitleShowStatistics)
-        let showHDRCheckboxView = createLabeledCheckbox(label: NSLocalizedString("Show HDR Badge in Thumbnail(if exist)", comment: "缩略图显示HDR标记(如果存在)"), isChecked: isShowThumbnailHDR)
+        let showBadgeCheckboxView = createLabeledCheckbox(label: NSLocalizedString("Show RAW/HDR Badge in Thumbnail(if exist)", comment: "缩略图显示RAW/HDR标记(如果存在)"), isChecked: isShowThumbnailBadge)
         let showFilenameCheckboxView = createLabeledCheckbox(label: NSLocalizedString("Show Thumbnail Filename", comment: "缩略图显示文件名"), isChecked: isShowThumbnailFilename)
         let filenameSizeTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Filename Font Size", comment: "缩略图文件名字体大小"), defaultValue: String(thumbnailFilenameSize))
         let cellPaddingTextField = createLabeledTextField(label: NSLocalizedString("Thumbnail Cell Padding", comment: "缩略图单元格外边距"), defaultValue: String(thumbnailCellPadding))
@@ -808,7 +808,7 @@ class ThumbnailOptionsWindow: NSWindow {
         // Add subviews to stack view in the new order
         stackView.addArrangedSubview(windowTitleFullPathCheckboxView)
         stackView.addArrangedSubview(windowTitleStatsCheckboxView)
-        stackView.addArrangedSubview(showHDRCheckboxView)
+        stackView.addArrangedSubview(showBadgeCheckboxView)
         stackView.addArrangedSubview(showFilenameCheckboxView)
         stackView.addArrangedSubview(filenameSizeTextField)
         stackView.addArrangedSubview(cellPaddingTextField)
@@ -897,7 +897,7 @@ class ThumbnailOptionsWindow: NSWindow {
         
         let windowTitleFullPathCheckbox = (stackView.arrangedSubviews[2] as! NSStackView).views[1] as! NSButton
         let windowTitleStatsCheckbox = (stackView.arrangedSubviews[3] as! NSStackView).views[1] as! NSButton
-        let showHDRCheckbox = (stackView.arrangedSubviews[4] as! NSStackView).views[1] as! NSButton
+        let showBadgeCheckbox = (stackView.arrangedSubviews[4] as! NSStackView).views[1] as! NSButton
         let showFilenameCheckbox = (stackView.arrangedSubviews[5] as! NSStackView).views[1] as! NSButton
         let filenameSizeTextField = (stackView.arrangedSubviews[6] as! NSStackView).views[1] as! NSTextField
         let cellPaddingTextField = (stackView.arrangedSubviews[7] as! NSStackView).views[1] as! NSTextField
@@ -909,7 +909,7 @@ class ThumbnailOptionsWindow: NSWindow {
         
         self.isWindowTitleUseFullPath = windowTitleFullPathCheckbox.state == .on
         self.isWindowTitleShowStatistics = windowTitleStatsCheckbox.state == .on
-        self.isShowThumbnailHDR = showHDRCheckbox.state == .on
+        self.isShowThumbnailBadge = showBadgeCheckbox.state == .on
         self.isShowThumbnailFilename = showFilenameCheckbox.state == .on
         self.thumbnailFilenameSize = Double(filenameSizeTextField.stringValue) ?? initialThumbnailFilenameSize
         self.thumbnailCellPadding = Double(cellPaddingTextField.stringValue) ?? initialThumbnailCellPadding
@@ -932,7 +932,7 @@ class ThumbnailOptionsWindow: NSWindow {
         
         let windowTitleFullPathCheckbox = (stackView.arrangedSubviews[2] as! NSStackView).views[1] as! NSButton
         let windowTitleStatsCheckbox = (stackView.arrangedSubviews[3] as! NSStackView).views[1] as! NSButton
-        let showHDRCheckbox = (stackView.arrangedSubviews[4] as! NSStackView).views[1] as! NSButton
+        let showBadgeCheckbox = (stackView.arrangedSubviews[4] as! NSStackView).views[1] as! NSButton
         let showFilenameCheckbox = (stackView.arrangedSubviews[5] as! NSStackView).views[1] as! NSButton
         let filenameSizeTextField = (stackView.arrangedSubviews[6] as! NSStackView).views[1] as! NSTextField
         let cellPaddingTextField = (stackView.arrangedSubviews[7] as! NSStackView).views[1] as! NSTextField
@@ -945,7 +945,7 @@ class ThumbnailOptionsWindow: NSWindow {
         // Reset values to initial values
         windowTitleFullPathCheckbox.state = initialWindowTitleUseFullPath ? .on : .off
         windowTitleStatsCheckbox.state = initialWindowTitleShowStatistics ? .on : .off
-        showHDRCheckbox.state = initialShowThumbnailHDR ? .on : .off
+        showBadgeCheckbox.state = initialShowThumbnailBadge ? .on : .off
         showFilenameCheckbox.state = initialShowThumbnailFilename ? .on : .off
         filenameSizeTextField.stringValue = String(initialThumbnailFilenameSize)
         cellPaddingTextField.stringValue = String(initialThumbnailCellPadding)
@@ -968,7 +968,7 @@ func showThumbnailOptionsPanel(on parentWindow: NSWindow, completion: @escaping 
         if response == .OK {
             completion(thumbnailOptionsWindow.isWindowTitleUseFullPath,
                       thumbnailOptionsWindow.isWindowTitleShowStatistics,
-                      thumbnailOptionsWindow.isShowThumbnailHDR,
+                      thumbnailOptionsWindow.isShowThumbnailBadge,
                       thumbnailOptionsWindow.isShowThumbnailFilename,
                       thumbnailOptionsWindow.thumbnailFilenameSize,
                       thumbnailOptionsWindow.thumbnailCellPadding,

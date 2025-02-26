@@ -716,6 +716,10 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0) -> NSImage
 }
 
 func checkIsHDR(imageInfo: ImageInfo?) -> Bool {
+    if let ext = imageInfo?.ext,
+       globalVar.HandledRawExtensions.contains(ext) {
+        return true
+    }
     if let properties = imageInfo?.properties,
        let headroom = properties["Headroom"] as? Double,
        headroom > 1.0 {
@@ -766,7 +770,7 @@ func getResizedImageUsingCI(url: URL, size: NSSize? = nil, rotate: Int = 0, useH
                                                from: inputImage.extent,
                                                format: ciFormat,
                                                colorSpace: inputImage.colorSpace ?? CGColorSpace(name: CGColorSpace.itur_2100_PQ)!,
-                                               deferred: true) {
+                                               deferred: false) {
             
             return NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
         }
@@ -953,6 +957,7 @@ func getImageInfo(url: URL, needMetadata: Bool = false) -> ImageInfo? {
         
         let imageInfo = ImageInfo(imageSize)
         imageInfo.properties = imageProperties
+        imageInfo.ext = url.pathExtension.lowercased()
         imageInfo.isHDR = checkIsHDR(imageInfo: imageInfo)
         //print(imageProperties)
         
