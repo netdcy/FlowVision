@@ -598,7 +598,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 if !isSelected{
                     if let collectionView = self.collectionView {
-                        collectionView.deselectAll(nil)
+                        if !(isCommandKeyPressed() || isShiftKeyPressed()) {
+                            collectionView.deselectAll(nil)
+                        }
                         if let indexPath=collectionView.indexPath(for: self){
                             collectionView.selectItems(at: [indexPath], scrollPosition: [])
                             collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])

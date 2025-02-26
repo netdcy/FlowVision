@@ -161,6 +161,34 @@ func attributedStringWithSymbols(_ symbols: [String]) -> NSAttributedString {
     return attributedString
 }
 
+func isCommandKeyPressed() -> Bool {
+    if let currentEvent = NSApp.currentEvent {
+        return currentEvent.modifierFlags.contains(.command)
+    }
+    return false
+}
+
+func isControlKeyPressed() -> Bool {
+    if let currentEvent = NSApp.currentEvent {
+        return currentEvent.modifierFlags.contains(.control)
+    }
+    return false
+}
+
+func isShiftKeyPressed() -> Bool {
+    if let currentEvent = NSApp.currentEvent {
+        return currentEvent.modifierFlags.contains(.shift)
+    }
+    return false
+}
+
+func isOptionKeyPressed() -> Bool {
+    if let currentEvent = NSApp.currentEvent {
+        return currentEvent.modifierFlags.contains(.option)
+    }
+    return false
+}
+
 func showAlert(message: String) {
     let alert = NSAlert()
     alert.messageText = message
