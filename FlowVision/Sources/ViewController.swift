@@ -2896,7 +2896,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     @objc func splitViewSizeChanged() {
 
         // 获取当前宽度
-        let currentWidth = splitView.bounds.width
+        let currentWidth = collectionView.bounds.width
         
         // 检查宽度是否发生变化
         if currentWidth == previousSplitViewWidth {
