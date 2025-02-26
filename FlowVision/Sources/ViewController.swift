@@ -662,7 +662,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 
                 // 检查按键是否是 Command+⬆️ 键
                 if (specialKey == .upArrow && isOnlyCommandPressed) || (specialKey == .home && noModifierKey) {
-                    if !publicVar.isInLargeView{
+                    if publicVar.isInLargeView{
+                        locateLargeImage(direction: -2)
+                    }else{
                         if let scrollView = collectionView.enclosingScrollView {
                             scrollView.contentView.scroll(to: NSPoint(x: 0, y: 0))
                             scrollView.reflectScrolledClipView(scrollView.contentView)
@@ -670,13 +672,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 self?.setLoadThumbPriority(ifNeedVisable: true)
                             }
                         }
-                        return nil
                     }
+                    return nil
                 }
                 
                 // 检查按键是否是 Command+⬇️ 键
                 if (specialKey == .downArrow && isOnlyCommandPressed) || (specialKey == .end && noModifierKey) {
-                    if !publicVar.isInLargeView{
+                    if publicVar.isInLargeView{
+                        locateLargeImage(direction: 2)
+                    }else{
                         if let scrollView = collectionView.enclosingScrollView {
                             let newOrigin = NSPoint(x: 0, y: collectionView.bounds.height - scrollView.contentSize.height)
                             scrollView.contentView.scroll(to: newOrigin)
@@ -685,8 +689,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 self?.setLoadThumbPriority(ifNeedVisable: true)
                             }
                         }
-                        return nil
                     }
+                    return nil
                 }
                 
                 // 检查按键是否是 Alt+⬆️ 键
@@ -5042,7 +5046,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         lastScrollSwitchLargeImageTime=event.timestamp
     }
     
-    func previousLargeImage(isShowReachEndPrompt: Bool = true, firstShowThumb: Bool = true){
+    func locateLargeImage(direction: Int, isShowReachEndPrompt: Bool = true, firstShowThumb: Bool = true){
         if largeImageView.isHidden {return}
         if publicVar.openFromFinderPath != "" {return}
         if currLargeImagePos == -1 {
@@ -5055,13 +5059,42 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let fileCount = fileDB.db[SortKeyDir(curFolder)]!.fileCount
         var nextLargeImagePos=currLargeImagePos
         var ifFoundNextImage=false
-        while nextLargeImagePos >= 0 {
-            nextLargeImagePos-=1
-            if fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.type == .image {
-                ifFoundNextImage=true
-                break
+        if direction == -1 { //向前
+            while nextLargeImagePos >= 0 {
+                nextLargeImagePos-=1
+                if fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.type == .image {
+                    ifFoundNextImage=true
+                    break
+                }
+            }
+        }else if direction == 1 { //向后
+            while nextLargeImagePos < totalCount-1 {
+                nextLargeImagePos+=1
+                if fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.type == .image {
+                    ifFoundNextImage=true
+                    break
+                }
+            }
+        }else if direction == -2 { //第一张
+            nextLargeImagePos = -1
+            while nextLargeImagePos < totalCount-1 {
+                nextLargeImagePos+=1
+                if fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.type == .image {
+                    ifFoundNextImage=true
+                    break
+                }
+            }
+        }else if direction == 2 { //最后一张
+            nextLargeImagePos = totalCount
+            while nextLargeImagePos >= 0 {
+                nextLargeImagePos-=1
+                if fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.type == .image {
+                    ifFoundNextImage=true
+                    break
+                }
             }
         }
+        
         fileDB.unlock()
         
         if ifFoundNextImage {
@@ -5095,66 +5128,20 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
             }
         }else if isShowReachEndPrompt {
-            largeImageView.showInfo(NSLocalizedString("Have Reached the First", comment: "已经是第一张图片"))
+            if direction == -1 {
+                largeImageView.showInfo(NSLocalizedString("Have Reached the First", comment: "已经是第一张图片"))
+            }else if direction == 1 {
+                largeImageView.showInfo(NSLocalizedString("Have Reached the Last", comment: "已经是最后一张图片"))
+            }
         }
     }
     
+    func previousLargeImage(isShowReachEndPrompt: Bool = true, firstShowThumb: Bool = true){
+        locateLargeImage(direction: -1, isShowReachEndPrompt: isShowReachEndPrompt, firstShowThumb: firstShowThumb)
+    }
+    
     func nextLargeImage(isShowReachEndPrompt: Bool = true, firstShowThumb: Bool = true){
-        //log(currLargeImagePos)
-        if largeImageView.isHidden {return}
-        if publicVar.openFromFinderPath != "" {return}
-        if currLargeImagePos == -1 {
-            return
-        }
-        
-        fileDB.lock()
-        let curFolder=fileDB.curFolder
-        let totalCount = fileDB.db[SortKeyDir(curFolder)]!.files.count
-        //let fileCount = fileDB.db[SortKeyDir(curFolder)]!.fileCount
-        var nextLargeImagePos=currLargeImagePos
-        var ifFoundNextImage=false
-        while nextLargeImagePos < totalCount-1 {
-            nextLargeImagePos+=1
-            if fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.type == .image {
-                ifFoundNextImage=true
-                break
-            }
-        }
-        fileDB.unlock()
-        
-        if ifFoundNextImage {
-            //复原旋转
-            largeImageView.file.rotate=0
-            
-            currLargeImagePos=nextLargeImagePos
-
-            lastDoNotGenResized=false
-            lastResizeFailed=false
-            lastUseHDR=false
-            lastLargeImageRotate=0
-            
-            //取消OCR
-            largeImageView.unSetOcr()
-            
-            if globalVar.portableMode {
-                fileDB.lock()
-                let refSize = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.originalSize
-                fileDB.unlock()
-                adjustWindowPortable(refSize: refSize, firstShowThumb: firstShowThumb, animate: false)
-            }else{
-                changeLargeImage(firstShowThumb: firstShowThumb)
-            }
-            
-            //选中新的项目
-            collectionView.deselectAll(nil)
-            if currLargeImagePos < collectionView.numberOfItems(inSection: 0) {
-                let indexPath=IndexPath(item: currLargeImagePos, section: 0)
-                collectionView.selectItems(at: [indexPath], scrollPosition: [])
-                collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
-            }
-        }else if isShowReachEndPrompt {
-            largeImageView.showInfo(NSLocalizedString("Have Reached the Last", comment: "已经是最后一张图片"))
-        }
+        locateLargeImage(direction: 1, isShowReachEndPrompt: isShowReachEndPrompt, firstShowThumb: firstShowThumb)
     }
     
     func getCurrentImageOriginalSizeInScreenScale() -> NSSize? {
