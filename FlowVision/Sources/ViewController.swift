@@ -316,6 +316,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     var lastTheme: NSAppearance.Name = .aqua
     
+    var previousSplitViewWidth: CGFloat = 0.0
+    
     var hasManualToggleSidebar=false
     
     var eventMonitorKeyDown: Any?
@@ -2888,6 +2890,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     //var _temp_count_sizeChanged: Int = 0
     @objc func splitViewSizeChanged() {
+
+        // 获取当前宽度
+        let currentWidth = splitView.bounds.width
+        
+        // 检查宽度是否发生变化
+        if currentWidth == previousSplitViewWidth {
+            return
+        }
+        previousSplitViewWidth = currentWidth
         
         //_temp_count_sizeChanged+=1
         //print("计算布局"+String(_temp_count_sizeChanged))
