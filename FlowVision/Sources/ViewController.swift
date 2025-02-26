@@ -548,26 +548,49 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if event.window != self.view.window && publicVar.isKeyEventEnabled {
                 return event
             }
-            if publicVar.isKeyEventEnabled && publicVar.timer.intervalSafe(name: "keyEvent", second: 0.1) {
-                // 获取修饰键
-                let modifierFlags = event.modifierFlags
-                // 检测是否按下了 Control 键
-                let isCtrlPressed = modifierFlags.contains(.control)
-                // 检测是否按下了 Command 键
-                let isCommandPressed = modifierFlags.contains(.command)
-                // 检测是否按下了 Option 键
-                let isAltPressed = modifierFlags.contains(.option)
-                // 检测是否按下了 Shift 键
-                let isShiftPressed = modifierFlags.contains(.shift)
-                
-                let noModifierKey = !isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
-                let isOnlyCommandPressed = isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
-                let isOnlyAltPressed = !isCommandPressed && isAltPressed && !isCtrlPressed && !isShiftPressed
-                let isOnlyCtrlPressed = !isCommandPressed && !isAltPressed && isCtrlPressed && !isShiftPressed
-                let isOnlyShiftPressed = !isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed
-                
-                let characters = (event.charactersIgnoringModifiers ?? "").lowercased()
-                let specialKey = event.specialKey ?? .f30
+            
+            // 获取修饰键
+            let modifierFlags = event.modifierFlags
+            // 检测是否按下了 Control 键
+            let isCtrlPressed = modifierFlags.contains(.control)
+            // 检测是否按下了 Command 键
+            let isCommandPressed = modifierFlags.contains(.command)
+            // 检测是否按下了 Option 键
+            let isAltPressed = modifierFlags.contains(.option)
+            // 检测是否按下了 Shift 键
+            let isShiftPressed = modifierFlags.contains(.shift)
+            
+            let noModifierKey = !isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
+            let isOnlyCommandPressed = isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
+            let isOnlyAltPressed = !isCommandPressed && isAltPressed && !isCtrlPressed && !isShiftPressed
+            let isOnlyCtrlPressed = !isCommandPressed && !isAltPressed && isCtrlPressed && !isShiftPressed
+            let isOnlyShiftPressed = !isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed
+            
+            let characters = (event.charactersIgnoringModifiers ?? "").lowercased()
+            let specialKey = event.specialKey ?? .f30
+            
+            if !publicVar.timer.intervalSafe(name: "keyEvent", second: 0.1) {
+                return event
+            }
+            
+            if publicVar.isInSearchState || publicVar.isKeyEventEnabled {
+                // 检查按键是否是 Command+Shift+"R" 键
+                if characters == "r" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
+                    if !publicVar.isInLargeView{
+                        toggleRecursiveMode()
+                        return nil
+                    }
+                }
+                // 检查按键是否是 Command+Shift+"T" 键
+                if characters == "t" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
+                    if !publicVar.isInLargeView{
+                        toggleRecursiveContainFolder()
+                        return nil
+                    }
+                }
+            }
+            
+            if publicVar.isKeyEventEnabled {
                 
                 // 检查按键是否是 "A" 键
                 if characters == "a" && noModifierKey {
@@ -619,14 +642,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         LargeImageProcessor.clearCache()
                         ThumbImageProcessor.clearCache()
                         refreshAll([.all], needLoadThumbPriority: true)
-                        return nil
-                    }
-                }
-                
-                // 检查按键是否是 Command+Shift+"R" 键
-                if characters == "r" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
-                    if !publicVar.isInLargeView{
-                        toggleRecursiveMode()
                         return nil
                     }
                 }
@@ -1443,6 +1458,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         coreAreaView.showInfo(showText, timeOut: 1.0, cannotBeCleard: true)
         refreshCollectionView(needLoadThumbPriority: true)
+        if publicVar.isInSearchState {
+            closeSearchOverlay()
+            showSearchOverlay()
+        }
     }
     
     func toggleRecursiveContainFolder(){

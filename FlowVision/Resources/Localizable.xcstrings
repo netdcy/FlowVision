@@ -22522,91 +22522,91 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بخصوص \"استخدام فرز المسار الكامل في الوضع التكراري\"، على سبيل المثال، المسارات النسبية لملفين من الدليل الحالي هي:\n./AAA/2.jpg\n./BBB/1.jpg\nعند الفرز حسب المسار الكامل، يتم وضع 2.jpg أولاً، بينما عند الفرز حسب اسم الملف، يتم وضع 1.jpg أولاً."
+            "value" : "بالنسبة إلى \"استخدام ترتيب المسار الكامل في الوضع العودي\"، على سبيل المثال، فإن المسارات النسبية لملفين من الدليل الحالي هي:\n./AAA/2.jpg\n./BBB/1.jpg\nعند الترتيب حسب المسار الكامل، يأتي 2.jpg أولًا، بينما عند الترتيب حسب اسم الملف، يأتي 1.jpg أولًا.\n\n----------\nعند الترتيب حسب معلومات Exif، من الضروري قراءة محتوى العنوان لكل ملف، مما قد يتسبب في بطء سرعة التحميل. على سبيل المثال، في محرك شبكة SMB أو مع ملفات الفيديو، سرعة القراءة المرجعية هي حوالي 10 ملفات في الثانية."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hinsichtlich der \"Verwendung der vollständigen Pfad-Sortierung im rekursiven Modus\" sind zum Beispiel die relativen Pfade von zwei Dateien aus dem aktuellen Verzeichnis:\n./AAA/2.jpg\n./BBB/1.jpg\nWenn nach vollständigem Pfad sortiert wird, kommt 2.jpg zuerst, während bei der Sortierung nach Dateiname 1.jpg zuerst kommt."
+            "value" : "Bezüglich der Verwendung der vollständigen Pfadsortierung im rekursiven Modus sind zum Beispiel die relativen Pfade von zwei Dateien aus dem aktuellen Verzeichnis:  \n./AAA/2.jpg  \n./BBB/1.jpg  \nBeim Sortieren nach vollständigem Pfad kommt 2.jpg zuerst, während beim Sortieren nach Dateiname 1.jpg zuerst kommt.  \n  \n---------  \nBeim Sortieren nach Exif-Informationen ist es notwendig, den Header-Inhalt jeder Datei zu lesen, was zu langsamen Ladegeschwindigkeiten führen kann. Zum Beispiel auf einem SMB-Netzlaufwerk oder bei Videodateien liegt die Bezugsladegeschwindigkeit bei etwa 10 Dateien pro Sekunde."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Regarding \"using full path sorting in recursive mode\", for example, the relative paths of two files from the current directory are:\n./AAA/2.jpg\n./BBB/1.jpg\nWhen sorting by full path, 2.jpg comes first, whereas when sorting by filename, 1.jpg comes first."
+            "value" : "Regarding \"using full path sorting in recursive mode\", for example, the relative paths of two files from the current directory are:\n./AAA/2.jpg\n./BBB/1.jpg\nWhen sorting by full path, 2.jpg comes first, whereas when sorting by filename, 1.jpg comes first.\n\n----------\nWhen sorting by Exif information, it is necessary to read the header content of each file, which may cause slow loading speeds. For example, on an SMB network drive or with video files, the reference reading speed is about 10 files per second."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Con respecto a \"usar ordenación por ruta completa en modo recursivo\", por ejemplo, las rutas relativas de dos archivos desde el directorio actual son:\n./AAA/2.jpg\n./BBB/1.jpg\nAl ordenar por ruta completa, 2.jpg va primero, mientras que al ordenar por nombre de archivo, 1.jpg va primero"
+            "value" : "En cuanto a \"usar ordenamiento por ruta completa en modo recursivo\", por ejemplo, las rutas relativas de dos archivos desde el directorio actual son:\n./AAA/2.jpg\n./BBB/1.jpg\nAl ordenar por ruta completa, 2.jpg viene primero, mientras que al ordenar por nombre de archivo, 1.jpg viene primero.\n\n----------\nAl ordenar por información Exif, es necesario leer el contenido del encabezado de cada archivo, lo que puede causar velocidades de carga lentas. Por ejemplo, en una unidad de red SMB o con archivos de video, la velocidad de lectura de referencia es de aproximadamente 10 archivos por segundo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Concernant \"l'utilisation du tri par chemin complet en mode récursif\", par exemple, les chemins relatifs de deux fichiers du répertoire actuel sont :\n./AAA/2.jpg\n./BBB/1.jpg\nLors du tri par chemin complet, 2.jpg vient en premier, alors que lors du tri par nom de fichier, 1.jpg vient en premier."
+            "value" : "Concernant l'utilisation du tri par chemin complet en mode récursif, par exemple, les chemins relatifs de deux fichiers à partir du répertoire actuel sont :\n./AAA/2.jpg\n./BBB/1.jpg\nLors du tri par chemin complet, 2.jpg apparaît en premier, alors que lors du tri par nom de fichier, 1.jpg apparaît en premier.\n\n----------\nLors du tri par information Exif, il est nécessaire de lire le contenu de l'en-tête de chaque fichier, ce qui peut entraîner des vitesses de chargement lentes. Par exemple, sur un lecteur réseau SMB ou avec des fichiers vidéo, la vitesse de lecture de référence est d'environ 10 fichiers par seconde."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Per quanto riguarda \"l'ordinamento del percorso completo in modalità ricorsiva\", ad esempio, i percorsi relativi di due file dalla directory corrente sono:\n./AAA/2.jpg\n./BBB/1.jpg\nDurante l'ordinamento per percorso completo, 2.jpg viene prima, mentre durante l'ordinamento per nome file, 1.jpg viene prima."
+            "value" : "Per quanto riguarda \"l'uso dell'ordinamento per percorso completo in modalità ricorsiva\", ad esempio, i percorsi relativi di due file dalla directory corrente sono:\n./AAA/2.jpg\n./BBB/1.jpg\nQuando si ordina per percorso completo, 2.jpg viene prima, mentre quando si ordina per nome file, 1.jpg viene prima.\n\n----------\nQuando si ordina per informazioni Exif, è necessario leggere il contenuto dell'intestazione di ogni file, il che può causare velocità di caricamento lente. Ad esempio, su una unità di rete SMB o con file video, la velocità di lettura di riferimento è di circa 10 file al secondo."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "たとえば、「再帰モードでフルパスを使用したソート」に関して、現在のディレクトリから2つのファイルの相対パスは次のようになります:\n./AAA/2.jpg\n./BBB/1.jpg\nフルパスでソートすると2.jpgが最初になり、ファイル名でソートすると1.jpgが最初になります"
+            "value" : "「再帰的モードでフルパスソートを使用する」場合について、例えば現在のディレクトリから2つのファイルの相対パスは次の通りです。\n./AAA/2.jpg\n./BBB/1.jpg\nフルパスでソートすると2.jpgが先になり、ファイル名でソートすると1.jpgが先になります。\n\n----------\nExif情報でソートする場合、各ファイルのヘッダー内容を読み取る必要があり、ロードが遅くなることがあります。例えば、SMBネットワークドライブやビデオファイルでは、参照読み取り速度は約10ファイル/秒です。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "\"재귀 모드에서 전체 경로 정렬 사용\"에 관해 설명하자면, 예를 들어 현재 디렉토리에서 두 파일의 상대 경로는 다음과 같습니다:\n./AAA/2.jpg\n./BBB/1.jpg\n전체 경로로 정렬할 때는 2.jpg가 먼저 오고, 파일명으로 정렬할 때는 1.jpg가 먼저 옵니다."
+            "value" : "예를 들어, \"재귀 모드에서 전체 경로 정렬 사용\"에 관해, 현재 디렉토리에서 두 파일의 상대 경로는 다음과 같습니다:\n./AAA/2.jpg\n./BBB/1.jpg\n전체 경로로 정렬할 경우, 2.jpg가 먼저 오고, 파일명으로 정렬할 경우 1.jpg가 먼저 옵니다.\n\n----------\nExif 정보로 정렬할 때는 각 파일의 헤더 내용을 읽어야 하므로 로딩 속도가 느릴 수 있습니다. 예를 들어, SMB 네트워크 드라이브나 비디오 파일의 경우 참조 읽기 속도는 초당 약 10개 파일입니다."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Betreffende \"volledige pad-sortering in recursieve modus\", bijvoorbeeld, de relatieve paden van twee bestanden vanuit de huidige map zijn:\n./AAA/2.jpg\n./BBB/1.jpg\nBij sorteren op volledig pad komt 2.jpg eerst, terwijl bij sorteren op bestandsnaam 1.jpg eerst komt."
+            "value" : "Met betrekking tot \"sorteren op volledige pad in recursieve modus\", zijn bijvoorbeeld de relatieve paden van twee bestanden vanuit de huidige directory:\n./AAA/2.jpg\n./BBB/1.jpg\nBij het sorteren op volledig pad komt 2.jpg eerst, terwijl bij het sorteren op bestandsnaam 1.jpg eerst komt.\n\n----------\nBij het sorteren op Exif-informatie is het nodig om de headerinhoud van elk bestand te lezen, wat mogelijk tot langzame laadsnelheden leidt. Bijvoorbeeld, op een SMB-netwerkschijf of met videobestanden is de referentieleessnelheid ongeveer 10 bestanden per seconde."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Em relação a \"usar classificação por caminho completo no modo recursivo\", por exemplo, os caminhos relativos de dois arquivos do diretório atual são:\n./AAA/2.jpg\n./BBB/1.jpg\nAo classificar por caminho completo, 2.jpg vem primeiro, enquanto ao classificar por nome de arquivo, 1.jpg vem primeiro."
+            "value" : "Sobre \"usar classificação de caminho completo no modo recursivo\", por exemplo, os caminhos relativos de dois arquivos do diretório atual são:\n./AAA/2.jpg\n./BBB/1.jpg\nAo classificar por caminho completo, 2.jpg vem primeiro, enquanto ao classificar por nome de arquivo, 1.jpg vem primeiro.\n\n----------\nAo classificar por informações Exif, é necessário ler o conteúdo do cabeçalho de cada arquivo, o que pode causar lentidão na velocidade de carregamento. Por exemplo, em um drive de rede SMB ou com arquivos de vídeo, a velocidade de leitura de referência é de cerca de 10 arquivos por segundo."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Relativamente a \"utilizar a ordenação de caminho completo em modo recursivo\", por exemplo, os caminhos relativos de dois ficheiros a partir do diretório atual são:\n./AAA/2.jpg\n./BBB/1.jpg\nAo ordenar por caminho completo, 2.jpg vem primeiro, enquanto ao ordenar por nome de ficheiro, 1.jpg vem primeiro."
+            "value" : "Relativamente a \"uso de ordenação por caminho completo em modo recursivo\", por exemplo, os caminhos relativos de dois ficheiros a partir do diretório atual são:\n./AAA/2.jpg\n./BBB/1.jpg\nAo ordenar por caminho completo, 2.jpg vem primeiro, enquanto que ao ordenar pelo nome do ficheiro, 1.jpg vem primeiro.\n\n----------\nAo ordenar por informações Exif, é necessário ler o conteúdo do cabeçalho de cada ficheiro, o que pode causar velocidades de carregamento lentas. Por exemplo, numa unidade de rede SMB ou com ficheiros de vídeo, a velocidade de leitura de referência é de cerca de 10 ficheiros por segundo."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Что касается \"использования сортировки по полному пути в рекурсивном режиме\", например, относительные пути двух файлов из текущей директории:\n./AAA/2.jpg\n./BBB/1.jpg\nПри сортировке по полному пути 2.jpg будет первым, тогда как при сортировке по имени файла 1.jpg будет первым."
+            "value" : "Что касается «использования сортировки по полному пути в рекурсивном режиме», например, относительные пути двух файлов из текущего каталога:\n./AAA/2.jpg\n./BBB/1.jpg\nПри сортировке по полному пути 2.jpg идет первым, тогда как при сортировке по имени файла 1.jpg идет первым.\n\n----------\nПри сортировке по информации Exif необходимо считывать содержимое заголовка каждого файла, что может вызвать медленную скорость загрузки. Например, на SMB сетевом диске или с видеофайлами скорость считывания составляет примерно 10 файлов в секунду."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Angående \"användning av fullständig sökvägssortering i rekursivt läge\", är till exempel de relativa sökvägarna för två filer från den aktuella katalogen:\n./AAA/2.jpg\n./BBB/1.jpg\nNär man sorterar efter fullständig sökväg kommer 2.jpg först, medan vid sortering efter filnamn kommer 1.jpg först."
+            "value" : "Angående \"användning av fullständig sökvägssortering i rekursivt läge\", är till exempel de relativa sökvägarna för två filer från den aktuella katalogen:\n./AAA/2.jpg\n./BBB/1.jpg\nVid sortering efter fullständig sökväg kommer 2.jpg först, medan vid sortering efter filnamn kommer 1.jpg först.\n\n----------\nVid sortering efter Exif-information är det nödvändigt att läsa rubrikinnehållet i varje fil, vilket kan orsaka långsam laddningshastighet. Till exempel, på en SMB-nätverksdisk eller med videofiler, är referensläsningshastigheten cirka 10 filer per sekund."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "关于“递归模式下使用完整路径排序”，例如两个文件相对当前目录的路径是\n./AAA/2.jpg\n./BBB/1.jpg\n以完整路径排序时2.jpg是第一个，而以文件名排序时1.jpg是第一个。"
+            "value" : "关于“递归模式下使用完整路径排序”，例如两个文件相对当前目录的路径是\n./AAA/2.jpg\n./BBB/1.jpg\n以完整路径排序时2.jpg是第一个，而以文件名排序时1.jpg是第一个。\n\n按Exif信息排序时，需要读取每个文件头部内容，可能造成加载速度缓慢。例如SMB网络驱动器中或视频文件时，参考读取速度约为10个/秒。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "關於「在遞歸模式下使用完整路徑排序」，例如，當前目錄下兩個文件的相對路徑為：\n./AAA/2.jpg\n./BBB/1.jpg\n當按完整路徑排序時，2.jpg 會在前面，而當按文件名排序時，1.jpg 會在前面。"
+            "value" : "關於「在遞歸模式中使用完整路徑排序」，例如，當前目錄中兩個文件的相對路徑是:\n./AAA/2.jpg\n./BBB/1.jpg\n按完整路徑排序時，2.jpg 會排在前面，而按檔案名排序時，1.jpg 會排在前面。\n\n----------\n按 Exif 信息排序時，需要讀取每個文件的標頭內容，這可能會導致加載速度變慢。例如，在 SMB 網絡驅動器上或是處理視頻文件時，參考讀取速度約為每秒 10 個文件。"
           }
         }
       }
