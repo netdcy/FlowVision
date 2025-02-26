@@ -1987,15 +1987,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     scriptObject.executeAndReturnError(&error)
                     if let error = error, let errorCode = error[NSAppleScript.errorNumber] as? Int, errorCode == -1743 {
                         // AppleScript 无权限，回退到 NSWorkspace.shared.recycle
-                        for url in urlsToDelete {
-                            NSWorkspace.shared.recycle([url], completionHandler: { (newURLs, error) in
-                                if let error = error {
-                                    log("删除失败: \(url.path), 错误: \(error)")
-                                } else {
-                                    log("文件已移动到废纸篓: \(url.path)")
-                                }
-                            })
-                        }
+                        NSWorkspace.shared.recycle(urlsToDelete, completionHandler: { (newURLs, error) in
+                            if let error = error {
+                                log("删除失败: \(error)")
+                            } else {
+                                log("文件已移动到废纸篓")
+                            }
+                        })
                     } else if let error = error {
                         log("删除失败: \(error)")
                     } else {

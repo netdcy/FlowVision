@@ -131,6 +131,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
     }
     
     @IBAction func openSystemPreferences(_ sender: Any) {
+        _ = requestAppleEventsPermission()
         let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy")!
         NSWorkspace.shared.open(url)
     }
