@@ -358,6 +358,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if let scrollView = outlineView.enclosingScrollView {
+         scrollView.contentInsets = NSEdgeInsets(top: 30, left: 0, bottom: 0, right: 0)  //侧边栏距离顶部距离
+        }    
+        // 调整列宽
+        if let tableColumn = outlineView.tableColumns.first {
+        tableColumn.minWidth = 200 // 设置最小列宽
+        tableColumn.width = 250    // 设置默认列宽
+        }     
+
         log("开始viewDidLoad")
         
         publicVar.refView=collectionView
