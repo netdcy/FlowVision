@@ -15,6 +15,8 @@
                 <outlet property="loopBrowsingCheckbox" destination="8Z4-Ey-mOg" id="wCg-rI-Dsd"/>
                 <outlet property="randomFolderThumbCheckbox" destination="oZE-97-h1J" id="BN1-Ep-r4A"/>
                 <outlet property="refViewForExcludeListView" destination="3aB-BV-3KF" id="hSt-Sk-KJI"/>
+                <outlet property="usePinyinInitialSearchCheckbox" destination="lqa-M3-fXH" id="LEw-T4-60h"/>
+                <outlet property="usePinyinSearchCheckbox" destination="5hJ-Ao-AXY" id="Lk8-YI-64q"/>
                 <outlet property="view" destination="c22-O7-iKe" id="hab-yT-1tV"/>
             </connections>
         </customObject>
@@ -24,7 +26,7 @@
             <rect key="frame" x="0.0" y="0.0" width="510" height="534"/>
             <subviews>
                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1zQ-Z6-EOk">
-                    <rect key="frame" x="150" y="270" width="300" height="125"/>
+                    <rect key="frame" x="150" y="168" width="300" height="125"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <subviews>
                         <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h78-D3-1lh">
@@ -78,7 +80,7 @@
                                 </subviews>
                             </clipView>
                             <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="b0n-pF-2NZ">
-                                <rect key="frame" x="1" y="84" width="98" height="15"/>
+                                <rect key="frame" x="1" y="87" width="298" height="15"/>
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
                             <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="9Fv-Dh-GjK">
@@ -103,7 +105,7 @@
                     </subviews>
                 </customView>
                 <gridView xPlacement="center" yPlacement="center" rowAlignment="none" rowSpacing="8" columnSpacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="lkV-Y2-eOl">
-                    <rect key="frame" x="30" y="222" width="450" height="292"/>
+                    <rect key="frame" x="30" y="110" width="450" height="404"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="450" id="5HG-su-XZq"/>
                     </constraints>
@@ -112,6 +114,10 @@
                         <gridRow id="DqQ-B1-rBX"/>
                         <gridRow id="qRQ-wQ-p0q"/>
                         <gridRow height="20" id="Vxw-AW-fH6"/>
+                        <gridRow id="MYU-da-MjP"/>
+                        <gridRow id="rwb-dM-Msz"/>
+                        <gridRow id="ffW-a9-gkS"/>
+                        <gridRow height="20" id="Hiw-Si-6Fi"/>
                         <gridRow id="3ji-xx-40N"/>
                         <gridRow id="vzh-lB-BGH"/>
                         <gridRow id="DaE-iY-5h0"/>
@@ -124,7 +130,7 @@
                     <gridCells>
                         <gridCell row="uLO-pI-Rng" column="GGj-JC-w4E" id="iQf-kM-Ntg">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="36e-fs-Acz">
-                                <rect key="frame" x="35" y="276" width="78" height="16"/>
+                                <rect key="frame" x="35" y="388" width="78" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Image View:" id="QHt-c1-9Ji">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -134,7 +140,7 @@
                         </gridCell>
                         <gridCell row="uLO-pI-Rng" column="cs9-fm-l2F" id="tkz-9O-t5b">
                             <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8Z4-Ey-mOg">
-                                <rect key="frame" x="119" y="275" width="116" height="18"/>
+                                <rect key="frame" x="119" y="387" width="116" height="18"/>
                                 <buttonCell key="cell" type="check" title="Loop Browsing" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="EBi-bb-P2R">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -147,7 +153,7 @@
                         <gridCell row="DqQ-B1-rBX" column="GGj-JC-w4E" id="4WE-5t-jZf"/>
                         <gridCell row="DqQ-B1-rBX" column="cs9-fm-l2F" id="9Bf-2Q-si2">
                             <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="GrH-Fc-hHA">
-                                <rect key="frame" x="119" y="254" width="287" height="14"/>
+                                <rect key="frame" x="119" y="366" width="287" height="14"/>
                                 <textFieldCell key="cell" selectable="YES" title="Return to the first image after the last, and vice versa." id="QqU-Xz-7dB">
                                     <font key="font" metaFont="message" size="11"/>
                                     <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
@@ -157,7 +163,7 @@
                         </gridCell>
                         <gridCell row="qRQ-wQ-p0q" column="GGj-JC-w4E" id="d9c-ug-roI">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Vt6-jC-8Jo">
-                                <rect key="frame" x="32" y="230" width="81" height="16"/>
+                                <rect key="frame" x="32" y="342" width="81" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Background:" id="uKy-ok-dDi">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -167,7 +173,7 @@
                         </gridCell>
                         <gridCell row="qRQ-wQ-p0q" column="cs9-fm-l2F" id="eWu-0F-cb3">
                             <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eIh-jy-wRw">
-                                <rect key="frame" x="119" y="229" width="248" height="18"/>
+                                <rect key="frame" x="119" y="341" width="248" height="18"/>
                                 <buttonCell key="cell" type="check" title="Use Black Background in Full Screen" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="dB2-6s-xY8">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -179,10 +185,62 @@
                         </gridCell>
                         <gridCell row="Vxw-AW-fH6" column="GGj-JC-w4E" headOfMergedCell="YUZ-t2-HaZ" xPlacement="fill" id="YUZ-t2-HaZ">
                             <box key="contentView" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="0at-6J-tiq">
-                                <rect key="frame" x="0.0" y="210" width="450" height="5"/>
+                                <rect key="frame" x="0.0" y="322" width="450" height="5"/>
                             </box>
                         </gridCell>
                         <gridCell row="Vxw-AW-fH6" column="cs9-fm-l2F" headOfMergedCell="YUZ-t2-HaZ" id="Nj4-9X-TOs"/>
+                        <gridCell row="MYU-da-MjP" column="GGj-JC-w4E" id="kdJ-il-uux">
+                            <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="XNW-h7-ZZn">
+                                <rect key="frame" x="63" y="290" width="50" height="16"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Search:" id="6Lz-fa-9PG">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </gridCell>
+                        <gridCell row="MYU-da-MjP" column="cs9-fm-l2F" id="GBm-Y2-Ar2">
+                            <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5hJ-Ao-AXY">
+                                <rect key="frame" x="119" y="289" width="257" height="18"/>
+                                <buttonCell key="cell" type="check" title="For Chinese Use Full Pinyin for Search" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="yBn-Nt-UPF">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="usePinyinSearchToggled:" target="-2" id="qcS-MN-2uK"/>
+                                </connections>
+                            </button>
+                        </gridCell>
+                        <gridCell row="rwb-dM-Msz" column="GGj-JC-w4E" id="CUt-xa-35P"/>
+                        <gridCell row="rwb-dM-Msz" column="cs9-fm-l2F" id="dtv-hl-x32">
+                            <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lqa-M3-fXH">
+                                <rect key="frame" x="119" y="265" width="274" height="18"/>
+                                <buttonCell key="cell" type="check" title="For Chinese Use Pinyin Initials for Search" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Apw-rY-geq">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="usePinyinInitialSearchToggled:" target="-2" id="KCD-xs-Ya4"/>
+                                </connections>
+                            </button>
+                        </gridCell>
+                        <gridCell row="ffW-a9-gkS" column="GGj-JC-w4E" id="Vir-kb-RJn"/>
+                        <gridCell row="ffW-a9-gkS" column="cs9-fm-l2F" id="hAN-Q7-IRi">
+                            <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="YlS-Dc-6ce">
+                                <rect key="frame" x="119" y="230" width="333" height="28"/>
+                                <textFieldCell key="cell" selectable="YES" title="Options when using Cmd + F for search, only effective in normal matching mode." id="7DQ-m2-6si">
+                                    <font key="font" metaFont="message" size="11"/>
+                                    <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </gridCell>
+                        <gridCell row="Hiw-Si-6Fi" column="GGj-JC-w4E" headOfMergedCell="lQF-pS-hTp" xPlacement="fill" id="lQF-pS-hTp">
+                            <box key="contentView" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="bN6-ad-DNE">
+                                <rect key="frame" x="0.0" y="210" width="450" height="5"/>
+                            </box>
+                        </gridCell>
+                        <gridCell row="Hiw-Si-6Fi" column="cs9-fm-l2F" headOfMergedCell="lQF-pS-hTp" id="2VI-tn-CFt"/>
                         <gridCell row="3ji-xx-40N" column="GGj-JC-w4E" id="kZ3-Xb-38w">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="70Y-UG-aKW">
                                 <rect key="frame" x="41" y="178" width="72" height="16"/>

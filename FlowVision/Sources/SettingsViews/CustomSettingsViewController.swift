@@ -18,6 +18,8 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
     @IBOutlet weak var randomFolderThumbCheckbox: NSButton!
     @IBOutlet weak var loopBrowsingCheckbox: NSButton!
     @IBOutlet weak var blackBgInFullScreenCheckbox: NSButton!
+    @IBOutlet weak var usePinyinSearchCheckbox: NSButton!
+    @IBOutlet weak var usePinyinInitialSearchCheckbox: NSButton!
     @IBOutlet weak var excludeListView: NSOutlineView!
     @IBOutlet weak var excludeContainerView: NSView!
     @IBOutlet weak var refViewForExcludeListView: NSView!
@@ -29,7 +31,9 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         randomFolderThumbCheckbox.state = globalVar.randomFolderThumb ? .on : .off
         loopBrowsingCheckbox.state = globalVar.loopBrowsing ? .on : .off
         blackBgInFullScreenCheckbox.state = globalVar.blackBgInFullScreen ? .on : .off
-        
+        usePinyinSearchCheckbox.state = globalVar.usePinyinSearch ? .on : .off
+        usePinyinInitialSearchCheckbox.state = globalVar.usePinyinInitialSearch ? .on : .off
+
         // 设置 OutlineView
         excludeListView.dataSource = self
         excludeListView.delegate = self
@@ -68,6 +72,16 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
     @IBAction func blackBgInFullScreenToggled(_ sender: NSButton) {
         globalVar.blackBgInFullScreen = (sender.state == .on)
         UserDefaults.standard.set(globalVar.blackBgInFullScreen, forKey: "blackBgInFullScreen")
+    }
+
+    @IBAction func usePinyinSearchToggled(_ sender: NSButton) {
+        globalVar.usePinyinSearch = (sender.state == .on)
+        UserDefaults.standard.set(globalVar.usePinyinSearch, forKey: "usePinyinSearch")
+    }
+
+    @IBAction func usePinyinInitialSearchToggled(_ sender: NSButton) {
+        globalVar.usePinyinInitialSearch = (sender.state == .on)
+        UserDefaults.standard.set(globalVar.usePinyinInitialSearch, forKey: "usePinyinInitialSearch")
     }
     
     @IBAction func segmentedControlValueChanged(_ sender: NSSegmentedControl) {

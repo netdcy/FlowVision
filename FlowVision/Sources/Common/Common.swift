@@ -1110,3 +1110,71 @@ func resolveRelativePath(basePath: String, relativePath: String) -> String? {
     let shouldAddSlash = relative.hasSuffix("/")
     return resolvedPath + (shouldAddSlash ? "/" : "")
 }
+
+// 将汉字转换为全拼
+func chineseToFullPinyin(_ chinese: String) -> String {
+    let mutableString = NSMutableString(string: chinese) as CFMutableString
+    // 将汉字转换为拼音
+    if CFStringTransform(mutableString, nil, kCFStringTransformMandarinLatin, false) {
+        // 去除声调
+        CFStringTransform(mutableString, nil, kCFStringTransformStripDiacritics, false)
+    }
+    return mutableString as String
+}
+
+// 将汉字转换为拼音首字母
+func chineseToPinyinInitials(_ chinese: String) -> String {
+    let mutableString = NSMutableString(string: chinese) as CFMutableString
+    // 将汉字转换为拼音
+    if CFStringTransform(mutableString, nil, kCFStringTransformMandarinLatin, false) {
+        // 去除声调
+        CFStringTransform(mutableString, nil, kCFStringTransformStripDiacritics, false)
+    }
+    
+    // 获取每个拼音的首字母
+    let pinyinString = mutableString as String
+    let words = pinyinString.components(separatedBy: " ")
+    let initials = words.compactMap { $0.first }.map { String($0) }
+    
+    return initials.joined()
+}
+
+// 判断字符是否为汉字
+func isChineseCharacter(_ character: Character) -> Bool {
+    return character.unicodeScalars.allSatisfy { $0.properties.isIdeographic }
+}
+
+// 处理字符串，转换其中的汉字部分
+func convertToPinyin(_ input: String, toPinyinFull: Bool) -> String {
+    var result = ""
+    var currentChineseSegment = ""
+    
+    for character in input {
+        if isChineseCharacter(character) {
+            currentChineseSegment.append(character)
+        } else {
+            // Convert current Chinese segment if exists
+            if !currentChineseSegment.isEmpty {
+                if toPinyinFull {
+                    result += chineseToFullPinyin(currentChineseSegment).replacingOccurrences(of: " ", with: "")
+                } else {
+                    result += chineseToPinyinInitials(currentChineseSegment)
+                }
+                currentChineseSegment = ""
+            }
+            // Append non-Chinese character directly
+            result.append(character)
+        }
+    }
+    
+    // Handle any remaining Chinese segment
+    if !currentChineseSegment.isEmpty {
+        if toPinyinFull {
+            result += chineseToFullPinyin(currentChineseSegment).replacingOccurrences(of: " ", with: "")
+        } else {
+            result += chineseToPinyinInitials(currentChineseSegment)
+        }
+    }
+    
+    return result
+}

@@ -6703,10 +6703,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
     }
     
-    private func isSearchMatch(fileName: String, searchText: String) -> Bool {
+    private func isSearchMatch(fileName _fileName: String, searchText _searchText: String) -> Bool {
         if search_useRegex {
             // 使用正则表达式进行匹配
             do {
+                let fileName = _fileName
+                let searchText = _searchText
                 let options: NSRegularExpression.Options = search_isCaseSensitive ? [] : [.caseInsensitive]
                 let regex = try NSRegularExpression(pattern: searchText, options: options)
                 let range = NSRange(location: 0, length: fileName.utf16.count)
@@ -6717,11 +6719,20 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         } else {
             // 使用普通文本匹配
-            if search_isCaseSensitive {
-                return fileName.contains(searchText)
-            } else {
-                return fileName.lowercased().contains(searchText.lowercased())
+            var fileName = _fileName
+            var searchText = _searchText
+            if !search_isCaseSensitive {
+                fileName = fileName.lowercased()
+                searchText = searchText.lowercased()
             }
+            var result = fileName.contains(searchText)
+            if globalVar.usePinyinSearch {
+                result = result || convertToPinyin(fileName, toPinyinFull: true).contains(searchText)
+            }
+            if globalVar.usePinyinInitialSearch {
+                result = result || convertToPinyin(fileName, toPinyinFull: false).contains(searchText)
+            }
+            return result
         }
     }
 

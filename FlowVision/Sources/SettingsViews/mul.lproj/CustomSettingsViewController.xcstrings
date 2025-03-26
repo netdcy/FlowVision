@@ -97,6 +97,198 @@
         }
       }
     },
+    "6Lz-fa-9PG.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Search:\"; ObjectID = \"6Lz-fa-9PG\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بحث:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suchen:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Search:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerca:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索："
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "검색:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoeken:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesquisar:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поиск:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sök:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜尋："
+          }
+        }
+      }
+    },
+    "7DQ-m2-6si.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Options when using Cmd + F for search, only effective in normal matching mode.\"; ObjectID = \"7DQ-m2-6si\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خيارات عند استخدام Cmd + F للبحث، فعالة فقط في وضع المطابقة العادي."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optionen bei der Verwendung von Cmd + F für die Suche, nur im normalen Abgleichmodus wirksam."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Options when using Cmd + F for search, only effective in normal matching mode."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opciones al usar Cmd + F para buscar, solo efectivas en modo de coincidencia normal."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Options lors de l'utilisation de Cmd + F pour la recherche, uniquement efficace en mode de correspondance normal."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opzioni per la ricerca con Cmd + F, efficaci solo in modalità di corrispondenza normale."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cmd + F を使用した検索時のオプション、通常のマッチングモードでのみ有効です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cmd + F를 사용하여 검색할 때의 옵션으로, 일반 일치 모드에서만 효과적입니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opties bij het gebruik van Cmd + F voor zoeken, alleen effectief in de normale zoekmodus."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opções ao usar Cmd + F para busca, somente efetivas no modo de correspondência normal."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opções ao usar Cmd + F para pesquisa, apenas eficaz no modo de correspondência normal."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Параметры при использовании Cmd + F для поиска, действуют только в режиме нормального совпадения"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alternativ när du använder Cmd + F för sökning, endast effektivt i normalt matchningsläge."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 Cmd + F 搜索时的选项，仅在普通匹配模式下生效。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在使用 Cmd + F 搜索時的選項，僅在正常匹配模式下有效"
+          }
+        }
+      }
+    },
     "7aF-tg-6Qj.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Exclude Directory:\"; ObjectID = \"7aF-tg-6Qj\";",
       "extractionState" : "extracted_with_value",
@@ -189,6 +381,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "排除目錄："
+          }
+        }
+      }
+    },
+    "Apw-rY-geq.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"For Chinese Use Pinyin Initials for Search\"; ObjectID = \"Apw-rY-geq\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "للصينيين استخدم الأحرف الأولى من بينيين للبحث"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für Chinesisch Pinyin-Initialen für die Suche verwenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "For Chinese Use Pinyin Initials for Search"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para chino use iniciales en Pinyin para la búsqueda"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour le chinois, utilisez les initiales en pinyin pour la recherche"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per il cinese utilizza le iniziali in Pinyin per la ricerca"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中国語の検索にピンインの頭文字を使用"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중국어 검색에 병음 이니셜 사용"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voor Chinees Initialen van Pinyin gebruiken voor zoeken"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para chinês use iniciais Pinyin para pesquisa"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para Chinês Use As Iniciais Pinyin Para Pesquisa"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для китайского используйте инициалы пиньинь для поиска"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "För kinesiska använd pinyin-initialer för sökning"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用汉语拼音首字母搜索"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "對於中文使用拼音首字母來搜尋"
           }
         }
       }
@@ -957,6 +1245,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "背景："
+          }
+        }
+      }
+    },
+    "yBn-Nt-UPF.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"For Chinese Use Full Pinyin for Search\"; ObjectID = \"yBn-Nt-UPF\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بالنسبة للصينية، استخدم بينيين الكامل للبحث"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für Chinesisch die vollständige Pinyin-Suche verwenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "For Chinese Use Full Pinyin for Search"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para el chino usa el pinyin completo para la búsqueda"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour le chinois, utilisez le pinyin complet pour la recherche"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per il cinese usa il pinyin completo per la ricerca"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中国語では検索に全ピンインを使用"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중국어 검색에 전체 병음을 사용"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voor Chinees Volledig Pinyin Gebruiken voor Zoeken"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para Chinês Use Pinyin Completo para Pesquisa"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para Chinês Usar Pinyin Completo para Pesquisa"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для китайского используйте полный пиньинь для поиска"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "För kinesiska använd hela pinyin för sökning"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用汉语拼音全拼搜索"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "對於中文使用全拼搜索"
           }
         }
       }

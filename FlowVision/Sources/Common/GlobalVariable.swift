@@ -48,6 +48,8 @@ class GlobalVar{
     var loopBrowsing = false
     var blackBgInFullScreen = false
     var thumbnailExcludeList: [String] = []
+    var usePinyinSearch = false
+    var usePinyinInitialSearch = false
     
     //可记忆设置变量
     var isFirstTimeUse = true

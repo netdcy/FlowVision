@@ -118,6 +118,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let thumbnailExcludeList = UserDefaults.standard.value(forKey: "thumbnailExcludeList") as? [String] {
             globalVar.thumbnailExcludeList = thumbnailExcludeList
         }
+        if let usePinyinSearch = UserDefaults.standard.value(forKey: "usePinyinSearch") as? Bool {
+            globalVar.usePinyinSearch = usePinyinSearch
+        }
+        if let usePinyinInitialSearch = UserDefaults.standard.value(forKey: "usePinyinInitialSearch") as? Bool {
+            globalVar.usePinyinInitialSearch = usePinyinInitialSearch
+        }
         if let memUseLimit = UserDefaults.standard.value(forKey: "memUseLimit") as? Int {
             globalVar.memUseLimit = memUseLimit
         }
