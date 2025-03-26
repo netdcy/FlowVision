@@ -10,7 +10,7 @@ import Settings
 
 final class CustomSettingsViewController: NSViewController, SettingsPane {
     let paneIdentifier = Settings.PaneIdentifier.custom
-    let paneTitle = NSLocalizedString("Custom", comment: "自定义")
+    let paneTitle = NSLocalizedString("View", comment: "查看")
     let toolbarItemIcon = NSImage(systemSymbolName: "gear", accessibilityDescription: "")!
 
     override var nibName: NSNib.Name? { "CustomSettingsViewController" }
@@ -95,7 +95,9 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
             openPanel.beginSheetModal(for: self.view.window!) { [weak self] response in
                 guard let self = self else { return }
                 if response == .OK, let url = openPanel.url {
-                    globalVar.thumbnailExcludeList.append(url.path)
+                    if !globalVar.thumbnailExcludeList.contains(url.path) {
+                        globalVar.thumbnailExcludeList.append(url.path)
+                    }
                     excludeListView.reloadData()
                     UserDefaults.standard.set(globalVar.thumbnailExcludeList, forKey: "thumbnailExcludeList")
                 }
