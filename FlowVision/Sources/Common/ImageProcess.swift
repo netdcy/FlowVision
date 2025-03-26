@@ -734,7 +734,7 @@ func getHDRImage(url: URL, size: NSSize? = nil, rotate: Int = 0) -> NSImage? {
 
 func getResizedImageUsingCI(url: URL, size: NSSize? = nil, rotate: Int = 0, useHDR: Bool = false) -> NSImage? {
     var ciOptions: [CIImageOption: Any] = [.applyOrientationProperty: true]
-    var ciFormat: CIFormat = .ARGB8
+    var ciFormat: CIFormat = .BGRA8
     
     if #available(macOS 14.0, *) {
         if useHDR {
