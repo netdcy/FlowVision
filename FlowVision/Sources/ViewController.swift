@@ -2368,8 +2368,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         restorePasteboard(items: backupItems)
     }
     
-    func handlePaste(targetURL: URL? = nil) {
-        let pasteboard = NSPasteboard.general
+    func handlePaste(targetURL: URL? = nil, pasteboard: NSPasteboard = NSPasteboard.general) {
         guard let items = pasteboard.pasteboardItems else { return }
         
         fileDB.lock()
@@ -2476,6 +2475,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
 
     func handleMove(targetURL: URL? = nil, pasteboard: NSPasteboard = NSPasteboard.general) {
+        
+        //按住Option则为复制
+        if isOptionKeyPressed() && !isCommandKeyPressed() {
+            handlePaste(targetURL: targetURL, pasteboard: pasteboard)
+            return
+        }
+        
         guard let items = pasteboard.pasteboardItems else { return }
         
         fileDB.lock()
