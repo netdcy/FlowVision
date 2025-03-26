@@ -109,6 +109,14 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
             return indexPaths
         }
     }
+    
+    func collectionView(_ collectionView: NSCollectionView, shouldDeselectItemsAt indexPaths: Set<IndexPath>) -> Set<IndexPath> {
+        guard let indexPath = indexPaths.first else { return [] }
+        
+        // TODO
+        
+        return indexPaths
+    }
 
 }
 

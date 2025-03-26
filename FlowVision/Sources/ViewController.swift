@@ -929,7 +929,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 "⬅️➡️⬆️⬇️" 键
-                if (specialKey == .leftArrow || specialKey == .rightArrow || specialKey == .upArrow || specialKey == .downArrow) && noModifierKey {
+                if (specialKey == .leftArrow || specialKey == .rightArrow || specialKey == .upArrow || specialKey == .downArrow) && (noModifierKey || isOnlyShiftPressed) {
                     if !publicVar.isInLargeView{
                         //如果焦点在OutlineView
                         if publicVar.isOutlineViewFirstResponder{
@@ -965,39 +965,37 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         
                         //如果焦点在CollectionView
                         if publicVar.isCollectionViewFirstResponder{
-                            if let currentIndexPath = collectionView.selectionIndexPaths.first,
-                               let collectionView = collectionView,
-                               let currentItem = collectionView.item(at: currentIndexPath),
-                               let scrollView = collectionView.enclosingScrollView
+                            if let collectionView = collectionView,
+                               let scrollView = collectionView.enclosingScrollView,
+                               !collectionView.selectionIndexPaths.isEmpty
                             {
+                                let sortedIndexPaths = collectionView.selectionIndexPaths.sorted()
+                                var currentIndexPath = sortedIndexPaths.first!
+                                if specialKey == .rightArrow || specialKey == .downArrow {
+                                    currentIndexPath = sortedIndexPaths.last!
+                                }
+
                                 // 存储当前滚动位置，因为findClosestItem期间会多次滚动
                                 let savedContentOffset = scrollView.contentView.bounds.origin
-                                
+
                                 var newIndexPath: IndexPath?
-                                newIndexPath = findClosestItem(currentItem: currentItem, direction: specialKey)
+                                newIndexPath = findClosestItem(currentIndexPath: currentIndexPath, direction: specialKey)
                                 
                                 // 还原滚动位置
                                 scrollView.contentView.setBoundsOrigin(savedContentOffset)
                                 scrollView.reflectScrolledClipView(scrollView.contentView)
                                 
                                 if let newIndexPath = newIndexPath {
-                                    collectionView.deselectAll(nil)
-                                    collectionView.selectItems(at: [newIndexPath], scrollPosition: [])
-                                    collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [newIndexPath])
-                                    collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
-                                    
-                                    setLoadThumbPriority(ifNeedVisable: true)
-                                    //log(DispatchTime.now().uptimeNanoseconds)
-//                                    if publicVar.timer.intervalSafe(name: "arrowScrollViewDidScrollSetLoadThumbPriority", second: 0.1) {
-//                                        setLoadThumbPriority(ifNeedVisable: true)
-//                                    }
-//                                    arrowScrollDebounceWorkItem?.cancel()
-//                                    arrowScrollDebounceWorkItem = DispatchWorkItem {
-//                                        DispatchQueue.main.async { [weak self] in
-//                                            self?.setLoadThumbPriority(ifNeedVisable: true)
-//                                        }
-//                                    }
-//                                    DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.1, execute: arrowScrollDebounceWorkItem!)
+                                    if !(isCommandKeyPressed() || isShiftKeyPressed()) {
+                                        collectionView.deselectAll(nil)
+                                    }
+                                    if let toSelect = collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [newIndexPath]) {
+                                        collectionView.selectItems(at: toSelect, scrollPosition: [])
+                                        collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: toSelect)
+                                        collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
+                                        
+                                        setLoadThumbPriority(ifNeedVisable: true)
+                                    }
                                 }
 
                             }else if let collectionView = collectionView {
@@ -1886,31 +1884,36 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         return CGPoint(x: frame.midX, y: frame.midY)
     }
     
-    func nearbyIndexPaths(around indexPaths: Set<IndexPath>, range: (Int,Int), needValid: Bool) -> Set<IndexPath> {
+    func nearbyIndexPaths(around indexPaths: Set<IndexPath>, range: (Int,Int)) -> Set<IndexPath> {
         guard let dataSource = collectionView.dataSource else { return [] }
-        
-        var expandedIndexPaths = Set<IndexPath>()
-        
-        for indexPath in indexPaths {
-            let section = indexPath.section
-            let item = indexPath.item
-            
-            for i in max(0, item + range.0)...(item + range.1) {
-                if !needValid || i < dataSource.collectionView(collectionView, numberOfItemsInSection: section) {
-                    expandedIndexPaths.insert(IndexPath(item: i, section: section))
-                }
-            }
+        if indexPaths.isEmpty {
+            return []
         }
-        
+        let sortedIndexPaths = indexPaths.sorted()
+        var expandedIndexPaths = Set<IndexPath>()
+
+        let leftRange = max(0, sortedIndexPaths.first!.item + range.0)
+        let rightRange = min(sortedIndexPaths.last!.item + range.1, dataSource.collectionView(collectionView, numberOfItemsInSection: sortedIndexPaths.first!.section) - 1)
+        if leftRange > rightRange {
+            return []
+        }
+        for i in leftRange...rightRange {
+            expandedIndexPaths.insert(IndexPath(item: i, section: sortedIndexPaths.first!.section))
+        }
+
         return expandedIndexPaths
     }
     
-    func findClosestItem(currentItem: NSCollectionViewItem, direction: NSEvent.SpecialKey) -> IndexPath? {
+    func findClosestItem(currentIndexPath: IndexPath, direction: NSEvent.SpecialKey) -> IndexPath? {
+        var currentItem = collectionView.item(at: currentIndexPath)
+        if currentItem == nil {
+            collectionView.scrollToItems(at: [currentIndexPath], scrollPosition: .nearestHorizontalEdge)
+            currentItem = collectionView.item(at: currentIndexPath)
+        }
+        guard let currentItem = currentItem else {return nil}
+        
         //let indexPaths = collectionView.indexPathsForVisibleItems()
-        let indexPaths = nearbyIndexPaths(around: collectionView.indexPathsForVisibleItems(), range: (-20,20), needValid: true)
-        //log(indexPaths.map{$0.item})
-        guard let currentIndexPath = collectionView.selectionIndexPaths.first else { return nil }
-        guard let currentItem = collectionView.item(at: currentIndexPath) else { return nil }
+        let indexPaths = nearbyIndexPaths(around: collectionView.indexPathsForVisibleItems(), range: (-20,20))
         
         let currentCenter = centerPoint(of: currentItem)
         var closestIndexPath: IndexPath?
@@ -4736,7 +4739,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
         var indexPaths: Set<IndexPath> = Set()
         if indexPath != nil {
-            indexPaths=nearbyIndexPaths(around: [indexPath!], range: range, needValid: false)
+            indexPaths=nearbyIndexPaths(around: [indexPath!], range: range)
         }else{
             indexPaths=collectionView.indexPathsForVisibleItems()
         }
