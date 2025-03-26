@@ -119,23 +119,24 @@ class WindowController: NSWindowController, NSWindowDelegate {
     }
 
     override func mouseEntered(with event: NSEvent) {
-        if globalVar.autoHideToolbar {
-            showTitleBar()
-        }
+//        if globalVar.autoHideToolbar {
+//            showTitleBar()
+//        }
     }
     
     override func mouseExited(with event: NSEvent) {
-        if globalVar.autoHideToolbar {
-            hideTitleBar()
-        }
+//        if globalVar.autoHideToolbar {
+//            hideTitleBar()
+//        }
     }
     
     override func mouseMoved(with event: NSEvent) {
+        guard let window = window else { return }
         if globalVar.autoHideToolbar {
             let location = event.locationInWindow
-            if location.y > window!.frame.height - 40 {
+            if location.y > window.frame.height - 40 {
                 showTitleBar()
-            } else {
+            } else if !window.styleMask.contains(.fullScreen) || (location.y < window.frame.height - 60) {
                 hideTitleBar()
             }
         }
@@ -144,21 +145,25 @@ class WindowController: NSWindowController, NSWindowDelegate {
     // 显示标题栏和工具栏
     func showTitleBar() {
         guard let window = window else { return }
+        guard let toolbar = window.toolbar else { return }
+        if toolbar.isVisible == true { return }
         window.standardWindowButton(.closeButton)?.isHidden = false
         window.standardWindowButton(.miniaturizeButton)?.isHidden = false
         window.standardWindowButton(.zoomButton)?.isHidden = false
         window.titlebarAppearsTransparent = false
-        window.toolbar?.isVisible = true
+        toolbar.isVisible = true
     }
     
     // 隐藏标题栏和工具栏
     func hideTitleBar() {
         guard let window = window else { return }
+        guard let toolbar = window.toolbar else { return }
+        if toolbar.isVisible == false { return }
         window.standardWindowButton(.closeButton)?.isHidden = true
         window.standardWindowButton(.miniaturizeButton)?.isHidden = true
         window.standardWindowButton(.zoomButton)?.isHidden = true
         window.titlebarAppearsTransparent = true
-        window.toolbar?.isVisible = false
+        toolbar.isVisible = false
     }
 }
 
