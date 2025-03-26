@@ -6709,8 +6709,26 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
     @objc private func searchFieldDidChange(_ sender: NSSearchField) {
         let searchText = sender.stringValue
-        search_searchText = searchText
-        performSearch(searchText: searchText, isEnterKey: false)
+        
+        // 标记并移除 ASCII 值为 3 的字符 (Shift+小键盘Enter)
+        var containsSpecialCharacter = false
+        let filteredText = searchText.filter { character in
+            if character.asciiValue == 3 {
+                containsSpecialCharacter = true
+                return false // 过滤掉该字符
+            }
+            return true
+        }
+        
+        // 如果存在特殊字符，则执行向上搜索
+        if containsSpecialCharacter {
+            sender.stringValue = filteredText
+            search_searchText = filteredText
+            performSearch(searchText: filteredText, isEnterKey: true, isReverse: true)
+        }else{
+            search_searchText = filteredText
+            performSearch(searchText: filteredText, isEnterKey: false)
+        }
     }
 
     func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
