@@ -18,7 +18,7 @@ let PRELOAD_THUMB_RANGE_NEXT = 40
 
 let OFFICIAL_WEBSITE = "http://flowvision.netdcy.com"
 
-let ROOT_NAME = "Macintosh HD"
+let ROOT_NAME = getSystemVolumeName() ?? "Macintosh HD"
 
 class GlobalVar{
     var myFavoritesArray = ["/"]
@@ -113,4 +113,19 @@ func getViewController(_ selfView: NSView) -> ViewController? {
     return nil
 }
 
+func getSystemVolumeName() -> String? {
+    let fileManager = FileManager.default
+    
+    // 获取根目录的URL
+    let rootURL = URL(fileURLWithPath: "/")
+    
+    do {
+        // 获取根目录的资源值，特别是卷名
+        let resourceValues = try rootURL.resourceValues(forKeys: [.volumeNameKey])
+        return resourceValues.volumeName
+    } catch {
+        print("Error retrieving volume name: \(error)")
+        return nil
+    }
+}
 
