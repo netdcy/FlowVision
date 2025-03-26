@@ -4937,6 +4937,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
             collectionView.reloadData()
             collectionView.selectItems(at: [indexPath], scrollPosition: [])
+            collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
             collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
             setLoadThumbPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0), ifNeedVisable: false)
         }
