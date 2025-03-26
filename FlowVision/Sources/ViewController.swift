@@ -561,6 +561,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let isAltPressed = modifierFlags.contains(.option)
             // 检测是否按下了 Shift 键
             let isShiftPressed = modifierFlags.contains(.shift)
+            // 检测是否按下了 Fn 键 (部分按键例如方向键按下时此值也为true)
+            let isFnPressed = modifierFlags.contains(.function)
             
             let noModifierKey = !isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
             let isOnlyCommandPressed = isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
@@ -1039,7 +1041,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "F" 键
-                if characters == "f" && noModifierKey {
+                if characters == "f" && noModifierKey && !isFnPressed {
                     if !publicVar.isInLargeView{
                         toggleSidebar()
                         return nil
@@ -1106,7 +1108,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             // 处理弹出重命名对话框、OCR状态的复制粘贴操作
-            if (!publicVar.isKeyEventEnabled || largeImageView.isInOcrState) && event.modifierFlags.contains(.command) {
+            if (!publicVar.isKeyEventEnabled || largeImageView.isInOcrState) && isOnlyCommandPressed {
                 switch event.charactersIgnoringModifiers {
                 case "a":
                     if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.selectAll(_:))) {
