@@ -2059,6 +2059,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         log("文件已移动到废纸篓")
                     }
                 }
+                
+                // 针对递归模式处理
+                if publicVar.isRecursiveMode {
+                    scheduledRefresh()
+                }
+                
             } else {
                 log("要删除的文件不存在")
             }
@@ -3789,12 +3795,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 //log("i:",i,"path:",fileSortKey.path.removingPercentEncoding)
                 let newFileModel=FileModel(path: fileSortKey.path, ver: fileDB.db[SortKeyDir(folderpath)]!.ver, isDir: isDir, fileSize: fileSize, createDate: createDate, modDate: modDate, addDate: addDate, doNotActualRead: doNotActualRead)
                 //log(fileSortKey.path)
-                if fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] != nil {
-                    fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
-                    fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.isDir=isDir
-                    fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.doNotActualRead=doNotActualRead
+                if let file = fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] {
+                    file.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
+                    file.isDir=isDir
+                    file.doNotActualRead=doNotActualRead
                     //检查文件或文件夹是否有变化(文件夹fileSize为nil)
-                    if fileSize != fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.fileSize || modDate != fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey]?.modDate {
+                    if fileSize != file.fileSize || modDate != file.modDate {
                         fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
                     }
                 }else{
