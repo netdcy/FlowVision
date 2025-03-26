@@ -117,6 +117,25 @@ class WindowController: NSWindowController, NSWindowDelegate {
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.toggleOnTop()
     }
+    
+    // 在窗口已经进入全屏模式时执行
+    func windowDidEnterFullScreen(_ notification: Notification) {
+        if let viewController = contentViewController as? ViewController,
+            globalVar.blackBgInFullScreen {
+            viewController.largeImageBgEffectView.material = .dark
+            viewController.largeImageBgEffectView.blendingMode = .behindWindow
+            viewController.largeImageBgEffectView.state = .inactive
+        }
+    }
+    
+    // 在窗口已经退出全屏模式时执行
+    func windowDidExitFullScreen(_ notification: Notification) {
+        if let viewController = contentViewController as? ViewController {
+            viewController.largeImageBgEffectView.material = .menu
+            viewController.largeImageBgEffectView.blendingMode = .withinWindow
+            viewController.largeImageBgEffectView.state = .active
+        }
+    }
 
     override func mouseEntered(with event: NSEvent) {
 //        if globalVar.autoHideToolbar {

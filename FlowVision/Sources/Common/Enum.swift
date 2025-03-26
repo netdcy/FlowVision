@@ -26,6 +26,7 @@ enum SortType: Int, Codable {
 
 extension Settings.PaneIdentifier {
     static let general = Self("general")
+    static let custom = Self("custom")
     static let actions = Self("actions")
     static let advanced = Self("advanced")
 }

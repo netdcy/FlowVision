@@ -44,6 +44,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     lazy var settingsWindowController = SettingsWindowController(
         panes: [
             GeneralSettingsViewController(),
+            CustomSettingsViewController(),
             ActionsSettingsViewController(),
             AdvancedSettingsViewController()
         ],
@@ -107,6 +108,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         }
         if let randomFolderThumb = UserDefaults.standard.value(forKey: "randomFolderThumb") as? Bool {
             globalVar.randomFolderThumb = randomFolderThumb
+        }
+        if let loopBrowsing = UserDefaults.standard.value(forKey: "loopBrowsing") as? Bool {
+            globalVar.loopBrowsing = loopBrowsing
+        }
+        if let blackBgInFullScreen = UserDefaults.standard.value(forKey: "blackBgInFullScreen") as? Bool {
+            globalVar.blackBgInFullScreen = blackBgInFullScreen
+        }
+        if let thumbnailExcludeList = UserDefaults.standard.value(forKey: "thumbnailExcludeList") as? [String] {
+            globalVar.thumbnailExcludeList = thumbnailExcludeList
         }
         if let memUseLimit = UserDefaults.standard.value(forKey: "memUseLimit") as? Int {
             globalVar.memUseLimit = memUseLimit

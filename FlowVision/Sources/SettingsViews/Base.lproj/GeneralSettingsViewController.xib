@@ -10,7 +10,6 @@
             <connections>
                 <outlet property="autoHideToolbarCheckbox" destination="8Z4-Ey-mOg" id="ebU-3G-Jdt"/>
                 <outlet property="languagePopUpButton" destination="3Ab-aZ-SDF" id="kvI-eJ-6ZO"/>
-                <outlet property="randomFolderThumbCheckbox" destination="vTi-B3-Acy" id="rjF-Tc-LRj"/>
                 <outlet property="terminateAfterLastWindowClosedCheckbox" destination="eIh-jy-wRw" id="KSJ-M6-Apr"/>
                 <outlet property="view" destination="c22-O7-iKe" id="ZQe-UH-LCX"/>
             </connections>
@@ -21,7 +20,7 @@
             <rect key="frame" x="0.0" y="0.0" width="510" height="487"/>
             <subviews>
                 <gridView xPlacement="center" yPlacement="center" rowAlignment="none" rowSpacing="8" columnSpacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="lkV-Y2-eOl">
-                    <rect key="frame" x="30" y="77" width="450" height="390"/>
+                    <rect key="frame" x="30" y="101" width="450" height="366"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="450" id="5HG-su-XZq"/>
                     </constraints>
@@ -31,7 +30,6 @@
                         <gridRow id="uLO-pI-Rng"/>
                         <gridRow id="DqQ-B1-rBX"/>
                         <gridRow id="qRQ-wQ-p0q"/>
-                        <gridRow id="vQm-hZ-Ef7"/>
                         <gridRow height="20" id="Vxw-AW-fH6"/>
                         <gridRow id="vzh-lB-BGH"/>
                         <gridRow id="Vkn-wS-gZk"/>
@@ -46,7 +44,7 @@
                     <gridCells>
                         <gridCell row="fKO-X7-QnW" column="GGj-JC-w4E" id="cJ1-eu-dcJ">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pP4-VT-r7d">
-                                <rect key="frame" x="39" y="372" width="68" height="16"/>
+                                <rect key="frame" x="39" y="348" width="68" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Language:" id="s9c-vd-E8g">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -56,7 +54,7 @@
                         </gridCell>
                         <gridCell row="fKO-X7-QnW" column="cs9-fm-l2F" id="8St-Yi-onW">
                             <popUpButton key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3Ab-aZ-SDF">
-                                <rect key="frame" x="112" y="366" width="68" height="25"/>
+                                <rect key="frame" x="112" y="342" width="68" height="25"/>
                                 <popUpButtonCell key="cell" type="push" title="Auto" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="hGF-9Y-ejC" id="H3d-6S-qhu">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="message"/>
@@ -74,7 +72,7 @@
                         <gridCell row="6s8-bz-Bj9" column="GGj-JC-w4E" id="cms-bj-WuF"/>
                         <gridCell row="6s8-bz-Bj9" column="cs9-fm-l2F" id="Xl9-c7-tBk">
                             <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="ROF-P1-6ml">
-                                <rect key="frame" x="113" y="348" width="265" height="14"/>
+                                <rect key="frame" x="113" y="324" width="265" height="14"/>
                                 <textFieldCell key="cell" selectable="YES" title="Restart the application for changes to take effect." id="qe3-7u-Trn">
                                     <font key="font" metaFont="message" size="11"/>
                                     <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
@@ -84,7 +82,7 @@
                         </gridCell>
                         <gridCell row="uLO-pI-Rng" column="GGj-JC-w4E" id="iQf-kM-Ntg">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="36e-fs-Acz">
-                                <rect key="frame" x="54" y="324" width="53" height="16"/>
+                                <rect key="frame" x="54" y="300" width="53" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Toolbar:" id="QHt-c1-9Ji">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -94,7 +92,7 @@
                         </gridCell>
                         <gridCell row="uLO-pI-Rng" column="cs9-fm-l2F" id="tkz-9O-t5b">
                             <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8Z4-Ey-mOg">
-                                <rect key="frame" x="113" y="323" width="135" height="18"/>
+                                <rect key="frame" x="113" y="299" width="135" height="18"/>
                                 <buttonCell key="cell" type="check" title="Auto Hide Toolbar" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="EBi-bb-P2R">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -107,7 +105,7 @@
                         <gridCell row="DqQ-B1-rBX" column="GGj-JC-w4E" id="4WE-5t-jZf"/>
                         <gridCell row="DqQ-B1-rBX" column="cs9-fm-l2F" id="9Bf-2Q-si2">
                             <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="GrH-Fc-hHA">
-                                <rect key="frame" x="113" y="288" width="332" height="28"/>
+                                <rect key="frame" x="113" y="264" width="332" height="28"/>
                                 <textFieldCell key="cell" selectable="YES" id="QqU-Xz-7dB">
                                     <font key="font" metaFont="message" size="11"/>
                                     <string key="title">When this option is enabled, the multi-tab bar cannot be used.
@@ -119,7 +117,7 @@ Restart the application for changes to take effect.</string>
                         </gridCell>
                         <gridCell row="qRQ-wQ-p0q" column="GGj-JC-w4E" id="d9c-ug-roI">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Vt6-jC-8Jo">
-                                <rect key="frame" x="8" y="264" width="99" height="16"/>
+                                <rect key="frame" x="8" y="240" width="99" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Close Behavior:" id="uKy-ok-dDi">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -129,35 +127,13 @@ Restart the application for changes to take effect.</string>
                         </gridCell>
                         <gridCell row="qRQ-wQ-p0q" column="cs9-fm-l2F" id="eWu-0F-cb3">
                             <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eIh-jy-wRw">
-                                <rect key="frame" x="113" y="263" width="292" height="18"/>
+                                <rect key="frame" x="113" y="239" width="292" height="18"/>
                                 <buttonCell key="cell" type="check" title="Quit Application When Closing Last Window" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="dB2-6s-xY8">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
                                     <action selector="terminateAfterLastWindowClosedToggled:" target="-2" id="F1R-NP-6wj"/>
-                                </connections>
-                            </button>
-                        </gridCell>
-                        <gridCell row="vQm-hZ-Ef7" column="GGj-JC-w4E" id="ZqW-uT-GDf">
-                            <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="70Y-UG-aKW">
-                                <rect key="frame" x="35" y="240" width="72" height="16"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Thumbnail:" id="5e8-7g-fZU">
-                                    <font key="font" usesAppearanceFont="YES"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                        </gridCell>
-                        <gridCell row="vQm-hZ-Ef7" column="cs9-fm-l2F" id="aEW-wv-zh2">
-                            <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vTi-B3-Acy">
-                                <rect key="frame" x="113" y="239" width="185" height="18"/>
-                                <buttonCell key="cell" type="check" title="Random Folder Thumbnail" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Wab-QO-jJE">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="randomFolderThumbToggled:" target="-2" id="1c8-8Q-qxN"/>
                                 </connections>
                             </button>
                         </gridCell>

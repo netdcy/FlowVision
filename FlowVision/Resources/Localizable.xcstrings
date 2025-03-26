@@ -1996,6 +1996,17 @@
         }
       }
     },
+    "Custom" : {
+      "comment" : "自定义",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义"
+          }
+        }
+      }
+    },
     "Custom Layout Style" : {
       "comment" : "自定义布局样式",
       "localizations" : {

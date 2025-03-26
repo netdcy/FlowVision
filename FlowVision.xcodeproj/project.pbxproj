@@ -33,6 +33,8 @@
 		F7790ED82BA5FB6A00406D35 /* CustomCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = F7790ED62BA5FB6A00406D35 /* CustomCollectionViewItem.xib */; };
 		F7790EDB2BA8581600406D35 /* BTree in Frameworks */ = {isa = PBXBuildFile; productRef = F7790EDA2BA8581600406D35 /* BTree */; };
 		F78960F22BDCC26B00C2571B /* LargeImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78960F12BDCC26B00C2571B /* LargeImageView.swift */; };
+		F78D1A8A2D4CF31D00741908 /* CustomSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F78D1A892D4CF31D00741908 /* CustomSettingsViewController.xib */; };
+		F78D1A8C2D4CF37900741908 /* CustomSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78D1A8B2D4CF37900741908 /* CustomSettingsViewController.swift */; };
 		F78FAB0D2C0EE94D00FE66CC /* CustomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78FAB0C2C0EE94D00FE66CC /* CustomImageView.swift */; };
 		F79465E62C36ABB20080A52D /* ffmpegkit.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F754F3CB2C10393700A25D12 /* ffmpegkit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F79465E72C36ABB20080A52D /* libavcodec.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F754F3C92C10393700A25D12 /* libavcodec.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -122,6 +124,9 @@
 		F78960F12BDCC26B00C2571B /* LargeImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeImageView.swift; sourceTree = "<group>"; };
 		F78960F52BDFFE9200C2571B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F78D1A692D432DCE00741908 /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/Main.xcstrings; sourceTree = "<group>"; };
+		F78D1A872D4CF31D00741908 /* GeneralSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = GeneralSettingsViewController.xib; path = Base.lproj/CustomSettingsViewController.xib; sourceTree = "<group>"; };
+		F78D1A8B2D4CF37900741908 /* CustomSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSettingsViewController.swift; sourceTree = "<group>"; };
+		F78D1A922D4CF41300741908 /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/CustomSettingsViewController.xcstrings; sourceTree = "<group>"; };
 		F78FAB0C2C0EE94D00FE66CC /* CustomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageView.swift; sourceTree = "<group>"; };
 		F795AC6D2C196B80004B487F /* CustomSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSplitView.swift; sourceTree = "<group>"; };
 		F7A075502BA1D716009C47A6 /* FlowVisionDbg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowVisionDbg.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -259,6 +264,8 @@
 				F74636462C4FFA340086E920 /* AdvancedSettingsViewController.xib */,
 				F7C2DEBA2C4E6BEC003DF765 /* GeneralSettingsViewController.swift */,
 				F74636422C4FF9A30086E920 /* GeneralSettingsViewController.xib */,
+				F78D1A8B2D4CF37900741908 /* CustomSettingsViewController.swift */,
+				F78D1A892D4CF31D00741908 /* CustomSettingsViewController.xib */,
 				F74636542C5237720086E920 /* ActionsSettingsViewController.swift */,
 				F74636582C523EFF0086E920 /* ActionsSettingsViewController.xib */,
 			);
@@ -334,6 +341,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F78D1A8A2D4CF31D00741908 /* CustomSettingsViewController.xib in Resources */,
 				F74636402C4FF9A30086E920 /* GeneralSettingsViewController.xib in Resources */,
 				F7790ED82BA5FB6A00406D35 /* CustomCollectionViewItem.xib in Resources */,
 				F7A075582BA1D717009C47A6 /* Assets.xcassets in Resources */,
@@ -355,6 +363,7 @@
 				F78FAB0D2C0EE94D00FE66CC /* CustomImageView.swift in Sources */,
 				F76E2EFE2C3B765C0031B0B4 /* Log.swift in Sources */,
 				F7C2DEBC2C4E6BEC003DF765 /* GeneralSettingsViewController.swift in Sources */,
+				F78D1A8C2D4CF37900741908 /* CustomSettingsViewController.swift in Sources */,
 				F7A075562BA1D716009C47A6 /* ViewController.swift in Sources */,
 				F7AC30052D37E26B00F48AEF /* CustomPathControl.swift in Sources */,
 				F74636372C4F43AE0086E920 /* AdvancedSettingsViewController.swift in Sources */,
@@ -409,6 +418,15 @@
 				F74636592C523EFF0086E920 /* mul */,
 			);
 			name = ActionsSettingsViewController.xib;
+			sourceTree = "<group>";
+		};
+		F78D1A892D4CF31D00741908 /* CustomSettingsViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F78D1A872D4CF31D00741908 /* GeneralSettingsViewController.xib */,
+				F78D1A922D4CF41300741908 /* mul */,
+			);
+			name = CustomSettingsViewController.xib;
 			sourceTree = "<group>";
 		};
 		F7A075592BA1D717009C47A6 /* Main.storyboard */ = {

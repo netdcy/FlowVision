@@ -804,6 +804,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 
                 // 检查按键是否是 12345 键
                 if (["1","2","3","4","5"].contains(characters)) && noModifierKey {
+                    if view.window?.styleMask.contains(.fullScreen) == true {
+                        return nil
+                    }
                     if characters == "1" { // 1
                         adjustWindowMaximize()
                         return nil
@@ -3868,11 +3871,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //            currLargeImagePos = -1
             initLargeImagePos = -1
             if publicVar.lastLargeImageIdInImage == 0 {
-                nextLargeImage(isShowReachEndPrompt: false, firstShowThumb: false)
-                previousLargeImage(isShowReachEndPrompt: false, firstShowThumb: false)
+                nextLargeImage(isShowReachEndPrompt: false, firstShowThumb: false, noLoopBrowsing: true)
+                previousLargeImage(isShowReachEndPrompt: false, firstShowThumb: false, noLoopBrowsing: true)
             }else{
-                previousLargeImage(isShowReachEndPrompt: false, firstShowThumb: false)
-                nextLargeImage(isShowReachEndPrompt: false, firstShowThumb: false)
+                previousLargeImage(isShowReachEndPrompt: false, firstShowThumb: false, noLoopBrowsing: true)
+                nextLargeImage(isShowReachEndPrompt: false, firstShowThumb: false, noLoopBrowsing: true)
             }
 
         }else{
@@ -4556,6 +4559,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             var indexPaths: Set<IndexPath> = []
                             var isInLargeView = false
                             var curImagePos = -1
+                            // 注意此处是同步请求
                             DispatchQueue.main.sync { [weak self] in
                                 guard let self = self else { return }
                                 if publicVar.isInLargeView {
@@ -5080,7 +5084,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         lastScrollSwitchLargeImageTime=event.timestamp
     }
     
-    func locateLargeImage(direction: Int, isShowReachEndPrompt: Bool = true, firstShowThumb: Bool = true){
+    func locateLargeImage(direction: Int, isShowReachEndPrompt: Bool = true, firstShowThumb: Bool = true, noLoopBrowsing: Bool = false){
         if largeImageView.isHidden {return}
         if publicVar.openFromFinderPath != "" {return}
         if currLargeImagePos == -1 {
@@ -5161,21 +5165,29 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 collectionView.selectItems(at: [indexPath], scrollPosition: [])
                 collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
             }
-        }else if isShowReachEndPrompt {
+        }else {
             if direction == -1 {
-                largeImageView.showInfo(NSLocalizedString("Have Reached the First", comment: "已经是第一张图片"))
+                if globalVar.loopBrowsing && !noLoopBrowsing {
+                    locateLargeImage(direction: 2, isShowReachEndPrompt: isShowReachEndPrompt, firstShowThumb: firstShowThumb)
+                } else if isShowReachEndPrompt {
+                    largeImageView.showInfo(NSLocalizedString("Have Reached the First", comment: "已经是第一张图片"))
+                }
             }else if direction == 1 {
-                largeImageView.showInfo(NSLocalizedString("Have Reached the Last", comment: "已经是最后一张图片"))
+                if globalVar.loopBrowsing && !noLoopBrowsing {
+                    locateLargeImage(direction: -2, isShowReachEndPrompt: isShowReachEndPrompt, firstShowThumb: firstShowThumb)
+                }else if isShowReachEndPrompt {
+                    largeImageView.showInfo(NSLocalizedString("Have Reached the Last", comment: "已经是最后一张图片"))
+                }
             }
         }
     }
     
-    func previousLargeImage(isShowReachEndPrompt: Bool = true, firstShowThumb: Bool = true){
-        locateLargeImage(direction: -1, isShowReachEndPrompt: isShowReachEndPrompt, firstShowThumb: firstShowThumb)
+    func previousLargeImage(isShowReachEndPrompt: Bool = true, firstShowThumb: Bool = true, noLoopBrowsing: Bool = false){
+        locateLargeImage(direction: -1, isShowReachEndPrompt: isShowReachEndPrompt, firstShowThumb: firstShowThumb, noLoopBrowsing: noLoopBrowsing)
     }
     
-    func nextLargeImage(isShowReachEndPrompt: Bool = true, firstShowThumb: Bool = true){
-        locateLargeImage(direction: 1, isShowReachEndPrompt: isShowReachEndPrompt, firstShowThumb: firstShowThumb)
+    func nextLargeImage(isShowReachEndPrompt: Bool = true, firstShowThumb: Bool = true, noLoopBrowsing: Bool = false){
+        locateLargeImage(direction: 1, isShowReachEndPrompt: isShowReachEndPrompt, firstShowThumb: firstShowThumb, noLoopBrowsing: noLoopBrowsing)
     }
     
     func getCurrentImageOriginalSizeInScreenScale() -> NSSize? {

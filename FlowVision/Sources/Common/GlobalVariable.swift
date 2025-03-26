@@ -45,6 +45,9 @@ class GlobalVar{
     var thumbThreadNum_External: Int = 1
     var folderSearchDepth_External: Int = 0
     var randomFolderThumb = false
+    var loopBrowsing = false
+    var blackBgInFullScreen = false
+    var thumbnailExcludeList: [String] = []
     
     //可记忆设置变量
     var isFirstTimeUse = true

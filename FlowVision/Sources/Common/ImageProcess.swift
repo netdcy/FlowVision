@@ -147,6 +147,11 @@ func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, timeout:
 
     while !directoriesToVisit.isEmpty {
         let (currentDirectory, currentDepth) = directoriesToVisit.removeFirst() // 广度优先搜索
+
+        // 检查是否在排除列表中
+        if globalVar.thumbnailExcludeList.contains(currentDirectory.path) {
+            continue
+        }
         
         // 检查是否超时
         if Date().timeIntervalSince(startTime) > timeout {
