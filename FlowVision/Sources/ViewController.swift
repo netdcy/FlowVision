@@ -1385,8 +1385,19 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func toggleOnTop(){
-        if let windowController = view.window?.windowController as? WindowController {
-            windowController.toggleWindowOnTop()
+        if let window = self.view.window {
+            var showText = ""
+            if window.level == .floating {
+                // 取消置顶
+                window.level = .normal
+                showText = NSLocalizedString("Unpin Window from Top", comment: "取消置顶窗口")
+            } else {
+                // 置顶
+                window.level = .floating
+                showText = NSLocalizedString("Pin Window to Top", comment: "置顶窗口")
+            }
+            coreAreaView.showInfo(showText, timeOut: 1.0, cannotBeCleard: true)
+            publicVar.updateToolbar()
         }
     }
     
@@ -1473,6 +1484,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     func toggleRecursiveContainFolder(){
         publicVar.isRecursiveContainFolder.toggle()
         UserDefaults.standard.set(publicVar.isRecursiveContainFolder, forKey: "isRecursiveContainFolder")
+        var showText = NSLocalizedString("Not Include Folders", comment: "不包含文件夹")
+        if publicVar.isRecursiveContainFolder {
+            showText = NSLocalizedString("Include Folders", comment: "包含文件夹")
+        }
+        coreAreaView.showInfo(showText, timeOut: 1.0, cannotBeCleard: true)
         if publicVar.isRecursiveMode {
             refreshCollectionView(needLoadThumbPriority: true)
         }
@@ -1481,12 +1497,22 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     func toggleIsShowHiddenFile(){
         publicVar.isShowHiddenFile.toggle()
         UserDefaults.standard.set(publicVar.isShowHiddenFile, forKey: "isShowHiddenFile")
+        var showText = NSLocalizedString("Not Show Hidden Files", comment: "不显示隐藏文件")
+        if publicVar.isShowHiddenFile {
+            showText = NSLocalizedString("Show Hidden Files", comment: "显示隐藏文件")
+        }
+        coreAreaView.showInfo(showText, timeOut: 1.0, cannotBeCleard: true)
         refreshAll(needLoadThumbPriority: true)
     }
     
     func toggleIsShowAllTypeFile(){
         publicVar.isShowAllTypeFile.toggle()
         UserDefaults.standard.set(publicVar.isShowAllTypeFile, forKey: "isShowAllTypeFile")
+        var showText = NSLocalizedString("Not Show All Types of Files", comment: "不显示所有类型文件")
+        if publicVar.isShowAllTypeFile {
+            showText = NSLocalizedString("Show All Types of Files", comment: "显示所有类型文件")
+        }
+        coreAreaView.showInfo(showText, timeOut: 1.0, cannotBeCleard: true)
         refreshAll(needLoadThumbPriority: true)
     }
     

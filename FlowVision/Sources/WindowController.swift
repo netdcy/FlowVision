@@ -114,16 +114,8 @@ class WindowController: NSWindowController, NSWindowDelegate {
     }
     
     func toggleWindowOnTop() {
-        if let window = self.window {
-            if window.level == .floating {
-                // 取消置顶
-                window.level = .normal
-            } else {
-                // 置顶
-                window.level = .floating
-            }
-            updateToolbar()
-        }
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleOnTop()
     }
 
     override func mouseEntered(with event: NSEvent) {
