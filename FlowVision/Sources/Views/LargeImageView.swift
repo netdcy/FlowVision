@@ -25,7 +25,7 @@ class LargeImageView: NSView {
     var playcontrolTimer: DispatchSourceTimer?
     var videoOrderId: Int = 0
     var pausedBySeek = false
-    var lastVolumeForPauseDebug: Float = 1.0
+    var lastVolumeForPauseRef: Float?
     
     private var blackOverlayView: NSView?
     
@@ -621,6 +621,12 @@ class LargeImageView: NSView {
     override func mouseDown(with event: NSEvent) {
         getViewController(self)!.publicVar.isLeftMouseDown = true//临时按住左键也能缩放
         
+        if !(getViewController(self)!.publicVar.isRightMouseDown),
+           file.type == .video,
+           let player = queuePlayer { //通过音量记录来标识是否完整点击事件，而且避免点击音量条时触发暂停
+            lastVolumeForPauseRef = player.volume
+        }
+        
         // 检测双击
         if !(getViewController(self)!.publicVar.isRightMouseDown) {
             let currentTime = event.timestamp
@@ -628,6 +634,7 @@ class LargeImageView: NSView {
             if currentTime - lastClickTime < NSEvent.doubleClickInterval,
                distanceBetweenPoints(lastClickLocation, currentLocation) < positionThreshold {
                 getViewController(self)?.closeLargeImage(0)
+                lastVolumeForPauseRef = nil
             }
             lastClickTime = currentTime
             lastClickLocation = currentLocation
@@ -641,10 +648,6 @@ class LargeImageView: NSView {
         doNotPopRightMenu = false
         
         // 设置定时器实现长按检测
-        if file.type == .video,
-           let player = queuePlayer{ //由于拖动音量条时没有drag事件取消计时器，因此需要判断是否是这种情况
-            lastVolumeForPauseDebug = player.volume
-        }
         longPressZoomTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
             self?.performLongPressZoom(at: event.locationInWindow)
         }
@@ -684,13 +687,6 @@ class LargeImageView: NSView {
             showRatio()
             
             //hasZoomed=true
-        }else if file.type == .video {
-            if !getViewController(self)!.publicVar.isRightMouseDown{
-                if let player = queuePlayer,
-                   lastVolumeForPauseDebug == player.volume{
-                    pauseOrResumeVideo()
-                }
-            }
         }
     }
     
@@ -710,6 +706,18 @@ class LargeImageView: NSView {
         if pausedBySeek {
             resumeVideo()
             pausedBySeek = false
+        }
+
+        // 检测双击
+        if !(getViewController(self)!.publicVar.isRightMouseDown) {
+            let currentLocation = event.locationInWindow
+            if distanceBetweenPoints(lastClickLocation, currentLocation) < positionThreshold {
+                if file.type == .video,let player = queuePlayer,
+                   lastVolumeForPauseRef == player.volume {
+                    pauseOrResumeVideo()
+                    lastVolumeForPauseRef = nil
+                }
+            }
         }
 
         super.mouseUp(with: event)
@@ -813,7 +821,7 @@ class LargeImageView: NSView {
             
             menu.addItem(withTitle: NSLocalizedString("Show in Finder", comment: "在Finder中显示"), action: #selector(actShowInFinder), keyEquivalent: "")
             
-            let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
+            let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "")
             actionItemRename.keyEquivalentModifierMask = []
             
             menu.addItem(NSMenuItem.separator())
@@ -839,7 +847,11 @@ class LargeImageView: NSView {
             
             menu.addItem(NSMenuItem.separator())
             
-            let actionItemShowExif = menu.addItem(withTitle: NSLocalizedString("Show Exif", comment: "显示Exif信息"), action: #selector(actShowExif), keyEquivalent: "i")
+            var textForExif = NSLocalizedString("Show Exif", comment: "显示Exif信息")
+            if file.type == .video {
+                textForExif = NSLocalizedString("Show File Info", comment: "显示文件信息")
+            }
+            let actionItemShowExif = menu.addItem(withTitle: textForExif, action: #selector(actShowExif), keyEquivalent: "i")
             actionItemShowExif.keyEquivalentModifierMask = []
             actionItemShowExif.state = getViewController(self)!.publicVar.isShowExif ? .on : .off
             

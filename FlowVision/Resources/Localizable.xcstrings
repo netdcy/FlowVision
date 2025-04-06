@@ -13206,6 +13206,101 @@
         }
       }
     },
+    "Show File Info" : {
+      "comment" : "显示文件信息",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عرض معلومات الملف"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dateiinformationen anzeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show File Info"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar información del archivo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher les informations du fichier"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra informazioni sul file"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイル情報を表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파일 정보 표시"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestandsinformatie weergeven"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar informações do arquivo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar Informação do Ficheiro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать информацию о файле"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa filinformation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示文件信息"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示檔案資訊"
+          }
+        }
+      }
+    },
     "Show Hidden Files" : {
       "comment" : "显示隐藏文件",
       "localizations" : {
@@ -16736,6 +16831,12 @@
             "value" : "Lautstärke"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volume"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17566,101 +17667,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "確定要將這些文件移到垃圾箱嗎？\n\n此程序未獲授權“自動化”權限。移到垃圾箱後，無法使用“還原到原位置”功能。"
-          }
-        }
-      }
-    },
-    "auto-play-visible-video-info" : {
-      "comment" : "对于自动播放可见视频的说明...",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نظرًا لأن macOS يدعم بشكل أصلي فقط تنسيقات الفيديو مثل [\"mp4\"، \"mov\"، \"m2ts\"، \"ts\"، \"mpeg\"، \"mpg\"، \"m4v\"، \"vob\"]، فإن التنسيقات الأخرى لا تزال تتطلب مشغلًا خارجيًا للتشغيل."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Da macOS nativ nur Videoformate wie [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"] unterstützt, erfordern andere Formate weiterhin einen externen Player zur Wiedergabe."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Since macOS natively supports only video formats such as [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], other formats still require an external player for playback."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dado que macOS admite nativamente solo formatos de video como [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], otros formatos aún requieren un reproductor externo para la reproducción."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "macOS ne prend en charge nativement que les formats vidéo tels que [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], d'autres formats nécessitent encore un lecteur externe pour la lecture"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Poiché macOS supporta nativamente solo formati video come [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], altri formati richiedono ancora un lettore esterno per la riproduzione."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "macOSは、[\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"]などのビデオ形式のみをネイティブでサポートしているため、他の形式は再生に外部プレーヤーが必要です。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "macOS는 본래 [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"]와 같은 비디오 형식만 지원하므로, 다른 형식은 여전히 외부 플레이어가 필요합니다"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aangezien macOS van nature alleen videoformaten zoals [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"] ondersteunt, vereisen andere formaten nog steeds een externe speler voor weergave."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Como o macOS oferece suporte nativo apenas a formatos de vídeo como [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], outros formatos ainda requerem um reprodutor externo para reprodução."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Como o macOS suporta nativamente apenas formatos de vídeo como [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], outros formatos ainda necessitam de um reprodutor externo para reprodução."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Поскольку macOS поддерживает только форматы видео, такие как [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], для воспроизведения других форматов все еще требуется внешний плеер."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eftersom macOS endast stöder videoformat som [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], kräver andra format fortfarande en extern spelare för uppspelning."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "由于macOS原生仅支持 [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"] 格式视频，其它格式仍需使用外部播放器播放。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "由於 macOS 自身僅支援 [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"] 等影片格式，其他格式仍需使用外部播放器進行播放"
           }
         }
       }
@@ -24786,6 +24792,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "尺寸"
+          }
+        }
+      }
+    },
+    "video-play-info" : {
+      "comment" : "对于视频播放的说明...",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "في واجهة المشغل، اضغط على الزر الأيسر لإيقاف التشغيل مؤقتاً، وانقر بزر الفأرة الأيمن واسحب لضبط تقدم تشغيل الفيديو.\n\nنظراً لأن نظام macOS يدعم أصلاً فقط تنسيقات الفيديو مثل [\"mp4\"، \"mov\"، \"m2ts\"، \"ts\"، \"mpeg\"، \"mpg\"، \"m4v\"، \"vob\"]، فإن التنسيقات الأخرى لا تزال بحاجة إلى تشغيل باستخدام مشغل خارجي."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drücken Sie in der Spieler-Oberfläche die linke Taste, um die Wiedergabe zu pausieren, und klicken Sie mit der rechten Maustaste und ziehen, um den Fortschritt der Videowiedergabe anzupassen.\n\nDa macOS nativerweise nur Videoformate wie [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"] unterstützt, müssen andere Formate weiterhin mit einem externen Player abgespielt werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In the player interface, press the left button to pause playback, and right-click and drag to adjust the video playback progress.\n\nSince macOS natively only supports video formats such as [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], other formats still need to be played using an external player."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En la interfaz del reproductor, presiona el botón izquierdo para pausar la reproducción y haz clic derecho y arrastra para ajustar el progreso de la reproducción de video.\n\nDado que macOS solo admite de forma nativa formatos de video como [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], otros formatos aún necesitan reproducirse utilizando un reproductor externo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dans l'interface du lecteur, appuyez sur le bouton gauche pour mettre la lecture en pause, et cliquez avec le bouton droit et faites glisser pour ajuster la progression de la lecture vidéo\n\nÉtant donné que macOS ne prend en charge de manière native que les formats vidéo tels que [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], les autres formats doivent encore être lus à l'aide d'un lecteur externe"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nell'interfaccia del lettore, premi il pulsante sinistro per mettere in pausa la riproduzione, fai clic con il tasto destro e trascina per regolare il progresso della riproduzione video.\n\nPoiché macOS supporta nativamente solo formati video come [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], altri formati devono ancora essere riprodotti utilizzando un lettore esterno."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレイヤーインターフェースで、左ボタンを押して再生を一時停止し、右クリックしてドラッグすることで動画の再生進行を調整します。\n\nmacOSは標準で[\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"]などのビデオフォーマットのみをサポートしているため、他のフォーマットは外部プレイヤーを使用して再生する必要があります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "플레이어 인터페이스에서 왼쪽 버튼을 눌러 재생을 일시 중지하고, 오른쪽 클릭 후 드래그하여 비디오 재생 진행을 조정하세요.\n\nmacOS는 기본적으로 [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"]와 같은 비디오 형식만 지원하므로, 다른 형식은 여전히 외부 플레이어를 사용하여 재생해야 합니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In de spelerinterface druk je op de linkertoets om de weergave te pauzeren en klik je met de rechtermuisknop en sleep je om de voortgang van de videoweergave aan te passen\n\nAangezien macOS van nature alleen videoformaten zoals [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"] ondersteunt, moeten andere formaten nog steeds worden afgespeeld met een externe speler"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na interface do player, pressione o botão esquerdo para pausar a reprodução, e clique com o botão direito e arraste para ajustar o progresso da reprodução do vídeo.\n\nJá que o macOS oferece suporte nativo apenas para formatos de vídeo como [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], outros formatos ainda precisam ser reproduzidos usando um player externo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na interface do leitor, pressione o botão esquerdo para pausar a reprodução e clique com o botão direito e arraste para ajustar o progresso da reprodução do vídeo\n\nComo o macOS suporta nativamente apenas formatos de vídeo como [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], outros formatos ainda precisam ser reproduzidos usando um leitor externo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В интерфейсе проигрывателя нажмите левую кнопку, чтобы приостановить воспроизведение, а щелкните правой кнопкой мыши и перетащите, чтобы изменить прогресс воспроизведения видео.\n\nПоскольку macOS по умолчанию поддерживает только видеоформаты, такие как [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], другие форматы все еще необходимо воспроизводить с использованием внешнего плеера."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I spelargränssnittet, tryck på vänster knapp för att pausa uppspelning, och högerklicka och dra för att justera videouppspelningens framsteg.\n\nEftersom macOS inbyggt endast stödjer videoformat som [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], behöver andra format fortfarande spelas med en extern spelare."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在播放器界面，按左键暂停播放，右键拖拽可以调整视频播放进度。\n\n由于macOS原生仅支持 [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"] 格式视频，其它格式仍需使用外部播放器播放。\n"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在播放器界面中，按下左鍵以暫停播放，右鍵單擊並拖動以調整視頻播放進度。\n\n由於macOS原生僅支持[\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"]等視頻格式，其他格式仍需使用外部播放器進行播放"
           }
         }
       }

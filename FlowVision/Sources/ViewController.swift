@@ -531,8 +531,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 let clickLocation = event.locationInWindow
                 let videoControlYmin = largeImageView.videoView.frame.minY
                 let videoControlYmax = largeImageView.videoView.frame.maxY
+                let videoControlXmin = largeImageView.videoView.frame.minX
+                let videoControlXmax = largeImageView.videoView.frame.maxX
                 
-                if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax {
+                if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax,
+                   clickLocation.x > videoControlXmin && clickLocation.x < videoControlXmax {
                     largeImageView.mouseDown(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
                     //return nil
                 }
@@ -549,8 +552,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 let clickLocation = event.locationInWindow
                 let videoControlYmin = largeImageView.videoView.frame.minY
                 let videoControlYmax = largeImageView.videoView.frame.maxY
+                let videoControlXmin = largeImageView.videoView.frame.minX
+                let videoControlXmax = largeImageView.videoView.frame.maxX
                 
-                if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax {
+                if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax,
+                   clickLocation.x > videoControlXmin && clickLocation.x < videoControlXmax {
                     largeImageView.mouseUp(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
                     //return nil
                 }
@@ -568,8 +574,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //                let clickLocation = event.locationInWindow
 //                let videoControlYmin = largeImageView.videoView.frame.minY
 //                let videoControlYmax = largeImageView.videoView.frame.maxY
+//                let videoControlXmin = largeImageView.videoView.frame.minX
+//                let videoControlXmax = largeImageView.videoView.frame.maxX
 //                
-//                if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax {
+//                if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax,
+//                   clickLocation.x > videoControlXmin && clickLocation.x < videoControlXmax {
 //                    largeImageView.mouseDragged(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
 //                    //return nil
 //                }
@@ -653,6 +662,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 if characters == "t" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
                     if !publicVar.isInLargeView{
                         toggleRecursiveContainFolder()
+                        return nil
+                    }
+                }
+                // 检查按键是否是 F3 键
+                if specialKey == .f3 {
+                    if !publicVar.isInLargeView{
+                        toggleSearchOverlay()
                         return nil
                     }
                 }
@@ -1118,6 +1134,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 
                 // 检查按键是否是 F2、回车、小键盘回车 键
                 if specialKey == .f2 || specialKey == .enter || specialKey == .carriageReturn || specialKey == .newline {
+                    if publicVar.isInLargeView && specialKey != .f2 {
+                        if let window = view.window {
+                            window.toggleFullScreen(nil)
+                        }
+                        return nil
+                    }
+                    
                     //如果焦点在OutlineView
                     if publicVar.isOutlineViewFirstResponder{
                         outlineView.actRename(isByKeyboard: true)
@@ -6911,6 +6934,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             searchOverlay = nil
             searchField = nil
             view.window?.makeFirstResponder(collectionView)
+        }
+    }
+    
+    func toggleSearchOverlay() {
+        if publicVar.isInLargeView {return}
+        if searchOverlay == nil {
+            showSearchOverlay()
+        }else{
+            closeSearchOverlay()
         }
     }
     

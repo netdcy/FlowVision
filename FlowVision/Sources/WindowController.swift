@@ -133,8 +133,14 @@ class WindowController: NSWindowController, NSWindowDelegate {
         if !globalVar.autoHideToolbar {
             window?.toolbar?.isVisible = false
         }
-        
-        viewController.largeImageView.determineBlackBg()
+
+        if viewController.publicVar.isInLargeView {
+            if viewController.largeImageView.file.type == .image {
+                viewController.changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: false)
+            } else {
+                viewController.largeImageView.determineBlackBg()
+            }
+        }
     }
     
     // 在窗口已经退出全屏模式时执行
@@ -150,7 +156,13 @@ class WindowController: NSWindowController, NSWindowDelegate {
             }
         }
         
-        viewController.largeImageView.determineBlackBg()
+        if viewController.publicVar.isInLargeView {
+            if viewController.largeImageView.file.type == .image {
+                viewController.changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: false)
+            } else {
+                viewController.largeImageView.determineBlackBg()
+            }
+        }
     }
 
     override func mouseEntered(with event: NSEvent) {
@@ -1244,7 +1256,7 @@ extension WindowController: NSToolbarDelegate {
         let useInternalPlayer = menu.addItem(withTitle: NSLocalizedString("Use Internal Video Player", comment: "使用内置视频播放器"), action: #selector(toggleUseInternalPlayer), keyEquivalent: "")
         useInternalPlayer.state = viewController.publicVar.useInternalPlayer ? .on : .off
 
-        let autoPlayVisibleVideoInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(autoPlayVisibleVideoInfo), keyEquivalent: "")
+        let videoPlayInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(videoPlayInfo), keyEquivalent: "")
 
         menu.addItem(NSMenuItem.separator())
         
@@ -1506,8 +1518,8 @@ extension WindowController: NSToolbarDelegate {
         viewController.toggleUseInternalPlayer()
     }
     
-    @objc func autoPlayVisibleVideoInfo(_ sender: NSMenuItem){
-        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("auto-play-visible-video-info", comment: "对于自动播放可见视频的说明..."), width: 300)
+    @objc func videoPlayInfo(_ sender: NSMenuItem){
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("video-play-info", comment: "对于视频播放的说明..."), width: 300)
     }
     
     @objc func customLayoutStyle(_ sender: NSMenuItem){

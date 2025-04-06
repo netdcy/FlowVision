@@ -879,7 +879,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
     
     @IBAction func showSearch(_ sender: NSMenuItem){
-        getMainViewController()?.showSearchOverlay()
+        getMainViewController()?.toggleSearchOverlay()
     }
 }
 
