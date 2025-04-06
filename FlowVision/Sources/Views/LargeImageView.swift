@@ -24,6 +24,7 @@ class LargeImageView: NSView {
     var snapshotTimer: DispatchSourceTimer?
     var playcontrolTimer: DispatchSourceTimer?
     var videoOrderId: Int = 0
+    var pausedBySeek = false
     
     private var blackOverlayView: NSView?
     
@@ -141,11 +142,27 @@ class LargeImageView: NSView {
         }
     }
     
-    func pauseVideo() {
+    func pauseOrResumeVideo() {
         if let queuePlayer = queuePlayer {
             if queuePlayer.timeControlStatus == .playing {
                 queuePlayer.pause()
             } else {
+                queuePlayer.play()
+            }
+        }
+    }
+    
+    func pauseVideo() {
+        if let queuePlayer = queuePlayer {
+            if queuePlayer.timeControlStatus == .playing {
+                queuePlayer.pause()
+            }
+        }
+    }
+    
+    func resumeVideo() {
+        if let queuePlayer = queuePlayer {
+            if queuePlayer.timeControlStatus == .paused {
                 queuePlayer.play()
             }
         }
@@ -171,6 +188,7 @@ class LargeImageView: NSView {
             videoView.controlsStyle = .none
             videoOrderId += 1
             videoView.isHidden = false
+            pausedBySeek = false
 
             if let timeRange = getCommonTimeRange(url: url) {
                 playerItem = AVPlayerItem(url: url)
@@ -281,7 +299,7 @@ class LargeImageView: NSView {
                 playcontrolTimer?.setEventHandler { [weak self] in
                     guard let self = self else { return }
                     if id != videoOrderId { return }
-                    videoView.controlsStyle = .default
+                    videoView.controlsStyle = .inline
                 }
                 playcontrolTimer?.resume()
             } else {
@@ -299,10 +317,104 @@ class LargeImageView: NSView {
         queuePlayer?.removeAllItems()
         playerItem = nil
         currentPlayingURL = nil
+        pausedBySeek = false
         while snapshotQueue.count > 0{
             snapshotQueue.first??.removeFromSuperview()
             snapshotQueue.removeFirst()
         }
+    }
+
+    func seekVideoByDrag(deltaX: CGFloat) {
+        // 如果拖动距离小于2像素则忽略
+//        if abs(deltaX) < 2 {
+//            return
+//        }
+
+        guard let player = queuePlayer else { 
+            return 
+        }
+        
+        // 获取视频总时长
+        guard let duration = player.currentItem?.duration else { 
+            return 
+        }
+        let totalSeconds = CMTimeGetSeconds(duration)
+        
+        // 计算当前视图宽度对应的总秒数比例
+        let pixelsPerSecond = self.frame.width / CGFloat(totalSeconds)
+        
+        // 根据拖动距离计算需要调整的秒数
+        let seekSeconds = deltaX / pixelsPerSecond
+        
+        // 获取当前播放时间
+        let currentTime = player.currentTime()
+        let currentSeconds = CMTimeGetSeconds(currentTime)
+        
+        // 计算目标时间,确保在有效范围内
+        var targetSeconds = currentSeconds + Double(seekSeconds)
+        targetSeconds = max(0, min(totalSeconds, targetSeconds))
+        
+        // 暂停
+        if player.timeControlStatus == .playing {
+            pausedBySeek = true
+            pauseVideo()
+        }
+        
+        // 转换为CMTime并执行跳转
+        let targetTime = CMTimeMakeWithSeconds(Float64(targetSeconds), preferredTimescale: 600)
+        player.seek(to: targetTime, toleranceBefore: .zero, toleranceAfter: .zero)
+    }
+    
+    func seekVideo(direction: Int) {
+        if direction == -1 {
+            seekVideoBySeconds(seconds: -10)
+        } else if direction == 1 {
+            seekVideoBySeconds(seconds: 10)
+        }
+    }
+    
+    func seekVideoBySeconds(seconds: Double) {
+        guard let player = queuePlayer,
+              let duration = player.currentItem?.duration else {
+            return
+        }
+        
+        let totalSeconds = CMTimeGetSeconds(duration)
+        let currentTime = player.currentTime()
+        let currentSeconds = CMTimeGetSeconds(currentTime)
+        
+        // 计算目标时间,确保在有效范围内
+        var targetSeconds = currentSeconds + seconds
+        targetSeconds = max(0, min(totalSeconds, targetSeconds))
+        
+        // 转换为CMTime并执行跳转
+        let targetTime = CMTimeMakeWithSeconds(Float64(targetSeconds), preferredTimescale: 600)
+        player.seek(to: targetTime, toleranceBefore: .zero, toleranceAfter: .zero)
+    }
+
+    func adjustVolume(by delta: Float) {
+        guard let player = queuePlayer else { return }
+        
+        // 获取当前音量并计算新音量
+        var newVolume = player.volume + delta
+        
+        // 限制音量在0-1之间
+        newVolume = max(0, min(1.0, newVolume))
+        
+        // 设置新音量
+        player.volume = newVolume
+        
+        // 显示音量信息
+        let volumePercent = Int(newVolume * 100)
+        showInfo(NSLocalizedString("Volume", comment: "音量") + ": \(volumePercent)%")
+    }
+    
+    func increaseVolume() {
+        adjustVolume(by: 0.1)
+    }
+    
+    func decreaseVolume() {
+        adjustVolume(by: -0.1)
     }
     
     func enableBlackBg() {
@@ -530,28 +642,35 @@ class LargeImageView: NSView {
             //由于在大图状态下双击关闭又快速连击，会导致此处被异常调用，所以加以限制
             return
         }
-
-        if !getViewController(self)!.publicVar.isRightMouseDown {
-            let zoomSize=customZoomSize()
-            let locationInView = self.convert(point, from: nil)
-            let locationInImageView = imageView.convert(locationInView, from: self)
+        
+        if file.type == .image {
             
-            let zoomFactorWidth = zoomSize.width / imageView.frame.width
-            let zoomFactorHeight = zoomSize.height / imageView.frame.height
+            if !getViewController(self)!.publicVar.isRightMouseDown {
+                let zoomSize=customZoomSize()
+                let locationInView = self.convert(point, from: nil)
+                let locationInImageView = imageView.convert(locationInView, from: self)
+                
+                let zoomFactorWidth = zoomSize.width / imageView.frame.width
+                let zoomFactorHeight = zoomSize.height / imageView.frame.height
+                
+                // 计算新的图像尺寸和位置
+                imageView.frame.size = zoomSize
+                imageView.frame.origin.x -= (locationInImageView.x * (zoomFactorWidth - 1))
+                imageView.frame.origin.y -= (locationInImageView.y * (zoomFactorHeight - 1))
+                
+                getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: true)
+            }else{
+                getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: true)
+            }
             
-            // 计算新的图像尺寸和位置
-            imageView.frame.size = zoomSize
-            imageView.frame.origin.x -= (locationInImageView.x * (zoomFactorWidth - 1))
-            imageView.frame.origin.y -= (locationInImageView.y * (zoomFactorHeight - 1))
+            showRatio()
             
-            getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: true)
-        }else{
-            getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: true)
+            //hasZoomed=true
+        }else if file.type == .video {
+            if !getViewController(self)!.publicVar.isRightMouseDown{
+                pauseOrResumeVideo()
+            }
         }
-        
-        showRatio()
-        
-        //hasZoomed=true
     }
     
     override func mouseUp(with event: NSEvent) {
@@ -566,6 +685,11 @@ class LargeImageView: NSView {
             getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false)
         }
         hasZoomedByWheel=false
+        
+        if pausedBySeek {
+            resumeVideo()
+            pausedBySeek = false
+        }
 
         super.mouseUp(with: event)
     }
@@ -585,8 +709,14 @@ class LargeImageView: NSView {
             let dx = newLocation.x - lastLocation.x
             let dy = newLocation.y - lastLocation.y
 
-            imageView.frame.origin.x += dx
-            imageView.frame.origin.y += dy
+            if file.type == .image {
+                imageView.frame.origin.x += dx
+                imageView.frame.origin.y += dy
+            } else if file.type == .video {
+                if getViewController(self)!.publicVar.isRightMouseDown {
+                    seekVideoByDrag(deltaX: dx)
+                }
+            }
         }
 
         lastDragLocation = newLocation

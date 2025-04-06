@@ -324,6 +324,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     var eventMonitorKeyDown: Any?
     var eventMonitorLeftMouseDown: Any?
+    var eventMonitorLeftMouseUp: Any?
     var eventMonitorRightMouseDown: Any?
     var eventMonitorRightMouseUp: Any?
     var eventMonitorRightMouseDragged: Any?
@@ -520,24 +521,42 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //双击目录树
         outlineView.doubleAction = #selector(outlineViewDoubleClicked(_:))
         
-        //双击大图事件
+        //鼠标左键事件
         eventMonitorLeftMouseDown = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { [weak self] event in
             guard let self = self else { return event }
             if event.window != self.view.window { return event }
-            if event.clickCount == 2 {
+
+            if publicVar.isInLargeView && largeImageView.file.type == .video {
                 let clickLocation = event.locationInWindow
                 let coreAreaViewHeight = coreAreaView.frame.height
-
-                // 检查是否在窗口的最下方40px范围内(视频控制条)或超出coreAreaView的范围
-                if clickLocation.y <= 40 || clickLocation.y > coreAreaViewHeight {
-                    return event
-                }
-
-                if publicVar.isInLargeView && largeImageView.file.type == .video {
-                    closeLargeImage(0)
+                let videoControlYmin = largeImageView.videoView.frame.minY
+                let videoControlYmax = largeImageView.videoView.frame.maxY
+                
+                if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax {
+                    largeImageView.mouseDown(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
                     return nil
                 }
             }
+            
+            return event
+        }
+
+        eventMonitorLeftMouseUp = NSEvent.addLocalMonitorForEvents(matching: .leftMouseUp) { [weak self] event in
+            guard let self = self else { return event }
+            if event.window != self.view.window { return event }
+
+            if publicVar.isInLargeView && largeImageView.file.type == .video {
+                let clickLocation = event.locationInWindow
+                let coreAreaViewHeight = coreAreaView.frame.height
+                let videoControlYmin = largeImageView.videoView.frame.minY
+                let videoControlYmax = largeImageView.videoView.frame.maxY
+                
+                if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax {
+                    largeImageView.mouseUp(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
+                    return nil
+                }
+            }
+            
             return event
         }
         
@@ -801,7 +820,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 if characters == " " && noModifierKey {
                     if publicVar.isInLargeView{
                         if largeImageView.file.type == .video {
-                            largeImageView.pauseVideo()
+                            largeImageView.pauseOrResumeVideo()
                         }else{
                             closeLargeImage(0)
                         }
@@ -950,14 +969,22 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 // 检查按键是否是 ➡️⬇️PageDown 键
                 if (specialKey == .rightArrow || specialKey == .downArrow || specialKey == .pageDown || specialKey == .next) && noModifierKey {
                     if publicVar.isInLargeView{
-                        nextLargeImage()
+                        if largeImageView.file.type == .video && specialKey == .rightArrow {
+                            largeImageView.seekVideo(direction: 1)
+                        }else{
+                            nextLargeImage()
+                        }
                         return nil
                     }
                 }
                 // 检查按键是否是 ⬅️⬆️PageUp 键
                 if (specialKey == .leftArrow || specialKey == .upArrow || specialKey == .pageUp || specialKey == .prev) && noModifierKey {
                     if publicVar.isInLargeView{
-                        previousLargeImage()
+                        if largeImageView.file.type == .video && specialKey == .leftArrow {
+                            largeImageView.seekVideo(direction: -1)
+                        }else{
+                            previousLargeImage()
+                        }
                         return nil
                     }
                 }
@@ -1105,7 +1132,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 // 检查按键是否是 -、-(小键盘) 键
                 if characters == "-" && noModifierKey {
                     if publicVar.isInLargeView{
-                        largeImageView.zoom(direction: -1)
+                        if largeImageView.file.type == .video {
+                            largeImageView.decreaseVolume()
+                        }else{
+                            largeImageView.zoom(direction: -1)
+                        }
                         return nil
                     }else{
                         adjustThumbSizeByDirection(direction: -1)
@@ -1116,7 +1147,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 // 检查按键是否是 +(=)、+(小键盘) 键
                 if (characters == "=" || characters == "+") && noModifierKey {
                     if publicVar.isInLargeView {
-                        largeImageView.zoom(direction: +1)
+                        if largeImageView.file.type == .video {
+                            largeImageView.increaseVolume()
+                        }else{
+                            largeImageView.zoom(direction: +1)
+                        }
                         return nil
                     }else{
                         adjustThumbSizeByDirection(direction: +1)
@@ -1222,6 +1257,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 return event  // 继续传递事件
             }
         }
+
         eventMonitorRightMouseDown = NSEvent.addLocalMonitorForEvents(matching: .rightMouseDown) { [weak self] event in
             guard let self=self else{return event}
             //if getMainViewController() != self {return event}
@@ -1240,6 +1276,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 return event  // 继续传递事件
             }
         }
+
         eventMonitorRightMouseDragged = NSEvent.addLocalMonitorForEvents(matching: .rightMouseDragged) { [weak self] event in
             guard let self=self else{return event}
             //if getMainViewController() != self {return event}
@@ -1277,6 +1314,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         if let eventMonitorLeftMouseDown = eventMonitorLeftMouseDown {
             NSEvent.removeMonitor(eventMonitorLeftMouseDown)
+        }
+        if let eventMonitorLeftMouseUp = eventMonitorLeftMouseUp {
+            NSEvent.removeMonitor(eventMonitorLeftMouseUp)
         }
         if let eventMonitorRightMouseDown = eventMonitorRightMouseDown {
             NSEvent.removeMonitor(eventMonitorRightMouseDown)
