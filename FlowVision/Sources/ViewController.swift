@@ -5512,26 +5512,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         locateLargeImage(direction: 1, isShowReachEndPrompt: isShowReachEndPrompt, firstShowThumb: firstShowThumb, noLoopBrowsing: noLoopBrowsing)
     }
     
-    func getCurrentImageOriginalSizeInScreenScale() -> NSSize? {
-        let pos=currLargeImagePos
-        var result: NSSize?
-        fileDB.lock()
-        if let file=fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.elementSafe(atOffset: pos)?.1{
-            fileDB.unlock()
-            if let originalSize=file.originalSize{
-                //判断是否Retina，NSScreen.main是当前具有键盘焦点的屏幕，通常是用户正在与之交互的屏幕
-                let scale = NSScreen.main?.backingScaleFactor ?? 1
-                result=NSSize(width: originalSize.width/scale, height: originalSize.height/scale)
-                if file.rotate%2 == 1 {
-                    result=NSSize(width: originalSize.height/scale, height: originalSize.width/scale)
-                }
-            }
-        }else{
-            fileDB.unlock()
-        }
-        return result
-    }
-    
     func setWindowTitleOfLargeImage(file: FileModel){
         let url=URL(string:file.path)!
         var fullTitle=url.lastPathComponent
