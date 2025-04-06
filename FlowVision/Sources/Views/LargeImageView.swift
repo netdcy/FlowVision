@@ -26,6 +26,8 @@ class LargeImageView: NSView {
     var videoOrderId: Int = 0
     var pausedBySeek = false
     var lastVolumeForPauseRef: Float?
+    var restorePlayPosition: CMTime?
+    var restorePlayURL: URL?
     
     private var blackOverlayView: NSView?
     
@@ -268,6 +270,12 @@ class LargeImageView: NSView {
             let targetTime: CMTime = CMTime(seconds: 0.01, preferredTimescale: 600)
             if queuePlayer?.currentTime() ?? CMTime.zero >= targetTime {
                 
+                // 恢复旋转前的进度
+                if let restorePlayPosition = restorePlayPosition,
+                   restorePlayURL == currentPlayingURL {
+                    queuePlayer?.seek(to: restorePlayPosition, toleranceBefore: .zero, toleranceAfter: .zero)
+                }
+                
                 // 隐藏快照
                 while snapshotQueue.count > 0{
                     snapshotQueue.first??.removeFromSuperview()
@@ -310,7 +318,9 @@ class LargeImageView: NSView {
         }
     }
     
-    func stopVideo(){
+    func stopVideo(savePosition: Bool = false){
+        restorePlayPosition = savePosition ? queuePlayer?.currentTime() : nil
+        restorePlayURL = savePosition ? currentPlayingURL : nil
         videoOrderId += 1
         videoView.isHidden = true
         playerLooper?.disableLooping()
@@ -1142,7 +1152,7 @@ class LargeImageView: NSView {
     @objc func actRotateR() {
         file.rotate = (file.rotate+1)%4
         if file.type == .video {
-            stopVideo()
+            stopVideo(savePosition: true)
         }else{
             unSetOcr()
         }
@@ -1152,7 +1162,7 @@ class LargeImageView: NSView {
     @objc func actRotateL() {
         file.rotate = (file.rotate+3)%4
         if file.type == .video {
-            stopVideo()
+            stopVideo(savePosition: true)
         }else{
             unSetOcr()
         }
