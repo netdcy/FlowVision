@@ -33,6 +33,7 @@ class SortKeyDir: SortKey {
 
 class SortKey: Comparable {
     var path: String
+    var pathCmp: String
     var createDate: Date
     var modDate: Date
     var addDate: Date
@@ -50,6 +51,7 @@ class SortKey: Comparable {
     
     init(_ path: String, createDate: Date = Date(), modDate: Date = Date(), addDate: Date = Date() , size: Int = 0, isDir: Bool = false, isInSameDir: Bool = false, needGetProperties: Bool = false, sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool) {
         self.path = path
+        self.pathCmp = path.lowercased()
         self.createDate = createDate
         self.modDate = modDate
         self.addDate = addDate
@@ -185,47 +187,47 @@ class SortKey: Comparable {
         
         if lhs.isSortFolderFirst || lhs.sortType == .sizeA || lhs.sortType == .sizeZ {
             //文件夹优先。另外文件夹size为0，按大小排序时还是优先为好
-            if lhs.path != rhs.path && lhs.isDir && !(rhs.isDir) { return true}
-            if lhs.path != rhs.path && !(lhs.isDir) && rhs.isDir { return false}
+            if lhs.pathCmp != rhs.pathCmp && lhs.isDir && !(rhs.isDir) { return true}
+            if lhs.pathCmp != rhs.pathCmp && !(lhs.isDir) && rhs.isDir { return false}
         }
         
         //以各种属性排序
         if lhs.sortType == .sizeA {
-            if lhs.size == rhs.size {return lhs.path<rhs.path}
+            if lhs.size == rhs.size {return isSmallerPath(lhs: lhs, rhs: rhs)}
             return lhs.size < rhs.size
         }else if lhs.sortType == .sizeZ {
-            if lhs.size == rhs.size {return lhs.path<rhs.path}
+            if lhs.size == rhs.size {return isSmallerPath(lhs: lhs, rhs: rhs)}
             return lhs.size > rhs.size
         }else if lhs.sortType == .createDateA {
-            if lhs.createDate == rhs.createDate {return lhs.path<rhs.path}
+            if lhs.createDate == rhs.createDate {return isSmallerPath(lhs: lhs, rhs: rhs)}
             return lhs.createDate < rhs.createDate
         }else if lhs.sortType == .createDateZ {
-            if lhs.createDate == rhs.createDate {return lhs.path>rhs.path}
+            if lhs.createDate == rhs.createDate {return isSmallerPath(lhs: rhs, rhs: lhs)}
             return lhs.createDate > rhs.createDate
         }else if lhs.sortType == .modDateA {
-            if lhs.modDate == rhs.modDate {return lhs.path<rhs.path}
+            if lhs.modDate == rhs.modDate {return isSmallerPath(lhs: lhs, rhs: rhs)}
             return lhs.modDate < rhs.modDate
         }else if lhs.sortType == .modDateZ {
-            if lhs.modDate == rhs.modDate {return lhs.path>rhs.path}
+            if lhs.modDate == rhs.modDate {return isSmallerPath(lhs: rhs, rhs: lhs)}
             return lhs.modDate > rhs.modDate
         }else if lhs.sortType == .addDateA {
-            if lhs.addDate == rhs.addDate {return lhs.path<rhs.path}
+            if lhs.addDate == rhs.addDate {return isSmallerPath(lhs: lhs, rhs: rhs)}
             return lhs.addDate < rhs.addDate
         }else if lhs.sortType == .addDateZ {
-            if lhs.addDate == rhs.addDate {return lhs.path>rhs.path}
+            if lhs.addDate == rhs.addDate {return isSmallerPath(lhs: rhs, rhs: lhs)}
             return lhs.addDate > rhs.addDate
         }else if lhs.sortType == .extA {
-            if lhs.ext() == rhs.ext() {return lhs.path<rhs.path}
+            if lhs.ext() == rhs.ext() {return isSmallerPath(lhs: lhs, rhs: rhs)}
             return lhs.ext() < rhs.ext()
         }else if lhs.sortType == .extZ {
-            if lhs.ext() == rhs.ext() {return lhs.path<rhs.path}
+            if lhs.ext() == rhs.ext() {return isSmallerPath(lhs: lhs, rhs: rhs)}
             return lhs.ext() > rhs.ext()
         }
         
         //随机排序
         if lhs.sortType == .random {
-            let lhs_hash=hashFunction(fileName: lhs.path, seed: lhs.seed)
-            let rhs_hash=hashFunction(fileName: rhs.path, seed: rhs.seed)
+            let lhs_hash=hashFunction(fileName: lhs.pathCmp, seed: lhs.seed)
+            let rhs_hash=hashFunction(fileName: rhs.pathCmp, seed: rhs.seed)
             return lhs_hash<rhs_hash
         }
         
@@ -238,10 +240,10 @@ class SortKey: Comparable {
                 writeExifInfo(rhs)
             }
             if lhs.sortType == .exifDateA {
-                if lhs.exifDate == rhs.exifDate {return lhs.path<rhs.path}
+                if lhs.exifDate == rhs.exifDate {return isSmallerPath(lhs: lhs, rhs: rhs)}
                 return lhs.exifDate < rhs.exifDate
             }else if lhs.sortType == .exifDateZ {
-                if lhs.exifDate == rhs.exifDate {return lhs.path>rhs.path}
+                if lhs.exifDate == rhs.exifDate {return isSmallerPath(lhs: rhs, rhs: lhs)}
                 return lhs.exifDate > rhs.exifDate
             }
         }
@@ -255,10 +257,10 @@ class SortKey: Comparable {
                 writeExifInfo(rhs)
             }
             if lhs.sortType == .exifPixelA {
-                if lhs.exifPixel == rhs.exifPixel {return lhs.path<rhs.path}
+                if lhs.exifPixel == rhs.exifPixel {return isSmallerPath(lhs: lhs, rhs: rhs)}
                 return lhs.exifPixel < rhs.exifPixel
             }else if lhs.sortType == .exifPixelZ {
-                if lhs.exifPixel == rhs.exifPixel {return lhs.path<rhs.path}
+                if lhs.exifPixel == rhs.exifPixel {return isSmallerPath(lhs: lhs, rhs: rhs)}
                 return lhs.exifPixel > rhs.exifPixel
             }
         }
@@ -280,9 +282,9 @@ class SortKey: Comparable {
         //return lhs.path.removingPercentEncoding!.localizedStandardCompare(rhs.path.removingPercentEncoding!) == .orderedAscending
         //return lhs.path.lowercased().removingPercentEncoding!.localizedStandardCompare(rhs.path.lowercased().removingPercentEncoding!) == .orderedAscending
         
-        if lhs.path==rhs.path { return false }
-        if lhs.path=="" { return true }
-        if rhs.path=="" { return false }
+        if lhs.pathCmp==rhs.pathCmp { return false }
+        if lhs.pathCmp=="" { return true }
+        if rhs.pathCmp=="" { return false }
             
 //        let lhs_paths=lhs.path.replacingOccurrences(of: "file://", with: "").split(separator: "/").map(){String($0).lowercased().removingPercentEncoding!}
 //        let rhs_paths=rhs.path.replacingOccurrences(of: "file://", with: "").split(separator: "/").map(){String($0).lowercased().removingPercentEncoding!}
@@ -294,24 +296,24 @@ class SortKey: Comparable {
         
         var lhs_paths: [String]
         var rhs_paths: [String]
-        if keyTransformedDict[lhs.path] != nil {
-            lhs_paths=keyTransformedDict[lhs.path]!
+        if keyTransformedDict[lhs.pathCmp] != nil {
+            lhs_paths=keyTransformedDict[lhs.pathCmp]!
         }else{
             lhs_paths=lhs.path.replacingOccurrences(of: "file://", with: "").trimmingCharacters(in: CharacterSet(charactersIn: "/")).components(separatedBy: "/").map(){$0.removingPercentEncoding!.lowercased()}
-            keyTransformedDict[lhs.path]=lhs_paths
+            keyTransformedDict[lhs.pathCmp]=lhs_paths
         }
-        if keyTransformedDict[rhs.path] != nil {
-            rhs_paths=keyTransformedDict[rhs.path]!
+        if keyTransformedDict[rhs.pathCmp] != nil {
+            rhs_paths=keyTransformedDict[rhs.pathCmp]!
         }else{
             rhs_paths=rhs.path.replacingOccurrences(of: "file://", with: "").trimmingCharacters(in: CharacterSet(charactersIn: "/")).components(separatedBy: "/").map(){$0.removingPercentEncoding!.lowercased()}
-            keyTransformedDict[rhs.path]=rhs_paths
+            keyTransformedDict[rhs.pathCmp]=rhs_paths
         }
         //0.17s
 
 //        return lhs.path<rhs.path
         //0.01s
         
-        if lhs_paths.count==0 && rhs_paths.count==0 { return lhs.path<rhs.path }
+        if lhs_paths.count==0 && rhs_paths.count==0 { return localCompare(lhs.pathCmp,rhs.pathCmp) }
         if lhs_paths.count==0 { return true }
         if rhs_paths.count==0 { return false }
         
@@ -363,9 +365,9 @@ class SortKey: Comparable {
     static func == (lhs: SortKey, rhs: SortKey) -> Bool {
         if lhs.sortType != rhs.sortType {return true} // 异常情况，认为相等
         if lhs.sortType == .random {
-            return lhs.path == rhs.path && lhs.seed == rhs.seed
+            return lhs.pathCmp == rhs.pathCmp && lhs.seed == rhs.seed
         }
-        return lhs.path == rhs.path
+        return lhs.pathCmp == rhs.pathCmp
     }
 }
 

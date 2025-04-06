@@ -4029,11 +4029,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 let newFileModel=FileModel(path: fileSortKey.path, ver: fileDB.db[SortKeyDir(folderpath)]!.ver, isDir: isDir, fileSize: fileSize, createDate: createDate, modDate: modDate, addDate: addDate, doNotActualRead: doNotActualRead)
                 //log(fileSortKey.path)
                 if let file = fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] {
-                    file.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
-                    file.isDir=isDir
-                    file.doNotActualRead=doNotActualRead
-                    //检查文件或文件夹是否有变化(文件夹fileSize为nil)
-                    if fileSize != file.fileSize || modDate != file.modDate {
+                    if file.path == fileSortKey.path {
+                        file.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
+                        file.isDir=isDir
+                        file.doNotActualRead=doNotActualRead
+                        //检查文件或文件夹是否有变化(文件夹fileSize为nil)
+                        if fileSize != file.fileSize || modDate != file.modDate {
+                            fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
+                        }
+                    }else{
+                        //大小写变化，需要删除再插入
+                        fileDB.db[SortKeyDir(folderpath)]!.files.removeValue(forKey: fileSortKey)
                         fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
                     }
                 }else{

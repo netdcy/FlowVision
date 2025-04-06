@@ -402,11 +402,10 @@ func renameAlert(url: URL) -> Bool {
             let newUrl = originalUrl.deletingLastPathComponent().appendingPathComponent(newName)
             
             // 检查是否存在同名文件
-            if FileManager.default.fileExists(atPath: newUrl.path) {
-                if originalUrl.path != newUrl.path {
-                    showAlert(message: NSLocalizedString("renaming-conflict", comment: "该名称的文件已存在，请选择其他名称。"))
-                }
-            }else{
+            if FileManager.default.fileExists(atPath: newUrl.path) &&
+                originalUrl.path.lowercased() != newUrl.path.lowercased() {
+                showAlert(message: NSLocalizedString("renaming-conflict", comment: "该名称的文件已存在，请选择其他名称。"))
+            }else if originalUrl.path != newUrl.path {
                 // 执行重命名操作
                 do {
                     // 文件更改计数
