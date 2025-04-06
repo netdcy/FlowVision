@@ -533,9 +533,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 let videoControlYmax = largeImageView.videoView.frame.maxY
                 let videoControlXmin = largeImageView.videoView.frame.minX
                 let videoControlXmax = largeImageView.videoView.frame.maxX
+                let coreAreaYmax = coreAreaView.frame.maxY - (globalVar.autoHideToolbar ? 40 : 0)
                 
                 if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax,
-                   clickLocation.x > videoControlXmin && clickLocation.x < videoControlXmax {
+                   clickLocation.x > videoControlXmin && clickLocation.x < videoControlXmax,
+                   clickLocation.y < coreAreaYmax {
                     largeImageView.mouseDown(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
                     //return nil
                 }
@@ -554,9 +556,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 let videoControlYmax = largeImageView.videoView.frame.maxY
                 let videoControlXmin = largeImageView.videoView.frame.minX
                 let videoControlXmax = largeImageView.videoView.frame.maxX
+                let coreAreaYmax = coreAreaView.frame.maxY - (globalVar.autoHideToolbar ? 40 : 0)
                 
                 if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax,
-                   clickLocation.x > videoControlXmin && clickLocation.x < videoControlXmax {
+                   clickLocation.x > videoControlXmin && clickLocation.x < videoControlXmax,
+                   clickLocation.y < coreAreaYmax {
                     largeImageView.mouseUp(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
                     //return nil
                 }

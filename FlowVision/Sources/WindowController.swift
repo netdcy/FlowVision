@@ -131,6 +131,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
         guard let viewController = contentViewController as? ViewController else {return}
 
         if !globalVar.autoHideToolbar {
+            window?.titlebarAppearsTransparent = true
             window?.toolbar?.isVisible = false
         }
 
@@ -149,6 +150,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
 
         if !globalVar.autoHideToolbar {
             if window?.toolbar?.isVisible == false {
+                window?.titlebarAppearsTransparent = false
                 window?.toolbar?.isVisible = true
                 if let frame = windowFrameBeforeFullScreen {
                     window?.setFrame(frame, display: true)
@@ -191,11 +193,13 @@ class WindowController: NSWindowController, NSWindowDelegate {
         }else{
             if location.y > window.frame.height - 20 {
                 if toolbar.isVisible == false {
+                    window.titlebarAppearsTransparent = false
                     toolbar.isVisible = true
                     viewController.largeImageView.determineBlackBg()
                 }
             } else if window.styleMask.contains(.fullScreen) && (location.y < window.frame.height - 20) {
                 if toolbar.isVisible == true {
+                    window.titlebarAppearsTransparent = true
                     toolbar.isVisible = false
                     viewController.largeImageView.determineBlackBg()
                 }
