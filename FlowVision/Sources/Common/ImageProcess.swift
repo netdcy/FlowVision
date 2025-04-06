@@ -840,6 +840,254 @@ func getResizedImageUsingCI(url: URL, size: NSSize? = nil, rotate: Int = 0, useH
     return nil
 }
 
+func getVideoMetadataFormatedFFmpeg(for url: URL) -> [(String, String)]? {
+
+    // 构建 ffprobe 命令的参数数组
+    let ffprobeArgsVideo: [String] = [
+        "-v", "error",
+        "-select_streams", "v:0",
+        "-show_entries", "stream=index,codec_name,codec_long_name,profile,level,width,height,r_frame_rate,pix_fmt,color_space",
+        "-show_entries", "format=bit_rate,duration,format_name",
+        "-show_entries", "format_tags=creation_time,encoder",
+        "-of", "default=noprint_wrappers=1:nokey=0",
+        //"-pretty",
+        url.path
+    ] //avg_frame_rate
+    
+    let ffprobeArgsAudio: [String] = [
+        "-v", "error",
+        "-select_streams", "a",
+        "-show_entries", "stream=index,codec_name,codec_long_name,bit_rate,sample_rate,channels,channel_layout",
+        "-show_entries", "stream_tags=language,title",
+        "-of", "default=noprint_wrappers=1:nokey=0",
+        //"-pretty",
+        url.path
+    ]
+    
+    if !FFmpegKitWrapper.shared.getIfLoaded() {
+        return nil
+    }
+    
+    var result: [(String, String)] = []
+    
+    if let session = FFmpegKitWrapper.shared.executeFFprobeCommand(ffprobeArgsVideo),
+       let output = FFmpegKitWrapper.shared.getOutput(from: session) {
+        for stream in convertFFProbeStringToDictionaries(output) {
+            result = result + formatVideoMetadata(stream)
+        }
+    } else {
+        log("FFprobe execution failed")
+    }
+    
+    if let session = FFmpegKitWrapper.shared.executeFFprobeCommand(ffprobeArgsAudio),
+       let output = FFmpegKitWrapper.shared.getOutput(from: session) {
+        for stream in convertFFProbeStringToDictionaries(output) {
+            result = result + [("-","-")] + formatAudioMetadata(stream)
+        }
+    } else {
+        log("FFprobe execution failed")
+    }
+    
+    if result.isEmpty {
+        return nil
+    } else {
+        //print(result)
+        return result
+    }
+}
+
+func convertFFProbeStringToDictionaries(_ input: String) -> [[String: String]] {
+    var results = [[String: String]]()
+    var currentDictionary = [String: String]()
+
+    // Split the input string into lines
+    let lines = input.split(separator: "\n")
+
+    for line in lines {
+        // Split each line by the first '=' character
+        let components = line.split(separator: "=", maxSplits: 1)
+        
+        if components.count == 2 {
+            let key = String(components[0]).trimmingCharacters(in: .whitespaces)
+            let value = String(components[1]).trimmingCharacters(in: .whitespaces)
+            
+            // Check if we encounter a new index
+            if key == "index", !currentDictionary.isEmpty {
+                // Save the current dictionary and start a new one
+                currentDictionary["-"] = "-"
+                results.append(currentDictionary)
+                currentDictionary = [String: String]()
+            }
+            
+            currentDictionary[key] = value
+        }
+    }
+    
+    // Append the last dictionary if it's not empty
+    if !currentDictionary.isEmpty {
+        currentDictionary["-"] = "-"
+        results.append(currentDictionary)
+    }
+    
+    // 合并具有相同index的字典
+    var mergedResults = [[String: String]]()
+    var indexMap = [String: Int]() // 用于记录index对应的位置
+    
+    for dict in results {
+        if let index = dict["index"] {
+            if let existingIndex = indexMap[index] {
+                // 合并到已存在的字典
+                mergedResults[existingIndex].merge(dict) { (current, _) in current }
+            } else {
+                // 添加新字典
+                indexMap[index] = mergedResults.count
+                mergedResults.append(dict)
+            }
+        } else {
+            // 没有index的直接添加
+            mergedResults.append(dict)
+        }
+    }
+    
+    results = mergedResults
+    return results
+}
+
+func dictionaryToArray(_ dictionary: [String: String]) -> [(String, String)] {
+    return dictionary.map { ($0.key, $0.value) }
+}
+
+func formatVideoMetadata(_ videoMetadata: [String: String]) -> [(String, String)] {
+    // 定义翻译映射
+    let translationMap: [(String, String)] = [
+        ("format_name", NSLocalizedString("VideoMetadata-FormatName", comment: "格式名称")),
+        ("TAG:encoder", NSLocalizedString("VideoMetadata-EncoderSoftwareName", comment: "编码工具名称")),
+        ("bit_rate", NSLocalizedString("VideoMetadata-BitRate", comment: "比特率")),
+        ("duration", NSLocalizedString("VideoMetadata-Duration", comment: "时长")),
+        ("TAG:creation_time", NSLocalizedString("VideoMetadata-CreationTime", comment: "创建时间")),
+        ("-", "-"),
+        ("index", NSLocalizedString("VideoMetadata-Index", comment: "索引")),
+        ("codec_name", NSLocalizedString("VideoMetadata-CodecName", comment: "编码器名称")),
+        //("codec_long_name", NSLocalizedString("VideoMetadata-CodecLongName", comment: "编码器全名")),
+        //("profile", NSLocalizedString("VideoMetadata-Profile", comment: "配置文件")),
+        //("level", NSLocalizedString("VideoMetadata-Level", comment: "级别")),
+        //("width", NSLocalizedString("VideoMetadata-Width", comment: "宽度")),
+        //("height", NSLocalizedString("VideoMetadata-Height", comment: "高度")),
+        ("pix_fmt", NSLocalizedString("VideoMetadata-PixelFormat", comment: "像素格式")),
+        ("color_space", NSLocalizedString("VideoMetadata-ColorSpace", comment: "色彩空间")),
+        ("r_frame_rate", NSLocalizedString("VideoMetadata-RFrameRate", comment: "参考帧率")),
+        //("avg_frame_rate", NSLocalizedString("VideoMetadata-AvgFrameRate", comment: "平均帧率")),
+    ]
+
+    var formattedData: [(String, String)] = []
+
+    // 根据翻译映射格式化数据
+    for (key, translationKey) in translationMap {
+        if let value = videoMetadata[key] {
+            var formattedValue = value
+            
+            if value == "N/A" || value == "und" {continue}
+
+            // 对特定字段进行格式化处理
+            switch key {
+            case "bit_rate":
+                if let bitRate = Int(value) {
+                    if bitRate >= 1_000_000 {
+                        formattedValue = String(format: "%.2f Mbps", Double(bitRate) / 1_000_000)
+                    } else {
+                        formattedValue = String(format: "%.2f kbps", Double(bitRate) / 1_000)
+                    }
+                }
+            case "duration":
+                if let duration = Double(value) {
+                    let hours = Int(duration) / 3600
+                    let minutes = (Int(duration) % 3600) / 60
+                    let seconds = Int(duration) % 60
+                    formattedValue = String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+                }
+            case "TAG:creation_time":
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
+                dateFormatter.timeZone = TimeZone(secondsFromGMT: 0) // 解析为UTC时间
+                if let date = dateFormatter.date(from: value) {
+                    let localFormatter = DateFormatter()
+                    localFormatter.dateStyle = .medium
+                    localFormatter.timeStyle = .medium
+                    localFormatter.locale = Locale.current
+                    localFormatter.timeZone = TimeZone.current // 转换为本地时间
+                    formattedValue = localFormatter.string(from: date)
+                }
+            case "r_frame_rate":
+                let components = value.split(separator: "/")
+                if components.count == 2, let numerator = Double(components[0]), let denominator = Double(components[1]), denominator != 0 {
+                    let frameRate = numerator / denominator
+                    if frameRate.truncatingRemainder(dividingBy: 1) == 0 {
+                        // If the frame rate is an integer
+                        formattedValue = "\(Int(frameRate)) fps"
+                    } else {
+                        // If the frame rate is not an integer
+                        formattedValue = String(format: "%.2f fps", frameRate)
+                    }
+                }
+            default:
+                break
+            }
+            
+            formattedData.append((translationKey, formattedValue))
+        }
+    }
+
+    return formattedData
+}
+
+func formatAudioMetadata(_ audioMetadata: [String: String]) -> [(String, String)] {
+    // 定义翻译映射
+    let translationMap: [(String, String)] = [
+        ("index", NSLocalizedString("AudioMetadata-Index", comment: "索引")),
+        ("codec_name", NSLocalizedString("AudioMetadata-CodecName", comment: "编码器名称")),
+        //("codec_long_name", NSLocalizedString("AudioMetadata-CodecLongName", comment: "编码器全名")),
+        ("channel_layout", NSLocalizedString("AudioMetadata-ChannelLayout", comment: "声道布局")),
+        //("channels", NSLocalizedString("AudioMetadata-Channels", comment: "声道数")),
+        ("sample_rate", NSLocalizedString("AudioMetadata-SampleRate", comment: "采样率")),
+        ("bit_rate", NSLocalizedString("AudioMetadata-BitRate", comment: "比特率")),
+        ("TAG:language", NSLocalizedString("AudioMetadata-Language", comment: "语言")),
+        ("TAG:title", NSLocalizedString("AudioMetadata-StreamTitle", comment: "流标题"))
+    ]
+
+    var formattedData: [(String, String)] = []
+
+    // 根据翻译映射格式化数据
+    for (key, translationKey) in translationMap {
+        if let value = audioMetadata[key] {
+            var formattedValue = value
+            
+            if value == "N/A" || value == "und" {continue}
+            
+            // 对特定字段进行格式化处理
+            switch key {
+            case "bit_rate":
+                if let bitRate = Int(value) {
+                    if bitRate >= 1_000_000 {
+                        formattedValue = String(format: "%.2f Mbps", Double(bitRate) / 1_000_000)
+                    } else {
+                        formattedValue = String(format: "%.2f kbps", Double(bitRate) / 1_000)
+                    }
+                }
+            case "sample_rate":
+                if let sampleRate = Int(value) {
+                    formattedValue = "\(Double(sampleRate) / 1000) kHz"
+                }
+            default:
+                break
+            }
+            
+            formattedData.append((translationKey, formattedValue))
+        }
+    }
+
+    return formattedData
+}
+
 func getVideoMetadataFFmpeg(for url: URL) -> String? {
 
     // 构建 ffprobe 命令的参数数组

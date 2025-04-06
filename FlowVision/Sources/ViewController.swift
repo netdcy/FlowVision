@@ -950,7 +950,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 // 检查按键是否是 "U"
                 if characters == "u" && noModifierKey {
                     if publicVar.isInLargeView {
-                        largeImageView.actShowVideoMetadata()
+                        handleGetInfo()
                         return nil
                     }
                 }
@@ -2453,8 +2453,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     var text = formatExifDataAligned(formatedExifData)
                     
                     if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()),
-                       let videoMetadata = getVideoMetadataFFmpeg(for: url) {
-                        text += "\n" + separator + "\n" + videoMetadata
+                       let videoRawMetadata = getVideoMetadataFFmpeg(for: url),
+                       let specificMetadata = getVideoMetadataFormatedFFmpeg(for: url) {
+                        let metadataAligned = formatExifDataAligned(specificMetadata)
+                        text += "\n" + separator + "\n" + metadataAligned + "\n" + separator + "\n" + videoRawMetadata
                     }
                     
                     if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {

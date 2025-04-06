@@ -832,7 +832,7 @@ extension WindowController: NSToolbarDelegate {
     
     @objc func showinfoAction(_ sender: Any?) {
         if let viewController = contentViewController as? ViewController {
-            viewController.publicVar.isShowExif.toggle()
+            viewController.largeImageView.actShowExif()
         }
     }
     
@@ -1256,6 +1256,7 @@ extension WindowController: NSToolbarDelegate {
         let autoPlayVisibleVideo = menu.addItem(withTitle: NSLocalizedString("Auto Play Visible Video", comment: "自动播放可见视频"), action: #selector(toggleAutoPlayVisibleVideo), keyEquivalent: "g")
         autoPlayVisibleVideo.keyEquivalentModifierMask = [.command, .shift]
         autoPlayVisibleVideo.state = viewController.publicVar.autoPlayVisibleVideo ? .on : .off
+        autoPlayVisibleVideo.isEnabled = !viewController.publicVar.isInLargeView
 
         let useInternalPlayer = menu.addItem(withTitle: NSLocalizedString("Use Internal Video Player", comment: "使用内置视频播放器"), action: #selector(toggleUseInternalPlayer), keyEquivalent: "")
         useInternalPlayer.state = viewController.publicVar.useInternalPlayer ? .on : .off

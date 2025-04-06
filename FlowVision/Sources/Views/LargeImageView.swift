@@ -28,6 +28,7 @@ class LargeImageView: NSView {
     var lastVolumeForPauseRef: Float?
     var restorePlayPosition: CMTime?
     var restorePlayURL: URL?
+    var isVideoMetadataUpdated: Bool = false
     
     private var blackOverlayView: NSView?
     
@@ -170,6 +171,24 @@ class LargeImageView: NSView {
             }
         }
     }
+    
+    func stopVideo(savePosition: Bool = false){
+        restorePlayPosition = savePosition ? queuePlayer?.currentTime() : nil
+        restorePlayURL = savePosition ? currentPlayingURL : nil
+        videoOrderId += 1
+        videoView.isHidden = true
+        playerLooper?.disableLooping()
+        playerLooper = nil
+        queuePlayer?.removeAllItems()
+        playerItem = nil
+        currentPlayingURL = nil
+        pausedBySeek = false
+        isVideoMetadataUpdated = false
+        while snapshotQueue.count > 0{
+            snapshotQueue.first??.removeFromSuperview()
+            snapshotQueue.removeFirst()
+        }
+    }
 
     func playVideo() {
         if let url = URL(string: file.path) {
@@ -192,6 +211,12 @@ class LargeImageView: NSView {
             videoOrderId += 1
             videoView.isHidden = false
             pausedBySeek = false
+            isVideoMetadataUpdated = false
+            
+            // 读取元信息
+            if getViewController(self)?.publicVar.isShowExif == true {
+                updateVideoMetadata(url: url)
+            }
 
             if let timeRange = getCommonTimeRange(url: url) {
                 playerItem = AVPlayerItem(url: url)
@@ -259,6 +284,16 @@ class LargeImageView: NSView {
         }
     }
     
+    func updateVideoMetadata(url: URL?){
+        if !isVideoMetadataUpdated,
+           let url = url,
+           let specificMetadata = getVideoMetadataFormatedFFmpeg(for: url) {
+            let exifData = convertExifData(file: file)
+            updateTextItems(formatExifData(exifData ?? [:]) + [("-","-")] + specificMetadata)
+            isVideoMetadataUpdated = true
+        }
+    }
+    
     private func checkPlayerItemStatus(id: Int) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { [weak self] in
             guard let self = self, let playerItem = self.playerItem else { return }
@@ -315,23 +350,6 @@ class LargeImageView: NSView {
                 // 如果还没有准备好，继续检查
                 checkPlayerItemStatus(id: id)
             }
-        }
-    }
-    
-    func stopVideo(savePosition: Bool = false){
-        restorePlayPosition = savePosition ? queuePlayer?.currentTime() : nil
-        restorePlayURL = savePosition ? currentPlayingURL : nil
-        videoOrderId += 1
-        videoView.isHidden = true
-        playerLooper?.disableLooping()
-        playerLooper = nil
-        queuePlayer?.removeAllItems()
-        playerItem = nil
-        currentPlayingURL = nil
-        pausedBySeek = false
-        while snapshotQueue.count > 0{
-            snapshotQueue.first??.removeFromSuperview()
-            snapshotQueue.removeFirst()
         }
     }
 
@@ -859,7 +877,7 @@ class LargeImageView: NSView {
             
             var textForExif = NSLocalizedString("Show Exif", comment: "显示Exif信息")
             if file.type == .video {
-                textForExif = NSLocalizedString("Show File Info", comment: "显示文件信息")
+                textForExif = NSLocalizedString("Show Video Metadata", comment: "显示视频元数据")
             }
             let actionItemShowExif = menu.addItem(withTitle: textForExif, action: #selector(actShowExif), keyEquivalent: "i")
             actionItemShowExif.keyEquivalentModifierMask = []
@@ -871,9 +889,6 @@ class LargeImageView: NSView {
             
                 let actionItemQRCode = menu.addItem(withTitle: NSLocalizedString("recognize-QRCode", comment: "识别二维码"), action: #selector(actQRCode), keyEquivalent: "p")
                 actionItemQRCode.keyEquivalentModifierMask = []
-            } else if file.type == .video {
-                let actionItemShowVideoMetadata = menu.addItem(withTitle: NSLocalizedString("Show Video Metadata", comment: "显示视频元数据"), action: #selector(actShowVideoMetadata), keyEquivalent: "u")
-                actionItemShowVideoMetadata.keyEquivalentModifierMask = []
             }
 
             menu.addItem(NSMenuItem.separator())
@@ -1068,6 +1083,10 @@ class LargeImageView: NSView {
     
     @objc func actShowExif() {
         getViewController(self)!.publicVar.isShowExif.toggle()
+        if file.type == .video,
+           getViewController(self)!.publicVar.isShowExif {
+            updateVideoMetadata(url: URL(string: file.path))
+        }
         //exifTextView.isHidden = !getViewController(self)!.publicVar.isShowExif
     }
     
