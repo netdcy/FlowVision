@@ -1359,11 +1359,11 @@ extension WindowController: NSToolbarDelegate {
         guard let viewController = contentViewController as? ViewController else {return}
         log("Clicked on \(sender.title)")
 
-        guard let url=URL(string: sender.title) else {return}
+        guard let url=URL(string: getFileStylePath(sender.title)) else {return}
         if viewController.publicVar.isInLargeView {
             viewController.closeLargeImage(0)
         }
-        viewController.switchDirByDirection(direction: .zero, dest: "file://"+url.absoluteString, doCollapse: true, expandLast: true, skip: false, stackDeep: 0)
+        viewController.switchDirByDirection(direction: .zero, dest: url.absoluteString, doCollapse: true, expandLast: true, skip: false, stackDeep: 0)
     }
     
     @objc func favoritesAdd(_ sender: NSMenuItem) {

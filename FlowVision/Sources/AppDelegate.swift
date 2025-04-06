@@ -641,11 +641,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         guard let mainViewController=getMainViewController() else {return}
         log("Clicked on \(sender.title)")
 
-        guard let url=URL(string: sender.title) else {return}
+        guard let url=URL(string: getFileStylePath(sender.title)) else {return}
         if mainViewController.publicVar.isInLargeView {
             mainViewController.closeLargeImage(0)
         }
-        mainViewController.switchDirByDirection(direction: .zero, dest: "file://"+url.absoluteString, doCollapse: true, expandLast: true, skip: false, stackDeep: 0)
+        mainViewController.switchDirByDirection(direction: .zero, dest: url.absoluteString, doCollapse: true, expandLast: true, skip: false, stackDeep: 0)
     }
     
     @objc func favoritesAdd(_ sender: NSMenuItem) {
