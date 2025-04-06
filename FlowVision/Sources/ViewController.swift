@@ -733,6 +733,24 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         return nil
                     }
                 }
+
+                // 检查按键是否是 "," 键
+                if characters == "," && noModifierKey {
+                    largeImageView.specifyABPlayPositionA()
+                    return nil
+                }
+
+                // 检查按键是否是 "." 键
+                if characters == "." && noModifierKey {
+                    largeImageView.specifyABPlayPositionB()
+                    return nil
+                }
+                
+                // 检查按键是否是 "L" 键
+                if characters == "l" && noModifierKey {
+                    largeImageView.specifyABPlayPositionAuto()
+                    return nil
+                }
                 
                 // 检查按键是否是 Command+[ 键
                 if characters == "[" && isCommandPressed {
@@ -5913,7 +5931,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             log("dest:",largeSize.width,largeSize.height)
             
             //若上次已经用了原图，这次还用原图，则不重新载入
-            if lastDoNotGenResized && doNotGenResized && lastLargeImageRotate == rotate && lastUseHDR == isHDR {return}
+            if lastDoNotGenResized && doNotGenResized && lastLargeImageRotate == rotate && lastUseHDR == isHDR {
+                if file.type == .image {
+                    return
+                }
+            }
             
             //若上次已经是HDR，这次还是，则不重新载入
             //if lastUseHDR && isHDR && lastLargeImageRotate == rotate {return}
@@ -5924,7 +5946,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             lastLargeImageRotate=rotate
             
             //检查是否有大图缓存
-            var preGetImageCache = LargeImageProcessor.isImageCachedAndGet(url: url, size: largeSize, rotate: rotate, ver: file.ver, isHDR: isHDR)
+            var preGetImageCache = file.type == .image ? LargeImageProcessor.isImageCachedAndGet(url: url, size: largeSize, rotate: rotate, ver: file.ver, isHDR: isHDR) : nil
             if forceRefresh {preGetImageCache = nil}
             let isImageCached = preGetImageCache != nil
             
@@ -6029,7 +6051,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 
             } else if file.type == .video {
                 largeImageView.imageView.isHidden = true
-                largeImageView.playVideo()
+                largeImageView.playVideo(reload: forceRefresh)
             }
             
         }

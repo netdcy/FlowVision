@@ -29,6 +29,9 @@ class LargeImageView: NSView {
     var restorePlayPosition: CMTime?
     var restorePlayURL: URL?
     var isVideoMetadataUpdated: Bool = false
+    var abPlayPositionA: CMTime?
+    var abPlayPositionB: CMTime?
+    var lastActionTriggerdReload: String?
     
     private var blackOverlayView: NSView?
     
@@ -171,10 +174,59 @@ class LargeImageView: NSView {
             }
         }
     }
+
+    func specifyABPlayPositionA(){
+        if let queuePlayer = queuePlayer {
+            abPlayPositionA = queuePlayer.currentTime()
+            if abPlayPositionA != nil && abPlayPositionB != nil {
+                if CMTimeGetSeconds(abPlayPositionA!) > CMTimeGetSeconds(abPlayPositionB!) {
+                    showInfo(NSLocalizedString("A-B Play: A Greater than B", comment: "（视频）A-B播放：A点大于B点"))
+                }else{
+                    lastActionTriggerdReload = "ABPlay"
+                    playVideo(reloadForAB: true)
+                }
+            } else {
+                showInfo(NSLocalizedString("A-B Play: A", comment: "（视频）A-B播放：A"))
+            }
+        }
+    }
+
+    func specifyABPlayPositionB(){
+        if let queuePlayer = queuePlayer {
+            abPlayPositionB = queuePlayer.currentTime()
+            if abPlayPositionA != nil && abPlayPositionB != nil {
+                if CMTimeGetSeconds(abPlayPositionA!) > CMTimeGetSeconds(abPlayPositionB!) {
+                    showInfo(NSLocalizedString("A-B Play: A Greater than B", comment: "（视频）A-B播放：A点大于B点"))
+                }else{
+                    lastActionTriggerdReload = "ABPlay"
+                    playVideo(reloadForAB: true)
+                }
+            } else {
+                showInfo(NSLocalizedString("A-B Play: B", comment: "（视频）A-B播放：B"))
+            }
+        }
+    }
+
+    func specifyABPlayPositionAuto(){
+        if file.type != .video {return}
+        if let queuePlayer = queuePlayer {
+            if abPlayPositionA == nil {
+                specifyABPlayPositionA()
+            } else if abPlayPositionB == nil {
+                specifyABPlayPositionB()
+            } else {
+                playVideo(reload: true)
+            }
+        }
+    }
     
     func stopVideo(savePosition: Bool = false){
         restorePlayPosition = savePosition ? queuePlayer?.currentTime() : nil
         restorePlayURL = savePosition ? currentPlayingURL : nil
+        if !savePosition {
+            abPlayPositionA = nil
+            abPlayPositionB = nil
+        }
         videoOrderId += 1
         videoView.isHidden = true
         playerLooper?.disableLooping()
@@ -190,10 +242,10 @@ class LargeImageView: NSView {
         }
     }
 
-    func playVideo() {
+    func playVideo(reload: Bool = false, reloadForAB: Bool = false) {
         if let url = URL(string: file.path) {
             // 检查当前播放的视频是否已经是目标视频
-            if currentPlayingURL == url {
+            if currentPlayingURL == url && !reload && !reloadForAB {
                 return
             }
             
@@ -201,6 +253,15 @@ class LargeImageView: NSView {
             if let snapshot = captureSnapshot(of: self) {
                 self.addSubview(snapshot)
                 snapshotQueue.append(snapshot)
+            }
+            
+            if reload && abPlayPositionA != nil && abPlayPositionB != nil {
+                showInfo(NSLocalizedString("AB Play Cancel", comment: "（视频）AB播放取消"))
+            }
+
+            if reload || reloadForAB {
+                restorePlayPosition = queuePlayer?.currentTime()
+                restorePlayURL = currentPlayingURL
             }
             
             playerLooper?.disableLooping()
@@ -212,6 +273,10 @@ class LargeImageView: NSView {
             videoView.isHidden = false
             pausedBySeek = false
             isVideoMetadataUpdated = false
+            if !reloadForAB {
+                abPlayPositionA = nil
+                abPlayPositionB = nil
+            }
             
             // 读取元信息
             if getViewController(self)?.publicVar.isShowExif == true {
@@ -264,9 +329,19 @@ class LargeImageView: NSView {
                         
                         playerItem.videoComposition = composition
                     }
+
+                    // 根据AB播放点计算最终的播放范围
+                    var finalTimeRange = timeRange
+                    if let positionA = abPlayPositionA?.seconds,
+                       let positionB = abPlayPositionB?.seconds,
+                       positionA < positionB {
+                        let start = CMTime(seconds: positionA, preferredTimescale: 600)
+                        let duration = CMTime(seconds: positionB - positionA, preferredTimescale: 600)
+                        finalTimeRange = CMTimeRange(start: start, duration: duration)
+                    }
                     
                     queuePlayer.insert(playerItem, after: nil)
-                    playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem, timeRange: timeRange)
+                    playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem, timeRange: finalTimeRange)
                     queuePlayer.play()
                     currentPlayingURL = url
                     
@@ -305,36 +380,39 @@ class LargeImageView: NSView {
             let targetTime: CMTime = CMTime(seconds: 0.01, preferredTimescale: 600)
             if queuePlayer?.currentTime() ?? CMTime.zero >= targetTime {
                 
-                // 恢复旋转前的进度
-                if let restorePlayPosition = restorePlayPosition,
+                // 恢复之前的进度
+                if restorePlayPosition != nil,
                    restorePlayURL == currentPlayingURL {
-                    queuePlayer?.seek(to: restorePlayPosition, toleranceBefore: .zero, toleranceAfter: .zero)
+                    queuePlayer?.seek(to: restorePlayPosition!, toleranceBefore: .zero, toleranceAfter: .zero)
+                    restorePlayPosition = nil
+                    restorePlayURL = nil
+                    // 延迟隐藏快照
+                    snapshotTimer?.cancel()
+                    snapshotTimer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
+                    snapshotTimer?.schedule(deadline: .now() + 0.1)
+                    snapshotTimer?.setEventHandler { [weak self] in
+                        guard let self = self else { return }
+                        if id != videoOrderId { return }
+                        while snapshotQueue.count > 0{
+                            snapshotQueue.first??.removeFromSuperview()
+                            snapshotQueue.removeFirst()
+                        }
+                        if abPlayPositionA != nil && abPlayPositionB != nil && lastActionTriggerdReload == "ABPlay" {
+                            showInfo(NSLocalizedString("A-B Play Active", comment: "（视频）A-B播放启用"))
+                            lastActionTriggerdReload = nil
+                        } else if lastActionTriggerdReload == "Rotate" {
+                            showInfo(String(format: NSLocalizedString("Rotate %d°", comment: "（视频）旋转%d°"), file.rotate*90))
+                            lastActionTriggerdReload = nil
+                        }
+                    }
+                    snapshotTimer?.resume()
+                } else {
+                    // 立即隐藏快照
+                    while snapshotQueue.count > 0{
+                        snapshotQueue.first??.removeFromSuperview()
+                        snapshotQueue.removeFirst()
+                    }
                 }
-                
-                // 隐藏快照
-                while snapshotQueue.count > 0{
-                    snapshotQueue.first??.removeFromSuperview()
-                    snapshotQueue.removeFirst()
-                }
-//                snapshotTimer?.cancel()
-//                snapshotTimer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
-//                snapshotTimer?.schedule(deadline: .now() + 0.05)
-//                snapshotTimer?.setEventHandler { [weak self] in
-//                    guard let self = self else { return }
-//                    if id != videoOrderId { return }
-//                    while snapshotQueue.count > 0 {
-//                        let snapshot = snapshotQueue.first!
-//                        snapshotQueue.removeFirst()
-//                        
-//                        NSAnimationContext.runAnimationGroup({ context in
-//                            context.duration = 0.05
-//                            snapshot?.animator().alphaValue = 0
-//                        }, completionHandler: {
-//                            snapshot?.removeFromSuperview()
-//                        })
-//                    }
-//                }
-//                snapshotTimer?.resume()
                 
                 // 显示控制
                 playcontrolTimer?.cancel()
@@ -367,7 +445,20 @@ class LargeImageView: NSView {
         guard let duration = player.currentItem?.duration else { 
             return 
         }
-        let totalSeconds = CMTimeGetSeconds(duration)
+        
+        // 计算实际可播放时长
+        var startTime: Double = 0
+        var endTime = CMTimeGetSeconds(duration)
+        
+        // 如果设置了AB播放点,使用AB点之间的时长
+        if let positionA = abPlayPositionA,
+           let positionB = abPlayPositionB,
+           CMTimeGetSeconds(positionA) < CMTimeGetSeconds(positionB) {
+            startTime = CMTimeGetSeconds(positionA)
+            endTime = CMTimeGetSeconds(positionB)
+        }
+        
+        let totalSeconds = endTime - startTime
         
         // 计算当前视图宽度对应的总秒数比例
         let pixelsPerSecond = self.frame.width / CGFloat(totalSeconds)
@@ -381,7 +472,14 @@ class LargeImageView: NSView {
         
         // 计算目标时间,确保在有效范围内
         var targetSeconds = currentSeconds + Double(seekSeconds)
-        targetSeconds = max(0, min(totalSeconds, targetSeconds))
+        
+        // 如果是AB播放,限制在AB点之间
+        if abPlayPositionA != nil && abPlayPositionB != nil,
+           CMTimeGetSeconds(abPlayPositionA!) < CMTimeGetSeconds(abPlayPositionB!) {
+            targetSeconds = max(startTime, min(endTime, targetSeconds))
+        } else {
+            targetSeconds = max(0, min(CMTimeGetSeconds(duration), targetSeconds))
+        }
         
         // 暂停
         if player.timeControlStatus == .playing {
@@ -889,6 +987,9 @@ class LargeImageView: NSView {
             
                 let actionItemQRCode = menu.addItem(withTitle: NSLocalizedString("recognize-QRCode", comment: "识别二维码"), action: #selector(actQRCode), keyEquivalent: "p")
                 actionItemQRCode.keyEquivalentModifierMask = []
+            } else if file.type == .video {
+                let actionItemABPlay = menu.addItem(withTitle: NSLocalizedString("A-B Play", comment: "（视频）A-B播放"), action: #selector(actABPlay), keyEquivalent: "l")
+                actionItemABPlay.keyEquivalentModifierMask = []
             }
 
             menu.addItem(NSMenuItem.separator())
@@ -1093,6 +1194,10 @@ class LargeImageView: NSView {
     @objc func actShowVideoMetadata() {
         getViewController(self)?.handleGetInfo()
     }
+
+    @objc func actABPlay() {
+        specifyABPlayPositionAuto()
+    }
     
     @objc func actQRCode() {
         if file.type == .video {return}
@@ -1171,21 +1276,23 @@ class LargeImageView: NSView {
     @objc func actRotateR() {
         file.rotate = (file.rotate+1)%4
         if file.type == .video {
-            stopVideo(savePosition: true)
+            lastActionTriggerdReload = "Rotate"
+            playVideo(reloadForAB: true)
         }else{
             unSetOcr()
+            getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
         }
-        getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
     }
     
     @objc func actRotateL() {
         file.rotate = (file.rotate+3)%4
         if file.type == .video {
-            stopVideo(savePosition: true)
+            lastActionTriggerdReload = "Rotate"
+            playVideo(reloadForAB: true)
         }else{
             unSetOcr()
+            getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
         }
-        getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
     }
     
     @objc func actClose() {

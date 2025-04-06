@@ -847,7 +847,7 @@ Gw
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Help" systemMenu="help" id="F2S-fz-NVQ">
                                     <items>
-                                        <menuItem title="Show Log Winodw" hidden="YES" keyEquivalent="l" allowsKeyEquivalentWhenHidden="YES" id="JDd-s3-eWr">
+                                        <menuItem title="Show Log Winodw" hidden="YES" keyEquivalent="L" allowsKeyEquivalentWhenHidden="YES" id="JDd-s3-eWr">
                                             <connections>
                                                 <action selector="showLogWindow:" target="Voe-Tx-rLC" id="EpP-rz-ppW"/>
                                             </connections>
