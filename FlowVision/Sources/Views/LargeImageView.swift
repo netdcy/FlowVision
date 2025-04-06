@@ -25,6 +25,7 @@ class LargeImageView: NSView {
     var playcontrolTimer: DispatchSourceTimer?
     var videoOrderId: Int = 0
     var pausedBySeek = false
+    var lastVolumeForPauseDebug: Float = 1.0
     
     private var blackOverlayView: NSView?
     
@@ -396,7 +397,7 @@ class LargeImageView: NSView {
         guard let player = queuePlayer else { return }
         
         // 获取当前音量并计算新音量
-        var newVolume = player.volume + delta
+        var newVolume = round((player.volume + delta) * 100) / 100
         
         // 限制音量在0-1之间
         newVolume = max(0, min(1.0, newVolume))
@@ -627,6 +628,10 @@ class LargeImageView: NSView {
         doNotPopRightMenu = false
         
         // 设置定时器实现长按检测
+        if file.type == .video,
+           let player = queuePlayer{ //由于拖动音量条时没有drag事件取消计时器，因此需要判断是否是这种情况
+            lastVolumeForPauseDebug = player.volume
+        }
         longPressZoomTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
             self?.performLongPressZoom(at: event.locationInWindow)
         }
@@ -668,7 +673,10 @@ class LargeImageView: NSView {
             //hasZoomed=true
         }else if file.type == .video {
             if !getViewController(self)!.publicVar.isRightMouseDown{
-                pauseOrResumeVideo()
+                if let player = queuePlayer,
+                   lastVolumeForPauseDebug == player.volume{
+                    pauseOrResumeVideo()
+                }
             }
         }
     }

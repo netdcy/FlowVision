@@ -325,6 +325,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var eventMonitorKeyDown: Any?
     var eventMonitorLeftMouseDown: Any?
     var eventMonitorLeftMouseUp: Any?
+    var eventMonitorLeftMouseDragged: Any?
     var eventMonitorRightMouseDown: Any?
     var eventMonitorRightMouseUp: Any?
     var eventMonitorRightMouseDragged: Any?
@@ -528,13 +529,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
             if publicVar.isInLargeView && largeImageView.file.type == .video {
                 let clickLocation = event.locationInWindow
-                let coreAreaViewHeight = coreAreaView.frame.height
                 let videoControlYmin = largeImageView.videoView.frame.minY
                 let videoControlYmax = largeImageView.videoView.frame.maxY
                 
                 if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax {
                     largeImageView.mouseDown(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
-                    return nil
+                    //return nil
                 }
             }
             
@@ -547,18 +547,36 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
             if publicVar.isInLargeView && largeImageView.file.type == .video {
                 let clickLocation = event.locationInWindow
-                let coreAreaViewHeight = coreAreaView.frame.height
                 let videoControlYmin = largeImageView.videoView.frame.minY
                 let videoControlYmax = largeImageView.videoView.frame.maxY
                 
                 if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax {
                     largeImageView.mouseUp(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
-                    return nil
+                    //return nil
                 }
             }
             
             return event
         }
+
+        //拖动音量滚动条时无法触发这个事件
+//        eventMonitorLeftMouseDragged = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDragged) { [weak self] event in
+//            guard let self = self else { return event }
+//            if event.window != self.view.window { return event }
+//
+//            if publicVar.isInLargeView && largeImageView.file.type == .video {
+//                let clickLocation = event.locationInWindow
+//                let videoControlYmin = largeImageView.videoView.frame.minY
+//                let videoControlYmax = largeImageView.videoView.frame.maxY
+//                
+//                if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax {
+//                    largeImageView.mouseDragged(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
+//                    //return nil
+//                }
+//            }
+//            
+//            return event
+//        }
         
         //双击collectionView
 //        let clickCollectionItemGesture = NSClickGestureRecognizer(target: self, action: #selector(openLargeImageFromPos(_:)))
@@ -1317,6 +1335,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         if let eventMonitorLeftMouseUp = eventMonitorLeftMouseUp {
             NSEvent.removeMonitor(eventMonitorLeftMouseUp)
+        }
+        if let eventMonitorLeftMouseDragged = eventMonitorLeftMouseDragged {
+            NSEvent.removeMonitor(eventMonitorLeftMouseDragged)
         }
         if let eventMonitorRightMouseDown = eventMonitorRightMouseDown {
             NSEvent.removeMonitor(eventMonitorRightMouseDown)
