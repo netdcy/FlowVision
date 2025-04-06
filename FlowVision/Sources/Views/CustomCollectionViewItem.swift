@@ -575,10 +575,13 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         videoView.frame = newFrame
         
         let borderRadius = style.layoutType == .grid ? style.ThumbnailBorderRadiusInGrid : style.ThumbnailBorderRadius
-        view.layer?.cornerRadius = borderRadius
+        // 限制圆角半径不超过视图尺寸的一半
+        let maxRadius = min(newFrame.width, newFrame.height) / 2
+        let safeRadius = min(borderRadius, maxRadius)
+        view.layer?.cornerRadius = safeRadius
         view.layer?.masksToBounds = false
-        imageViewObj.layer?.cornerRadius = borderRadius
-        videoView.layer?.cornerRadius = borderRadius
+        imageViewObj.layer?.cornerRadius = safeRadius
+        videoView.layer?.cornerRadius = safeRadius
         
         var textX = newX
         var textY = round(newX/2)+1 - girdFilenameCompensation
@@ -604,7 +607,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             let rect = CGRect(x: view.bounds.origin.x, y: view.bounds.origin.y + cutoff, width: view.bounds.width, height: view.bounds.height - cutoff)
             let path = CGMutablePath()
             if borderRadius > 0 {
-                path.addRoundedRect(in: rect, cornerWidth: borderRadius, cornerHeight: borderRadius)
+                // 限制圆角半径不超过视图尺寸的一半
+                let maxRadius = min(rect.width, rect.height) / 2
+                let safeRadius = min(borderRadius, maxRadius)
+                path.addRoundedRect(in: rect, cornerWidth: safeRadius, cornerHeight: safeRadius)
             }else{
                 path.addRect(rect)
             }
