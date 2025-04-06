@@ -5708,11 +5708,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             var loadCount=0
             while nextLargeImagePos < totalCount-1 {
                 nextLargeImagePos += 1
-                if let file=fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
-                   file.type == .image{
-                    loadCount += 1
-                    if loadCount > preloadNumNext { break } // 预载入数量
-                    fileQueue.append((file, Double(loadCount)-0.5))
+                if let file=fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1 {
+                    if file.type == .image || (file.type == .video && globalVar.useInternalPlayer) {
+                        loadCount += 1
+                        if loadCount > preloadNumNext { break } // 预载入数量
+                    }
+                    if file.type == .image {
+                        fileQueue.append((file, Double(loadCount)-0.5))
+                    }
                 }
             }
             fileDB.unlock()
@@ -5724,11 +5727,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             var loadCount=0
             while nextLargeImagePos >= 0 {
                 nextLargeImagePos -= 1
-                if let file=fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
-                   file.type == .image{
-                    loadCount += 1
-                    if loadCount > preloadNumPrevious { break } // 预载入数量
-                    fileQueue.append((file, Double(loadCount)))
+                if let file=fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1 {
+                    if file.type == .image || (file.type == .video && globalVar.useInternalPlayer) {
+                        loadCount += 1
+                        if loadCount > preloadNumPrevious { break } // 预载入数量
+                    }
+                    if file.type == .image {
+                        fileQueue.append((file, Double(loadCount)))
+                    }
                 }
             }
             fileDB.unlock()
