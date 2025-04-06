@@ -115,6 +115,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let blackBgInFullScreen = UserDefaults.standard.value(forKey: "blackBgInFullScreen") as? Bool {
             globalVar.blackBgInFullScreen = blackBgInFullScreen
         }
+        if let blackBgAlways = UserDefaults.standard.value(forKey: "blackBgAlways") as? Bool {
+            globalVar.blackBgAlways = blackBgAlways
+        }
+        if let blackBgInFullScreenForVideo = UserDefaults.standard.value(forKey: "blackBgInFullScreenForVideo") as? Bool {
+            globalVar.blackBgInFullScreenForVideo = blackBgInFullScreenForVideo
+        }
+        if let blackBgAlwaysForVideo = UserDefaults.standard.value(forKey: "blackBgAlwaysForVideo") as? Bool {
+            globalVar.blackBgAlwaysForVideo = blackBgAlwaysForVideo
+        }
         if let thumbnailExcludeList = UserDefaults.standard.value(forKey: "thumbnailExcludeList") as? [String] {
             globalVar.thumbnailExcludeList = thumbnailExcludeList
         }

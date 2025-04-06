@@ -25,9 +25,12 @@ class LargeImageView: NSView {
     var playcontrolTimer: DispatchSourceTimer?
     var videoOrderId: Int = 0
     
+    private var blackOverlayView: NSView?
+    
     var exifTextView: ExifTextView!
     var ratioView: InfoView!
     var infoView: InfoView!
+    
     var file: FileModel = FileModel(path: "", ver: 0)
     private var lastDragLocation: CGPoint?
     private var hasZoomedByWheel: Bool = false
@@ -69,7 +72,7 @@ class LargeImageView: NSView {
         self.addSubview(imageView)
 
         videoView = LargeAVPlayerView(frame: self.bounds)
-        videoView.autoresizingMask = [.width, .height]
+        //videoView.autoresizingMask = [.width, .height]
         queuePlayer = AVQueuePlayer()
         videoView.player = queuePlayer
         videoView.controlsStyle = .none
@@ -299,9 +302,80 @@ class LargeImageView: NSView {
         }
     }
     
-    func rotateVideo() {
-        stopVideo()
-        playVideo()
+    func enableBlackBg() {
+        if let effectView = getViewController(self)?.largeImageBgEffectView,
+           blackOverlayView == nil {
+
+            // 添加一个黑色的前景视图
+            let blackOverlayView = NSView(frame: effectView.bounds)
+            blackOverlayView.wantsLayer = true
+            blackOverlayView.layer?.backgroundColor = NSColor.black.cgColor
+            
+            // 保证前景视图在最前面显示
+            effectView.addSubview(blackOverlayView)
+            blackOverlayView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                blackOverlayView.leadingAnchor.constraint(equalTo: effectView.leadingAnchor),
+                blackOverlayView.trailingAnchor.constraint(equalTo: effectView.trailingAnchor),
+                blackOverlayView.topAnchor.constraint(equalTo: effectView.topAnchor),
+                blackOverlayView.bottomAnchor.constraint(equalTo: effectView.bottomAnchor)
+            ])
+            
+            // 保存对黑色覆盖视图的引用
+            self.blackOverlayView = blackOverlayView
+        }
+    }
+
+    func disableBlackBg() {
+        blackOverlayView?.removeFromSuperview()
+        blackOverlayView = nil
+    }
+    
+    func enableBlackBgForVideo() {
+        videoView.frame = self.frame
+    }
+    
+    func disableBlackBgForVideo() {
+        let originalSize = file.originalSize ?? imageView.frame.size
+        let zoomFrame = AVMakeRect(aspectRatio: originalSize, insideRect: self.frame)
+        videoView.frame = NSRect(x: round(zoomFrame.origin.x), y: round(zoomFrame.origin.y), width: round(zoomFrame.width), height: round(zoomFrame.height))
+    }
+    
+    func determineBlackBg() {
+        if file.type == .video {
+            disableBlackBg()
+            
+            if let window = self.window,
+               window.styleMask.contains(.fullScreen) {
+                if globalVar.blackBgInFullScreenForVideo || globalVar.blackBgAlwaysForVideo {
+                    enableBlackBgForVideo()
+                } else {
+                    disableBlackBgForVideo()
+                }
+            } else {
+                if globalVar.blackBgAlwaysForVideo {
+                    enableBlackBgForVideo()
+                } else {
+                    disableBlackBgForVideo()
+                }
+            }
+            
+        } else {
+            if let window = self.window,
+               window.styleMask.contains(.fullScreen) {
+                if globalVar.blackBgInFullScreen || globalVar.blackBgAlways {
+                    enableBlackBg()
+                } else {
+                    disableBlackBg()
+                }
+            } else {
+                if globalVar.blackBgAlways {
+                    enableBlackBg()
+                } else {
+                    disableBlackBg()
+                }
+            }
+        }
     }
     
     func zoom(direction: Int = 0){
@@ -902,21 +976,21 @@ class LargeImageView: NSView {
     @objc func actRotateR() {
         file.rotate = (file.rotate+1)%4
         if file.type == .video {
-            rotateVideo()
+            stopVideo()
         }else{
             unSetOcr()
-            getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
         }
+        getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
     }
     
     @objc func actRotateL() {
         file.rotate = (file.rotate+3)%4
         if file.type == .video {
-            rotateVideo()
+            stopVideo()
         }else{
             unSetOcr()
-            getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
         }
+        getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
     }
     
     @objc func actClose() {

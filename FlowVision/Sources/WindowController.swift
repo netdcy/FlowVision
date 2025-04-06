@@ -10,7 +10,6 @@ import Cocoa
 class WindowController: NSWindowController, NSWindowDelegate {
     
     var pathShortenStore = ""
-    private var blackOverlayView: NSView?
 
     override func windowDidLoad() {
         super.windowDidLoad()
@@ -121,35 +120,14 @@ class WindowController: NSWindowController, NSWindowDelegate {
     
     // 在窗口已经进入全屏模式时执行
     func windowDidEnterFullScreen(_ notification: Notification) {
-        if let effectView = (contentViewController as? ViewController)?.largeImageBgEffectView,
-            globalVar.blackBgInFullScreen {
-
-            // 添加一个黑色的前景视图
-            let blackOverlayView = NSView(frame: effectView.bounds)
-            blackOverlayView.wantsLayer = true
-            blackOverlayView.layer?.backgroundColor = NSColor.black.cgColor
-            
-            // 保证前景视图在最前面显示
-            effectView.addSubview(blackOverlayView)
-            blackOverlayView.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                blackOverlayView.leadingAnchor.constraint(equalTo: effectView.leadingAnchor),
-                blackOverlayView.trailingAnchor.constraint(equalTo: effectView.trailingAnchor),
-                blackOverlayView.topAnchor.constraint(equalTo: effectView.topAnchor),
-                blackOverlayView.bottomAnchor.constraint(equalTo: effectView.bottomAnchor)
-            ])
-            
-            // 保存对黑色覆盖视图的引用
-            self.blackOverlayView = blackOverlayView
-        }
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.largeImageView.determineBlackBg()
     }
     
     // 在窗口已经退出全屏模式时执行
     func windowDidExitFullScreen(_ notification: Notification) {
-        if let effectView = (contentViewController as? ViewController)?.largeImageBgEffectView {
-            blackOverlayView?.removeFromSuperview()
-            blackOverlayView = nil
-        }
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.largeImageView.determineBlackBg()
     }
 
     override func mouseEntered(with event: NSEvent) {

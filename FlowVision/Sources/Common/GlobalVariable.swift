@@ -47,6 +47,9 @@ class GlobalVar{
     var randomFolderThumb = false
     var loopBrowsing = false
     var blackBgInFullScreen = false
+    var blackBgInFullScreenForVideo = false
+    var blackBgAlways = false
+    var blackBgAlwaysForVideo = false
     var thumbnailExcludeList: [String] = []
     var usePinyinSearch = false
     var usePinyinInitialSearch = false

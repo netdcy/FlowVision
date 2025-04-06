@@ -1486,7 +1486,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         var zoomSize=largeImageView.imageView.frame.size
         if largeImageView.file.type == .video,
            let originalSize = largeImageView.file.originalSize {
-            zoomSize = AVMakeRect(aspectRatio: originalSize, insideRect: largeImageView.frame).size
+            let rect = AVMakeRect(aspectRatio: originalSize, insideRect: largeImageView.frame)
+            zoomSize = NSSize(width: round(rect.size.width), height: round(rect.size.height))
         }
         adjustWindowTo(zoomSize, firstShowThumb: false, animate: true, isToCenter: false)
     }
@@ -3104,6 +3105,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         if publicVar.isInLargeView {
             windowSizeChangedTimesWhenInLarge += 1
+            largeImageView.determineBlackBg()
             return
         }
         
@@ -4587,7 +4589,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             if publicVar.profile.layoutType == .grid {
                                 var size = originalSize ?? DEFAULT_SIZE
                                 if size.width == 0 || size.height == 0 {size=DEFAULT_SIZE}
-                                revisedSize = AVMakeRect(aspectRatio: size, insideRect: CGRect(origin: CGPoint(x: 0, y: 0), size: revisedSize)).size
+                                let rect = AVMakeRect(aspectRatio: size, insideRect: CGRect(origin: CGPoint(x: 0, y: 0), size: revisedSize))
+                                revisedSize = NSSize(width: round(rect.size.width), height: round(rect.size.height))
                             }
                             //log(max(revisedSize.width,revisedSize.height),level: .debug)
                             
@@ -5757,7 +5760,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         }
         
+        //窗口标题
         setWindowTitleOfLargeImage(file: file)
+        
+        //判断黑色背景
+        largeImageView.determineBlackBg()
         
         if var originalSize=originalSize{
             
@@ -5868,6 +5875,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if file.type == .image {
 
                 largeImageView.stopVideo()
+                largeImageView.imageView.isHidden = false
 
                 if isImageCached {
                     return
@@ -5930,13 +5938,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 DispatchQueue.global(qos: .userInitiated).async(execute: task!)
                 
             } else if file.type == .video {
-                //largeImageView.videoView.frame = largeImageView.imageView.frame
+                largeImageView.imageView.isHidden = true
                 largeImageView.playVideo()
             }
             
         }
-        
-        
     }
 
     func startWatchingDirectory(atPath path: String) {

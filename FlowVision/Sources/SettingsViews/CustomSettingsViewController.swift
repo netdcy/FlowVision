@@ -17,22 +17,34 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
 
     @IBOutlet weak var randomFolderThumbCheckbox: NSButton!
     @IBOutlet weak var loopBrowsingCheckbox: NSButton!
-    @IBOutlet weak var blackBgInFullScreenCheckbox: NSButton!
     @IBOutlet weak var usePinyinSearchCheckbox: NSButton!
     @IBOutlet weak var usePinyinInitialSearchCheckbox: NSButton!
     @IBOutlet weak var excludeListView: NSOutlineView!
     @IBOutlet weak var excludeContainerView: NSView!
     @IBOutlet weak var refViewForExcludeListView: NSView!
     @IBOutlet weak var excludeListEditControl: NSSegmentedControl!
+    
+    @IBOutlet weak var radioGlass: NSButton!
+    @IBOutlet weak var radioBlack: NSButton!
+    @IBOutlet weak var radioFullscreen: NSButton!
+    @IBOutlet weak var radioGlassForVideo: NSButton!
+    @IBOutlet weak var radioBlackForVideo: NSButton!
+    @IBOutlet weak var radioFullscreenForVideo: NSButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         randomFolderThumbCheckbox.state = globalVar.randomFolderThumb ? .on : .off
         loopBrowsingCheckbox.state = globalVar.loopBrowsing ? .on : .off
-        blackBgInFullScreenCheckbox.state = globalVar.blackBgInFullScreen ? .on : .off
         usePinyinSearchCheckbox.state = globalVar.usePinyinSearch ? .on : .off
         usePinyinInitialSearchCheckbox.state = globalVar.usePinyinInitialSearch ? .on : .off
+        
+        radioGlass.state = !globalVar.blackBgAlways ? .on : .off
+        radioBlack.state = globalVar.blackBgAlways ? .on : .off
+        radioFullscreen.state = globalVar.blackBgInFullScreen ? .on : .off
+        radioGlassForVideo.state = !globalVar.blackBgAlwaysForVideo ? .on : .off
+        radioBlackForVideo.state = globalVar.blackBgAlwaysForVideo ? .on : .off
+        radioFullscreenForVideo.state = globalVar.blackBgInFullScreenForVideo ? .on : .off
 
         // 设置 OutlineView
         excludeListView.dataSource = self
@@ -46,11 +58,10 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
             excludeContainerView.frame = NSRect(x: refFrameInWindow.origin.x, y: newY, width: 300, height: 125)
         }
         
-        // 设置分段图标
+        // 设置增减图标
         if let plusImage = NSImage(systemSymbolName: "plus", accessibilityDescription: "Add Item") {
             excludeListEditControl.setImage(plusImage, forSegment: 0)
         }
-        
         if let minusImage = NSImage(systemSymbolName: "minus", accessibilityDescription: "Remove Item") {
             excludeListEditControl.setImage(minusImage, forSegment: 1)
         }
@@ -68,10 +79,39 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         globalVar.loopBrowsing = (sender.state == .on)
         UserDefaults.standard.set(globalVar.loopBrowsing, forKey: "loopBrowsing")
     }
-
-    @IBAction func blackBgInFullScreenToggled(_ sender: NSButton) {
-        globalVar.blackBgInFullScreen = (sender.state == .on)
+    
+    @IBAction func bgSettingToggled(_ sender: NSButton) {
+        let tag = sender.tag
+        if tag == 0 {
+            globalVar.blackBgAlways = false
+            globalVar.blackBgInFullScreen = false
+        } else if tag == 1 {
+            globalVar.blackBgAlways = true
+            globalVar.blackBgInFullScreen = false
+        } else if tag == 2 {
+            globalVar.blackBgAlways = false
+            globalVar.blackBgInFullScreen = true
+        }
+        UserDefaults.standard.set(globalVar.blackBgAlways, forKey: "blackBgAlways")
         UserDefaults.standard.set(globalVar.blackBgInFullScreen, forKey: "blackBgInFullScreen")
+        getMainViewController()?.largeImageView.determineBlackBg()
+    }
+    
+    @IBAction func bgSettingForVideoToggled(_ sender: NSButton) {
+        let tag = sender.tag
+        if tag == 0 {
+            globalVar.blackBgAlwaysForVideo = false
+            globalVar.blackBgInFullScreenForVideo = false
+        } else if tag == 1 {
+            globalVar.blackBgAlwaysForVideo = true
+            globalVar.blackBgInFullScreenForVideo = false
+        } else if tag == 2 {
+            globalVar.blackBgAlwaysForVideo = false
+            globalVar.blackBgInFullScreenForVideo = true
+        }
+        UserDefaults.standard.set(globalVar.blackBgAlwaysForVideo, forKey: "blackBgAlwaysForVideo")
+        UserDefaults.standard.set(globalVar.blackBgInFullScreenForVideo, forKey: "blackBgInFullScreenForVideo")
+        getMainViewController()?.largeImageView.determineBlackBg()
     }
 
     @IBAction func usePinyinSearchToggled(_ sender: NSButton) {

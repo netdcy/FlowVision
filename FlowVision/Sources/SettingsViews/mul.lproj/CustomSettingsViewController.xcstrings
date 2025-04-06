@@ -97,6 +97,102 @@
         }
       }
     },
+    "6Ac-mJ-ewA.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Only Fullscreen\"; ObjectID = \"6Ac-mJ-ewA\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ملء الشاشة فقط"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur Vollbild"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Only Fullscreen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo pantalla completa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plein écran seulement"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo schermo intero"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全画面のみ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체 화면만"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alleen Volledig Scherm"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Somente tela cheia"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apenas Ecrã Completo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Только полноэкранный"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endast helskärm"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅全屏时"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "僅全螢幕"
+          }
+        }
+      }
+    },
     "6Lz-fa-9PG.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Search:\"; ObjectID = \"6Lz-fa-9PG\";",
       "extractionState" : "extracted_with_value",
@@ -577,6 +673,102 @@
         }
       }
     },
+    "EH7-uQ-m4z.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"(Video)\"; ObjectID = \"EH7-uQ-m4z\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(فيديو)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Video)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "(Video)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Video)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Video)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Video)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(ビデオ)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(비디오)"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Video)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Video)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Vídeo)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Видео)"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Video)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "（视频）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(影片)"
+          }
+        }
+      }
+    },
     "KUU-ge-HUE.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"\\n\\n\\n\\n\\n\"; ObjectID = \"KUU-ge-HUE\";",
       "extractionState" : "extracted_with_value",
@@ -669,6 +861,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "\n\n\n\n\n"
+          }
+        }
+      }
+    },
+    "Nbp-B1-O0u.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Only Fullscreen\"; ObjectID = \"Nbp-B1-O0u\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فقط ملء الشاشة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur Vollbild"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Only Fullscreen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo pantalla completa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plein écran uniquement"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo schermo intero"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全画面のみ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체 화면만"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alleen Volledig Scherm"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Somente tela cheia"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apenas Ecrã Inteiro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Только полноэкранный"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endast helskärm"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅全屏时"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "僅全螢幕"
           }
         }
       }
@@ -865,6 +1153,294 @@
         }
       }
     },
+    "R9S-O7-fTS.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Black\"; ObjectID = \"R9S-O7-fTS\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أسود"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwarz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Black"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Negro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noir"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nero"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ブラック"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "검정"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zwart"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preto"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preto"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Черный"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svart"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黑色"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黑色"
+          }
+        }
+      }
+    },
+    "UCD-KL-13f.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Background:\"; ObjectID = \"UCD-KL-13f\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الخلفية:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hintergrund:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Background:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fondo:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrière-plan :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sfondo:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "背景:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "배경:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achtergrond:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plano de fundo:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fundo:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фон:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bakgrund:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "背景："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "背景："
+          }
+        }
+      }
+    },
+    "VzX-hy-erv.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Glass\"; ObjectID = \"VzX-hy-erv\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "زجاج"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glas"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Glass"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vidrio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verre"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vetro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ガラス"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "유리"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glas"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vidro"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vidro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Стекло"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "玻璃"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "玻璃"
+          }
+        }
+      }
+    },
     "Z13-dJ-JBv.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"For directories in the exclusion list, images within them will not be used when generating thumbnails for themselves or their parent folders.\"; ObjectID = \"Z13-dJ-JBv\";",
       "extractionState" : "extracted_with_value",
@@ -961,98 +1537,98 @@
         }
       }
     },
-    "dB2-6s-xY8.title" : {
-      "comment" : "Class = \"NSButtonCell\"; title = \"Use Black Background in Full Screen\"; ObjectID = \"dB2-6s-xY8\";",
+    "apP-S7-Yfh.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Due to system limitations, the toolbar cannot be dynamically hidden when switching to fullscreen; you can only change the relevant options in the general settings and then restart the application.\"; ObjectID = \"apP-S7-Yfh\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "استخدم خلفية سوداء في وضع ملء الشاشة"
+            "value" : "نظرًا لقيود النظام، لا يمكن إخفاء شريط الأدوات ديناميكيًا عند التبديل إلى وضع ملء الشاشة؛ يمكنك فقط تغيير الخيارات ذات الصلة في الإعدادات العامة ثم إعادة تشغيل التطبيق."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schwarzen Hintergrund im Vollbild verwenden"
+            "value" : "Aufgrund von Systembeschränkungen kann die Werkzeugleiste beim Wechsel in den Vollbildmodus nicht dynamisch ausgeblendet werden; Sie können nur die entsprechenden Optionen in den allgemeinen Einstellungen ändern und dann die Anwendung neu starten."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Use Black Background in Full Screen"
+            "value" : "Due to system limitations, the toolbar cannot be dynamically hidden when switching to fullscreen; you can only change the relevant options in the general settings and then restart the application."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usar fondo negro en pantalla completa"
+            "value" : "Debido a limitaciones del sistema, la barra de herramientas no se puede ocultar dinámicamente al cambiar a pantalla completa; solo puede cambiar las opciones relevantes en la configuración general y luego reiniciar la aplicación."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utiliser un fond noir en plein écran"
+            "value" : "En raison des limitations du système, la barre d'outils ne peut pas être masquée de manière dynamique lors du passage en plein écran; vous pouvez seulement modifier les options pertinentes dans les paramètres généraux puis redémarrer l'application."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usa sfondo nero a schermo intero"
+            "value" : "A causa delle limitazioni del sistema, la barra degli strumenti non può essere nascosta dinamicamente quando si passa alla modalità a schermo intero; puoi solo modificare le opzioni pertinenti nelle impostazioni generali e poi riavviare l'applicazione."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "フルスクリーンで黒背景を使用"
+            "value" : "システムの制限により、フルスクリーンに切り替える際にツールバーを動的に非表示にすることはできません。一般設定で関連オプションを変更してからアプリケーションを再起動してください"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "전체 화면에서 검은 배경 사용"
+            "value" : "시스템 제한으로 인해 전체 화면으로 전환할 때 툴바를 동적으로 숨길 수 없습니다. 일반 설정에서 관련 옵션을 변경한 후 애플리케이션을 다시 시작해야 합니다."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zwart achtergrond gebruiken in volledig scherm"
+            "value" : "Vanwege systeembeperkingen kan de werkbalk niet dynamisch worden verborgen bij het overschakelen naar fullscreen; je kunt alleen de relevante opties wijzigen in de algemene instellingen en daarna de applicatie opnieuw starten."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usar fundo preto em tela cheia"
+            "value" : "Devido a limitações do sistema, a barra de ferramentas não pode ser ocultada dinamicamente ao alternar para o modo de tela cheia; você só pode alterar as opções relevantes nas configurações gerais e reiniciar o aplicativo."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usar fundo preto em ecrã total"
+            "value" : "Devido a limitações do sistema, a barra de ferramentas não pode ser escondida dinamicamente ao mudar para ecrã inteiro; só pode alterar as opções relevantes nas definições gerais e depois reiniciar a aplicação."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Использовать черный фон на весь экран"
+            "value" : "Из-за ограничений системы панель инструментов не может быть динамически скрыта при переключении на полноэкранный режим; вы можете изменить соответствующие параметры в общих настройках, а затем перезапустить приложение."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Använd svart bakgrund i fullskärmsläge"
+            "value" : "På grund av systembegränsningar kan verktygsfältet inte döljas dynamiskt när du växlar till helskärm; du kan endast ändra de relevanta alternativen i de allmänna inställningarna och sedan starta om applikationen."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "全屏模式下使用黑色背景"
+            "value" : "由于系统限制，切换到全屏时不能动态地隐藏工具栏，只能在通用设置中修改相关选项后重启应用。不过，视频播放器中左上角有个一悬浮的全屏按钮，按它进入全屏时不会显示工具栏，且不遵从此背景设置。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "全螢幕使用黑色背景"
+            "value" : "由於系統限制，工具列無法在切換到全螢幕時動態隱藏，您只能在一般設定中更改相關選項，然後重啟應用程式"
           }
         }
       }
@@ -1153,98 +1729,98 @@
         }
       }
     },
-    "uKy-ok-dDi.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Background:\"; ObjectID = \"uKy-ok-dDi\";",
+    "sUH-oK-7AD.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Glass\"; ObjectID = \"sUH-oK-7AD\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الخلفية:"
+            "value" : "زجاج"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hintergrund:"
+            "value" : "Glas"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Background:"
+            "value" : "Glass"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fondo:"
+            "value" : "Cristal"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Arrière-plan :"
+            "value" : "Verre"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sfondo:"
+            "value" : "Vetro"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "背景:"
+            "value" : "ガラス"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "배경:"
+            "value" : "유리"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Achtergrond:"
+            "value" : "Glas"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Plano de Fundo:"
+            "value" : "Vidro"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fundo:"
+            "value" : "Vidro"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Фон:"
+            "value" : "Стекло"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bakgrund:"
+            "value" : "Glas"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "图像背景："
+            "value" : "玻璃"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "背景："
+            "value" : "玻璃"
           }
         }
       }
@@ -1341,6 +1917,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "對於中文使用全拼搜索"
+          }
+        }
+      }
+    },
+    "zfm-X4-cgj.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Black\"; ObjectID = \"zfm-X4-cgj\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أسود"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwarz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Black"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Negro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noir"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nero"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黒色"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "검정색"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zwart"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preto"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preto"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Черное"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Svart"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黑色"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黑色"
           }
         }
       }
