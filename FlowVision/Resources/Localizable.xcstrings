@@ -9691,6 +9691,101 @@
         }
       }
     },
+    "Folders" : {
+      "comment" : "目录",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المجلدات"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordner"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folders"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carpetas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dossiers"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cartelle"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "폴더"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mappen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pastas"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pastas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Папки"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mappar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目录"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "資料夾"
+          }
+        }
+      }
+    },
     "gen-thumb-info" : {
       "comment" : "对于高清缩略图的说明...",
       "localizations" : {
@@ -10732,6 +10827,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "尺寸"
+          }
+        }
+      }
+    },
+    "Images" : {
+      "comment" : "图像",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صور"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilder"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Images"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imágenes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Images"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Immagini"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afbeeldingen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imagens"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imagens"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изображения"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilder"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图像"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "圖像"
           }
         }
       }
@@ -14441,6 +14631,101 @@
         }
       }
     },
+    "Others" : {
+      "comment" : "其它",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أخرى"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Andere"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Others"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otros"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autres"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altri"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "その他"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기타"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overige"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outros"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outros"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Другое"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Övriga"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "其它"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "其他"
+          }
+        }
+      }
+    },
     "parent-folder" : {
       "comment" : "上级目录",
       "localizations" : {
@@ -15962,96 +16247,96 @@
       }
     },
     "recognize-OCR" : {
-      "comment" : "识别文本 (OCR)",
+      "comment" : "识别文本",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "التعرف على النص (OCR)"
+            "value" : "التعرف على النص"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Text erkennen (OCR)"
+            "value" : "Text erkennen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recognize Text (OCR)"
+            "value" : "Recognize Text"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reconocer texto (OCR)"
+            "value" : "Reconocer texto"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reconnaître le texte (OCR)"
+            "value" : "Reconnaître le texte"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Riconosci Testo (OCR)"
+            "value" : "Riconosci Testo"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "テキストを認識 (OCR)"
+            "value" : "テキストを認識"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "텍스트 인식 (OCR)"
+            "value" : "텍스트 인식"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tekst herkennen (OCR)"
+            "value" : "Tekst herkennen"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reconhecer Texto (OCR)"
+            "value" : "Reconhecer Texto"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reconhecer Texto (OCR)"
+            "value" : "Reconhecer Texto"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Распознать текст (OCR)"
+            "value" : "Распознать текст"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Identifiera text (OCR)"
+            "value" : "Identifiera text"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "识别文本 (OCR)"
+            "value" : "识别文本"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "識別文字 (OCR)"
+            "value" : "識別文字"
           }
         }
       }
@@ -21365,7 +21650,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Exif日期(倒序)"
+            "value" : "Exif日期(降序)"
           }
         },
         "zh-Hant" : {
@@ -21555,7 +21840,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Exif像素数(倒序)"
+            "value" : "Exif像素数(降序)"
           }
         },
         "zh-Hant" : {
@@ -25847,91 +26132,91 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "في واجهة المشغل، اضغط على الزر الأيسر لإيقاف التشغيل مؤقتاً، وانقر بزر الفأرة الأيمن واسحب لضبط تقدم تشغيل الفيديو.\n\nنظراً لأن نظام macOS يدعم أصلاً فقط تنسيقات الفيديو مثل [\"mp4\"، \"mov\"، \"m2ts\"، \"ts\"، \"mpeg\"، \"mpg\"، \"m4v\"، \"vob\"]، فإن التنسيقات الأخرى لا تزال بحاجة إلى تشغيل باستخدام مشغل خارجي."
+            "value" : "في واجهة المشغل، اضغط على الزر الأيسر لإيقاف التشغيل مؤقتًا، ثم انقر بزر الماوس الأيمن واسحب لضبط تقدم تشغيل الفيديو.\n\nيدعم macOS أصلاً فقط تنسيقات الفيديو مثل \"mp4\"، \"mov\"، \"m2ts\"، \"ts\"، \"mpeg\"، \"mpg\"، \"m4v\"، و\"vob\". لا تزال التنسيقات الأخرى بحاجة إلى تشغيل باستخدام مشغل خارجي.\n\nيشير \"تشغيل الفيديو المرئي تلقائيًا\" إلى تكرار تشغيل الفيديوهات داخل المنطقة المرئية في عرض الصور المصغرة. نظرًا لأن تشغيل الفيديو هو مهمة كثيفة الموارد، فقد يسبب تأخيرًا في التمرير عند التحميل."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Drücken Sie in der Spieler-Oberfläche die linke Taste, um die Wiedergabe zu pausieren, und klicken Sie mit der rechten Maustaste und ziehen, um den Fortschritt der Videowiedergabe anzupassen.\n\nDa macOS nativerweise nur Videoformate wie [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"] unterstützt, müssen andere Formate weiterhin mit einem externen Player abgespielt werden."
+            "value" : "Drücken Sie in der Benutzeroberfläche des Players die linke Taste, um die Wiedergabe zu pausieren, und klicken Sie mit der rechten Maustaste, während Sie den Mauszeiger ziehen, um den Fortschritt der Videowiedergabe anzupassen.\n\nmacOS unterstützt nativ nur Videoformate wie \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" und \"vob\". Andere Formate müssen weiterhin mit einem externen Player abgespielt werden.\n\n\"Automatische Wiedergabe sichtbarer Videos\" bezieht sich auf das Schleifen der Videos im sichtbaren Bereich der Miniaturansicht. Da die Videowiedergabe eine ressourcenintensive Aufgabe ist, kann beim Laden ein Scroll-Verzögerung auftreten."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In the player interface, press the left button to pause playback, and right-click and drag to adjust the video playback progress.\n\nSince macOS natively only supports video formats such as [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], other formats still need to be played using an external player."
+            "value" : "In the player interface, press the left button to pause playback, and right-click and drag to adjust the video playback progress.\n\nmacOS natively only supports video formats such as \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" and \"vob”. Other formats still need to be played using an external player.\n\n\"Auto Play Visible Video\" refers to looping the videos within the visible area in thumbnail view. Since video playback is a resource-intensive task, it may cause scrolling lag when loading."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En la interfaz del reproductor, presiona el botón izquierdo para pausar la reproducción y haz clic derecho y arrastra para ajustar el progreso de la reproducción de video.\n\nDado que macOS solo admite de forma nativa formatos de video como [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], otros formatos aún necesitan reproducirse utilizando un reproductor externo."
+            "value" : "En la interfaz del reproductor, presiona el botón izquierdo para pausar la reproducción, y haz clic derecho y arrastra para ajustar el progreso de la reproducción del video.\n\nmacOS solo admite de forma nativa formatos de video como \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" y \"vob”. Otros formatos aún necesitan ser reproducidos usando un reproductor externo.\n\n\"Reproducción automática de video visible\" se refiere a repetir los videos dentro del área visible en vista de miniaturas. Dado que la reproducción de video es una tarea que consume muchos recursos, puede causar retraso al desplazarse al cargarse."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dans l'interface du lecteur, appuyez sur le bouton gauche pour mettre la lecture en pause, et cliquez avec le bouton droit et faites glisser pour ajuster la progression de la lecture vidéo\n\nÉtant donné que macOS ne prend en charge de manière native que les formats vidéo tels que [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], les autres formats doivent encore être lus à l'aide d'un lecteur externe"
+            "value" : "Dans l'interface du lecteur, appuyez sur le bouton gauche pour mettre la lecture en pause et faites un clic droit et faites glisser pour ajuster la progression de la lecture vidéo.\n\nmacOS prend en charge de manière native uniquement les formats vidéo tels que \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" et \"vob\". Les autres formats doivent encore être lus à l'aide d'un lecteur externe.\n\n\"Lecture automatique de la vidéo visible\" désigne la boucle des vidéos dans la zone visible en vue miniature. Étant donné que la lecture vidéo est une tâche gourmande en ressources, cela peut entraîner des ralentissements lors du défilement pendant le chargement."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nell'interfaccia del lettore, premi il pulsante sinistro per mettere in pausa la riproduzione, fai clic con il tasto destro e trascina per regolare il progresso della riproduzione video.\n\nPoiché macOS supporta nativamente solo formati video come [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], altri formati devono ancora essere riprodotti utilizzando un lettore esterno."
+            "value" : "Nell'interfaccia del lettore, premi il pulsante sinistro per mettere in pausa la riproduzione e fai clic destro e trascina per regolare il progresso della riproduzione video.\n\nmacOS supporta nativamente solo formati video come \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" e \"vob\". Altri formati devono ancora essere riprodotti utilizzando un lettore esterno.\n\n\"Riproduzione Automatica Video Visibile\" si riferisce al loop dei video all'interno dell'area visibile nella vista miniature. Poiché la riproduzione video è un'attività che richiede molte risorse, potrebbe causare ritardi nello scorrimento durante il caricamento."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "プレイヤーインターフェースで、左ボタンを押して再生を一時停止し、右クリックしてドラッグすることで動画の再生進行を調整します。\n\nmacOSは標準で[\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"]などのビデオフォーマットのみをサポートしているため、他のフォーマットは外部プレイヤーを使用して再生する必要があります。"
+            "value" : "プレーヤーインターフェースでは、左ボタンを押すと再生が一時停止され、右クリックしてドラッグするとビデオ再生の進行状況を調整できます。\n\nmacOSはネイティブで「mp4」、「mov」、「m2ts」、「ts」、「mpeg」、「mpg」、「m4v」、「vob」などのビデオ形式のみをサポートしています。他の形式は外部プレーヤーを使用して再生する必要があります。\n\n「可視ビデオ自動再生」は、サムネイルビュー内の可視エリアのビデオをループ再生することを指します。ビデオ再生はリソースを多く消費するタスクであるため、読み込み時にスクロールの遅延が発生する可能性があります。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "플레이어 인터페이스에서 왼쪽 버튼을 눌러 재생을 일시 중지하고, 오른쪽 클릭 후 드래그하여 비디오 재생 진행을 조정하세요.\n\nmacOS는 기본적으로 [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"]와 같은 비디오 형식만 지원하므로, 다른 형식은 여전히 외부 플레이어를 사용하여 재생해야 합니다."
+            "value" : "플레이어 인터페이스에서 재생을 일시 중지하려면 왼쪽 버튼을 누르고, 비디오 재생 진행 상황을 조정하려면 오른쪽 클릭하고 드래그하세요.\n\nmacOS는 기본적으로 \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\" 형식의 비디오만 지원합니다. 다른 형식의 비디오는 여전히 외부 플레이어를 사용해야 합니다.\n\n\"자동 재생 보이는 비디오\"는 썸네일 뷰에서 보이는 영역 내의 비디오를 반복 재생하는 것을 의미합니다. 비디오 재생은 리소스 집약적인 작업이기 때문에 로드 시 스크롤 지연이 발생할 수 있습니다."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In de spelerinterface druk je op de linkertoets om de weergave te pauzeren en klik je met de rechtermuisknop en sleep je om de voortgang van de videoweergave aan te passen\n\nAangezien macOS van nature alleen videoformaten zoals [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"] ondersteunt, moeten andere formaten nog steeds worden afgespeeld met een externe speler"
+            "value" : "In de spelerinterface drukt u op de linkerknop om de weergave te pauzeren, en klikt u met de rechtermuisknop en sleept u om de voortgang van de videoweergave aan te passen. macOS ondersteunt van nature alleen videoformaten zoals \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" en \"vob\". Andere formaten moeten nog steeds worden afgespeeld met een externe speler. \"Automatisch afspelen van zichtbare video\" verwijst naar het herhalen van de video's binnen het zichtbare gebied in miniatuurweergave. Aangezien videoweergave een intensieve taak is, kan dit vertraging bij scrollen veroorzaken bij het laden."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Na interface do player, pressione o botão esquerdo para pausar a reprodução, e clique com o botão direito e arraste para ajustar o progresso da reprodução do vídeo.\n\nJá que o macOS oferece suporte nativo apenas para formatos de vídeo como [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], outros formatos ainda precisam ser reproduzidos usando um player externo."
+            "value" : "Na interface do player, pressione o botão esquerdo para pausar a reprodução e clique com o botão direito e arraste para ajustar o progresso da reprodução do vídeo.\n\nO macOS só suporta nativamente formatos de vídeo como \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" e \"vob”. Outros formatos ainda precisam ser reproduzidos usando um player externo.\n\n\"Reprodução Automática de Vídeo Visível\" refere-se aos vídeos em loop dentro da área visível na visualização em miniatura. Como a reprodução de vídeo é uma tarefa que consome muitos recursos, isso pode causar lentidão ao rolar durante o carregamento."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Na interface do leitor, pressione o botão esquerdo para pausar a reprodução e clique com o botão direito e arraste para ajustar o progresso da reprodução do vídeo\n\nComo o macOS suporta nativamente apenas formatos de vídeo como [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], outros formatos ainda precisam ser reproduzidos usando um leitor externo"
+            "value" : "Na interface do leitor, prima o botão esquerdo para pausar a reprodução e clique com o botão direito e arraste para ajustar o progresso da reprodução do vídeo.\n\nO macOS nativamente só suporta formatos de vídeo como \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" e \"vob\". Outros formatos ainda precisam ser reproduzidos utilizando um leitor externo.\n\n\"Reproduzir Automaticamente Video Visível\" refere-se à repetição dos vídeos na área visível em visualização de miniaturas. Como a reprodução de vídeo é uma tarefa que consome muitos recursos, pode causar atraso no deslocamento ao carregar."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "В интерфейсе проигрывателя нажмите левую кнопку, чтобы приостановить воспроизведение, а щелкните правой кнопкой мыши и перетащите, чтобы изменить прогресс воспроизведения видео.\n\nПоскольку macOS по умолчанию поддерживает только видеоформаты, такие как [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], другие форматы все еще необходимо воспроизводить с использованием внешнего плеера."
+            "value" : "В интерфейсе плеера нажмите левую кнопку, чтобы приостановить воспроизведение, и щелкните правой кнопкой мыши и перетащите, чтобы настроить прогресс воспроизведения видео.\n\nmacOS поддерживает только такие видеоформаты, как \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" и \"vob\". Для воспроизведения других форматов все еще необходимо использовать внешний плеер.\n\n\"Автоматическое воспроизведение видимого видео\" означает зацикливание видео в видимой области в виде просмотра миниатюр. Поскольку воспроизведение видео является задачей, требующей значительных ресурсов, это может вызвать задержку прокрутки при загрузке."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I spelargränssnittet, tryck på vänster knapp för att pausa uppspelning, och högerklicka och dra för att justera videouppspelningens framsteg.\n\nEftersom macOS inbyggt endast stödjer videoformat som [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"], behöver andra format fortfarande spelas med en extern spelare."
+            "value" : "I spelargränssnittet trycker du på vänster knapp för att pausa uppspelningen och högerklickar och drar för att justera videouppspelningsframsteg.\n\nmacOS stödjer endast videoformat som \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" och \"vob\" inbyggt. Andra format behöver fortfarande spelas upp med en extern spelare.\n\n\"Auto Play Visible Video\" avser att loopa videorna inom det synliga området i miniatyrvy. Eftersom videouppspelning är en resurskrävande uppgift kan det orsaka fördröjningar vid rullning när den laddas."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在播放器界面，按左键暂停播放，右键拖拽可以调整视频播放进度。\n\n由于macOS原生仅支持 [\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"] 格式视频，其它格式仍需使用外部播放器播放。\n"
+            "value" : "在播放器界面，按左键暂停播放，右键拖拽可以调整视频播放进度。\n\nmacOS原生仅支持 \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\" 视频，其它格式仍需使用外部播放器播放。\n\n\"自动播放可见视频\"指在缩略图视图下，循环播放视野范围内的视频。由于视频播放是一项负荷较大的任务，同时加载时可能造成滚动卡顿。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在播放器界面中，按下左鍵以暫停播放，右鍵單擊並拖動以調整視頻播放進度。\n\n由於macOS原生僅支持[\"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"]等視頻格式，其他格式仍需使用外部播放器進行播放"
+            "value" : "在播放器界面中，按左鍵暫停播放，右鍵拖動可調整視頻播放進度。\n\nmacOS 原生僅支持 \"mp4\"、\"mov\"、\"m2ts\"、\"ts\"、\"mpeg\"、\"mpg\"、\"m4v\" 和 \"vob\" 等視頻格式。其他格式仍需使用外部播放器進行播放。\n\n“自動播放可見視頻”是指在縮略圖視圖中循環播放可見區域內的視頻。由於視頻播放是一項資源密集型任務，載入時可能會導致滾動延遲。"
           }
         }
       }
@@ -27452,6 +27737,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "寬度"
+          }
+        }
+      }
+    },
+    "Videos" : {
+      "comment" : "视频",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مقاطع الفيديو"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videos"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videos"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vidéos"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ビデオ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동영상"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video's"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vídeos"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vídeos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видео"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "videor"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "视频"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "影片"
           }
         }
       }

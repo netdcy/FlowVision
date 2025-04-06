@@ -1004,7 +1004,7 @@ class LargeImageView: NSView {
             actionItemShowExif.state = getViewController(self)!.publicVar.isShowExif ? .on : .off
             
             if file.type == .image {
-                let actionItemOCR = menu.addItem(withTitle: NSLocalizedString("recognize-OCR", comment: "识别文本 (OCR)"), action: #selector(actOCR), keyEquivalent: "o")
+                let actionItemOCR = menu.addItem(withTitle: NSLocalizedString("recognize-OCR", comment: "识别文本"), action: #selector(actOCR), keyEquivalent: "o")
                 actionItemOCR.keyEquivalentModifierMask = []
             
                 let actionItemQRCode = menu.addItem(withTitle: NSLocalizedString("recognize-QRCode", comment: "识别二维码"), action: #selector(actQRCode), keyEquivalent: "p")

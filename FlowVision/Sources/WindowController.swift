@@ -31,7 +31,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
             globalVar.toolbarIndex += 1
             let toolbar = NSToolbar(identifier: "MainToolbar"+String(globalVar.toolbarIndex))
             toolbar.delegate = self
-            toolbar.allowsUserCustomization = true
+            toolbar.allowsUserCustomization = false
             toolbar.autosavesConfiguration = false
             toolbar.displayMode = .iconOnly
             //toolbar.showsBaselineSeparator = true

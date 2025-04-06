@@ -3580,16 +3580,32 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if folderCount+imageCount+videoCount+otherCount > 0 {
             statisticInfo += String(format: "(")
             if folderCount != 0 {
-                statisticInfo += String(format: "%d %@ ", folderCount, NSLocalizedString("Folder", comment: "目录"))
+                if folderCount == 1 {
+                    statisticInfo += String(format: "%d %@ ", folderCount, NSLocalizedString("Folder", comment: "目录"))
+                }else{
+                    statisticInfo += String(format: "%d %@ ", folderCount, NSLocalizedString("Folders", comment: "目录"))
+                }
             }
             if imageCount != 0 {
-                statisticInfo += String(format: "%d %@ ", imageCount, NSLocalizedString("Image", comment: "图像"))
+                if imageCount == 1 {
+                    statisticInfo += String(format: "%d %@ ", imageCount, NSLocalizedString("Image", comment: "图像"))
+                }else{
+                    statisticInfo += String(format: "%d %@ ", imageCount, NSLocalizedString("Images", comment: "图像"))
+                }
             }
             if videoCount != 0 {
-                statisticInfo += String(format: "%d %@ ", videoCount, NSLocalizedString("Video", comment: "视频"))
+                if videoCount == 1 {
+                    statisticInfo += String(format: "%d %@ ", videoCount, NSLocalizedString("Video", comment: "视频"))
+                }else{
+                    statisticInfo += String(format: "%d %@ ", videoCount, NSLocalizedString("Videos", comment: "视频"))
+                }
             }
             if otherCount != 0 {
-                statisticInfo += String(format: "%d %@ ", otherCount, NSLocalizedString("Other", comment: "其它"))
+                if otherCount == 1 {
+                    statisticInfo += String(format: "%d %@ ", otherCount, NSLocalizedString("Other", comment: "其它"))
+                }else{
+                    statisticInfo += String(format: "%d %@ ", otherCount, NSLocalizedString("Others", comment: "其它"))
+                }
             }
             statisticInfo=statisticInfo.trimmingCharacters(in: .whitespaces)
             //                if folderCount == 0 && imageCount == 0 && videoCount == 0 && otherCount == 0 {

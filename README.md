@@ -20,7 +20,7 @@
  - Right-click gestures, quickly find the previous/next folder with images/videos
  - Performance optimizations for directories with a large number of images
  - High-quality scaling (reduces moiré and other issues)
- - Support for video thumbnails
+ - Support for video playback
  - Support for HDR display
  - Recursive mode
 
