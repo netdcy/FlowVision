@@ -10,6 +10,7 @@ import Cocoa
 class WindowController: NSWindowController, NSWindowDelegate {
     
     var pathShortenStore = ""
+    var windowFrameBeforeFullScreen: NSRect?
 
     override func windowDidLoad() {
         super.windowDidLoad()
@@ -117,6 +118,13 @@ class WindowController: NSWindowController, NSWindowDelegate {
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.toggleOnTop()
     }
+
+    // 在窗口将要进入全屏模式时执行
+    func windowWillEnterFullScreen(_ notification: Notification) {
+        guard let window = self.window else { return }
+        // 保存当前窗口大小
+        windowFrameBeforeFullScreen = window.frame
+    }
     
     // 在窗口已经进入全屏模式时执行
     func windowDidEnterFullScreen(_ notification: Notification) {
@@ -134,7 +142,12 @@ class WindowController: NSWindowController, NSWindowDelegate {
         guard let viewController = contentViewController as? ViewController else {return}
 
         if !globalVar.autoHideToolbar {
-            window?.toolbar?.isVisible = true
+            if window?.toolbar?.isVisible == false {
+                window?.toolbar?.isVisible = true
+                if let frame = windowFrameBeforeFullScreen {
+                    window?.setFrame(frame, display: true)
+                }
+            }
         }
         
         viewController.largeImageView.determineBlackBg()
