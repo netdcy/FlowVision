@@ -2733,6 +2733,43 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 return
             }
         }
+
+        // 检查来源是否有同名文件
+        var ifAutoRenameWhenDifferentSource = false
+        var fileNames = Set<String>()
+        var hasDuplicates = false
+        for item in items {
+            guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { continue }
+            let fileName = fileURL.lastPathComponent
+            if fileNames.contains(fileName) {
+                hasDuplicates = true
+                break
+            }
+            fileNames.insert(fileName)
+        }
+        
+        // 如果有同名文件,弹窗询问是否继续
+        if hasDuplicates {
+            let alert = NSAlert()
+            alert.messageText = NSLocalizedString("has-same-name-files", comment: "发现同名文件")
+            alert.informativeText = NSLocalizedString("has-same-name-files-info", comment: "来源文件中包含同名文件，是否自动重命名？")
+            alert.alertStyle = .warning
+            alert.icon = NSImage(named: NSImage.infoName)// 设置系统提示图标
+            alert.addButton(withTitle: NSLocalizedString("Auto Rename", comment: "自动重命名"))
+            alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
+            
+            let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
+            publicVar.isKeyEventEnabled = false
+            defer {
+                publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
+            }
+            let response = alert.runModal()
+            if response == .alertFirstButtonReturn {
+                ifAutoRenameWhenDifferentSource = true
+            } else {
+                return
+            }
+        }
         
         //播放提示音
         triggerFinderSound()
@@ -2745,10 +2782,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         for item in items {
             guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { continue }
             var destURL = destinationURL.appendingPathComponent(fileURL.lastPathComponent)
+
+            if ifAutoRenameWhenDifferentSource {
+                destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
+            }
             
             // 如果是在同一目录复制粘贴，则修改名称
             if fileURL.deletingLastPathComponent() == destinationURL {
-                destURL = getUniqueDestinationURL(for: destURL)
+                destURL = getUniqueDestinationURL(for: destURL, isInPlace: true)
             }
             
             if FileManager.default.fileExists(atPath: destURL.path) {
@@ -2846,6 +2887,43 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 return
             }
         }
+
+        // 检查来源是否有同名文件
+        var ifAutoRenameWhenDifferentSource = false
+        var fileNames = Set<String>()
+        var hasDuplicates = false
+        for item in items {
+            guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { continue }
+            let fileName = fileURL.lastPathComponent
+            if fileNames.contains(fileName) {
+                hasDuplicates = true
+                break
+            }
+            fileNames.insert(fileName)
+        }
+        
+        // 如果有同名文件,弹窗询问是否继续
+        if hasDuplicates {
+            let alert = NSAlert()
+            alert.messageText = NSLocalizedString("has-same-name-files", comment: "发现同名文件")
+            alert.informativeText = NSLocalizedString("has-same-name-files-info", comment: "来源文件中包含同名文件，是否自动重命名？")
+            alert.alertStyle = .warning
+            alert.icon = NSImage(named: NSImage.infoName)// 设置系统提示图标
+            alert.addButton(withTitle: NSLocalizedString("Auto Rename", comment: "自动重命名"))
+            alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
+            
+            let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
+            publicVar.isKeyEventEnabled = false
+            defer {
+                publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
+            }
+            let response = alert.runModal()
+            if response == .alertFirstButtonReturn {
+                ifAutoRenameWhenDifferentSource = true
+            } else {
+                return
+            }
+        }
         
         //播放提示音
         triggerFinderSound()
@@ -2857,12 +2935,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.isKeyEventEnabled = false
         for item in items {
             guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { continue }
-            let destURL = destinationURL.appendingPathComponent(fileURL.lastPathComponent)
+            var destURL = destinationURL.appendingPathComponent(fileURL.lastPathComponent)
             
             // 如果是在同一目录移动，则不作动作
             if fileURL.deletingLastPathComponent() == destinationURL {
                 log("不能将文件/文件夹移动到相同目录中。")
                 continue
+            }
+
+            if ifAutoRenameWhenDifferentSource {
+                destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
             }
 
             if FileManager.default.fileExists(atPath: destURL.path) {
@@ -2918,14 +3000,20 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
     }
 
-    func getUniqueDestinationURL(for url: URL) -> URL {
+    func getUniqueDestinationURL(for url: URL, isInPlace: Bool = false) -> URL {
         var newURL = url
         var counter = 1
         
         while FileManager.default.fileExists(atPath: newURL.path) {
             let baseName = url.deletingPathExtension().lastPathComponent
             let extensionName = url.pathExtension
-            let newName = "\(baseName)_副本\(counter > 1 ? "\(counter)" : "")"
+            var duplicateName = ""
+            var newName = "\(baseName)_\(duplicateName)\(counter > 0 ? "\(counter+1)" : "")"
+            if isInPlace {
+                duplicateName = NSLocalizedString("copy-lowercase", comment: "copy(首字母小写)")
+                newName = "\(baseName)_\(duplicateName)\(counter > 1 ? "\(counter)" : "")"
+            }
+            
             
             newURL = url.deletingLastPathComponent().appendingPathComponent(newName).appendingPathExtension(extensionName)
             counter += 1
@@ -2951,6 +3039,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             alert.informativeText = NSLocalizedString("do-you-want-replace(paste)", comment: "你要用正在粘贴的文件替换它吗？")
         }
         alert.alertStyle = .warning
+        alert.icon = NSImage(named: NSImage.infoName)// 设置系统提示图标
         alert.addButton(withTitle: NSLocalizedString("Replace", comment: "替换"))
         if !isSingle {
             alert.addButton(withTitle: NSLocalizedString("Replace All", comment: "全部替换"))
