@@ -39,12 +39,12 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         usePinyinSearchCheckbox.state = globalVar.usePinyinSearch ? .on : .off
         usePinyinInitialSearchCheckbox.state = globalVar.usePinyinInitialSearch ? .on : .off
         
-        radioGlass.state = !globalVar.blackBgAlways ? .on : .off
+        radioGlass.state = (!globalVar.blackBgAlways && !globalVar.blackBgInFullScreen) ? .on : .off
         radioBlack.state = globalVar.blackBgAlways ? .on : .off
-        radioFullscreen.state = globalVar.blackBgInFullScreen ? .on : .off
-        radioGlassForVideo.state = !globalVar.blackBgAlwaysForVideo ? .on : .off
+        radioFullscreen.state = (!globalVar.blackBgAlways && globalVar.blackBgInFullScreen) ? .on : .off
+        radioGlassForVideo.state = (!globalVar.blackBgAlwaysForVideo && !globalVar.blackBgInFullScreenForVideo) ? .on : .off
         radioBlackForVideo.state = globalVar.blackBgAlwaysForVideo ? .on : .off
-        radioFullscreenForVideo.state = globalVar.blackBgInFullScreenForVideo ? .on : .off
+        radioFullscreenForVideo.state = (!globalVar.blackBgAlwaysForVideo && globalVar.blackBgInFullScreenForVideo) ? .on : .off
 
         // 设置 OutlineView
         excludeListView.dataSource = self

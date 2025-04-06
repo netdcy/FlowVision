@@ -46,10 +46,10 @@ class GlobalVar{
     var folderSearchDepth_External: Int = 0
     var randomFolderThumb = false
     var loopBrowsing = false
-    var blackBgInFullScreen = true
-    var blackBgInFullScreenForVideo = true
+    var blackBgInFullScreen = false
+    var blackBgInFullScreenForVideo = false
     var blackBgAlways = false
-    var blackBgAlwaysForVideo = false
+    var blackBgAlwaysForVideo = true
     var thumbnailExcludeList: [String] = []
     var usePinyinSearch = false
     var usePinyinInitialSearch = false
