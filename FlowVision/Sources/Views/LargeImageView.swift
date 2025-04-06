@@ -8,10 +8,23 @@
 import Foundation
 import Cocoa
 import VisionKit
+import AVKit
 
 class LargeImageView: NSView {
 
     var imageView: CustomLargeImageView!
+    
+    var snapshotQueue = [NSView?]()
+    var videoView: LargeAVPlayerView!
+    //var videoPlayer: AVPlayer?
+    var playerItem: AVPlayerItem?
+    var queuePlayer: AVQueuePlayer?
+    var playerLooper: AVPlayerLooper?
+    var currentPlayingURL: URL?
+    var snapshotTimer: DispatchSourceTimer?
+    var playcontrolTimer: DispatchSourceTimer?
+    var videoOrderId: Int = 0
+    
     var exifTextView: ExifTextView!
     var ratioView: InfoView!
     var infoView: InfoView!
@@ -54,6 +67,19 @@ class LargeImageView: NSView {
         imageView.wantsLayer = true
         imageView.animates=true
         self.addSubview(imageView)
+
+        videoView = LargeAVPlayerView(frame: self.bounds)
+        videoView.autoresizingMask = [.width, .height]
+        queuePlayer = AVQueuePlayer()
+        videoView.player = queuePlayer
+        videoView.controlsStyle = .none
+        videoView.showsFullScreenToggleButton = true
+        videoView.videoGravity = .resizeAspect
+        videoView.isHidden = true
+        self.addSubview(videoView)
+//        if #available(macOS 13.0, *) {
+//            videoView.allowsVideoFrameAnalysis = false
+//        }
         
         exifTextView = ExifTextView(frame: .zero)
         exifTextView.translatesAutoresizingMaskIntoConstraints = false
@@ -109,7 +135,178 @@ class LargeImageView: NSView {
         imageView.frame = CGRect(x: newX, y: newY, width: imageViewSize.width, height: imageViewSize.height)
     }
     
+    func pauseVideo() {
+        if let queuePlayer = queuePlayer {
+            if queuePlayer.timeControlStatus == .playing {
+                queuePlayer.pause()
+            } else {
+                queuePlayer.play()
+            }
+        }
+    }
+
+    func playVideo() {
+        if let url = URL(string: file.path) {
+            // 检查当前播放的视频是否已经是目标视频
+            if currentPlayingURL == url {
+                return
+            }
+            
+            // 快照
+            if let snapshot = captureSnapshot(of: self) {
+                self.addSubview(snapshot)
+                snapshotQueue.append(snapshot)
+            }
+            
+            playerLooper?.disableLooping()
+            playerLooper = nil
+            queuePlayer?.removeAllItems()
+            playerItem = nil
+            videoView.controlsStyle = .none
+            videoOrderId += 1
+            videoView.isHidden = false
+
+            if let timeRange = getCommonTimeRange(url: url) {
+                playerItem = AVPlayerItem(url: url)
+                if let playerItem = playerItem,
+                   let queuePlayer = queuePlayer {
+                    
+                    // 根据 file.rotate 设置视频旋转角度
+                    let rotation: Double
+                    switch file.rotate {
+                        case 1: rotation = 90
+                        case 2: rotation = 180
+                        case 3: rotation = 270
+                        default: rotation = 0
+                    }
+                    
+                    if rotation != 0,
+                       let videoTrack = playerItem.asset.tracks(withMediaType: .video).first {
+                        let composition = AVMutableVideoComposition()
+                        composition.renderSize = rotation == 90 || rotation == 270 ?
+                            CGSize(width: videoTrack.naturalSize.height, height: videoTrack.naturalSize.width) :
+                            videoTrack.naturalSize
+                        composition.frameDuration = CMTime(value: 1, timescale: 30)
+                        
+                        let instruction = AVMutableVideoCompositionInstruction()
+                        instruction.timeRange = CMTimeRange(start: .zero, duration: .positiveInfinity)
+                        
+                        let transformer = AVMutableVideoCompositionLayerInstruction(assetTrack: videoTrack)
+                        var transform = CGAffineTransform.identity
+                        
+                        // 先平移再旋转，确保视频在正确位置
+                        if rotation == 90 {
+                            transform = transform.translatedBy(x: videoTrack.naturalSize.height, y: 0)
+                            transform = transform.rotated(by: .pi/2)
+                        } else if rotation == 270 {
+                            transform = transform.translatedBy(x: 0, y: videoTrack.naturalSize.width)
+                            transform = transform.rotated(by: -.pi/2)
+                        } else if rotation == 180 {
+                            transform = transform.translatedBy(x: videoTrack.naturalSize.width, y: videoTrack.naturalSize.height)
+                            transform = transform.rotated(by: .pi)
+                        }
+                        
+                        transformer.setTransform(transform, at: .zero)
+                        instruction.layerInstructions = [transformer]
+                        composition.instructions = [instruction]
+                        
+                        playerItem.videoComposition = composition
+                    }
+                    
+                    queuePlayer.insert(playerItem, after: nil)
+                    playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem, timeRange: timeRange)
+                    queuePlayer.play()
+                    currentPlayingURL = url
+                    
+                    // 开始计时器检查 playerItem.status
+                    checkPlayerItemStatus(id: videoOrderId)
+                }
+            }else{
+                while snapshotQueue.count > 0{
+                    snapshotQueue.first??.removeFromSuperview()
+                    snapshotQueue.removeFirst()
+                }
+                currentPlayingURL = nil
+                showInfo("not supported format")
+            }
+        }
+    }
+    
+    private func checkPlayerItemStatus(id: Int) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
+            guard let self = self, let playerItem = self.playerItem else { return }
+            if id != videoOrderId { return }
+            
+            log("playerItem.status: ", playerItem.status.rawValue)
+            
+            //if playerItem.status == .readyToPlay || playerItem.status == .failed {
+            let targetTime: CMTime = CMTime(seconds: 0.1, preferredTimescale: 600)
+            if queuePlayer?.currentTime() ?? CMTime.zero >= targetTime {
+                
+                // 隐藏快照
+                while snapshotQueue.count > 0{
+                    snapshotQueue.first??.removeFromSuperview()
+                    snapshotQueue.removeFirst()
+                }
+//                snapshotTimer?.cancel()
+//                snapshotTimer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
+//                snapshotTimer?.schedule(deadline: .now() + 0.05)
+//                snapshotTimer?.setEventHandler { [weak self] in
+//                    guard let self = self else { return }
+//                    if id != videoOrderId { return }
+//                    while snapshotQueue.count > 0 {
+//                        let snapshot = snapshotQueue.first!
+//                        snapshotQueue.removeFirst()
+//                        
+//                        NSAnimationContext.runAnimationGroup({ context in
+//                            context.duration = 0.05
+//                            snapshot?.animator().alphaValue = 0
+//                        }, completionHandler: {
+//                            snapshot?.removeFromSuperview()
+//                        })
+//                    }
+//                }
+//                snapshotTimer?.resume()
+                
+                // 显示控制
+                playcontrolTimer?.cancel()
+                playcontrolTimer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
+                playcontrolTimer?.schedule(deadline: .now() + 0.5)
+                playcontrolTimer?.setEventHandler { [weak self] in
+                    guard let self = self else { return }
+                    if id != videoOrderId { return }
+                    videoView.controlsStyle = .default
+                }
+                playcontrolTimer?.resume()
+            } else {
+                // 如果还没有准备好，继续检查
+                checkPlayerItemStatus(id: id)
+            }
+        }
+    }
+    
+    func stopVideo(){
+        videoOrderId += 1
+        videoView.isHidden = true
+        playerLooper?.disableLooping()
+        playerLooper = nil
+        queuePlayer?.removeAllItems()
+        playerItem = nil
+        currentPlayingURL = nil
+        while snapshotQueue.count > 0{
+            snapshotQueue.first??.removeFromSuperview()
+            snapshotQueue.removeFirst()
+        }
+    }
+    
+    func rotateVideo() {
+        stopVideo()
+        playVideo()
+    }
+    
     func zoom(direction: Int = 0){
+        if file.type == .video {return}
+        
         //guard let originalSize = getViewController(self)?.getCurrentImageOriginalSizeInScreenScale() else { return }
         //let currentSize = imageView.bounds.size
 //        var scale = 1.0
@@ -370,7 +567,7 @@ class LargeImageView: NSView {
             let menu = NSMenu(title: "Custom Menu")
             menu.autoenablesItems = false
             
-            let actionItemClose = menu.addItem(withTitle: NSLocalizedString("Close (Double Click)", comment: "关闭 (双击)"), action: #selector(actClose), keyEquivalent: " ")
+            let actionItemClose = menu.addItem(withTitle: NSLocalizedString("Close (Double Click)", comment: "关闭 (双击)"), action: #selector(actClose), keyEquivalent: "\u{1b}")
             actionItemClose.keyEquivalentModifierMask = []
             
             let actionItemOpenInNewTab = menu.addItem(withTitle: NSLocalizedString("Open in New Tab", comment: "在新标签页中打开"), action: #selector(actOpenInNewTab), keyEquivalent: "")
@@ -418,11 +615,16 @@ class LargeImageView: NSView {
             actionItemShowExif.keyEquivalentModifierMask = []
             actionItemShowExif.state = getViewController(self)!.publicVar.isShowExif ? .on : .off
             
-            let actionItemOCR = menu.addItem(withTitle: NSLocalizedString("recognize-OCR", comment: "识别文本 (OCR)"), action: #selector(actOCR), keyEquivalent: "o")
-            actionItemOCR.keyEquivalentModifierMask = []
+            if file.type == .image {
+                let actionItemOCR = menu.addItem(withTitle: NSLocalizedString("recognize-OCR", comment: "识别文本 (OCR)"), action: #selector(actOCR), keyEquivalent: "o")
+                actionItemOCR.keyEquivalentModifierMask = []
             
-            let actionItemQRCode = menu.addItem(withTitle: NSLocalizedString("recognize-QRCode", comment: "识别二维码"), action: #selector(actQRCode), keyEquivalent: "p")
-            actionItemQRCode.keyEquivalentModifierMask = []
+                let actionItemQRCode = menu.addItem(withTitle: NSLocalizedString("recognize-QRCode", comment: "识别二维码"), action: #selector(actQRCode), keyEquivalent: "p")
+                actionItemQRCode.keyEquivalentModifierMask = []
+            } else if file.type == .video {
+                let actionItemShowVideoMetadata = menu.addItem(withTitle: NSLocalizedString("Show Video Metadata", comment: "显示视频元数据"), action: #selector(actShowVideoMetadata), keyEquivalent: "u")
+                actionItemShowVideoMetadata.keyEquivalentModifierMask = []
+            }
 
             menu.addItem(NSMenuItem.separator())
             
@@ -580,6 +782,10 @@ class LargeImageView: NSView {
             if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.copy(_:))) {
                 responder.perform(#selector(NSText.copy(_:)), with: nil)
             }
+        }else if file.type == .video,
+                 let responder = self.window?.firstResponder,
+                 responder.responds(to: #selector(NSText.copy(_:))) {
+            responder.perform(#selector(NSText.copy(_:)), with: nil)
         }else{
             getViewController(self)?.handleCopy()
         }
@@ -615,7 +821,12 @@ class LargeImageView: NSView {
         //exifTextView.isHidden = !getViewController(self)!.publicVar.isShowExif
     }
     
+    @objc func actShowVideoMetadata() {
+        getViewController(self)?.handleGetInfo()
+    }
+    
     @objc func actQRCode() {
+        if file.type == .video {return}
         if let image=file.image,
            let qrCodes = recognizeQRCode(from: image) {
             let text=qrCodes.joined(separator: "\n")
@@ -626,6 +837,7 @@ class LargeImageView: NSView {
     }
     
     @objc func actOCR() {
+        if file.type == .video {return}
         guard let url=URL(string:file.path),
               let size=imageView.image?.size,
               let image=LargeImageProcessor.getImageCache(url: url, size: size, rotate: file.rotate, ver: file.ver, useOriginalImage: true, isHDR: false)
@@ -688,15 +900,23 @@ class LargeImageView: NSView {
 
     
     @objc func actRotateR() {
-        unSetOcr()
         file.rotate = (file.rotate+1)%4
-        getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
+        if file.type == .video {
+            rotateVideo()
+        }else{
+            unSetOcr()
+            getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
+        }
     }
     
     @objc func actRotateL() {
-        unSetOcr()
         file.rotate = (file.rotate+3)%4
-        getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
+        if file.type == .video {
+            rotateVideo()
+        }else{
+            unSetOcr()
+            getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
+        }
     }
     
     @objc func actClose() {

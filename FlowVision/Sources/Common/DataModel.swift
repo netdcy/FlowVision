@@ -395,6 +395,7 @@ class FileModel {
     }
     var id: Int = 0
     var idInImage: Int = 0
+    var idInImageAndVideo: Int = 0
     var path: String
     var ext: String = ""
     var type: FileType = .notSet

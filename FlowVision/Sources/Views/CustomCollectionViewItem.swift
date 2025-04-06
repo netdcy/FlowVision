@@ -6,6 +6,7 @@
 //
 
 import Cocoa
+import AVKit
 import AVFoundation
 
 class CustomCollectionViewItem: NSCollectionViewItem {
@@ -14,6 +15,13 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var imageNameField: NSTextField!
     @IBOutlet weak var imageLabel: NSTextField!
     @IBOutlet weak var videoFlag: NSImageView!
+    @IBOutlet weak var videoView: NSView!
+    
+    var avPlayerLayer: AVPlayerLayer?
+    
+    var queuePlayer: AVQueuePlayer?
+    var playerLooper: AVPlayerLooper?
+    var currentPlayingURL: URL?
     
     var folderViews=[NSView]()
     var folderImageViews=[CustomImageView]()
@@ -64,6 +72,19 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         videoFlag.contentTintColor = NSColor.white.withAlphaComponent(0.8)
         videoFlag.imageScaling = .scaleAxesIndependently
         videoFlag.wantsLayer = true
+
+        //视频播放器
+        queuePlayer = AVQueuePlayer()
+        queuePlayer?.isMuted = true
+        
+        // 初始化 AVPlayerLayer
+        avPlayerLayer = AVPlayerLayer(player: queuePlayer)
+        avPlayerLayer?.isHidden = true
+        avPlayerLayer?.frame = videoView.bounds
+        avPlayerLayer?.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
+        videoView.wantsLayer = true
+        videoView.layer?.cornerRadius = 5.0
+        videoView.layer?.addSublayer(avPlayerLayer!)
         
 //        for _ in 0...0 {
 //            // 父视图 - 用于阴影和边框
@@ -124,6 +145,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
         lastClickTime=0
     }
+
+    override func viewWillDisappear() {
+        super.viewWillDisappear()
+        stopVideo()
+    }
     
     override var isSelected: Bool {
         didSet {
@@ -138,8 +164,22 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             }
         }
     }
+
+    func isItemVisible() -> Bool {
+        guard let collectionView = collectionView else { return false }
+        let visibleRectRaw = collectionView.visibleRect
+        let scrollPos = visibleRectRaw.origin
+        let scrollWidth = visibleRectRaw.width
+        let scrollHeight = visibleRectRaw.height
+        let visibleRectExtended = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight))
+
+        let itemFrame = self.view.frame
+        return itemFrame.intersects(visibleRectExtended)
+    }
     
     func configureWithImage(_ fileModel: FileModel, playAnimation: Bool = false) {
+        
+        stopVideo()
         
         self.file=fileModel
         
@@ -198,6 +238,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             videoFlag.isHidden = true
         }
         
+        if getViewController(collectionView!)!.publicVar.autoPlayVisibleVideo && isItemVisible() {
+            playVideo()
+        }
         
         if(playAnimation){
             NSAnimationContext.runAnimationGroup({ context in
@@ -346,6 +389,51 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         return tooltip
     }
+
+    func playVideo() {
+        guard let viewController = getViewController(collectionView!) else {return}
+        if viewController.publicVar.isInFindingClosestState {return}
+        if viewController.publicVar.isInLargeView {
+            stopVideo()
+            return
+        }
+        
+        if file.type == .video && globalVar.HandledNativeSupportedVideoExtensions.contains(file.ext) {
+            // 检查当前播放的视频是否已经是目标视频
+            if currentPlayingURL == URL(string: file.path) {
+                return
+            }
+            
+            playerLooper?.disableLooping()
+            playerLooper = nil
+            queuePlayer?.removeAllItems()
+            
+            if let url = URL(string: file.path),
+               let timeRange = getCommonTimeRange(url: url) {
+                
+                let playerItem = AVPlayerItem(url: url)
+                queuePlayer?.insert(playerItem, after: nil)
+                playerLooper = AVPlayerLooper(player: queuePlayer!, templateItem: playerItem, timeRange: timeRange)
+                queuePlayer?.play()
+                currentPlayingURL = URL(string: file.path)
+                avPlayerLayer?.isHidden = false
+            }
+        } else {
+            avPlayerLayer?.isHidden = true
+        }
+    }
+    
+    func stopVideo() {
+        guard let viewController = getViewController(collectionView!) else {return}
+        if viewController.publicVar.isInFindingClosestState {return}
+        if avPlayerLayer?.isHidden == false {
+            playerLooper?.disableLooping()
+            playerLooper = nil
+            queuePlayer?.removeAllItems()
+            currentPlayingURL = nil
+            avPlayerLayer?.isHidden = true
+        }
+    }
     
     func selectedColor(){
         guard let style = getViewController(collectionView!)?.publicVar.profile else {return}
@@ -397,20 +485,21 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         //图像高亮-选中
         if style.ThumbnailBorderThickness == 0 {
             let overlayLayerName = "highlightOverlay"
-            imageViewObj.layer?.sublayers?.forEach { sublayer in
+            videoView.layer?.sublayers?.forEach { sublayer in
                 if sublayer.name == overlayLayerName {
                     sublayer.removeFromSuperlayer()
                 }
             }
             let overlay = CALayer()
-            overlay.frame = imageViewObj.bounds
+            overlay.frame = videoView.bounds
             overlay.backgroundColor = focusColor.withAlphaComponent(0.4).cgColor
             overlay.name = overlayLayerName
             overlay.zPosition = 10
-            imageViewObj.layer?.addSublayer(overlay)
-            imageViewObj.needsDisplay = true
+            videoView.layer?.addSublayer(overlay)
+            videoView.needsDisplay = true
         }
     }
+
     func deselectedColor(){
         guard let style = getViewController(collectionView!)?.publicVar.profile else {return}
         
@@ -457,13 +546,13 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         //图像高亮-取消选中
         let overlayLayerName = "highlightOverlay"
-        imageViewObj.layer?.sublayers?.forEach { sublayer in
+        videoView.layer?.sublayers?.forEach { sublayer in
             if sublayer.name == overlayLayerName {
                 sublayer.removeFromSuperlayer()
-                imageViewObj.needsDisplay = true
+                videoView.needsDisplay = true
             }
         }
-        imageViewObj.needsDisplay = true
+        videoView.needsDisplay = true
     }
     
     func setCustomFrameSize(){
@@ -483,11 +572,13 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         let newFrame = NSRect(x: newX, y: newY, width: newWidth, height: newHeight)
         
         imageViewObj.frame = newFrame
+        videoView.frame = newFrame
         
         let borderRadius = style.layoutType == .grid ? style.ThumbnailBorderRadiusInGrid : style.ThumbnailBorderRadius
         view.layer?.cornerRadius = borderRadius
         view.layer?.masksToBounds = false
         imageViewObj.layer?.cornerRadius = borderRadius
+        videoView.layer?.cornerRadius = borderRadius
         
         var textX = newX
         var textY = round(newX/2)+1 - girdFilenameCompensation
@@ -510,8 +601,14 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             view.layer?.shadowOpacity = 1
             // 添加shadowPath以提高性能
             let cutoff = (style.ThumbnailBorderThickness == 0 && style.layoutType != .grid) ? style.ThumbnailFilenamePadding : 0
-            let shadowPath = CGPath(rect: CGRect(x: view.bounds.origin.x, y: view.bounds.origin.y + cutoff, width: view.bounds.width, height: view.bounds.height - cutoff), transform: nil)
-            view.layer?.shadowPath = shadowPath
+            let rect = CGRect(x: view.bounds.origin.x, y: view.bounds.origin.y + cutoff, width: view.bounds.width, height: view.bounds.height - cutoff)
+            let path = CGMutablePath()
+            if borderRadius > 0 {
+                path.addRoundedRect(in: rect, cornerWidth: borderRadius, cornerHeight: borderRadius)
+            }else{
+                path.addRect(rect)
+            }
+            view.layer?.shadowPath = path
         }else{
             view.layer?.shadowOpacity = 0
         }

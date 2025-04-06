@@ -57,6 +57,62 @@ extension NSImage {
         return NSImage(cgImage: cgImage, size: self.size)
     }
 }
+extension NSImage {
+    func deepCopy() -> NSImage? {
+        guard let tiffData = self.tiffRepresentation else {
+            return nil
+        }
+        
+        guard let bitmapImageRep = NSBitmapImageRep(data: tiffData) else {
+            return nil
+        }
+        
+        let newImage = NSImage(size: self.size)
+        newImage.addRepresentation(bitmapImageRep)
+        
+        return newImage
+    }
+}
+extension CGImage {
+    func deepCopy() -> CGImage? {
+        // 创建用于存储新图像数据的缓冲区
+        guard let dataProvider = self.dataProvider,
+              let data = dataProvider.data else {
+            return nil
+        }
+        
+        // 复制原始图像数据
+        let length = CFDataGetLength(data)
+        guard let copiedData = malloc(length) else {
+            return nil
+        }
+        
+        CFDataGetBytes(data, CFRangeMake(0, length), copiedData.bindMemory(to: UInt8.self, capacity: length))
+        
+        // 创建新的 CGDataProvider
+        guard let copiedDataProvider = CGDataProvider(dataInfo: nil, data: copiedData, size: length, releaseData: { _, data, _ in
+            free(UnsafeMutableRawPointer(mutating: data))
+        }) else {
+            free(copiedData)
+            return nil
+        }
+
+        // 创建新的 CGImage
+        return CGImage(
+            width: self.width,
+            height: self.height,
+            bitsPerComponent: self.bitsPerComponent,
+            bitsPerPixel: self.bitsPerPixel,
+            bytesPerRow: self.bytesPerRow,
+            space: self.colorSpace ?? CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: self.bitmapInfo,
+            provider: copiedDataProvider,
+            decode: self.decode,
+            shouldInterpolate: self.shouldInterpolate,
+            intent: self.renderingIntent
+        )
+    }
+}
 //
 //extension NSImage {
 //    func imageWithWhiteBorder(borderWidth: CGFloat) -> NSImage? {
@@ -477,7 +533,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
                 // 检查帧是否为黑屏或过暗
                 if brightness >= 0.1 {
                     let thumbnail = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
-                    return thumbnail
+                    return thumbnail.deepCopy()
                 }
                 
                 // 更新最佳帧
@@ -492,7 +548,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         // 如果有最佳帧（即使不够亮）也使用它
         if let bestFrame = bestFrame {
             let thumbnail = NSImage(cgImage: bestFrame.image, size: NSSize(width: bestFrame.image.width, height: bestFrame.image.height))
-            return thumbnail
+            return thumbnail.deepCopy()
         }
         
         // 如果所有尝试都失败，则使用FFmpeg方案

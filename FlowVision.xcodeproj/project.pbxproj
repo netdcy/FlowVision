@@ -49,6 +49,7 @@
 		F7A075562BA1D716009C47A6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7A075552BA1D716009C47A6 /* ViewController.swift */; };
 		F7A075582BA1D717009C47A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F7A075572BA1D717009C47A6 /* Assets.xcassets */; };
 		F7A0755B2BA1D717009C47A6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F7A075592BA1D717009C47A6 /* Main.storyboard */; };
+		F7AAA8BD2D9BD1F2007CE330 /* VideoProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AAA8BC2D9BD1ED007CE330 /* VideoProcess.swift */; };
 		F7AC30052D37E26B00F48AEF /* CustomPathControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AC30042D37E25800F48AEF /* CustomPathControl.swift */; };
 		F7C2DEB82C4E6AE9003DF765 /* Settings in Frameworks */ = {isa = PBXBuildFile; productRef = F7C2DEB72C4E6AE9003DF765 /* Settings */; };
 		F7C2DEBC2C4E6BEC003DF765 /* GeneralSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C2DEBA2C4E6BEC003DF765 /* GeneralSettingsViewController.swift */; };
@@ -135,6 +136,7 @@
 		F7A075572BA1D717009C47A6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F7A0755A2BA1D717009C47A6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F7A0755C2BA1D717009C47A6 /* FlowVision.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlowVision.entitlements; sourceTree = "<group>"; };
+		F7AAA8BC2D9BD1ED007CE330 /* VideoProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoProcess.swift; sourceTree = "<group>"; };
 		F7AC30042D37E25800F48AEF /* CustomPathControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPathControl.swift; sourceTree = "<group>"; };
 		F7C2DEBA2C4E6BEC003DF765 /* GeneralSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsViewController.swift; sourceTree = "<group>"; };
 		F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEffectView.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 				F73865DF2C37C06C00837FE4 /* DataModel.swift */,
 				F73865DA2C37BC1500837FE4 /* RefCode.swift */,
 				F73865E32C37C11B00837FE4 /* ImageProcess.swift */,
+				F7AAA8BC2D9BD1ED007CE330 /* VideoProcess.swift */,
 				F76E2EFD2C3B765C0031B0B4 /* Log.swift */,
 			);
 			path = Common;
@@ -368,6 +371,7 @@
 				F7AC30052D37E26B00F48AEF /* CustomPathControl.swift in Sources */,
 				F74636372C4F43AE0086E920 /* AdvancedSettingsViewController.swift in Sources */,
 				F7790ED72BA5FB6A00406D35 /* CustomCollectionViewItem.swift in Sources */,
+				F7AAA8BD2D9BD1F2007CE330 /* VideoProcess.swift in Sources */,
 				F795AC6E2C196B80004B487F /* CustomSplitView.swift in Sources */,
 				F73865D52C37B9B800837FE4 /* Layout.swift in Sources */,
 				F73865D92C37BBCB00837FE4 /* GlobalVariable.swift in Sources */,

@@ -68,6 +68,7 @@ class GlobalVar{
     var HandledVideoExtensions: [String] = []
     var HandledOtherExtensions: [String] = []
     var HandledNonExternalExtensions: [String] = []
+    var HandledNativeSupportedVideoExtensions: [String] = []
     var HandledNotNativeSupportedVideoExtensions: [String] = []
     var HandledFileExtensions: [String] = []
     var HandledSearchExtensions: [String] = []
@@ -77,10 +78,11 @@ class GlobalVar{
         HandledImageExtensions = ["jpg", "jpeg", "jxl", "png", "gif", "bmp", "heif", "heic", "hif", "avif", "tif", "tiff", "webp", "jfif", "jp2", "ai", "psd", "ico", "icns", "svg", "tga"]
         HandledRawExtensions = ["crw", "cr2", "cr3", "nef", "nrw", "arw", "srf", "sr2", "rw2", "orf", "raf", "pef", "dng", "raw", "rwl", "x3f", "3fr", "fff", "iiq", "mos", "dcr", "erf", "mrw", "gpr", "srw"]
         HandledImageAndRawExtensions = HandledImageExtensions + HandledRawExtensions
-        HandledVideoExtensions = ["mp4", "mov", "m2ts", "vob", "mpeg", "mpg", "m4v"] + ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
+        HandledNativeSupportedVideoExtensions = ["mp4", "mov", "m2ts", "ts", "mpeg", "mpg", "m4v", "vob"]
+        HandledNotNativeSupportedVideoExtensions = ["mkv", "mts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
+        HandledVideoExtensions = HandledNativeSupportedVideoExtensions + HandledNotNativeSupportedVideoExtensions
         HandledOtherExtensions = [] //["pdf"] //不能为""，否则会把目录异常包含进来
         HandledNonExternalExtensions = HandledImageAndRawExtensions
-        HandledNotNativeSupportedVideoExtensions = ["mkv", "mts", "ts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
         HandledFileExtensions = HandledImageAndRawExtensions + HandledVideoExtensions + HandledOtherExtensions //文件列表显示的
         HandledSearchExtensions = HandledImageAndRawExtensions + HandledVideoExtensions //作为鼠标手势查找的目标
         HandledFolderThumbExtensions = HandledImageAndRawExtensions.filter{$0 != "svg"} + HandledVideoExtensions // + ["pdf"] //目录缩略图

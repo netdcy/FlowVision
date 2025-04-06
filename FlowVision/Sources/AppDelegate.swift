@@ -561,9 +561,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             if mainViewController.publicVar.isKeyEventEnabled == false {
                 return false
             }
-            if !mainViewController.publicVar.isOutlineViewFirstResponder && !mainViewController.publicVar.isCollectionViewFirstResponder {
-                return false
-            }
+//            if !mainViewController.publicVar.isOutlineViewFirstResponder && !mainViewController.publicVar.isCollectionViewFirstResponder {
+//                return false
+//            }
             //如果焦点在OutlineView
             if mainViewController.publicVar.isOutlineViewFirstResponder{
                 if mainViewController.outlineView.getFirstSelectedUrl() == nil {
@@ -694,7 +694,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     @IBAction func editCopy(_ sender: NSMenuItem){
         guard let mainViewController=getMainViewController() else{return}
         if mainViewController.publicVar.isInLargeView {
-            mainViewController.handleCopy()
+            mainViewController.largeImageView.actCopy()
         }else{
             //如果焦点在OutlineView
             if mainViewController.publicVar.isOutlineViewFirstResponder{

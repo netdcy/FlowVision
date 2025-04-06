@@ -126,7 +126,8 @@ class PublicVar{
     var isGenHdThumb = false
     var isPreferInternalThumb = false
     var isEnableHDR = true
-    
+    var autoPlayVisibleVideo = false
+    var useInternalPlayer = false
     //可一键切换的配置
     var profile = CustomProfile()
     
@@ -190,6 +191,7 @@ class PublicVar{
         viewController.fileDB.unlock()
         return isFiltered
     }
+    var isInFindingClosestState = false
     
     var HandledImageAndRawExtensions: [String] = []
     var HandledVideoExtensions: [String] = []
@@ -321,11 +323,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var hasManualToggleSidebar=false
     
     var eventMonitorKeyDown: Any?
+    var eventMonitorLeftMouseDown: Any?
     var eventMonitorRightMouseDown: Any?
     var eventMonitorRightMouseUp: Any?
     var eventMonitorRightMouseDragged: Any?
     var eventMonitorScrollWheel: Any?
-    
     var willTerminate = false
     
     var windowSizeChangedTimesWhenInLarge=0
@@ -456,6 +458,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if let isRecursiveContainFolder = UserDefaults.standard.value(forKey: "isRecursiveContainFolder") as? Bool {
             publicVar.isRecursiveContainFolder = isRecursiveContainFolder
         }
+        if let autoPlayVisibleVideo = UserDefaults.standard.value(forKey: "autoPlayVisibleVideo") as? Bool {
+            publicVar.autoPlayVisibleVideo = autoPlayVisibleVideo
+        }
+        if let useInternalPlayer = UserDefaults.standard.value(forKey: "useInternalPlayer") as? Bool {
+            publicVar.useInternalPlayer = useInternalPlayer
+        }
         if #available(macOS 14.0, *) {
             //
         }else{
@@ -512,11 +520,26 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //双击目录树
         outlineView.doubleAction = #selector(outlineViewDoubleClicked(_:))
         
-        //双击大图
-//        let clickLargeImageGestureRecognizer = NSClickGestureRecognizer(target: self, action: #selector(closeLargeImage))
-//        clickLargeImageGestureRecognizer.numberOfClicksRequired = 2 // 设置为双击
-//        clickLargeImageGestureRecognizer.delaysPrimaryMouseButtonEvents = false // 阻止延迟主按钮事件
-//        largeImageView.addGestureRecognizer(clickLargeImageGestureRecognizer)
+        //双击大图事件
+        eventMonitorLeftMouseDown = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { [weak self] event in
+            guard let self = self else { return event }
+            if event.window != self.view.window { return event }
+            if event.clickCount == 2 {
+                let clickLocation = event.locationInWindow
+                let coreAreaViewHeight = coreAreaView.frame.height
+
+                // 检查是否在窗口的最下方40px范围内(视频控制条)或超出coreAreaView的范围
+                if clickLocation.y <= 40 || clickLocation.y > coreAreaViewHeight {
+                    return event
+                }
+
+                if publicVar.isInLargeView && largeImageView.file.type == .video {
+                    closeLargeImage(0)
+                    return nil
+                }
+            }
+            return event
+        }
         
         //双击collectionView
 //        let clickCollectionItemGesture = NSClickGestureRecognizer(target: self, action: #selector(openLargeImageFromPos(_:)))
@@ -533,7 +556,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 return event
             }
             self.handleScrollWheel(event)
-            return event
+            if publicVar.isInLargeView && largeImageView.file.type == .video {
+                return nil
+            }else{
+                return event
+            }
         }
         
         //滚动collectionView
@@ -773,7 +800,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 // 检查按键是否是 空格 键
                 if characters == " " && noModifierKey {
                     if publicVar.isInLargeView{
-                        closeLargeImage(0)
+                        if largeImageView.file.type == .video {
+                            largeImageView.pauseVideo()
+                        }else{
+                            closeLargeImage(0)
+                        }
                         return nil
                     }else{
                         if let indexPath = collectionView.selectionIndexPaths.first {
@@ -845,10 +876,26 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 }
                 
+                // 检查按键是否是 Command+Shift+"G" 键
+                if characters == "g" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
+                    if !publicVar.isInLargeView{
+                        toggleAutoPlayVisibleVideo()
+                        return nil
+                    }
+                }
+                
                 // 检查按键是否是 "~"
                 if event.keyCode == 50 && noModifierKey {
                     togglePortableMode()
                     return nil
+                }
+                
+                // 检查按键是否是 "U"
+                if characters == "u" && noModifierKey {
+                    if publicVar.isInLargeView {
+                        largeImageView.actShowVideoMetadata()
+                        return nil
+                    }
                 }
                 
                 // 检查按键是否是 "I"
@@ -1228,6 +1275,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if let eventMonitorKeyDown = eventMonitorKeyDown {
             NSEvent.removeMonitor(eventMonitorKeyDown)
         }
+        if let eventMonitorLeftMouseDown = eventMonitorLeftMouseDown {
+            NSEvent.removeMonitor(eventMonitorLeftMouseDown)
+        }
         if let eventMonitorRightMouseDown = eventMonitorRightMouseDown {
             NSEvent.removeMonitor(eventMonitorRightMouseDown)
         }
@@ -1433,7 +1483,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func adjustWindowImageCurrent(){
-        let zoomSize=largeImageView.imageView.frame.size
+        var zoomSize=largeImageView.imageView.frame.size
+        if largeImageView.file.type == .video,
+           let originalSize = largeImageView.file.originalSize {
+            zoomSize = AVMakeRect(aspectRatio: originalSize, insideRect: largeImageView.frame).size
+        }
         adjustWindowTo(zoomSize, firstShowThumb: false, animate: true, isToCenter: false)
     }
     
@@ -1905,6 +1959,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func findClosestItem(currentIndexPath: IndexPath, direction: NSEvent.SpecialKey) -> IndexPath? {
+        publicVar.isInFindingClosestState = true
+        defer {
+            publicVar.isInFindingClosestState = false
+        }
+        
         guard let dataSource = collectionView.dataSource else { return nil }
         var currentItem = collectionView.item(at: currentIndexPath)
         if currentItem == nil {
@@ -3519,6 +3578,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             publicVar.isRecursiveMode = false
             //重置搜索过滤
             publicVar.isFilenameFilterOn = false
+            //重置自动播放可见视频
+            publicVar.autoPlayVisibleVideo = false
         }
         
         treeTraversal(folderURL: URL(string: startFolder)!, round: searchFolderRound, initURL: URL(string: startFolder)!, direction: direction,
@@ -3952,6 +4013,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let folderpath = folderURL.absoluteString
             var id=0
             var idInImage=0
+            var idInImageAndVideo=0
             for ele in fileDB.db[SortKeyDir(folderpath)]!.files{
                 ele.1.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
                 ele.1.canBeCalcued = false
@@ -3960,9 +4022,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     if globalVar.HandledImageAndRawExtensions.contains(ele.1.ext) {
                         ele.1.type = .image
                         ele.1.idInImage = idInImage
+                        ele.1.idInImageAndVideo = idInImageAndVideo
                         idInImage += 1
+                        idInImageAndVideo += 1
                     }else if globalVar.HandledVideoExtensions.contains(ele.1.ext) {
                         ele.1.type = .video
+                        ele.1.idInImageAndVideo = idInImageAndVideo
+                        idInImageAndVideo += 1
                     }else{
                         ele.1.type = .other
                     }
@@ -4839,6 +4905,20 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             return 0
         }
     }
+
+    func toggleAutoPlayVisibleVideo() {
+        publicVar.autoPlayVisibleVideo.toggle()
+        //UserDefaults.standard.set(publicVar.autoPlayVisibleVideo, forKey: "autoPlayVisibleVideo")
+        debounceSetLoadThumbPriority(interval: 0.1, ifNeedVisable: true)
+        var showText = NSLocalizedString("Cancel Auto Play Visible Video", comment: "取消自动播放可见视频")
+        if publicVar.autoPlayVisibleVideo {
+            showText = NSLocalizedString("Auto Play Visible Video", comment: "自动播放可见视频")
+        }
+        if let windowController = (view.window?.windowController) as? WindowController {
+            windowController.updateToolbar()
+        }
+        coreAreaView.showInfo(showText, timeOut: 1.0, cannotBeCleard: true)
+    }
     
     @objc func scrollViewDidScroll(_ notification: Notification) {
         guard let scrollView = notification.object as? NSScrollView else { return }
@@ -4869,8 +4949,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + interval, execute: scrollDebounceWorkItem!)
     }
-    
-    
 
     func setLoadThumbPriority(indexPath: IndexPath? = nil, range: (Int,Int) = (-1,1), ifNeedVisable: Bool){
 
@@ -4886,10 +4964,26 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let scrollPos = visibleRectRaw.origin
             let scrollWidth = visibleRectRaw.width
             let scrollHeight = visibleRectRaw.height
-            let visibleRect = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight*2)) //注意这里乘了2
+            let visibleRectExtended = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight*2)) //注意这里乘了2
             indexPaths = indexPaths.filter { indexPath in
                 let itemFrame = collectionView.layoutAttributesForItem(at: indexPath)?.frame ?? .zero
-                return itemFrame.intersects(visibleRect)
+                return itemFrame.intersects(visibleRectExtended)
+            }
+
+            //播放视频
+            let visibleItems = collectionView.indexPathsForVisibleItems()
+            let visibleRect = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight))
+            for indexPath in visibleItems {
+                let itemFrame = collectionView.layoutAttributesForItem(at: indexPath)?.frame ?? .zero
+                if publicVar.autoPlayVisibleVideo && itemFrame.intersects(visibleRect) {
+                    if let item = collectionView.item(at: indexPath) as? CustomCollectionViewItem {
+                        item.playVideo()
+                    }
+                }else{
+                    if let item = collectionView.item(at: indexPath) as? CustomCollectionViewItem {
+                        item.stopVideo()
+                    }
+                }
             }
         }
         
@@ -4965,6 +5059,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
 
     }
+    
+    @objc func doubleClickLargeImage(_ sender: Any) {
+        if largeImageView.file.type == .video {
+            closeLargeImage(0)
+        }
+    }
  
     @objc func closeLargeImage(_ sender: Any) {
         
@@ -4983,6 +5083,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         //停止自动播放
         stopAutoPlay()
+        
+        //停止播放视频
+        largeImageView.stopVideo()
         
         //隐藏首次使用提示
         coreAreaView.hideInfo()
@@ -5110,7 +5213,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if(url.hasDirectoryPath){
                 switchDirByDirection(direction: .zero, dest: item.file.path, stackDeep: 0)
             }
-            else if !globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
+            else if !globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) &&
+                !(publicVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(item.file.ext)) {
                 NSWorkspace.shared.open(url)
             }else{
                 if largeImageView.isHidden {
@@ -5130,13 +5234,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     lastResizeFailed=false
                     lastUseHDR=false
                     lastLargeImageRotate=0
+                    
+                    //为了使可见范围自动播放的视频停止
+                    setLoadThumbPriority(ifNeedVisable: true)
 
                     changeLargeImage(justChangeLargeImageViewFile: globalVar.portableMode)
                     largeImageView.isHidden=false
                     largeImageBgEffectView.isHidden=false
                     publicVar.isInLargeView=true
                     
-                    if globalVar.portableMode {//便携模式下不使用动画，因为反倒有两次变化
+                    if globalVar.portableMode || //便携模式下不使用动画，因为反倒有两次变化
+                        (publicVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(item.file.ext)) { //视频模式会有闪烁
                         largeImageView.alphaValue = 1
                         largeImageBgEffectView.alphaValue = 1
                         publicVar.isInLargeViewAfterAnimate=true
@@ -5241,7 +5349,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if direction == -1 { //向前
             while nextLargeImagePos >= 0 {
                 nextLargeImagePos-=1
-                if fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.type == .image {
+                if let file = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
+                   file.type == .image || (file.type == .video && publicVar.useInternalPlayer) {
                     ifFoundNextImage=true
                     break
                 }
@@ -5249,7 +5358,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }else if direction == 1 { //向后
             while nextLargeImagePos < totalCount-1 {
                 nextLargeImagePos+=1
-                if fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.type == .image {
+                if let file = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
+                   file.type == .image || (file.type == .video && publicVar.useInternalPlayer) {
                     ifFoundNextImage=true
                     break
                 }
@@ -5258,7 +5368,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             nextLargeImagePos = -1
             while nextLargeImagePos < totalCount-1 {
                 nextLargeImagePos+=1
-                if fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.type == .image {
+                if let file = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
+                   file.type == .image || (file.type == .video && publicVar.useInternalPlayer) {
                     ifFoundNextImage=true
                     break
                 }
@@ -5267,7 +5378,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             nextLargeImagePos = totalCount
             while nextLargeImagePos >= 0 {
                 nextLargeImagePos-=1
-                if fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.type == .image {
+                if let file = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
+                   file.type == .image || (file.type == .video && publicVar.useInternalPlayer) {
                     ifFoundNextImage=true
                     break
                 }
@@ -5362,13 +5474,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         fileDB.lock()
-        let folderPath=fileDB.curFolder
-        let imageCount=fileDB.db[SortKeyDir(folderPath)]?.imageCount ?? 0
-        if imageCount != 0{
-            if let idInImage=fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)]?.idInImage {
+        let folderPath = fileDB.curFolder
+        let imageCount = fileDB.db[SortKeyDir(folderPath)]?.imageCount ?? 0
+        let videoCount = fileDB.db[SortKeyDir(folderPath)]?.videoCount ?? 0
+        let rangeCount = publicVar.useInternalPlayer ? imageCount+videoCount : imageCount
+        if rangeCount != 0 {
+            if let file = fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)] {
                 //fullTitle += " | " + String(format: "(%d/%d)",idInImage+1,imageCount)
-                fullTitle += " " + String(format: "(%d/%d)",idInImage+1,imageCount)
-                publicVar.lastLargeImageIdInImage=idInImage
+                let idInRange = publicVar.useInternalPlayer ? file.idInImageAndVideo : file.idInImage
+                fullTitle += " " + String(format: "(%d/%d)",idInRange+1,rangeCount)
+                publicVar.lastLargeImageIdInImage=idInRange
             }
         }
         fileDB.unlock()
@@ -5495,6 +5610,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func preloadLargeImageForFile(file: FileModel, priority: Double){
+        if file.type != .image {return}
 
         let url=URL(string:file.path)!
         let scale = NSScreen.main?.backingScaleFactor ?? 1
@@ -5575,6 +5691,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 file.isGetImageSizeFail = true
             }
             getFileInfo(file: file)
+            
+            file.ext=URL(string: file.path)!.pathExtension.lowercased()
+            if globalVar.HandledImageAndRawExtensions.contains(file.ext) {
+                file.type = .image
+            }else if globalVar.HandledVideoExtensions.contains(file.ext) {
+                file.type = .video
+            }else{
+                file.type = .other
+            }
 
             isThisFromFinder=true
             
@@ -5733,71 +5858,82 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 largeImageView.updateTextItems(formatExifData(exifData ?? [:]))
             }
             
-            if isImageCached {
-                return
-            }
-            
             //用来对比异步任务是否过期
             largeImageView.file.largeSize = largeSize
             
-            //开始加载大图
+            //取消之前的加载大图任务
             largeImageLoadTask?.cancel()
-            
-            var task: DispatchWorkItem? = nil
-            task = DispatchWorkItem { [weak self] in
-                guard let self = self else { return }
-                if pos != currLargeImagePos && !isThisFromFinder {return}
-                
-                largeImageLoadQueueLock.lock()
-                
-                if task?.isCancelled ?? false {
-                    log("1 - Load large image replace task was cancelled.")
-                    largeImageLoadQueueLock.unlock()
+
+            //判断是否是视频
+            if file.type == .image {
+
+                largeImageView.stopVideo()
+
+                if isImageCached {
                     return
                 }
                 
-                //按实际目标分辨率绘制效果较差，观察到1080P屏幕双倍插值后绘制与直接使用原图效果才类似，因此即使scale==1，此处size也不除以2
-                var largeImage: NSImage?
-                if resetSize && !forceRefresh {
-                    largeImage=LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR)
-                }else{
-                    if isHDR {
-                        largeImage = getHDRImage(url: url, size: doNotGenResized ? nil : largeSize, rotate: rotate)
-                    }else if doNotGenResized {
-                        largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
+                var task: DispatchWorkItem? = nil
+                task = DispatchWorkItem { [weak self] in
+                    guard let self = self else { return }
+                    if pos != currLargeImagePos && !isThisFromFinder {return}
+                    
+                    largeImageLoadQueueLock.lock()
+                    
+                    if task?.isCancelled ?? false {
+                        log("1 - Load large image replace task was cancelled.")
+                        largeImageLoadQueueLock.unlock()
+                        return
+                    }
+                    
+                    //按实际目标分辨率绘制效果较差，观察到1080P屏幕双倍插值后绘制与直接使用原图效果才类似，因此即使scale==1，此处size也不除以2
+                    var largeImage: NSImage?
+                    if resetSize && !forceRefresh {
+                        largeImage=LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR)
                     }else{
-                        largeImage = getResizedImage(url: url, size: largeSize, rotate: rotate)
-                        if largeImage == nil {
-                            lastResizeFailed = true
+                        if isHDR {
+                            largeImage = getHDRImage(url: url, size: doNotGenResized ? nil : largeSize, rotate: rotate)
+                        }else if doNotGenResized {
                             largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
+                        }else{
+                            largeImage = getResizedImage(url: url, size: largeSize, rotate: rotate)
+                            if largeImage == nil {
+                                lastResizeFailed = true
+                                largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
+                            }
+                        }
+                    }
+                    
+                    if task?.isCancelled ?? false {
+                        log("2 - Load large image replace task was cancelled.")
+                        largeImageLoadQueueLock.unlock()
+                        return
+                    }
+                    
+                    largeImageLoadQueueLock.unlock()
+                    
+                    if largeImage != nil{
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self = self else { return }
+                            if pos != currLargeImagePos && !isThisFromFinder {return}
+                            if rotate != largeImageView.file.rotate {return}
+                            if largeImageView.file.largeSize != nil && largeSize != largeImageView.file.largeSize {return}
+                            largeImageView.imageView.image=largeImage
+                            //log("replaced")
                         }
                     }
                 }
+                // 保存新的任务
+                largeImageLoadTask = task
                 
-                if task?.isCancelled ?? false {
-                    log("2 - Load large image replace task was cancelled.")
-                    largeImageLoadQueueLock.unlock()
-                    return
-                }
+                // 在全局队列上异步执行新的任务
+                DispatchQueue.global(qos: .userInitiated).async(execute: task!)
                 
-                largeImageLoadQueueLock.unlock()
-                
-                if largeImage != nil{
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else { return }
-                        if pos != currLargeImagePos && !isThisFromFinder {return}
-                        if rotate != largeImageView.file.rotate {return}
-                        if largeImageView.file.largeSize != nil && largeSize != largeImageView.file.largeSize {return}
-                        largeImageView.imageView.image=largeImage
-                        //log("replaced")
-                    }
-                }
+            } else if file.type == .video {
+                //largeImageView.videoView.frame = largeImageView.imageView.frame
+                largeImageView.playVideo()
             }
-            // 保存新的任务
-            largeImageLoadTask = task
             
-            // 在全局队列上异步执行新的任务
-            DispatchQueue.global(qos: .userInitiated).async(execute: task!)
         }
         
         
@@ -6214,6 +6350,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 log("Dragged file: \(url.path)")
             }
         }
+    }
+
+    func toggleUseInternalPlayer() {
+        publicVar.useInternalPlayer.toggle()
+        UserDefaults.standard.set(publicVar.useInternalPlayer, forKey: "useInternalPlayer")
     }
     
     func promptForScrollSpeed(completion: @escaping (CGFloat?) -> Void) {

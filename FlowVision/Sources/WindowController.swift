@@ -223,6 +223,7 @@ extension NSToolbarItem.Identifier {
     static let thumbSize = NSToolbarItem.Identifier("com.example.thumbSize")
     static let isRecursiveMode = NSToolbarItem.Identifier("com.example.isRecursiveMode")
     static let isSearchFilterOn = NSToolbarItem.Identifier("com.example.isSearchFilterOn")
+    static let isAutoPlayVisibleVideo = NSToolbarItem.Identifier("com.example.isAutoPlayVisibleVideo")
     static let isEnableHDR = NSToolbarItem.Identifier("com.example.isEnableHDR")
 }
 
@@ -250,8 +251,10 @@ extension WindowController: NSToolbarDelegate {
                         identifiers.append(.isEnableHDR)
                     }
                 }
-                identifiers.append(.zoomOut)
-                identifiers.append(.zoomIn)
+                if viewController.largeImageView.file.type == .image {
+                    identifiers.append(.zoomOut)
+                    identifiers.append(.zoomIn)
+                }
                 //identifiers.append(.rotateL)
                 identifiers.append(.rotateR)
                 identifiers.append(.showinfo)
@@ -266,6 +269,9 @@ extension WindowController: NSToolbarDelegate {
                     identifiers.append(.windowTitle)
                 }
                 
+                if viewController.publicVar.autoPlayVisibleVideo {
+                    identifiers.append(.isAutoPlayVisibleVideo)
+                }
                 if viewController.publicVar.isCurrentFolderFiltered {
                     identifiers.append(.isSearchFilterOn)
                 }
@@ -385,6 +391,9 @@ extension WindowController: NSToolbarDelegate {
                 pathItems.insert(rootItem, at: 0)
                 
                 var maxWidth = (window?.frame.width ?? 1000) - 600 // 指定总宽度
+                if viewController.publicVar.autoPlayVisibleVideo {
+                    maxWidth -= 45
+                }
                 if viewController.publicVar.isCurrentFolderFiltered {
                     maxWidth -= 45
                 }
@@ -646,6 +655,15 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.view = button
             toolbarItem.label = NSLocalizedString("Thumbnail Size", comment: "缩略图大小")
             toolbarItem.paletteLabel = NSLocalizedString("Thumbnail Size", comment: "缩略图大小")
+            toolbarItem.visibilityPriority = .low
+            
+        case .isAutoPlayVisibleVideo:
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "v.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleAutoPlayVisibleVideo(_:)))
+            setButtonStyle(button)
+            button.toolTip = NSLocalizedString("Cancel Auto Play Visible Video", comment: "取消自动播放可见视频")
+            toolbarItem.view = button
+            toolbarItem.label = NSLocalizedString("Cancel Auto Play Visible Video", comment: "取消自动播放可见视频")
+            toolbarItem.paletteLabel = NSLocalizedString("Cancel Auto Play Visible Video", comment: "取消自动播放可见视频")
             toolbarItem.visibilityPriority = .low
             
         case .isSearchFilterOn:
@@ -1203,6 +1221,17 @@ extension WindowController: NSToolbarDelegate {
         autoPlay.isEnabled = viewController.publicVar.isInLargeView
         
         menu.addItem(NSMenuItem.separator())
+
+        let autoPlayVisibleVideo = menu.addItem(withTitle: NSLocalizedString("Auto Play Visible Video", comment: "自动播放可见视频"), action: #selector(toggleAutoPlayVisibleVideo), keyEquivalent: "g")
+        autoPlayVisibleVideo.keyEquivalentModifierMask = [.command, .shift]
+        autoPlayVisibleVideo.state = viewController.publicVar.autoPlayVisibleVideo ? .on : .off
+
+        let useInternalPlayer = menu.addItem(withTitle: NSLocalizedString("Use Internal Player", comment: "使用内置播放器"), action: #selector(toggleUseInternalPlayer), keyEquivalent: "")
+        useInternalPlayer.state = viewController.publicVar.useInternalPlayer ? .on : .off
+
+        let autoPlayVisibleVideoInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(autoPlayVisibleVideoInfo), keyEquivalent: "")
+
+        menu.addItem(NSMenuItem.separator())
         
         let maximizeWindow = menu.addItem(withTitle: NSLocalizedString("Maximize Window", comment: "最大化窗口"), action: #selector(maximizeWindow), keyEquivalent: "1")
         maximizeWindow.keyEquivalentModifierMask = []
@@ -1450,6 +1479,20 @@ extension WindowController: NSToolbarDelegate {
     @objc func toggleAutoPlay(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.toggleAutoPlay()
+    }
+    
+    @objc func toggleAutoPlayVisibleVideo(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleAutoPlayVisibleVideo()
+    }
+
+    @objc func toggleUseInternalPlayer(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleUseInternalPlayer()
+    }
+    
+    @objc func autoPlayVisibleVideoInfo(_ sender: NSMenuItem){
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("auto-play-visible-video-info", comment: "对于自动播放可见视频的说明..."), width: 300)
     }
     
     @objc func customLayoutStyle(_ sender: NSMenuItem){
