@@ -154,6 +154,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let portableMode = UserDefaults.standard.value(forKey: "portableMode") as? Bool {
             globalVar.portableMode = portableMode
         }
+        if let videoPlayRememberPosition = UserDefaults.standard.value(forKey: "videoPlayRememberPosition") as? Bool {
+            globalVar.videoPlayRememberPosition = videoPlayRememberPosition
+        }
         
         globalVar.myFavoritesArray = defaults.array(forKey: "globalVar.myFavoritesArray") as? [String] ?? [String]()
         

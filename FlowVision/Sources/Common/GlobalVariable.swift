@@ -53,6 +53,7 @@ class GlobalVar{
     var thumbnailExcludeList: [String] = []
     var usePinyinSearch = false
     var usePinyinInitialSearch = false
+    var videoPlayRememberPosition = false
     
     //可记忆设置变量
     var isFirstTimeUse = true

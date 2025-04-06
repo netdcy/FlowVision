@@ -736,31 +736,49 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
                 // 检查按键是否是 "," 键
                 if characters == "," && noModifierKey {
-                    largeImageView.specifyABPlayPositionA()
+                    if largeImageView.file.type == .video {
+                        largeImageView.specifyABPlayPositionA()
+                    }
                     return nil
                 }
 
                 // 检查按键是否是 "." 键
                 if characters == "." && noModifierKey {
-                    largeImageView.specifyABPlayPositionB()
+                    if largeImageView.file.type == .video {
+                        largeImageView.specifyABPlayPositionB()
+                    }
                     return nil
                 }
                 
                 // 检查按键是否是 "L" 键
                 if characters == "l" && noModifierKey {
-                    largeImageView.specifyABPlayPositionAuto()
+                    if largeImageView.file.type == .video {
+                        largeImageView.specifyABPlayPositionAuto()
+                    }
+                    return nil
+                }
+
+                // 检查按键是否是 "K" 键
+                if characters == "k" && noModifierKey {
+                    if largeImageView.file.type == .video {
+                        largeImageView.actRememberPlayPosition()
+                    }
                     return nil
                 }
                 
                 // 检查按键是否是 Command+[ 键
                 if characters == "[" && isCommandPressed {
-                    switchDirByDirection(direction: .back, stackDeep: 0)
+                    if !publicVar.isInLargeView{
+                        switchDirByDirection(direction: .back, stackDeep: 0)
+                    }
                     return nil
                 }
                 
                 // 检查按键是否是 Command+] 键
                 if characters == "]" && isCommandPressed {
-                    switchDirByDirection(direction: .forward, stackDeep: 0)
+                    if !publicVar.isInLargeView{
+                        switchDirByDirection(direction: .forward, stackDeep: 0)
+                    }
                     return nil
                 }
                 

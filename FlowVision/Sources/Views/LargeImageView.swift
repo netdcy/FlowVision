@@ -219,8 +219,19 @@ class LargeImageView: NSView {
             }
         }
     }
+
+    func saveCurrentPlayPosition(){
+        if globalVar.videoPlayRememberPosition,
+        let currentURL = currentPlayingURL,
+           let currentTime = queuePlayer?.currentTime() {
+            UserDefaults.standard.set(currentTime.seconds, forKey: "videoPosition_\(currentURL.absoluteString)")
+        }
+    }
     
     func stopVideo(savePosition: Bool = false){
+        if globalVar.videoPlayRememberPosition {
+            saveCurrentPlayPosition()
+        }
         restorePlayPosition = savePosition ? queuePlayer?.currentTime() : nil
         restorePlayURL = savePosition ? currentPlayingURL : nil
         if !savePosition {
@@ -247,6 +258,17 @@ class LargeImageView: NSView {
             // 检查当前播放的视频是否已经是目标视频
             if currentPlayingURL == url && !reload && !reloadForAB {
                 return
+            }
+
+            if currentPlayingURL != url && globalVar.videoPlayRememberPosition {
+                // 保存当前视频的播放进度
+                saveCurrentPlayPosition()
+                
+                // 读取新视频的播放进度
+                if let savedPosition = UserDefaults.standard.value(forKey: "videoPosition_\(url.absoluteString)") as? Double {
+                    restorePlayPosition = CMTime(seconds: savedPosition, preferredTimescale: 1)
+                    restorePlayURL = url
+                }
             }
             
             // 快照
@@ -374,7 +396,7 @@ class LargeImageView: NSView {
             guard let self = self, let playerItem = self.playerItem else { return }
             if id != videoOrderId { return }
             
-            log("playerItem.status: ", playerItem.status.rawValue)
+            //log("playerItem.status: ", playerItem.status.rawValue)
             
             //if playerItem.status == .readyToPlay || playerItem.status == .failed {
             let targetTime: CMTime = CMTime(seconds: 0.01, preferredTimescale: 600)
@@ -988,8 +1010,19 @@ class LargeImageView: NSView {
                 let actionItemQRCode = menu.addItem(withTitle: NSLocalizedString("recognize-QRCode", comment: "识别二维码"), action: #selector(actQRCode), keyEquivalent: "p")
                 actionItemQRCode.keyEquivalentModifierMask = []
             } else if file.type == .video {
+                let actionItemRememberPosition = menu.addItem(withTitle: NSLocalizedString("Remember Position", comment: "（视频）记忆位置"), action: #selector(actRememberPlayPosition), keyEquivalent: "k")
+                actionItemRememberPosition.keyEquivalentModifierMask = []
+                actionItemRememberPosition.state = globalVar.videoPlayRememberPosition ? .on : .off
+
                 let actionItemABPlay = menu.addItem(withTitle: NSLocalizedString("A-B Play", comment: "（视频）A-B播放"), action: #selector(actABPlay), keyEquivalent: "l")
                 actionItemABPlay.keyEquivalentModifierMask = []
+                if let positionA = abPlayPositionA?.seconds,
+                       let positionB = abPlayPositionB?.seconds,
+                       positionA < positionB {
+                    actionItemABPlay.state = .on
+                } else {
+                    actionItemABPlay.state = .off
+                }
             }
 
             menu.addItem(NSMenuItem.separator())
@@ -1198,6 +1231,16 @@ class LargeImageView: NSView {
     @objc func actABPlay() {
         specifyABPlayPositionAuto()
     }
+
+    @objc func actRememberPlayPosition() {
+        globalVar.videoPlayRememberPosition.toggle()
+        UserDefaults.standard.set(globalVar.videoPlayRememberPosition, forKey: "videoPlayRememberPosition")
+        if globalVar.videoPlayRememberPosition {
+            showInfo(NSLocalizedString("Remember Position: Enabled", comment: "（视频）记忆位置启用"))
+        } else {
+            showInfo(NSLocalizedString("Remember Position: Disabled", comment: "（视频）记忆位置禁用"))
+        }
+    }
     
     @objc func actQRCode() {
         if file.type == .video {return}
@@ -1308,6 +1351,10 @@ class LargeImageView: NSView {
     }
     
     func prepareForDeinit() {
+        if globalVar.videoPlayRememberPosition {
+            saveCurrentPlayPosition()
+        }
+
         if let gesture = magnificationGesture {
             self.removeGestureRecognizer(gesture)
         }
