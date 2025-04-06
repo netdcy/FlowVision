@@ -54,6 +54,7 @@ class GlobalVar{
     var usePinyinSearch = false
     var usePinyinInitialSearch = false
     var videoPlayRememberPosition = false
+    var useInternalPlayer = false
     
     //可记忆设置变量
     var isFirstTimeUse = true

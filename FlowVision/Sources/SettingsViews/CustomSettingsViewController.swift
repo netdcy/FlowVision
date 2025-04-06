@@ -17,6 +17,7 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
 
     @IBOutlet weak var randomFolderThumbCheckbox: NSButton!
     @IBOutlet weak var loopBrowsingCheckbox: NSButton!
+    @IBOutlet weak var useInternalPlayerCheckbox: NSButton!
     @IBOutlet weak var usePinyinSearchCheckbox: NSButton!
     @IBOutlet weak var usePinyinInitialSearchCheckbox: NSButton!
     @IBOutlet weak var excludeListView: NSOutlineView!
@@ -36,6 +37,7 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         
         randomFolderThumbCheckbox.state = globalVar.randomFolderThumb ? .on : .off
         loopBrowsingCheckbox.state = globalVar.loopBrowsing ? .on : .off
+        useInternalPlayerCheckbox.state = globalVar.useInternalPlayer ? .on : .off
         usePinyinSearchCheckbox.state = globalVar.usePinyinSearch ? .on : .off
         usePinyinInitialSearchCheckbox.state = globalVar.usePinyinInitialSearch ? .on : .off
         
@@ -78,6 +80,11 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
     @IBAction func loopBrowsingToggled(_ sender: NSButton) {
         globalVar.loopBrowsing = (sender.state == .on)
         UserDefaults.standard.set(globalVar.loopBrowsing, forKey: "loopBrowsing")
+    }
+
+    @IBAction func useInternalPlayerToggled(_ sender: NSButton) {
+        globalVar.useInternalPlayer = (sender.state == .on)
+        UserDefaults.standard.set(globalVar.useInternalPlayer, forKey: "useInternalPlayer")
     }
     
     @IBAction func bgSettingToggled(_ sender: NSButton) {

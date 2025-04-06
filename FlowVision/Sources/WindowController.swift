@@ -1259,7 +1259,7 @@ extension WindowController: NSToolbarDelegate {
         autoPlayVisibleVideo.isEnabled = !viewController.publicVar.isInLargeView
 
         let useInternalPlayer = menu.addItem(withTitle: NSLocalizedString("Use Internal Video Player", comment: "使用内置视频播放器"), action: #selector(toggleUseInternalPlayer), keyEquivalent: "")
-        useInternalPlayer.state = viewController.publicVar.useInternalPlayer ? .on : .off
+        useInternalPlayer.state = globalVar.useInternalPlayer ? .on : .off
 
         let videoPlayInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(videoPlayInfo), keyEquivalent: "")
 

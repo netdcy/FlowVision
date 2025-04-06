@@ -127,7 +127,7 @@ class PublicVar{
     var isPreferInternalThumb = false
     var isEnableHDR = true
     var autoPlayVisibleVideo = false
-    var useInternalPlayer = false
+
     //可一键切换的配置
     var profile = CustomProfile()
     
@@ -462,9 +462,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         if let autoPlayVisibleVideo = UserDefaults.standard.value(forKey: "autoPlayVisibleVideo") as? Bool {
             publicVar.autoPlayVisibleVideo = autoPlayVisibleVideo
-        }
-        if let useInternalPlayer = UserDefaults.standard.value(forKey: "useInternalPlayer") as? Bool {
-            publicVar.useInternalPlayer = useInternalPlayer
         }
         if #available(macOS 14.0, *) {
             //
@@ -5363,7 +5360,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 switchDirByDirection(direction: .zero, dest: item.file.path, stackDeep: 0)
             }
             else if !globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) &&
-                !(publicVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(item.file.ext)) {
+                !(globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(item.file.ext)) {
                 NSWorkspace.shared.open(url)
             }else{
                 if largeImageView.isHidden {
@@ -5393,7 +5390,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     publicVar.isInLargeView=true
                     
                     if globalVar.portableMode || //便携模式下不使用动画，因为反倒有两次变化
-                        (publicVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(item.file.ext)) { //视频模式会有闪烁
+                        (globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(item.file.ext)) { //视频模式会有闪烁
                         largeImageView.alphaValue = 1
                         largeImageBgEffectView.alphaValue = 1
                         publicVar.isInLargeViewAfterAnimate=true
@@ -5499,7 +5496,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             while nextLargeImagePos >= 0 {
                 nextLargeImagePos-=1
                 if let file = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
-                   file.type == .image || (file.type == .video && publicVar.useInternalPlayer) {
+                   file.type == .image || (file.type == .video && globalVar.useInternalPlayer) {
                     ifFoundNextImage=true
                     break
                 }
@@ -5508,7 +5505,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             while nextLargeImagePos < totalCount-1 {
                 nextLargeImagePos+=1
                 if let file = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
-                   file.type == .image || (file.type == .video && publicVar.useInternalPlayer) {
+                   file.type == .image || (file.type == .video && globalVar.useInternalPlayer) {
                     ifFoundNextImage=true
                     break
                 }
@@ -5518,7 +5515,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             while nextLargeImagePos < totalCount-1 {
                 nextLargeImagePos+=1
                 if let file = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
-                   file.type == .image || (file.type == .video && publicVar.useInternalPlayer) {
+                   file.type == .image || (file.type == .video && globalVar.useInternalPlayer) {
                     ifFoundNextImage=true
                     break
                 }
@@ -5528,7 +5525,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             while nextLargeImagePos >= 0 {
                 nextLargeImagePos-=1
                 if let file = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
-                   file.type == .image || (file.type == .video && publicVar.useInternalPlayer) {
+                   file.type == .image || (file.type == .video && globalVar.useInternalPlayer) {
                     ifFoundNextImage=true
                     break
                 }
@@ -5606,11 +5603,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let folderPath = fileDB.curFolder
         let imageCount = fileDB.db[SortKeyDir(folderPath)]?.imageCount ?? 0
         let videoCount = fileDB.db[SortKeyDir(folderPath)]?.videoCount ?? 0
-        let rangeCount = publicVar.useInternalPlayer ? imageCount+videoCount : imageCount
+        let rangeCount = globalVar.useInternalPlayer ? imageCount+videoCount : imageCount
         if rangeCount != 0 {
             if let file = fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)] {
                 //fullTitle += " | " + String(format: "(%d/%d)",idInImage+1,imageCount)
-                let idInRange = publicVar.useInternalPlayer ? file.idInImageAndVideo : file.idInImage
+                let idInRange = globalVar.useInternalPlayer ? file.idInImageAndVideo : file.idInImage
                 fullTitle += " " + String(format: "(%d/%d)",idInRange+1,rangeCount)
                 publicVar.lastLargeImageIdInImage=idInRange
             }
@@ -6489,8 +6486,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
 
     func toggleUseInternalPlayer() {
-        publicVar.useInternalPlayer.toggle()
-        UserDefaults.standard.set(publicVar.useInternalPlayer, forKey: "useInternalPlayer")
+        globalVar.useInternalPlayer.toggle()
+        UserDefaults.standard.set(globalVar.useInternalPlayer, forKey: "useInternalPlayer")
     }
     
     func promptForScrollSpeed(completion: @escaping (CGFloat?) -> Void) {

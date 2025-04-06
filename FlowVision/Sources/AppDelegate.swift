@@ -157,6 +157,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let videoPlayRememberPosition = UserDefaults.standard.value(forKey: "videoPlayRememberPosition") as? Bool {
             globalVar.videoPlayRememberPosition = videoPlayRememberPosition
         }
+        if let useInternalPlayer = UserDefaults.standard.value(forKey: "useInternalPlayer") as? Bool {
+            globalVar.useInternalPlayer = useInternalPlayer
+        }
         
         globalVar.myFavoritesArray = defaults.array(forKey: "globalVar.myFavoritesArray") as? [String] ?? [String]()
         
