@@ -2057,23 +2057,38 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         guard let currentItem = currentItem else {return nil}
         
+        var noLimit = false
+        
         //let indexPaths = nearbyIndexPaths(around: collectionView.indexPathsForVisibleItems(), range: (-20,20))
         var indexPaths: Set<IndexPath> = []
         if publicVar.profile.layoutType == .grid {
             if direction == .leftArrow || direction == .rightArrow {
-                indexPaths.insert(IndexPath(item: currentIndexPath.item - 1, section: currentIndexPath.section))
-                indexPaths.insert(IndexPath(item: currentIndexPath.item + 1, section: currentIndexPath.section))
+                noLimit = true
+                if direction == .leftArrow {
+                    indexPaths.insert(IndexPath(item: currentIndexPath.item - 1, section: currentIndexPath.section))
+                } else {
+                    indexPaths.insert(IndexPath(item: currentIndexPath.item + 1, section: currentIndexPath.section))
+                }
             } else {
-                indexPaths.insert(IndexPath(item: currentIndexPath.item - publicVar.waterfallLayout.numberOfColumns - 1, section: currentIndexPath.section))
-                indexPaths.insert(IndexPath(item: currentIndexPath.item + publicVar.waterfallLayout.numberOfColumns + 1, section: currentIndexPath.section))
+                if direction == .upArrow {
+                    indexPaths.insert(IndexPath(item: currentIndexPath.item - publicVar.waterfallLayout.numberOfColumns - 1, section: currentIndexPath.section))
+                } else {
+                    for i in 1...(publicVar.waterfallLayout.numberOfColumns+1) {
+                        indexPaths.insert(IndexPath(item: currentIndexPath.item + i, section: currentIndexPath.section))
+                    }
+                }
             }
         } else if publicVar.profile.layoutType == .waterfall {
             let range = 4 * publicVar.waterfallLayout.numberOfColumns
             indexPaths = nearbyIndexPaths(around: [currentIndexPath], range: (-range,range))
         } else if publicVar.profile.layoutType == .justified {
             if direction == .leftArrow || direction == .rightArrow {
-                indexPaths.insert(IndexPath(item: currentIndexPath.item - 1, section: currentIndexPath.section))
-                indexPaths.insert(IndexPath(item: currentIndexPath.item + 1, section: currentIndexPath.section))
+                noLimit = true
+                if direction == .leftArrow {
+                    indexPaths.insert(IndexPath(item: currentIndexPath.item - 1, section: currentIndexPath.section))
+                } else {
+                    indexPaths.insert(IndexPath(item: currentIndexPath.item + 1, section: currentIndexPath.section))
+                }
             } else {
                 fileDB.lock()
                 let curFolder = fileDB.curFolder
@@ -2213,7 +2228,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             
             let itemCenter = centerPoint(of: item!)
             
-            var valid = false
+            var valid = noLimit
             var distance = CGFloat.greatestFiniteMagnitude
             
             switch direction {
@@ -2226,7 +2241,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     valid = true
                 }
             case .downArrow: // Up arrow key (Adjusted to move up)
-                if itemCenter.y > currentCenter.y && (abs(itemCenter.x - currentCenter.x) <= 1 || publicVar.profile.layoutType == .justified) {
+                if itemCenter.y > currentCenter.y && (abs(itemCenter.x - currentCenter.x) <= 1 || publicVar.profile.layoutType == .justified || publicVar.profile.layoutType == .grid) {
                     valid = true
                 }
             case .upArrow: // Down arrow key (Adjusted to move down)
