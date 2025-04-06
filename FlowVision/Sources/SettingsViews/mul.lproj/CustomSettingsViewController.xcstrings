@@ -1538,97 +1538,97 @@
       }
     },
     "apP-S7-Yfh.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Due to system limitations, the toolbar cannot be dynamically hidden when switching to fullscreen; you can only change the relevant options in the general settings and then restart the application.\"; ObjectID = \"apP-S7-Yfh\";",
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"The video background is for when the built-in video player is enabled.\"; ObjectID = \"apP-S7-Yfh\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "نظرًا لقيود النظام، لا يمكن إخفاء شريط الأدوات ديناميكيًا عند التبديل إلى وضع ملء الشاشة؛ يمكنك فقط تغيير الخيارات ذات الصلة في الإعدادات العامة ثم إعادة تشغيل التطبيق."
+            "value" : "الخلفية للفيديو تُستخدم عند تفعيل مشغل الفيديو المدمج."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aufgrund von Systembeschränkungen kann die Werkzeugleiste beim Wechsel in den Vollbildmodus nicht dynamisch ausgeblendet werden; Sie können nur die entsprechenden Optionen in den allgemeinen Einstellungen ändern und dann die Anwendung neu starten."
+            "value" : "Der Videohintergrund wird verwendet, wenn der integrierte Videoplayer aktiviert ist."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Due to system limitations, the toolbar cannot be dynamically hidden when switching to fullscreen; you can only change the relevant options in the general settings and then restart the application."
+            "value" : "The video background is for when the built-in video player is enabled."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Debido a limitaciones del sistema, la barra de herramientas no se puede ocultar dinámicamente al cambiar a pantalla completa; solo puede cambiar las opciones relevantes en la configuración general y luego reiniciar la aplicación."
+            "value" : "El fondo de video es para cuando el reproductor de video integrado está habilitado."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En raison des limitations du système, la barre d'outils ne peut pas être masquée de manière dynamique lors du passage en plein écran; vous pouvez seulement modifier les options pertinentes dans les paramètres généraux puis redémarrer l'application."
+            "value" : "L'arrière-plan vidéo est utilisé lorsque le lecteur vidéo intégré est activé."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A causa delle limitazioni del sistema, la barra degli strumenti non può essere nascosta dinamicamente quando si passa alla modalità a schermo intero; puoi solo modificare le opzioni pertinenti nelle impostazioni generali e poi riavviare l'applicazione."
+            "value" : "Lo sfondo video è per quando il lettore video integrato è abilitato."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "システムの制限により、フルスクリーンに切り替える際にツールバーを動的に非表示にすることはできません。一般設定で関連オプションを変更してからアプリケーションを再起動してください"
+            "value" : "ビデオ背景は組み込みビデオプレーヤーが有効になっているときのためのものです"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "시스템 제한으로 인해 전체 화면으로 전환할 때 툴바를 동적으로 숨길 수 없습니다. 일반 설정에서 관련 옵션을 변경한 후 애플리케이션을 다시 시작해야 합니다."
+            "value" : "내장 비디오 플레이어가 활성화된 경우 비디오 배경이 사용됩니다."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vanwege systeembeperkingen kan de werkbalk niet dynamisch worden verborgen bij het overschakelen naar fullscreen; je kunt alleen de relevante opties wijzigen in de algemene instellingen en daarna de applicatie opnieuw starten."
+            "value" : "De video-achtergrond is bedoeld voor wanneer de ingebouwde videospeler is ingeschakeld."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Devido a limitações do sistema, a barra de ferramentas não pode ser ocultada dinamicamente ao alternar para o modo de tela cheia; você só pode alterar as opções relevantes nas configurações gerais e reiniciar o aplicativo."
+            "value" : "O fundo do vídeo é para quando o player de vídeo embutido estiver ativado"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Devido a limitações do sistema, a barra de ferramentas não pode ser escondida dinamicamente ao mudar para ecrã inteiro; só pode alterar as opções relevantes nas definições gerais e depois reiniciar a aplicação."
+            "value" : "O fundo do vídeo é para quando o leitor de vídeo incorporado está ativado."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Из-за ограничений системы панель инструментов не может быть динамически скрыта при переключении на полноэкранный режим; вы можете изменить соответствующие параметры в общих настройках, а затем перезапустить приложение."
+            "value" : "Фоновое видео используется, когда встроенный видеопроигрыватель включен."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "På grund av systembegränsningar kan verktygsfältet inte döljas dynamiskt när du växlar till helskärm; du kan endast ändra de relevanta alternativen i de allmänna inställningarna och sedan starta om applikationen."
+            "value" : "Videobakgrunden är för när den inbyggda videospelaren är aktiverad."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "由于系统限制，切换到全屏时不能动态地隐藏工具栏，只能在通用设置中修改相关选项后重启应用。不过，视频播放器中左上角有个一悬浮的全屏按钮，按它进入全屏时不会显示工具栏，且不遵从此背景设置。"
+            "value" : "视频背景是针对启用内置视频播放器时的设置。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "由於系統限制，工具列無法在切換到全螢幕時動態隱藏，您只能在一般設定中更改相關選項，然後重啟應用程式"
+            "value" : "內建視頻播放器啟用時的視頻背景"
           }
         }
       }

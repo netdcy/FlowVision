@@ -3105,7 +3105,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         if publicVar.isInLargeView {
             windowSizeChangedTimesWhenInLarge += 1
-            largeImageView.determineBlackBg()
             return
         }
         

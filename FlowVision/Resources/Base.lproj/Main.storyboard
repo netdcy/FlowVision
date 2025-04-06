@@ -934,7 +934,7 @@ Gw
                         <rect key="frame" x="0.0" y="0.0" width="1280" height="720"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <customView clipsToBounds="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bbK-Eg-KtX" customClass="CoreAreaView" customModule="FlowVision" customModuleProvider="target">
+                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bbK-Eg-KtX" customClass="CoreAreaView" customModule="FlowVision" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="1280" height="720"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>

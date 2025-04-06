@@ -72,11 +72,10 @@ class LargeImageView: NSView {
         self.addSubview(imageView)
 
         videoView = LargeAVPlayerView(frame: self.bounds)
-        //videoView.autoresizingMask = [.width, .height]
         queuePlayer = AVQueuePlayer()
         videoView.player = queuePlayer
         videoView.controlsStyle = .none
-        videoView.showsFullScreenToggleButton = true
+        videoView.showsFullScreenToggleButton = false
         videoView.videoGravity = .resizeAspect
         videoView.isHidden = true
         self.addSubview(videoView)
@@ -136,6 +135,10 @@ class LargeImageView: NSView {
         
         //窗口变化时大图随缩放居中
         imageView.frame = CGRect(x: newX, y: newY, width: imageViewSize.width, height: imageViewSize.height)
+        
+        if file.type == .video {
+            determineBlackBg()
+        }
     }
     
     func pauseVideo() {
@@ -230,20 +233,20 @@ class LargeImageView: NSView {
                     snapshotQueue.removeFirst()
                 }
                 currentPlayingURL = nil
-                showInfo("not supported format")
+                showInfo(NSLocalizedString("Unsupported Video Format", comment: "不支持的视频格式"))
             }
         }
     }
     
     private func checkPlayerItemStatus(id: Int) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { [weak self] in
             guard let self = self, let playerItem = self.playerItem else { return }
             if id != videoOrderId { return }
             
             log("playerItem.status: ", playerItem.status.rawValue)
             
             //if playerItem.status == .readyToPlay || playerItem.status == .failed {
-            let targetTime: CMTime = CMTime(seconds: 0.1, preferredTimescale: 600)
+            let targetTime: CMTime = CMTime(seconds: 0.01, preferredTimescale: 600)
             if queuePlayer?.currentTime() ?? CMTime.zero >= targetTime {
                 
                 // 隐藏快照

@@ -1156,6 +1156,12 @@
             "value" : "Automatische Wiedergabe sichtbares Video abbrechen"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel Auto Play Visible Video"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16145,6 +16151,101 @@
         }
       }
     },
+    "Unsupported Video Format" : {
+      "comment" : "不支持的视频格式",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تنسيق الفيديو غير مدعوم"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht unterstütztes Videoformat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsupported Video Format"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato de video no compatible"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Format vidéo non pris en charge"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato video non supportato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポートされていないビデオ形式"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지원되지 않는 비디오 형식"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niet-ondersteund videoformaat"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato de vídeo não suportado"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato de Vídeo Não Suportado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Неподдерживаемый формат видео"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ej stödd videoformat"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不支持的视频格式"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不支援的影片格式"
+          }
+        }
+      }
+    },
     "Use Full Path" : {
       "comment" : "使用完整路径",
       "localizations" : {
@@ -16335,85 +16436,85 @@
         }
       }
     },
-    "Use Internal Player" : {
-      "comment" : "使用内置播放器",
+    "Use Internal Video Player" : {
+      "comment" : "使用内置视频播放器",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "استخدام المشغل الداخلي"
+            "value" : "استخدام مشغل الفيديو الداخلي"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Internen Player verwenden"
+            "value" : "Internen Videoplayer verwenden"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use Internal Player"
+            "value" : "Use Internal Video Player"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usar reproductor interno"
+            "value" : "Usar reproductor de video interno"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utiliser le lecteur interne"
+            "value" : "Utiliser le lecteur vidéo interne"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usa lettore interno"
+            "value" : "Usa Lettore Video Interno"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "内部プレーヤーを使用する"
+            "value" : "内部ビデオプレーヤーを使用"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "내장 플레이어 사용"
+            "value" : "내부 비디오 플레이어 사용"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Interne speler gebruiken"
+            "value" : "Interne videospeler gebruiken"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usar Reprodutor Interno"
+            "value" : "Usar reprodutor de vídeo interno"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usar Leitor Interno"
+            "value" : "Usar Leitor de Vídeo Interno"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Использовать встроенный проигрыватель"
+            "value" : "Использовать внутренний видеоплеер"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Använd intern spelare"
+            "value" : "Använd intern videospelare"
           }
         },
         "zh-Hans" : {
@@ -16425,7 +16526,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用內置播放器"
+            "value" : "使用內建視頻播放器"
           }
         }
       }

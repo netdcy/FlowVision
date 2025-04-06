@@ -94,7 +94,13 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         }
         UserDefaults.standard.set(globalVar.blackBgAlways, forKey: "blackBgAlways")
         UserDefaults.standard.set(globalVar.blackBgInFullScreen, forKey: "blackBgInFullScreen")
-        getMainViewController()?.largeImageView.determineBlackBg()
+        if let appDelegate=NSApplication.shared.delegate as? AppDelegate {
+            for windowController in appDelegate.windowControllers {
+                if let viewController = windowController.contentViewController as? ViewController {
+                    viewController.largeImageView.determineBlackBg()
+                }
+            }
+        }
     }
     
     @IBAction func bgSettingForVideoToggled(_ sender: NSButton) {
@@ -111,7 +117,13 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         }
         UserDefaults.standard.set(globalVar.blackBgAlwaysForVideo, forKey: "blackBgAlwaysForVideo")
         UserDefaults.standard.set(globalVar.blackBgInFullScreenForVideo, forKey: "blackBgInFullScreenForVideo")
-        getMainViewController()?.largeImageView.determineBlackBg()
+        if let appDelegate=NSApplication.shared.delegate as? AppDelegate {
+            for windowController in appDelegate.windowControllers {
+                if let viewController = windowController.contentViewController as? ViewController {
+                    viewController.largeImageView.determineBlackBg()
+                }
+            }
+        }
     }
 
     @IBAction func usePinyinSearchToggled(_ sender: NSButton) {

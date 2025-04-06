@@ -36,8 +36,8 @@ class WindowController: NSWindowController, NSWindowDelegate {
             //toolbar.showsBaselineSeparator = true
             window.toolbar = toolbar
 
+            window.acceptsMouseMovedEvents = true
             if globalVar.autoHideToolbar {
-                window.acceptsMouseMovedEvents = true
                 window.styleMask.insert(.fullSizeContentView)
                 window.tabbingMode = .disallowed
             }else{
@@ -76,7 +76,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     func saveWindowState() {
         guard let window = self.window else { return }
         if let viewController = contentViewController as? ViewController {
-            if viewController.publicVar.isInLargeView {
+            if viewController.publicVar.isInLargeView || window.styleMask.contains(.fullScreen) {
                 return
             }
         }
@@ -121,12 +121,22 @@ class WindowController: NSWindowController, NSWindowDelegate {
     // 在窗口已经进入全屏模式时执行
     func windowDidEnterFullScreen(_ notification: Notification) {
         guard let viewController = contentViewController as? ViewController else {return}
+
+        if !globalVar.autoHideToolbar {
+            window?.toolbar?.isVisible = false
+        }
+        
         viewController.largeImageView.determineBlackBg()
     }
     
     // 在窗口已经退出全屏模式时执行
     func windowDidExitFullScreen(_ notification: Notification) {
         guard let viewController = contentViewController as? ViewController else {return}
+
+        if !globalVar.autoHideToolbar {
+            window?.toolbar?.isVisible = true
+        }
+        
         viewController.largeImageView.determineBlackBg()
     }
 
@@ -144,12 +154,26 @@ class WindowController: NSWindowController, NSWindowDelegate {
     
     override func mouseMoved(with event: NSEvent) {
         guard let window = window else { return }
+        guard let toolbar = window.toolbar else { return }
+        guard let viewController = contentViewController as? ViewController else {return}
+        let location = event.locationInWindow
         if globalVar.autoHideToolbar {
-            let location = event.locationInWindow
             if location.y > window.frame.height - 40 {
                 showTitleBar()
             } else if !window.styleMask.contains(.fullScreen) || (location.y < window.frame.height - 60) {
                 hideTitleBar()
+            }
+        }else{
+            if location.y > window.frame.height - 20 {
+                if toolbar.isVisible == false {
+                    toolbar.isVisible = true
+                    viewController.largeImageView.determineBlackBg()
+                }
+            } else if window.styleMask.contains(.fullScreen) && (location.y < window.frame.height - 20) {
+                if toolbar.isVisible == true {
+                    toolbar.isVisible = false
+                    viewController.largeImageView.determineBlackBg()
+                }
             }
         }
     }
@@ -1204,7 +1228,7 @@ extension WindowController: NSToolbarDelegate {
         autoPlayVisibleVideo.keyEquivalentModifierMask = [.command, .shift]
         autoPlayVisibleVideo.state = viewController.publicVar.autoPlayVisibleVideo ? .on : .off
 
-        let useInternalPlayer = menu.addItem(withTitle: NSLocalizedString("Use Internal Player", comment: "使用内置播放器"), action: #selector(toggleUseInternalPlayer), keyEquivalent: "")
+        let useInternalPlayer = menu.addItem(withTitle: NSLocalizedString("Use Internal Video Player", comment: "使用内置视频播放器"), action: #selector(toggleUseInternalPlayer), keyEquivalent: "")
         useInternalPlayer.state = viewController.publicVar.useInternalPlayer ? .on : .off
 
         let autoPlayVisibleVideoInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(autoPlayVisibleVideoInfo), keyEquivalent: "")
