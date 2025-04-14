@@ -62,6 +62,7 @@ class GlobalVar{
             useInternalPlayerCheckbox?.state = useInternalPlayer ? .on : .off
         }
     }
+    var useQuickSearch = false
     
     //可记忆设置变量
     var isFirstTimeUse = true

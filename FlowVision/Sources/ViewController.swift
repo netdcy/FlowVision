@@ -647,6 +647,39 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let characters = (event.charactersIgnoringModifiers ?? "").lowercased()
             let specialKey = event.specialKey ?? .f30
             
+            // 快速搜索
+            if publicVar.isKeyEventEnabled && characters.count == 1 && (characters.first!.isLetter || characters.first!.isNumber) && noModifierKey {
+                if !publicVar.isInLargeView {
+                    if quickSearchState || globalVar.useQuickSearch {
+                        quickSearch(characters)
+                        return nil
+                    }
+                }
+            }
+            
+            if characters == "q" && noModifierKey {
+                if !publicVar.isInLargeView{
+                    if !quickSearchState && !globalVar.useQuickSearch {
+                        quickSearch("backspace")
+                        return nil
+                    }
+                }
+            }
+
+            // 快速搜索删除键
+            if publicVar.isKeyEventEnabled && specialKey == .delete && noModifierKey {
+                if !publicVar.isInLargeView {
+                    if quickSearchState {
+                        quickSearch("backspace")
+                        return nil
+                    }
+                    if globalVar.useQuickSearch {
+                        return nil
+                    }
+                }
+            }
+            
+            // 防止过快触发事件
             if !publicVar.timer.intervalSafe(name: "keyEvent", second: 0.1) {
                 return event
             }
@@ -717,6 +750,18 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                     return nil
                 }
+
+                // 检查按键是否是 "E"
+                if characters == "e" && noModifierKey {
+                    if publicVar.isInLargeView{
+                        largeImageView.actRotateR()
+                    }else{
+                        closeLargeImage(0)
+                        switchDirByDirection(direction: .down_right, stackDeep: 0)
+                    }
+                    return nil
+                }
+
                 // 检查按键是否是 "R" 键
                 if (characters == "r" || specialKey == .f5) && noModifierKey {
                     if publicVar.isInLargeView{
@@ -991,12 +1036,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 }
                 
-                // 检查按键是否是 "~"
-                if event.keyCode == 50 && noModifierKey {
-                    togglePortableMode()
-                    return nil
-                }
-                
                 // 检查按键是否是 "U"
                 if characters == "u" && noModifierKey {
                     if publicVar.isInLargeView {
@@ -1034,22 +1073,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 if characters == "p" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actQRCode()
-                        return nil
-                    }
-                }
-                
-                // 检查按键是否是 "E"
-                if characters == "e" && noModifierKey {
-                    if publicVar.isInLargeView{
-                        largeImageView.actRotateR()
-                        return nil
-                    }
-                }
-                
-                // 检查按键是否是 "Q"
-                if characters == "q" && noModifierKey {
-                    if publicVar.isInLargeView{
-                        largeImageView.actRotateL()
                         return nil
                     }
                 }
@@ -4012,7 +4035,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if publicVar.isFilenameFilterOn && searchText != "" {
             contents = contents.filter { url in
                 if let fileName = getFileNameForSearch(path: url.absoluteString) {
-                    return isSearchMatch(fileName: fileName, searchText: searchText)
+                    return isSearchMatch(fileName: fileName, searchText: searchText, forceUseRegex: false)
                 }
                 return true
             }
@@ -7152,10 +7175,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
     }
 
-    private func performSearch(searchText: String, isEnterKey: Bool, isReverse: Bool = false) {
+    private func performSearch(searchText: String, isEnterKey: Bool, isReverse: Bool = false, forceUseRegex: Bool = false, firstMatch: Bool = false) -> Bool {
         // 如果搜索文本为空，不执行搜索
         if searchText.isEmpty {
-            return
+            return true
         }
         
         // 获取当前选中的索引
@@ -7165,16 +7188,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let files = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files ?? [:]
         
         // 检查当前选中项是否符合搜索条件
-        if let currentIndex = collectionView.selectionIndexPaths.first?.item,
+        if !firstMatch,
+           let currentIndex = collectionView.selectionIndexPaths.first?.item,
            let currentFileName = getFileNameForSearch(path: files.element(atOffset: currentIndex).1.path),
-           isSearchMatch(fileName: currentFileName, searchText: searchText) {
+           isSearchMatch(fileName: currentFileName, searchText: searchText, forceUseRegex: forceUseRegex) {
             if isEnterKey {
                 // 查找下一个或上一个匹配项
                 var foundIndex: Int?
                 if isReverse {
                     for (index, file) in files.enumerated().reversed() {
                         if let fileName = getFileNameForSearch(path: file.1.path) {
-                            if isSearchMatch(fileName: fileName, searchText: searchText) && index < currentSelectedIndex {
+                            if isSearchMatch(fileName: fileName, searchText: searchText, forceUseRegex: forceUseRegex) && index < currentSelectedIndex {
                                 foundIndex = index
                                 break
                             }
@@ -7185,7 +7209,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     if foundIndex == nil {
                         for (index, file) in files.enumerated().reversed() {
                             if let fileName = getFileNameForSearch(path: file.1.path) {
-                                if isSearchMatch(fileName: fileName, searchText: searchText) && index >= currentSelectedIndex {
+                                if isSearchMatch(fileName: fileName, searchText: searchText, forceUseRegex: forceUseRegex) && index >= currentSelectedIndex {
                                     foundIndex = index
                                     break
                                 }
@@ -7195,7 +7219,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 } else {
                     for (index, file) in files.enumerated() {
                         if let fileName = getFileNameForSearch(path: file.1.path) {
-                            if isSearchMatch(fileName: fileName, searchText: searchText) && index > currentSelectedIndex {
+                            if isSearchMatch(fileName: fileName, searchText: searchText, forceUseRegex: forceUseRegex) && index > currentSelectedIndex {
                                 foundIndex = index
                                 break
                             }
@@ -7206,7 +7230,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     if foundIndex == nil {
                         for (index, file) in files.enumerated() {
                             if let fileName = getFileNameForSearch(path: file.1.path) {
-                                if isSearchMatch(fileName: fileName, searchText: searchText) && index <= currentSelectedIndex {
+                                if isSearchMatch(fileName: fileName, searchText: searchText, forceUseRegex: forceUseRegex) && index <= currentSelectedIndex {
                                     foundIndex = index
                                     break
                                 }
@@ -7226,13 +7250,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         collectionView.reloadData()
                         collectionView.selectItems(at: [indexPath], scrollPosition: [])
                         setLoadThumbPriority(indexPath: indexPath, ifNeedVisable: false)
+                        return true
                     }
                 }
                 
-                return
+                return true
             } else {
                 fileDB.unlock()
-                return
+                return true
             }
         } else {
             // 当前选中项不符合搜索条件，取消所有选择
@@ -7243,7 +7268,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         var foundIndex: Int?
         for (index, file) in files.enumerated() {
             if let fileName = getFileNameForSearch(path: file.1.path) {
-                if isSearchMatch(fileName: fileName, searchText: searchText) {
+                if isSearchMatch(fileName: fileName, searchText: searchText, forceUseRegex: forceUseRegex) {
                     foundIndex = index
                     break
                 }
@@ -7260,12 +7285,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 collectionView.reloadData()
                 collectionView.selectItems(at: [indexPath], scrollPosition: [])
                 setLoadThumbPriority(indexPath: indexPath, ifNeedVisable: false)
+                return true
             }
         }
+        
+        return false
     }
     
-    private func isSearchMatch(fileName _fileName: String, searchText _searchText: String) -> Bool {
-        if search_useRegex {
+    private func isSearchMatch(fileName _fileName: String, searchText _searchText: String, forceUseRegex: Bool) -> Bool {
+        if search_useRegex || forceUseRegex {
             // 使用正则表达式进行匹配
             do {
                 let fileName = _fileName
@@ -7314,10 +7342,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if containsSpecialCharacter {
             sender.stringValue = filteredText
             search_searchText = filteredText
-            performSearch(searchText: filteredText, isEnterKey: true, isReverse: true)
+            _ = performSearch(searchText: filteredText, isEnterKey: true, isReverse: true)
         }else{
             search_searchText = filteredText
-            performSearch(searchText: filteredText, isEnterKey: false)
+            _ = performSearch(searchText: filteredText, isEnterKey: false)
         }
     }
 
@@ -7325,7 +7353,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if commandSelector == #selector(NSResponder.insertNewline(_:)) {
             let searchText = searchField?.stringValue ?? ""
             let isShiftPressed = NSEvent.modifierFlags.contains(.shift)
-            performSearch(searchText: searchText, isEnterKey: true, isReverse: isShiftPressed)
+            _ = performSearch(searchText: searchText, isEnterKey: true, isReverse: isShiftPressed)
             return true
         } else if commandSelector == #selector(NSResponder.cancelOperation(_:)) {
             closeSearchOverlay()
@@ -7344,24 +7372,24 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         search_useRegex = (sender.state == .on)
         // 当切换正则表达式选项时，重新执行搜索
         let searchText = searchField?.stringValue ?? ""
-        performSearch(searchText: searchText, isEnterKey: false)
+        _ = performSearch(searchText: searchText, isEnterKey: false)
     }
 
     @objc private func caseSensitiveCheckboxChanged(_ sender: NSButton) {
         search_isCaseSensitive = (sender.state == .on)
         // 当切换区分大小写选项时，重新执行搜索
         let searchText = searchField?.stringValue ?? ""
-        performSearch(searchText: searchText, isEnterKey: false)
+        _ = performSearch(searchText: searchText, isEnterKey: false)
     }
 
     @objc private func prevButtonClicked(_ sender: NSButton) {
         let searchText = searchField?.stringValue ?? ""
-        performSearch(searchText: searchText, isEnterKey: true, isReverse: true)
+        _ = performSearch(searchText: searchText, isEnterKey: true, isReverse: true)
     }
 
     @objc private func nextButtonClicked(_ sender: NSButton) {
         let searchText = searchField?.stringValue ?? ""
-        performSearch(searchText: searchText, isEnterKey: true, isReverse: false)
+        _ = performSearch(searchText: searchText, isEnterKey: true, isReverse: false)
     }
 
     @objc private func helpButtonClicked(_ sender: NSButton) {
@@ -7386,7 +7414,37 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         search_isUseFullPath = (sender.state == .on)
         // 当切换使用完整路径选项时，重新执行搜索
         let searchText = searchField?.stringValue ?? ""
-        performSearch(searchText: searchText, isEnterKey: false)
+        _ = performSearch(searchText: searchText, isEnterKey: false)
     }
 
+    private var quickSearchTimer: Timer?
+    private var quickSearchText: String = ""
+    private var quickSearchState: Bool = false
+    
+    private func quickSearch(_ character: String) {
+        // 清除之前的计时器
+        quickSearchTimer?.invalidate()
+        
+        // 添加新字符到搜索文本
+        if character == "backspace" {
+            quickSearchText = String(quickSearchText.dropLast())
+        }else{
+            quickSearchText += character
+        }
+        
+        // 执行搜索
+        if quickSearchText != "" {
+            if !performSearch(searchText: "^"+quickSearchText, isEnterKey: false, forceUseRegex: true, firstMatch: true) {
+                _ = performSearch(searchText: quickSearchText, isEnterKey: false, forceUseRegex: false, firstMatch: true)
+            }
+        }
+        coreAreaView.showInfo(NSLocalizedString("Quick Search", comment: "快速搜索")+": "+quickSearchText, timeOut: 1.5)
+        
+        // 设置新的计时器,n秒后清空搜索文本
+        quickSearchState = true
+        quickSearchTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false) { [weak self] _ in
+            self?.quickSearchText = ""
+            self?.quickSearchState = false
+        }
+    }
 }

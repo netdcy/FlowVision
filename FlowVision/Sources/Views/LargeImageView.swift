@@ -547,11 +547,29 @@ class LargeImageView: NSView {
     }
     
     func seekVideo(direction: Int) {
-        if direction == -1 {
-            seekVideoBySeconds(seconds: -10)
-        } else if direction == 1 {
-            seekVideoBySeconds(seconds: 10)
+        guard let player = queuePlayer,
+              let duration = player.currentItem?.duration else {
+            return
         }
+        
+        let totalSeconds = CMTimeGetSeconds(duration)
+        let currentTime = player.currentTime()
+        let currentSeconds = CMTimeGetSeconds(currentTime)
+        
+        // 计算目标时间,确保在有效范围内
+        let seekSeconds = totalSeconds < 30 ? 5.0 : 10.0
+        var seconds = 0.0
+        if direction == -1 {
+            seconds = -seekSeconds
+        } else if direction == 1 {
+            seconds = seekSeconds
+        }
+        var targetSeconds = currentSeconds + seconds
+        targetSeconds = max(0, min(totalSeconds, targetSeconds))
+        
+        // 转换为CMTime并执行跳转
+        let targetTime = CMTimeMakeWithSeconds(Float64(targetSeconds), preferredTimescale: 600)
+        player.seek(to: targetTime, toleranceBefore: .zero, toleranceAfter: .zero)
     }
     
     func seekVideoBySeconds(seconds: Double) {
