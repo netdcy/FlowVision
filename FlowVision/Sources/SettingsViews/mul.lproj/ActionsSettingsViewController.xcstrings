@@ -1058,97 +1058,97 @@
       }
     },
     "xwz-xM-bF8.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Press Q in thumbnail view to activate Quick Search, allowing you to enter search keywords within a short time to locate files. In this mode, number keys, letter keys, and the backspace key are used for input.\"; ObjectID = \"xwz-xM-bF8\";",
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Press Q in thumbnail view to activate Quick Search, allowing you to enter search keywords within a short time to locate files. In this mode, number keys, letter keys, and the backspace key are used for input. For a more comprehensive search function, please use Cmd + F.\"; ObjectID = \"xwz-xM-bF8\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اضغط على Q في عرض الصور المصغرة لتفعيل البحث السريع، مما يتيح لك إدخال كلمات بحث في وقت قصير لتحديد موقع الملفات. في هذا الوضع، تُستخدم مفاتيح الأرقام، ومفاتيح الحروف، ومفتاح المسافة للخلف للإدخال."
+            "value" : "اضغط على Q في عرض الصور المصغرة لتفعيل البحث السريع، مما يسمح لك بإدخال الكلمات المفتاحية للبحث في وقت قصير لتحديد الملفات. في هذا الوضع، تُستخدم مفاتيح الأرقام والحروف ومفتاح المسافة للخلف للإدخال. لأداء وظيفة بحث شاملة، يرجى استخدام Cmd + F."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Drücken Sie Q in der Miniaturansicht, um die Schnellsuche zu aktivieren, mit der Sie innerhalb kurzer Zeit Suchbegriffe eingeben können, um Dateien zu finden. In diesem Modus werden Zahlentasten, Buchstabentasten und die Rücktaste zur Eingabe verwendet."
+            "value" : "Drücken Sie Q in der Miniaturansicht, um die Schnellsuche zu aktivieren. Dadurch können Sie innerhalb kurzer Zeit Suchbegriffe eingeben, um Dateien zu finden. In diesem Modus werden Zifferntasten, Buchstabentasten und die Rücktaste für die Eingabe verwendet. Für eine umfassendere Suchfunktion verwenden Sie bitte Cmd + F."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Press Q in thumbnail view to activate Quick Search, allowing you to enter search keywords within a short time to locate files. In this mode, number keys, letter keys, and the backspace key are used for input."
+            "value" : "Press Q in thumbnail view to activate Quick Search, allowing you to enter search keywords within a short time to locate files. In this mode, number keys, letter keys, and the backspace key are used for input. For a more comprehensive search function, please use Cmd + F."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Presiona Q en la vista de miniaturas para activar la Búsqueda Rápida, lo que te permite ingresar palabras clave de búsqueda en poco tiempo para localizar archivos. En este modo, las teclas numéricas, las teclas de letras y la tecla de retroceso se utilizan para ingresar texto."
+            "value" : "Presiona Q en vista de miniaturas para activar la Búsqueda Rápida, permitiéndote ingresar palabras clave de búsqueda en poco tiempo para localizar archivos. En este modo, las teclas numéricas, las letras y la tecla de retroceso se usan para la entrada. Para una función de búsqueda más completa, por favor usa Cmd + F."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appuyez sur Q en mode vignette pour activer la recherche rapide, vous permettant d'entrer des mots-clés de recherche en peu de temps pour localiser des fichiers. Dans ce mode, les touches numériques, les touches lettres et la touche retour arrière sont utilisées pour la saisie."
+            "value" : "Appuyez sur Q en mode vignette pour activer la Recherche rapide, ce qui vous permet de saisir des mots-clés de recherche en peu de temps pour localiser des fichiers. Dans ce mode, les touches numériques, les lettres et la touche de retour arrière sont utilisées pour la saisie. Pour une fonction de recherche plus complète, veuillez utiliser Cmd + F."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Premi Q nella vista miniature per attivare la Ricerca Rapida, permettendoti di inserire parole chiave di ricerca in breve tempo per individuare i file. In questa modalità, i tasti numerici, i tasti lettera e il tasto backspace vengono utilizzati per l'input."
+            "value" : "Premi Q nella vista miniatura per attivare Ricerca Rapida, permettendoti di inserire parole chiave di ricerca in breve tempo per individuare file. In questa modalità, i tasti numerici, i tasti lettera e il tasto backspace sono usati per l'input. Per una funzione di ricerca più completa, utilizza Cmd + F."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サムネイルビューで Q を押してクイック検索を起動し、短時間で検索キーワードを入力してファイルを見つけることができます。このモードでは、数字キー、文字キー、バックスペースキーが入力に使用されます。"
+            "value" : "サムネイルビューでQを押してクイック検索を有効にすると、短時間で検索キーワードを入力してファイルを見つけることができます。このモードでは、数字キー、文字キー、およびバックスペースキーが入力に使用されます。より包括的な検索機能については、Cmd + Fを使用してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "썸네일 보기에서 Q를 눌러 빠른 검색을 활성화하면 짧은 시간 내에 검색 키워드를 입력하여 파일을 찾을 수 있습니다 이 모드에서는 숫자 키, 문자 키 및 백스페이스 키가 입력에 사용됩니다"
+            "value" : "썸네일 보기에서 Q를 눌러 빠른 검색을 활성화하면 짧은 시간 안에 검색 키워드를 입력하여 파일을 찾을 수 있습니다. 이 모드에서는 숫자 키, 문자 키, 백스페이스 키를 사용하여 입력합니다. 보다 포괄적인 검색 기능은 Cmd + F를 사용하십시오."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Druk op Q in miniatuurweergave om Quick Search te activeren, waarmee je zoekwoorden binnen korte tijd kunt invoeren om bestanden te vinden. In deze modus worden cijfertoetsen, lettertoetsen en de backspace-toets gebruikt voor invoer"
+            "value" : "Druk op Q in de miniatuurweergave om de snelle zoekfunctie te activeren, waarmee je binnen korte tijd zoekwoorden kunt invoeren om bestanden te vinden. In deze modus worden voor invoer de cijfertoetsen, lettertoetsen en de backspace-toets gebruikt. Voor een meer uitgebreide zoekfunctie, gebruik Cmd + F."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pressione Q na visualização de miniaturas para ativar a Pesquisa Rápida, permitindo que você insira palavras-chave de pesquisa em um curto período de tempo para localizar arquivos. Nesse modo, teclas numéricas, teclas de letras e a tecla de backspace são usadas para entrada."
+            "value" : "Pressione Q na visualização de miniaturas para ativar a Busca Rápida, permitindo que você insira palavras-chave de pesquisa em um curto espaço de tempo para localizar arquivos. Neste modo, teclas numéricas, teclas de letras e a tecla de retrocesso são usadas para entrada. Para uma função de busca mais abrangente, use Cmd + F."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pressione Q na vista de miniaturas para ativar a Pesquisa Rápida, permitindo que insira palavras-chave de pesquisa por um curto período de tempo para localizar ficheiros. Neste modo, as teclas numéricas, teclas alfabéticas e a tecla de retrocesso são usadas para a inserção."
+            "value" : "Pressione Q na vista de miniaturas para ativar a Pesquisa Rápida, permitindo-lhe inserir palavras-chave de pesquisa num curto espaço de tempo para localizar ficheiros. Neste modo, as teclas numéricas, as teclas de letras e a tecla de retrocesso são usadas para a entrada. Para uma função de pesquisa mais abrangente, use Cmd + F."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Нажмите Q в режиме эскизов, чтобы активировать Быстрый поиск, который позволит вам ввести ключевые слова поиска за короткое время для поиска файлов. В этом режиме для ввода используются цифровые клавиши, буквенные клавиши и клавиша Backspace."
+            "value" : "Нажмите Q в режиме отображения миниатюр, чтобы активировать Быстрый Поиск, позволяющий ввести ключевые слова поиска за короткое время для нахождения файлов. В этом режиме для ввода используются цифровые клавиши, буквенные клавиши и клавиша Backspace. Для более обширного поиска используйте Cmd + F."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tryck på Q i miniatyrvyn för att aktivera Snabbsökning, så att du kan ange sökord inom kort tid för att hitta filer. I detta läge används siffertangenter, bokstavstangenter och backstegstangenten för att mata in."
+            "value" : "Tryck på Q i miniatyrvyn för att aktivera Snabbsökning, vilket gör att du kan ange sökord inom en kort tid för att hitta filer. I det här läget används sifferknappar, bokstavstangenter och backstegstangenten för inmatning. För en mer omfattande sökfunktion, använd Cmd + F."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在缩略图界面按Q开启快速搜索，可在短时间内输入查找关键字来定位文件。此状态下数字键、字母键和退格键将作输入用途。"
+            "value" : "在缩略图界面按Q开启快速搜索，可在短时间内输入查找关键字来定位文件。此状态下数字键、字母键和退格键将作输入用途。更完整的搜索功能请使用Cmd + F。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在縮略圖檢視中按下 Q 鍵以啟動快速搜尋，允許您在短時間內輸入搜尋關鍵字以定位檔案。在此模式下，數字鍵、字母鍵和退格鍵用於輸入。"
+            "value" : "在縮圖檢視中按下 Q 鍵以啟用快速搜尋，讓您在短時間內輸入搜尋關鍵字來定位檔案。在此模式下，數字鍵、字母鍵和退格鍵可用於輸入。若需更全面的搜尋功能，請使用 Cmd + F。"
           }
         }
       }

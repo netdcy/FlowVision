@@ -3831,6 +3831,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         //关闭搜索窗口
         //closeSearchOverlay()
+        
+        //清空快速搜索
+        quickSearchText = ""
+        quickSearchState = false
 
         stopWatchingDirectory()
         collectionView.deselectAll(nil)
@@ -7516,7 +7520,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 _ = performSearch(searchText: quickSearchText, isEnterKey: false, forceUseRegex: false, firstMatch: true)
             }
         }
-        coreAreaView.showInfo(NSLocalizedString("Quick Search", comment: "快速搜索")+": "+quickSearchText, timeOut: 1.5)
+        coreAreaView.showInfo(NSLocalizedString("Quick Search", comment: "快速搜索")+": "+quickSearchText, timeOut: 1.5, cannotBeCleard: false)
         
         // 设置新的计时器,n秒后清空搜索文本
         quickSearchState = true
