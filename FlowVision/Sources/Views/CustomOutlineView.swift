@@ -115,7 +115,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             
             menu.addItem(NSMenuItem.separator())
             
-            let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
+            let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "r")
             actionItemRename.keyEquivalentModifierMask = []
             
             let actionItemCopy = menu.addItem(withTitle: NSLocalizedString("Copy", comment: "复制"), action: #selector(actCopy), keyEquivalent: "c")
@@ -141,7 +141,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             menu.addItem(NSMenuItem.separator())
             
             let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("Refresh", comment: "刷新"), action: #selector(refreshAll), keyEquivalent: "r")
-            actionItemRefresh.keyEquivalentModifierMask = []
+            actionItemRefresh.keyEquivalentModifierMask = [.command]
 
             // 可以将点击的对象传递给菜单项动作
             menu.items.forEach { item in

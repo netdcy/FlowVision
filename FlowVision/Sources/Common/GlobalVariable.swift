@@ -63,6 +63,7 @@ class GlobalVar{
         }
     }
     var useQuickSearch = false
+    var isEnterKeyToOpen = false
     
     //可记忆设置变量
     var isFirstTimeUse = true

@@ -762,17 +762,18 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                     return nil
                 }
-
+                
                 // 检查按键是否是 "R" 键
-                if (characters == "r" || specialKey == .f5) && noModifierKey {
-                    if publicVar.isInLargeView{
-                        LargeImageProcessor.clearCache()
-                        largeImageView.actRefresh()
+                if characters == "r" && noModifierKey {
+                    //如果焦点在OutlineView
+                    if publicVar.isOutlineViewFirstResponder{
+                        outlineView.actRename(isByKeyboard: true)
                         return nil
-                    }else{
-                        LargeImageProcessor.clearCache()
-                        ThumbImageProcessor.clearCache()
-                        refreshAll([.all], needLoadThumbPriority: true)
+                    }
+                    
+                    //如果焦点在CollectionView
+                    if publicVar.isCollectionViewFirstResponder{
+                        renameAlert(urls: publicVar.selectedUrls())
                         return nil
                     }
                 }
@@ -811,6 +812,20 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         largeImageView.actRememberPlayPosition()
                     }
                     return nil
+                }
+                
+                // 检查按键是否是 Cmd + "R" / F5 键
+                if (characters == "r" && isCommandPressed) || specialKey == .f5 {
+                    if publicVar.isInLargeView{
+                        LargeImageProcessor.clearCache()
+                        largeImageView.actRefresh()
+                        return nil
+                    }else{
+                        LargeImageProcessor.clearCache()
+                        ThumbImageProcessor.clearCache()
+                        refreshAll([.all], needLoadThumbPriority: true)
+                        return nil
+                    }
                 }
                 
                 // 检查按键是否是 Command+[ 键
@@ -947,6 +962,35 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     if publicVar.isCollectionViewFirstResponder{
                         handleDelete(isShowPrompt: !isCommandPressed)
                         return nil
+                    }
+                }
+                
+                // 检查按键是否是 F2、回车、小键盘回车 键
+                if specialKey == .f2 || (specialKey == .enter || specialKey == .carriageReturn || specialKey == .newline) {
+                    if specialKey == .f2 || !globalVar.isEnterKeyToOpen {
+                        //如果焦点在OutlineView
+                        if publicVar.isOutlineViewFirstResponder{
+                            outlineView.actRename(isByKeyboard: true)
+                            return nil
+                        }
+                        
+                        //如果焦点在CollectionView
+                        if publicVar.isCollectionViewFirstResponder{
+                            renameAlert(urls: publicVar.selectedUrls())
+                            return nil
+                        }
+                    }else{
+                        if publicVar.isInLargeView{
+                            closeLargeImage(0)
+                            return nil
+                        }else{
+                            if let indexPath = collectionView.selectionIndexPaths.first {
+                                if publicVar.isCollectionViewFirstResponder{
+                                    openLargeImage(indexPath)
+                                    return nil
+                                }
+                            }
+                        }
                     }
                 }
                 
@@ -1209,21 +1253,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             }
                             return nil
                         }
-                    }
-                }
-                
-                // 检查按键是否是 F2、回车、小键盘回车 键
-                if specialKey == .f2 || specialKey == .enter || specialKey == .carriageReturn || specialKey == .newline {
-                    //如果焦点在OutlineView
-                    if publicVar.isOutlineViewFirstResponder{
-                        outlineView.actRename(isByKeyboard: true)
-                        return nil
-                    }
-                    
-                    //如果焦点在CollectionView
-                    if publicVar.isCollectionViewFirstResponder{
-                        renameAlert(urls: publicVar.selectedUrls())
-                        return nil
                     }
                 }
                 

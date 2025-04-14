@@ -1019,7 +1019,7 @@ class LargeImageView: NSView {
             
             menu.addItem(withTitle: NSLocalizedString("Show in Finder", comment: "在Finder中显示"), action: #selector(actShowInFinder), keyEquivalent: "")
             
-            let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
+            let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "r")
             actionItemRename.keyEquivalentModifierMask = []
             
             menu.addItem(NSMenuItem.separator())
@@ -1086,7 +1086,7 @@ class LargeImageView: NSView {
             menu.addItem(NSMenuItem.separator())
             
             let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("Refresh", comment: "刷新"), action: #selector(actRefresh), keyEquivalent: "r")
-            actionItemRefresh.keyEquivalentModifierMask = []
+            actionItemRefresh.keyEquivalentModifierMask = [.command]
             
             menu.items.forEach { $0.target = self }
             NSMenu.popUpContextMenu(menu, with: event, for: self)

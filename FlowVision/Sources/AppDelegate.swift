@@ -160,6 +160,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let useInternalPlayer = UserDefaults.standard.value(forKey: "useInternalPlayer") as? Bool {
             globalVar.useInternalPlayer = useInternalPlayer
         }
+        if let isEnterKeyToOpen = UserDefaults.standard.value(forKey: "isEnterKeyToOpen") as? Bool {
+            globalVar.isEnterKeyToOpen = isEnterKeyToOpen
+        }
         
         globalVar.myFavoritesArray = defaults.array(forKey: "globalVar.myFavoritesArray") as? [String] ?? [String]()
         

@@ -1,194 +1,194 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Ple-dV-Ujq.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"In image view: W/S/A/D correspond to right-click gestures up/down/left/right.\\nIn thumbnail view: W/S zoom in/zoom out, A/D previous/next image.\"; ObjectID = \"Ple-dV-Ujq\";",
+    "5Ss-iK-SRx.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Rename\"; ObjectID = \"5Ss-iK-SRx\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "في عرض الصورة: تتوافق W/S/A/D مع إيماءات النقر بزر الفأرة الأيمن لأعلى/أسفل/يسار/يمين  \nفي عرض الصورة المصغرة: لتكبير/تصغير استخدم W/S، وللانتقال إلى الصورة السابقة/التالية استخدم A/D"
+            "value" : "إعادة تسمية"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Im Bildansichtsmodus: W/S/A/D entsprechen den Rechtsklick-Gesten oben/unten/links/rechts.\nIm Vorschaumodus: W/S vergrößern/verkleinern, A/D vorheriges/nächstes Bild."
+            "value" : "Umbenennen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "In image view: W/S/A/D correspond to right-click gestures up/down/left/right.\nIn thumbnail view: W/S zoom in/zoom out, A/D previous/next image."
+            "value" : "Rename"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En vista de imagen: W/S/A/D corresponden a gestos de clic derecho arriba/abajo/izquierda/derecha.\nEn vista de miniaturas: W/S acercar/alejar, A/D imagen anterior/siguiente."
+            "value" : "Renombrar"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En mode vue d'image : W/S/A/D correspondent aux gestes de clic droit haut/bas/gauche/droite.\nEn mode vignette : W/S zoom avant/arrière, A/D image précédente/suivante."
+            "value" : "Renommer"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In visualizzazione immagine: W/S/A/D corrispondono ai gesti del tasto destro su/giù/sinistra/destra.\nIn visualizzazione miniature: W/S ingrandisci/rimpicciolisci, A/D immagine precedente/successiva."
+            "value" : "Rinomina"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "画像ビューで: W/S/A/Dは右クリックジェスチャーの上下左右に対応します。\nサムネイルビューで: W/Sで拡大/縮小、A/Dで前/次の画像。"
+            "value" : "名前を変更"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이미지 보기에서: W/S/A/D는 마우스 오른쪽 버튼 클릭 제스처 상/하/좌/우에 해당합니다.\n썸네일 보기에서: W/S는 확대/축소, A/D는 이전/다음 이미지입니다."
+            "value" : "이름 변경"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In afbeeldingsweergave: W/S/A/D komen overeen met rechterklikgebaren omhoog/omlaag/links/rechts.\nIn miniatuuweergave: W/S inzoomen/uitzoomen, A/D vorige/volgende afbeelding."
+            "value" : "Hernoemen"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No modo de visualização de imagem: W/S/A/D correspondem aos gestos do botão direito do mouse para cima/baixo/esquerda/direita.\nNo modo de visualização em miniatura: W/S ampliam/reduzem, A/D imagem anterior/próxima."
+            "value" : "Renomear"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Na visualização de imagens: W/S/A/D correspondem aos gestos de clique direito para cima/baixo/esquerda/direita\nNa visualização de miniaturas: W/S aumentar/diminuir o zoom, A/D imagem anterior/seguinte"
+            "value" : "Renomear"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "В режиме просмотра изображений: W/S/A/D соответствуют жестам правой кнопки мыши вверх/вниз/влево/вправо.\nВ режиме просмотра миниатюр: W/S увеличение/уменьшение, A/D предыдущее/следующее изображение."
+            "value" : "Переименовать"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I bildvy: W/S/A/D motsvarar högerklicksgester upp/ned/vänster/höger.\nI miniatyrvy: W/S zooma in/zooma ut, A/D föregående/nästa bild."
+            "value" : "Byt namn"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "浏览大图时：W/S/A/D 等同于右键手势上/下/左/右。\n缩略图视图时：W/S 放大/缩小，A/D 上一张/下一张。"
+            "value" : "重命名"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在圖像視圖中：W/S/A/D 對應於右鍵手勢上/下/左/右。\n在縮略圖視圖中：W/S 放大/縮小，A/D 上一張/下一張圖像。"
+            "value" : "重新命名"
           }
         }
       }
     },
-    "VtW-9m-Sj8.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Profile Switching:\"; ObjectID = \"VtW-9m-Sj8\";",
+    "bjd-tP-l6n.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Quick Search:\"; ObjectID = \"bjd-tP-l6n\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "التبديل بين الملفات الشخصية:"
+            "value" : "البحث السريع:"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Profilwechsel:"
+            "value" : "Schnellsuche:"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Profile Switching:"
+            "value" : "Quick Search:"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cambio de Perfil:"
+            "value" : "Búsqueda rápida:"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Changement de profil :"
+            "value" : "Recherche rapide :"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cambio profilo:"
+            "value" : "Ricerca veloce:"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "プロファイル切り替え:"
+            "value" : "クイック検索:"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "프로필 전환:"
+            "value" : "빠른 검색: "
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Profielwissel:"
+            "value" : "Snel zoeken:"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alternância de Perfil:"
+            "value" : "Busca Rápida:"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alternar Perfil:"
+            "value" : "Pesquisa Rápida:"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Переключение профиля:"
+            "value" : "Быстрый поиск:"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Profilväxling:"
+            "value" : "Snabbsökning:"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "配置切换："
+            "value" : "快速搜索："
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "配置檔切換："
+            "value" : "快速搜尋："
           }
         }
       }
@@ -285,6 +285,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鍵盤快捷鍵："
+          }
+        }
+      }
+    },
+    "dKs-LJ-cIZ.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Enter Key:\"; ObjectID = \"dKs-LJ-cIZ\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مفتاح Enter:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eingabetaste:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enter Key:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tecla Enter:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touche Entrée :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tasto Invio:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enterキー:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter 키:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter-toets:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tecla Enter:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tecla Enter:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Клавиша Enter:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter-tangenten:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter键："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter 鍵："
           }
         }
       }
@@ -577,6 +673,102 @@
         }
       }
     },
+    "Ple-dV-Ujq.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"In thumbnail view: W/S/A/D/E correspond to right-click gestures up/down/left/right/up-right.\\nIn image view: W/S zoom in/zoom out, A/D previous/next image.\"; ObjectID = \"Ple-dV-Ujq\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "في عرض الصور المصغرة: الأحرف W/S/A/D/E تقابل إيماءات النقر بزر الماوس الأيمن لأعلى/لأسفل/يسار/يمين/يمين-أعلى\nفي عرض الصورة: الأحرف W/S للتكبير/التصغير، والأحرف A/D للصورة السابقة/التالية"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In der Miniaturansicht: W/S/A/D/E entsprechen den Rechtsklick-Gesten oben/unten/links/rechts/oben-rechts.\nIn der Bildansicht: W/S zoomt ein/aus, A/D vorheriges/nächstes Bild."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In thumbnail view: W/S/A/D/E correspond to right-click gestures up/down/left/right/up-right.\nIn image view: W/S zoom in/zoom out, A/D previous/next image."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En vista de miniaturas: W/S/A/D/E corresponden a los gestos de clic derecho arriba/abajo/izquierda/derecha/arriba-derecha.\nEn vista de imagen: W/S acercar/alejar, A/D imagen anterior/siguiente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En vue miniature : W/S/A/D/E correspondent aux gestes de clic droit haut/bas/gauche/droite/haut-droit\nEn vue image : W/S zoom avant/zoom arrière, A/D image précédente/suivante"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In visualizzazione miniature: W/S/A/D/E corrispondono ai gesti del tasto destro su/giù/sinistra/destra/su-destra.\nIn visualizzazione immagine: W/S zoom avanti/zoom indietro, A/D immagine precedente/successiva."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サムネイル表示: W/S/A/D/E は右クリックジェスチャーの上下左右右上に対応しています。\n画像表示: W/S は拡大/縮小, A/D は前/次の画像です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "섬네일 보기에서: W/S/A/D/E는 우클릭 제스처 위/아래/왼쪽/오른쪽/오른쪽 위에 해당합니다. 이미지 보기에서: W/S 확대/축소, A/D 이전/다음 이미지."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In de miniatuurweergave: W/S/A/D/E komen overeen met rechtermuisklikgebaren omhoog/omlaag/links/rechts/omhoog-rechts. In de beeldweergave: W/S inzoomen/uitzoomen, A/D vorige/volgende afbeelding."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na visualização de miniaturas: W/S/A/D/E correspondem aos gestos do botão direito para cima/baixo/esquerda/direita/cima-direita.\nNa visualização de imagem: W/S aproximar/afastar, A/D imagem anterior/próxima imagem."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na vista de miniaturas: W/S/A/D/E correspondem aos gestos do botão direito para cima/baixo/esquerda/direita/cima-direita.  \nNa visualização de imagem: W/S zoom in/zoom out, A/D imagem anterior/próxima."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В режиме миниатюр: W/S/A/D/E соответствуют жестам правой кнопкой мыши вверх/вниз/влево/вправо/вверх-вправо.\nВ режиме просмотра изображений: W/S увеличение/уменьшение, A/D предыдущая/следующая картинка."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I miniatyrvyn: W/S/A/D/E motsvarar högerklicksgester upp/ner/vänster/höger/upp-höger\nI bildvyn: W/S zooma in/zooma ut, A/D föregående/nästa bild"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图视图时：W/S/A/D/E 等同于右键手势上/下/左/右/上右。\n图像视图时：W/S 放大/缩小，A/D 上一张/下一张。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在縮圖視圖中：W/S/A/D/E 對應於右鍵手勢的上/下/左/右/右上。在圖像視圖中：W/S 放大/縮小，A/D 上一張/下一張圖像。"
+          }
+        }
+      }
+    },
     "qK4-Oc-vMt.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Right-Click Gestures:\"; ObjectID = \"qK4-Oc-vMt\";",
       "extractionState" : "extracted_with_value",
@@ -673,98 +865,386 @@
         }
       }
     },
-    "xau-nf-fbD.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk).\\nUp: Switch to the parent directory.\\nDown: Return to the previous directory.\\nUp-Right/Up-Left: Switch to the next/previous folder with images at the same level as the current folder.\\nDown-Right: Close the tab/window.\"; ObjectID = \"xau-nf-fbD\";",
+    "VtW-9m-Sj8.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Profile Switching:\"; ObjectID = \"VtW-9m-Sj8\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يمين/يسار: الانتقال إلى المجلد التالي/السابق مع الصور/الفيديوهات (يعادل منطقياً المجلد التالي عند ترتيب جميع المجلدات على القرص) \nأعلى: الانتقال إلى الدليل الأصل \nأسفل: العودة إلى الدليل السابق \nأعلى-يمين/أعلى-يسار: الانتقال إلى المجلد التالي/السابق مع الصور في نفس مستوى المجلد الحالي \nأسفل-يمين: إغلاق علامة التبويب/النافذة"
+            "value" : "التبديل بين الملفات الشخصية:"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rechts/Links: Wechseln zum nächsten/vorherigen Ordner mit Bildern/Videos (logisch gleichbedeutend mit dem nächsten Ordner beim Sortieren aller Ordner auf der Festplatte).\nOben: Wechseln zum übergeordneten Verzeichnis.\nUnten: Zurückkehren zum vorherigen Verzeichnis.\nOben-Rechts/Oben-Links: Wechseln zum nächsten/vorherigen Ordner mit Bildern auf derselben Ebene wie der aktuelle Ordner.\nUnten-Rechts: Tab/Fenster schließen."
+            "value" : "Profilwechsel:"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk).\nUp: Switch to the parent directory.\nDown: Return to the previous directory.\nUp-Right/Up-Left: Switch to the next/previous folder with images at the same level as the current folder.\nDown-Right: Close the tab/window."
+            "value" : "Profile Switching:"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Derecha/Izquierda: Cambiar a la siguiente/anterior carpeta con imágenes/videos (equivale lógicamente a la siguiente carpeta al ordenar todas las carpetas en el disco).  \nArriba: Cambiar al directorio principal.  \nAbajo: Volver al directorio anterior.  \nArriba-Derecha/Arriba-Izquierda: Cambiar a la siguiente/anterior carpeta con imágenes al mismo nivel que la carpeta actual.  \nAbajo-Derecha: Cerrar la pestaña/ventana."
+            "value" : "Cambio de Perfil:"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Droite/Gauche : Passer au dossier suivant/précédent contenant des images/vidéos (logiquement équivalent au dossier suivant lors du tri de tous les dossiers sur le disque).\nHaut : Passer au répertoire parent.\nBas : Retourner au répertoire précédent.\nHaut-Droite/Haut-Gauche : Passer au dossier suivant/précédent contenant des images au même niveau que le dossier actuel.\nBas-Droite : Fermer l'onglet/fenêtre."
+            "value" : "Changement de profil :"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Destra/Sinistra: Passa alla cartella successiva/precedente con immagini/video (equivalente logico alla cartella successiva quando si ordinano tutte le cartelle sul disco).\nSu: Passa alla directory principale.\nGiù: Torna alla directory precedente.\nSu-Destra/Su-Sinistra: Passa alla cartella successiva/precedente con immagini allo stesso livello della cartella corrente.\nGiù-Destra: Chiudi la scheda/finestra."
+            "value" : "Cambio profilo:"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "右/左: 画像/動画が含まれる次/前のフォルダーに切り替えます（ディスク上のすべてのフォルダーを並べ替えた場合の次のフォルダーに論理的に相当します）。  \n上: 親ディレクトリに切り替えます。  \n下: 前のディレクトリに戻ります。  \n上-右/上-左: 現在のフォルダと同じレベルの次/前のフォルダに切り替えます。  \n下-右: タブ/ウィンドウを閉じます。"
+            "value" : "プロファイル切り替え:"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "오른쪽/왼쪽: 이미지/비디오가 있는 다음/이전 폴더로 전환 (디스크의 모든 폴더를 정렬할 때 논리적으로 다음 폴더와 동일).\n위쪽: 상위 디렉토리로 전환.\n아래쪽: 이전 디렉토리로 돌아가기.\n위쪽-오른쪽/위쪽-왼쪽: 현재 폴더와 같은 수준에서 이미지가 있는 다음/이전 폴더로 전환.\n아래쪽-오른쪽: 탭/창 닫기."
+            "value" : "프로필 전환:"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rechts/Links: Overschakelen naar de volgende/vorige map met afbeeldingen/video's (logisch gelijk aan de volgende map bij het sorteren van alle mappen op de schijf).\nOmhoog: Overschakelen naar de bovenliggende map.\nOmlaag: Terugkeren naar de vorige map.\nOmhoog-Rechts/Omhoog-Links: Overschakelen naar de volgende/vorige map met afbeeldingen op hetzelfde niveau als de huidige map.\nOmlaag-Rechts: Sluit het tabblad/venster."
+            "value" : "Profielwissel:"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Direita/Esquerda: Mude para a próxima/pasta anterior com imagens/vídeos (logicamente equivalente à próxima pasta ao classificar todas as pastas no disco).  \nPara Cima: Mude para o diretório pai.  \nPara Baixo: Volte para o diretório anterior.  \nCima-Direita/Cima-Esquerda: Mude para a próxima/pasta anterior com imagens no mesmo nível que a pasta atual.  \nBaixo-Direita: Feche a aba/janela.  "
+            "value" : "Alternância de Perfil:"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Direita/Esquerda: Alternar para a próxima/anterior pasta com imagens/vídeos (logicamente equivalente à próxima pasta ao ordenar todas as pastas no disco).  \nCima: Alternar para o diretório superior.  \nBaixo: Retornar ao diretório anterior.  \nCima-Direita/Cima-Esquerda: Alternar para a próxima/anterior pasta com imagens ao mesmo nível que a pasta atual.  \nBaixo-Direita: Fechar o separador/janela."
+            "value" : "Alternar Perfil:"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Право/Лево: Переключиться на следующую/предыдущую папку с изображениями/видео (логически эквивалентно следующей папке при сортировке всех папок на диске).\nВверх: Переключиться на родительский каталог.\nВниз: Вернуться в предыдущий каталог.\nВверх-Вправо/Вверх-Влево: Переключиться на следующую/предыдущую папку с изображениями на том же уровне, что и текущая папка.\nВниз-Вправо: Закрыть вкладку/окно."
+            "value" : "Переключение профиля:"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Höger/Vänster: Växla till nästa/föregående mapp med bilder/videor (logiskt motsvarande nästa mapp när alla mappar på disken sorteras).\nUpp: Växla till överordnad katalog.\nNer: Återgå till föregående katalog.\nUpp-Höger/Upp-Vänster: Växla till nästa/föregående mapp med bilder på samma nivå som den aktuella mappen.\nNer-Höger: Stäng fliken/fönstret."
+            "value" : "Profilväxling:"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "向右/左：切换到下一个/上一个有图片/视频的文件夹(逻辑上等同于将整个磁盘中的文件夹排序后的下一个)。\n向上：切换到上级目录。\n向下：返回到上一次的目录。\n向上右/上左：切换到与当前文件夹平级的下一个/上一个有图片的文件夹。\n向下右：关闭当前标签页/窗口。"
+            "value" : "配置切换："
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "右/左：切換到下一個/上一個包含圖片/視頻的資料夾（邏輯上等同於在磁碟上對所有資料夾排序時的下一個資料夾）。\n上：切換到上級目錄。\n下：返回到上一個目錄。\n上右/上左：切換到與當前資料夾同一層次的下一個/上一個包含圖片的資料夾。\n下右：關閉標籤頁/視窗。"
+            "value" : "配置檔切換："
+          }
+        }
+      }
+    },
+    "xau-nf-fbD.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk).\\nUp: Switch to the parent directory.\\nDown: Return to the previous directory.\\nUp-Right: Switch to the next folder with images at the same level as the current folder.\\nDown-Right: Close the tab/window.\"; ObjectID = \"xau-nf-fbD\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يسار/يمين: الانتقال إلى المجلد التالي/السابق مع الصور/الفيديوهات (ما يعادل منطقياً المجلد التالي عند ترتيب جميع المجلدات على القرص).  \nأعلى: الانتقال إلى الدليل الرئيسي.  \nأسفل: العودة إلى الدليل السابق.  \nأعلى يمين: الانتقال إلى المجلد التالي مع الصور على نفس مستوى المجلد الحالي.  \nأسفل يمين: إغلاق علامة التبويب/النافذة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechts/Links: Zum nächsten/vorherigen Ordner mit Bildern/Videos wechseln (logisch äquivalent zum nächsten Ordner bei der Sortierung aller Ordner auf der Festplatte).\nOben: Zum übergeordneten Verzeichnis wechseln.\nUnten: Zum vorherigen Verzeichnis zurückkehren.\nOben-Rechts: Zum nächsten Ordner mit Bildern auf derselben Ebene wie der aktuelle Ordner wechseln.\nUnten-Rechts: Tab/Fenster schließen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk).\nUp: Switch to the parent directory.\nDown: Return to the previous directory.\nUp-Right: Switch to the next folder with images at the same level as the current folder.\nDown-Right: Close the tab/window."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Derecha/Izquierda: Cambiar a la carpeta siguiente/anterior con imágenes/videos (lógicamente equivalente a la siguiente carpeta al ordenar todas las carpetas en el disco).\nArriba: Cambiar al directorio superior.\nAbajo: Volver al directorio anterior.\nArriba-Derecha: Cambiar a la siguiente carpeta con imágenes en el mismo nivel que la carpeta actual.\nAbajo-Derecha: Cerrar la pestaña/ventana."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Droite/Gauche : Passer au dossier suivant/précédent avec des images/vidéos (équivalent logique du dossier suivant lors du tri de tous les dossiers sur le disque).\nHaut : Passer au répertoire parent.\nBas : Retourner au répertoire précédent.\nHaut-Droite : Passer au dossier suivant avec des images au même niveau que le dossier actuel.\nBas-Droite : Fermer l'onglet/fenêtre."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Destra/Sinistra: Passa alla cartella successiva/precedente con immagini/video (logicamente equivalente alla cartella successiva quando si ordinano tutte le cartelle sul disco).  \nSu: Passa alla directory superiore.  \nGiù: Ritorna alla directory precedente.  \nSu-Destra: Passa alla cartella successiva con immagini allo stesso livello della cartella attuale.  \nGiù-Destra: Chiudi la scheda/finestra."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右/左: 次/前の画像/ビデオを含むフォルダに切り替えます (ディスク上のすべてのフォルダを並べ替えたときに論理的に次のフォルダに相当します )\n上: 親ディレクトリに切り替えます\n下: 前のディレクトリに戻ります\n上右: 現在のフォルダーと同じレベルで画像を含む次のフォルダに切り替えます\n下右: タブ/ウィンドウを閉じます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오른쪽/왼쪽: 이미지/비디오가 있는 다음/이전 폴더로 전환 (디스크의 모든 폴더를 정렬할 때 논리적으로 다음 폴더와 동일).\n위쪽: 상위 디렉토리로 전환.\n아래쪽: 이전 디렉토리로 돌아가기.\n위쪽-오른쪽: 현재 폴더와 같은 수준의 다음 이미지가 있는 폴더로 전환.\n아래쪽-오른쪽: 탭/창 닫기."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechts/Links: Schakel naar de volgende/vorige map met afbeeldingen/video's (logisch equivalent aan de volgende map bij het sorteren van alle mappen op de schijf)\nOmhoog: Ga naar de bovenliggende map\nOmlaag: Ga terug naar de vorige map\nOmhoog-Rechts: Schakel naar de volgende map met afbeeldingen op hetzelfde niveau als de huidige map\nOmlaag-Rechts: Sluit het tabblad/venster"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direita/Esquerda: Alternar para a próxima/anterior pasta com imagens/vídeos (logicamente equivalente à próxima pasta ao ordenar todas as pastas no disco).\nCima: Alternar para o diretório pai.\nBaixo: Retornar ao diretório anterior.\nCima-Direita: Alternar para a próxima pasta com imagens no mesmo nível da pasta atual.\nBaixo-Direita: Fechar a aba/janela."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direita/Esquerda: Alternar para a pasta seguinte/anterior com imagens/vídeos (equivalente, em termos lógicos, à pasta seguinte ao ordenar todas as pastas no disco)\nCima: Alternar para o diretório pai\nAbaixo: Voltar para o diretório anterior\nCima-Direita: Alternar para a próxima pasta com imagens no mesmo nível da pasta atual\nBaixo-Direita: Fechar o separador/janela"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Право/Лево: Переключиться на следующий/предыдущий каталог с изображениями/видео (логически эквивалентно следующему каталогу при сортировке всех папок на диске).\nВверх: Переключиться на родительский каталог.\nВниз: Вернуться в предыдущий каталог.\nВверх-Вправо: Переключиться на следующий каталог с изображениями на том же уровне, что и текущий каталог.\nВниз-Вправо: Закрыть вкладку/окно."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Höger/Vänster: Byt till nästa/föregående mapp med bilder/videor (logiskt motsvarande nästa mapp när alla mappar på disken sorteras).\nUpp: Byt till överordnad katalog.\nNer: Återgå till föregående katalog.\nUpp-Höger: Byt till nästa mapp med bilder på samma nivå som den aktuella mappen.\nNer-Höger: Stäng fliken/fönstret."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "向右/左：切换到下一个/上一个有图片/视频的文件夹(逻辑上等同于将整个磁盘中的文件夹排序后的下一个)。\n向上：切换到上级目录。\n向下：返回到上一次的目录。\n向上右：切换到与当前文件夹平级的下一个有图片的文件夹。\n向下右：关闭当前标签页/窗口。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右/左：切換到包含圖片/影片的下一個/前一個資料夾（在磁碟上排序所有資料夾時邏輯上等同於下一個資料夾）  \n上：切換到上一層目錄  \n下：返回到前一個目錄  \n右上：切換到與當前資料夾同層的下一個包含圖片的資料夾  \n右下：關閉標籤/視窗"
+          }
+        }
+      }
+    },
+    "xwz-xM-bF8.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Press Q in thumbnail view to activate Quick Search, allowing you to enter search keywords within a short time to locate files. In this mode, number keys, letter keys, and the backspace key are used for input.\"; ObjectID = \"xwz-xM-bF8\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اضغط على Q في عرض الصور المصغرة لتفعيل البحث السريع، مما يتيح لك إدخال كلمات بحث في وقت قصير لتحديد موقع الملفات. في هذا الوضع، تُستخدم مفاتيح الأرقام، ومفاتيح الحروف، ومفتاح المسافة للخلف للإدخال."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drücken Sie Q in der Miniaturansicht, um die Schnellsuche zu aktivieren, mit der Sie innerhalb kurzer Zeit Suchbegriffe eingeben können, um Dateien zu finden. In diesem Modus werden Zahlentasten, Buchstabentasten und die Rücktaste zur Eingabe verwendet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Press Q in thumbnail view to activate Quick Search, allowing you to enter search keywords within a short time to locate files. In this mode, number keys, letter keys, and the backspace key are used for input."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presiona Q en la vista de miniaturas para activar la Búsqueda Rápida, lo que te permite ingresar palabras clave de búsqueda en poco tiempo para localizar archivos. En este modo, las teclas numéricas, las teclas de letras y la tecla de retroceso se utilizan para ingresar texto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appuyez sur Q en mode vignette pour activer la recherche rapide, vous permettant d'entrer des mots-clés de recherche en peu de temps pour localiser des fichiers. Dans ce mode, les touches numériques, les touches lettres et la touche retour arrière sont utilisées pour la saisie."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premi Q nella vista miniature per attivare la Ricerca Rapida, permettendoti di inserire parole chiave di ricerca in breve tempo per individuare i file. In questa modalità, i tasti numerici, i tasti lettera e il tasto backspace vengono utilizzati per l'input."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サムネイルビューで Q を押してクイック検索を起動し、短時間で検索キーワードを入力してファイルを見つけることができます。このモードでは、数字キー、文字キー、バックスペースキーが入力に使用されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "썸네일 보기에서 Q를 눌러 빠른 검색을 활성화하면 짧은 시간 내에 검색 키워드를 입력하여 파일을 찾을 수 있습니다 이 모드에서는 숫자 키, 문자 키 및 백스페이스 키가 입력에 사용됩니다"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Druk op Q in miniatuurweergave om Quick Search te activeren, waarmee je zoekwoorden binnen korte tijd kunt invoeren om bestanden te vinden. In deze modus worden cijfertoetsen, lettertoetsen en de backspace-toets gebruikt voor invoer"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pressione Q na visualização de miniaturas para ativar a Pesquisa Rápida, permitindo que você insira palavras-chave de pesquisa em um curto período de tempo para localizar arquivos. Nesse modo, teclas numéricas, teclas de letras e a tecla de backspace são usadas para entrada."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pressione Q na vista de miniaturas para ativar a Pesquisa Rápida, permitindo que insira palavras-chave de pesquisa por um curto período de tempo para localizar ficheiros. Neste modo, as teclas numéricas, teclas alfabéticas e a tecla de retrocesso são usadas para a inserção."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажмите Q в режиме эскизов, чтобы активировать Быстрый поиск, который позволит вам ввести ключевые слова поиска за короткое время для поиска файлов. В этом режиме для ввода используются цифровые клавиши, буквенные клавиши и клавиша Backspace."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryck på Q i miniatyrvyn för att aktivera Snabbsökning, så att du kan ange sökord inom kort tid för att hitta filer. I detta läge används siffertangenter, bokstavstangenter och backstegstangenten för att mata in."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在缩略图界面按Q开启快速搜索，可在短时间内输入查找关键字来定位文件。此状态下数字键、字母键和退格键将作输入用途。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在縮略圖檢視中按下 Q 鍵以啟動快速搜尋，允許您在短時間內輸入搜尋關鍵字以定位檔案。在此模式下，數字鍵、字母鍵和退格鍵用於輸入。"
+          }
+        }
+      }
+    },
+    "Ztd-qQ-cwH.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Open / Close\"; ObjectID = \"Ztd-qQ-cwH\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فتح / إغلاق"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnen / Schließen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Open / Close"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir / Cerrar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir / Fermer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri / Chiudi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開く / 閉じる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "열기 / 닫기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Openen / Sluiten"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir / Fechar"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir / Fechar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть / Закрыть"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öppna / Stäng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开/关闭"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟 / 關閉"
           }
         }
       }

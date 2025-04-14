@@ -774,10 +774,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 menu.addItem(NSMenuItem.separator())
                 
-                if selectedCount == 1 {
-                    let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
-                    actionItemRename.keyEquivalentModifierMask = []
-                }
+                let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "r")
+                actionItemRename.keyEquivalentModifierMask = []
                 
                 let actionItemCopy = menu.addItem(withTitle: NSLocalizedString("Copy", comment: "复制"), action: #selector(actCopy), keyEquivalent: "c")
                 
@@ -825,7 +823,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 menu.addItem(NSMenuItem.separator())
                 
                 let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("Refresh", comment: "刷新"), action: #selector(actRefresh), keyEquivalent: "r")
-                actionItemRefresh.keyEquivalentModifierMask = []
+                actionItemRefresh.keyEquivalentModifierMask = [.command]
                 
                 menu.items.forEach { $0.target = self }
                 NSMenu.popUpContextMenu(menu, with: event, for: self.view)

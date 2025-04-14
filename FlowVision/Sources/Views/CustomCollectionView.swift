@@ -124,7 +124,7 @@ class CustomCollectionView: NSCollectionView {
                     menu.addItem(NSMenuItem.separator())
                     
                     let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("Refresh", comment: "刷新"), action: #selector(actRefresh), keyEquivalent: "r")
-                    actionItemRefresh.keyEquivalentModifierMask = []
+                    actionItemRefresh.keyEquivalentModifierMask = [.command]
                     
                     menu.items.forEach { $0.target = self }
                     NSMenu.popUpContextMenu(menu, with: event, for: self)
