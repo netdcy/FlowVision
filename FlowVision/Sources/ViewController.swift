@@ -138,6 +138,7 @@ class PublicVar{
         didSet {updateToolbar()}
     }
     var folderStepForwardStack = [String]()
+    var folderStepForLocate = [(String,GestureDirection)]()
     var isLeftMouseDown: Bool = false
     var isRightMouseDown: Bool = false
     var isInInitStage: Bool = true
@@ -1175,10 +1176,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         collectionView.deselectAll(nil)
                                     }
                                     if let toSelect = collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [newIndexPath]) {
+                                        collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
+                                        collectionView.reloadData()
                                         collectionView.selectItems(at: toSelect, scrollPosition: [])
                                         collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: toSelect)
-                                        collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
-                                        
                                         setLoadThumbPriority(ifNeedVisable: true)
                                     }
                                 }
@@ -1199,9 +1200,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 let sortedIndexPaths = indexPaths.sorted { $0.item < $1.item }
                                 
                                 if let newIndexPath = sortedIndexPaths.first{
+                                    collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
+                                    collectionView.reloadData()
                                     collectionView.selectItems(at: [newIndexPath], scrollPosition: [])
                                     collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [newIndexPath])
-                                    collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
+                                    setLoadThumbPriority(ifNeedVisable: true)
                                 }
                             }
                             return nil
@@ -3804,6 +3807,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             fileDB.unlock()
             return
         }
+        //记录供定位的上次目录
+        if stackDeep == 0,
+           direction == .up || direction == .down || direction == .back {
+            publicVar.folderStepForLocate.insert((fileDB.curFolder,direction), at: 0)
+            if publicVar.folderStepForLocate.count > 10 {
+                publicVar.folderStepForLocate.removeLast()
+            }
+        }
         fileDB.unlock()
         
         startTime = DispatchTime.now()
@@ -4844,6 +4855,31 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         let timeInterval = Double(nanoTime) / 1_000_000_000
                                         log("到隐藏快照原因1耗时: \(timeInterval) seconds")
                                         log("-----------------------------------------------------------")
+                                        
+                                        //向上或者后退时定位文件夹
+                                        if let (lastFolder,direction) = publicVar.folderStepForLocate.first {
+                                            
+                                            if let lastURL = URL(string: lastFolder),
+                                               let curURL = URL(string: curFolder),
+                                               lastURL.deletingLastPathComponent().absoluteString == curURL.absoluteString {
+                                                
+                                                publicVar.folderStepForLocate.removeAll()
+                                                
+                                                let targetFolderPath = lastURL.absoluteString
+                                                let targetKey = SortKeyFile(targetFolderPath, isDir: true, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)
+                                                
+                                                if let index=fileDB.db[SortKeyDir(curFolder)]?.files.index(forKey: targetKey),
+                                                   let offset=fileDB.db[SortKeyDir(curFolder)]?.files.offset(of: index) {
+                                                    
+                                                    let indexPath=IndexPath(item: offset, section: 0)
+                                                    collectionView.scrollToItems(at: [indexPath], scrollPosition: .nearestHorizontalEdge)
+                                                    collectionView.reloadData()
+                                                    collectionView.selectItems(at: [indexPath], scrollPosition: [])
+                                                    setLoadThumbPriority(ifNeedVisable: true)
+                                                    
+                                                }
+                                            }
+                                        }
                                     }
                                     
                                     while snapshotQueue.count > 0{
@@ -5482,7 +5518,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             collectionView.selectItems(at: [indexPath], scrollPosition: [])
             collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
             collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
-            setLoadThumbPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0), ifNeedVisable: false)
+            setLoadThumbPriority(ifNeedVisable: true)
         }
 
         largeImageView.updateTextItems([])
@@ -7249,7 +7285,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         collectionView.scrollToItems(at: [indexPath], scrollPosition: .nearestHorizontalEdge)
                         collectionView.reloadData()
                         collectionView.selectItems(at: [indexPath], scrollPosition: [])
-                        setLoadThumbPriority(indexPath: indexPath, ifNeedVisable: false)
+                        setLoadThumbPriority(ifNeedVisable: true)
                         return true
                     }
                 }
@@ -7284,7 +7320,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 collectionView.scrollToItems(at: [indexPath], scrollPosition: .nearestHorizontalEdge)
                 collectionView.reloadData()
                 collectionView.selectItems(at: [indexPath], scrollPosition: [])
-                setLoadThumbPriority(indexPath: indexPath, ifNeedVisable: false)
+                setLoadThumbPriority(ifNeedVisable: true)
                 return true
             }
         }
