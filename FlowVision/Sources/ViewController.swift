@@ -1196,10 +1196,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     
                     //如果焦点在CollectionView
                     if publicVar.isCollectionViewFirstResponder{
-                        if publicVar.selectedUrls().count == 1 {
-                            renameAlert(url: publicVar.selectedUrls()[0])
-                            return nil
-                        }
+                        renameAlert(urls: publicVar.selectedUrls())
+                        return nil
                     }
                 }
                 
@@ -4479,6 +4477,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     if ver != dirModel.ver {return}
                     
                     if curFolder == path {
+                        
+                        if snapshotQueue.count > 0 {
+                            let curTime = DispatchTime.now()
+                            let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
+                            let timeInterval = Double(nanoTime) / 1_000_000_000
+                            log("到隐藏快照原因2耗时: \(timeInterval) seconds")
+                            log("-----------------------------------------------------------")
+                        }
+                        
                         while snapshotQueue.count > 0{
                             
                             if layoutCalcPos == 0{
@@ -4807,6 +4814,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                                 let timeInterval = Double(nanoTime) / 1_000_000_000
                                 if i>40 || i==count-1 || timeInterval>0.3 {
+                                    
+                                    if snapshotQueue.count > 0 {
+                                        let curTime = DispatchTime.now()
+                                        let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
+                                        let timeInterval = Double(nanoTime) / 1_000_000_000
+                                        log("到隐藏快照原因1耗时: \(timeInterval) seconds")
+                                        log("-----------------------------------------------------------")
+                                    }
+                                    
                                     while snapshotQueue.count > 0{
                                         let snapshot=snapshotQueue.first!
                                         snapshotQueue.removeFirst()

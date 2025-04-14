@@ -350,13 +350,13 @@ func showInformationCopy(title: String, message: String) {
     }
 }
 
-func renameAlert(url: URL) -> Bool {
-    let originalUrl = url
+func renameAlert(urls: [URL]) -> Bool {
+    if urls.isEmpty { return false }
     
     // 创建一个警告对话框
     let alert = NSAlert()
     alert.messageText = NSLocalizedString("Rename", comment: "重命名")
-    alert.informativeText = NSLocalizedString("New name for", comment: "请输入新的名称用于") + " \(originalUrl.lastPathComponent):"
+    alert.informativeText = NSLocalizedString("New name for", comment: "请输入新的名称用于") + " \(urls[0].lastPathComponent):"
     alert.alertStyle = .informational
     alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
     alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
@@ -364,7 +364,7 @@ func renameAlert(url: URL) -> Bool {
     
     // 添加一个文本输入框到警告对话框中
     let inputTextField = NSTextField(frame: NSRect(x: 0, y: 0, width: 200, height: 24))
-    inputTextField.stringValue = originalUrl.lastPathComponent
+    inputTextField.stringValue = urls[0].lastPathComponent
     if let textFieldCell = inputTextField.cell as? NSTextFieldCell {
         textFieldCell.usesSingleLineMode = true
         textFieldCell.wraps = false
@@ -374,11 +374,11 @@ func renameAlert(url: URL) -> Bool {
     
     // 显示对话框
     let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
-    getMainViewController()!.publicVar.isKeyEventEnabled=false
+    getMainViewController()!.publicVar.isKeyEventEnabled = false
     DispatchQueue.main.async {
         // 判断是否是文件夹
         var isDirectory: ObjCBool = false
-        FileManager.default.fileExists(atPath: originalUrl.path, isDirectory: &isDirectory)
+        FileManager.default.fileExists(atPath: urls[0].path, isDirectory: &isDirectory)
         
         _ = inputTextField.becomeFirstResponder()
         if isDirectory.boolValue {
@@ -386,38 +386,57 @@ func renameAlert(url: URL) -> Bool {
             inputTextField.selectText(nil)
         } else {
             // 如果是文件，选中文件名不包含扩展名的部分
-            let fileName = originalUrl.deletingPathExtension().lastPathComponent
+            let fileName = urls[0].deletingPathExtension().lastPathComponent
             inputTextField.currentEditor()?.selectedRange = NSRange(location: 0, length: fileName.count)
         }
     }
     let response = alert.runModal()
-    getMainViewController()!.publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
+    getMainViewController()!.publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
     
     // 根据用户的选择处理结果
     if response == .alertFirstButtonReturn { // OK按钮
-        let newName = inputTextField.stringValue
+        let newBaseName = inputTextField.stringValue
         
-        if newName != "" {
-            // 获取新的完整文件路径
-            let newUrl = originalUrl.deletingLastPathComponent().appendingPathComponent(newName)
+        if newBaseName != "" {
+            var allSuccess = true
             
-            // 检查是否存在同名文件
-            if FileManager.default.fileExists(atPath: newUrl.path) &&
-                originalUrl.path.lowercased() != newUrl.path.lowercased() {
-                showAlert(message: NSLocalizedString("renaming-conflict", comment: "该名称的文件已存在，请选择其他名称。"))
-            }else if originalUrl.path != newUrl.path {
-                // 执行重命名操作
-                do {
-                    // 文件更改计数
-                    getMainViewController()?.publicVar.fileChangedCount += 1
-                    
-                    try FileManager.default.moveItem(at: originalUrl, to: newUrl)
-                    log("File renamed to \(newName)")
-                    return true
-                } catch {
-                    log("Failed to rename file: \(error)")
+            for (index, originalUrl) in urls.enumerated() {
+                // 构建新文件名
+                var newName = newBaseName
+                if index >= 0 && urls.count > 1 {
+                    // 如果有扩展名，在扩展名前添加序号
+                    if let ext = originalUrl.pathExtension.isEmpty ? nil : originalUrl.pathExtension {
+                        let nameWithoutExt = (newBaseName as NSString).deletingPathExtension
+                        newName = "\(nameWithoutExt)_\(index + 1).\(ext)"
+                    } else {
+                        newName = "\(newBaseName)_\(index + 1)"
+                    }
+                }
+                
+                let newUrl = originalUrl.deletingLastPathComponent().appendingPathComponent(newName)
+                
+                // 检查是否存在同名文件
+                if FileManager.default.fileExists(atPath: newUrl.path) &&
+                    originalUrl.path.lowercased() != newUrl.path.lowercased() {
+                    showAlert(message: NSLocalizedString("renaming-conflict", comment: "该名称的文件已存在，请选择其他名称。"))
+                    allSuccess = false
+                    break
+                } else if originalUrl.path != newUrl.path {
+                    // 执行重命名操作
+                    do {
+                        // 文件更改计数
+                        getMainViewController()?.publicVar.fileChangedCount += 1
+                        
+                        try FileManager.default.moveItem(at: originalUrl, to: newUrl)
+                        log("File renamed to \(newName)")
+                    } catch {
+                        log("Failed to rename file: \(error)")
+                        allSuccess = false
+                        break
+                    }
                 }
             }
+            return allSuccess
         }
     }
     return false

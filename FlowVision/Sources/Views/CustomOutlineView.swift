@@ -214,7 +214,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         }
         guard let url = url else {return}
         
-        renameAlert(url: url)
+        renameAlert(urls: [url])
 
         if curRightClickedIndex != self.selectedRowIndexes.first {
             refreshTreeView()

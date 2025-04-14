@@ -1001,7 +1001,7 @@ class LargeImageView: NSView {
             
             menu.addItem(withTitle: NSLocalizedString("Show in Finder", comment: "在Finder中显示"), action: #selector(actShowInFinder), keyEquivalent: "")
             
-            let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "")
+            let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "\r")
             actionItemRename.keyEquivalentModifierMask = []
             
             menu.addItem(NSMenuItem.separator())
@@ -1205,7 +1205,7 @@ class LargeImageView: NSView {
         NSWorkspace.shared.selectFile(file.path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!, inFileViewerRootedAtPath: folderPath)
     }
     @objc func actRename() {
-        renameAlert(url: URL(string: file.path)!);
+        renameAlert(urls: [URL(string: file.path)!]);
     }
     
     @objc func actCopy() {

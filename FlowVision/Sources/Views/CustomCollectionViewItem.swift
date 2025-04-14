@@ -865,7 +865,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 //        let folderPath = (file.path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding! as NSString).deletingLastPathComponent
 //        NSWorkspace.shared.selectFile(file.path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!, inFileViewerRootedAtPath: folderPath)
         
-        guard let urls = getViewController(collectionView!)?.getSelectedURLs() else { return }
+        guard let urls = getViewController(collectionView!)?.publicVar.selectedUrls() else { return }
         NSWorkspace.shared.activateFileViewerSelecting(urls)
     }
     
@@ -878,7 +878,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     @objc func actRename() {
-        renameAlert(url: URL(string: file.path)!);
+        guard let urls = getViewController(collectionView!)?.publicVar.selectedUrls() else { return }
+        renameAlert(urls: urls);
     }
     
     @objc func actNewFolder() {
