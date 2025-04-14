@@ -6747,14 +6747,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.profile.setValue(forKey: "isShowThumbnailBadge", value: newStyle.getValue(forKey: "isShowThumbnailBadge"))
         publicVar.profile.isShowThumbnailFilename = newStyle.isShowThumbnailFilename
         publicVar.profile.ThumbnailFilenameSize = newStyle.ThumbnailFilenameSize
-        publicVar.profile._thumbnailCellPadding = newStyle.ThumbnailCellPadding
+        publicVar.profile._thumbnailCellPadding = newStyle._thumbnailCellPadding
         
         // 网格视图
         publicVar.profile.ThumbnailBorderRadiusInGrid = newStyle.ThumbnailBorderRadiusInGrid
         
         // 非网格视图
         publicVar.profile.ThumbnailBorderRadius = newStyle.ThumbnailBorderRadius
-        publicVar.profile._thumbnailBorderThickness = newStyle.ThumbnailBorderThickness
+        publicVar.profile._thumbnailBorderThickness = newStyle._thumbnailBorderThickness
         publicVar.profile.ThumbnailLineSpaceAdjust = newStyle.ThumbnailLineSpaceAdjust
         publicVar.profile.ThumbnailShowShadow = newStyle.ThumbnailShowShadow
         
