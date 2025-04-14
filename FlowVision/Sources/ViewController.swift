@@ -3649,13 +3649,26 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     func treeReLocate(path: String, doCollapse: Bool, expandLast: Bool) {
         var path=path
-        let externalVolumes=VolumeManager.shared.getExternalVolumes()
         var isInExternal=false
-        for exUrl in externalVolumes {
-            if path.hasPrefix(exUrl.absoluteString) {
-                path=exUrl.lastPathComponent+"/"+path.replacingOccurrences(of: exUrl.absoluteString, with: "")
-                isInExternal=true
-                break
+        
+        //注：由于此函数获取的是volumeIsInternal属性为false的真外部卷，对于第二块硬盘、分区会没有，因此不再使用
+//        let externalVolumes=VolumeManager.shared.getExternalVolumes()
+//        for exUrl in externalVolumes {
+//            if path.hasPrefix(exUrl.absoluteString) {
+//                path=exUrl.lastPathComponent+"/"+path.replacingOccurrences(of: exUrl.absoluteString, with: "")
+//                isInExternal=true
+//                break
+//            }
+//        }
+
+        if let urls = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: nil, options: [.skipHiddenVolumes]) {
+            for exUrl in urls {
+                if exUrl.absoluteString == "file:///" {continue}
+                if path.hasPrefix(exUrl.absoluteString) {
+                    path=exUrl.lastPathComponent+"/"+path.replacingOccurrences(of: exUrl.absoluteString, with: "")
+                    isInExternal=true
+                    break
+                }
             }
         }
 
