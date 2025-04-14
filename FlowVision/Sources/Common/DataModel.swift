@@ -130,7 +130,11 @@ class SortKey: Comparable {
     }
     
     func ext() -> String {
-        return SortKey.ext(self)
+        if self.isDir {
+            return ""
+        }else{
+            return SortKey.ext(self)
+        }
     }
     
     static func ext(_ sortKey: SortKey) -> String {
