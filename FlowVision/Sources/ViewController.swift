@@ -733,7 +733,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
                 // 检查按键是否是 "," 键
                 if characters == "," && noModifierKey {
-                    if largeImageView.file.type == .video {
+                    if publicVar.isInLargeView,
+                       largeImageView.file.type == .video {
                         largeImageView.specifyABPlayPositionA()
                     }
                     return nil
@@ -741,7 +742,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
                 // 检查按键是否是 "." 键
                 if characters == "." && noModifierKey {
-                    if largeImageView.file.type == .video {
+                    if publicVar.isInLargeView,
+                       largeImageView.file.type == .video {
                         largeImageView.specifyABPlayPositionB()
                     }
                     return nil
@@ -749,7 +751,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 
                 // 检查按键是否是 "L" 键
                 if characters == "l" && noModifierKey {
-                    if largeImageView.file.type == .video {
+                    if publicVar.isInLargeView,
+                       largeImageView.file.type == .video {
                         largeImageView.specifyABPlayPositionAuto()
                     }
                     return nil
@@ -757,7 +760,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
                 // 检查按键是否是 "K" 键
                 if characters == "k" && noModifierKey {
-                    if largeImageView.file.type == .video {
+                    if publicVar.isInLargeView,
+                       largeImageView.file.type == .video {
                         largeImageView.actRememberPlayPosition()
                     }
                     return nil
@@ -777,6 +781,19 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         switchDirByDirection(direction: .forward, stackDeep: 0)
                     }
                     return nil
+                }
+                
+                // 检查按键是否是 Command+⬅️➡️ 键
+                if (specialKey == .leftArrow || specialKey == .rightArrow) && isOnlyCommandPressed {
+                    if publicVar.isInLargeView,
+                       largeImageView.file.type == .video {
+                        if specialKey == .leftArrow {
+                            largeImageView.seekVideoByFrame(direction: -1)
+                        }else{
+                            largeImageView.seekVideoByFrame(direction: 1)
+                        }
+                        return nil
+                    }
                 }
                 
                 // 检查按键是否是 Command+⬆️ 键
@@ -1171,13 +1188,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 
                 // 检查按键是否是 F2、回车、小键盘回车 键
                 if specialKey == .f2 || specialKey == .enter || specialKey == .carriageReturn || specialKey == .newline {
-                    if publicVar.isInLargeView && specialKey != .f2 {
-                        if let window = view.window {
-                            window.toggleFullScreen(nil)
-                        }
-                        return nil
-                    }
-                    
                     //如果焦点在OutlineView
                     if publicVar.isOutlineViewFirstResponder{
                         outlineView.actRename(isByKeyboard: true)

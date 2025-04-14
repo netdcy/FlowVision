@@ -35,6 +35,9 @@ class GlobalVar{
     //实时状态变量
     var isInMiddleMouseDrag = false
     
+    //“设置”中按钮，用于同步状态
+    weak var useInternalPlayerCheckbox: NSButton?
+    
     //“设置”中的变量
     var terminateAfterLastWindowClosed = true
     var autoHideToolbar = false
@@ -54,7 +57,11 @@ class GlobalVar{
     var usePinyinSearch = false
     var usePinyinInitialSearch = false
     var videoPlayRememberPosition = false
-    var useInternalPlayer = false
+    var useInternalPlayer = false {
+        didSet {
+            useInternalPlayerCheckbox?.state = useInternalPlayer ? .on : .off
+        }
+    }
     
     //可记忆设置变量
     var isFirstTimeUse = true

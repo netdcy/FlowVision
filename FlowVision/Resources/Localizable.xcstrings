@@ -28792,91 +28792,91 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "في واجهة المشغل، اضغط على الزر الأيسر لإيقاف التشغيل مؤقتًا، ثم انقر بزر الماوس الأيمن واسحب لضبط تقدم تشغيل الفيديو.\n\nيدعم macOS أصلاً فقط تنسيقات الفيديو مثل \"mp4\"، \"mov\"، \"m2ts\"، \"ts\"، \"mpeg\"، \"mpg\"، \"m4v\"، و\"vob\". لا تزال التنسيقات الأخرى بحاجة إلى تشغيل باستخدام مشغل خارجي.\n\nيشير \"تشغيل الفيديو المرئي تلقائيًا\" إلى تكرار تشغيل الفيديوهات داخل المنطقة المرئية في عرض الصور المصغرة. نظرًا لأن تشغيل الفيديو هو مهمة كثيفة الموارد، فقد يسبب تأخيرًا في التمرير عند التحميل."
+            "value" : "في واجهة المشغل، الضغط على زر الماوس الأيسر يوقف التشغيل، وسحب النقر بزر الماوس الأيمن يضبط تقدم تشغيل الفيديو. يمكن لمفاتيح الأسهم اليسرى واليمنى على لوحة المفاتيح التقديم السريع والإرجاع، بينما يسمح الضغط باستمرار على مفتاح Cmd بالتنقل إطارًا بإطار.\n\nيدعم macOS بشكل طبيعي تنسيقات الفيديو مثل \"mp4\"، \"mov\"، \"m2ts\"، \"ts\"، \"mpeg\"، \"mpg\"، \"m4v\"، و \"vob\". تتطلب التنسيقات الأخرى مشغلًا خارجيًا للتشغيل.\n\nتشير \"تشغيل الفيديوهات المرئية تلقائيًا\" إلى تكرار الفيديوهات ضمن النطاق المرئي في عرض الصور المصغرة. نظرًا لأن تشغيل الفيديو مهمة تتطلب موارد كبيرة، فقد يتسبب التحميل في تأخير التمرير."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Drücken Sie in der Benutzeroberfläche des Players die linke Taste, um die Wiedergabe zu pausieren, und klicken Sie mit der rechten Maustaste, während Sie den Mauszeiger ziehen, um den Fortschritt der Videowiedergabe anzupassen.\n\nmacOS unterstützt nativ nur Videoformate wie \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" und \"vob\". Andere Formate müssen weiterhin mit einem externen Player abgespielt werden.\n\n\"Automatische Wiedergabe sichtbarer Videos\" bezieht sich auf das Schleifen der Videos im sichtbaren Bereich der Miniaturansicht. Da die Videowiedergabe eine ressourcenintensive Aufgabe ist, kann beim Laden ein Scroll-Verzögerung auftreten."
+            "value" : "Im Player-Interface pausiert das Drücken der linken Maustaste die Wiedergabe, und das Ziehen mit der rechten Maustaste passt den Videowiedergabefortschritt an. Mit den Pfeiltasten links und rechts auf der Tastatur kann man vor- und zurückspulen, und das Gedrückthalten der Cmd-Taste ermöglicht die Navigation Bild für Bild. \n\nmacOS unterstützt nativ Videoformate wie \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" und \"vob\". Andere Formate erfordern immer noch einen externen Player für die Wiedergabe. \n\n\"Automatisch sichtbare Videos abspielen\" bezieht sich auf das Schleifen der Videos im sichtbaren Bereich in der Miniaturansicht. Da Videowiedergabe eine anspruchsvolle Aufgabe ist, kann das Laden zu einem Scroll-Verzögerungsproblem führen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In the player interface, press the left button to pause playback, and right-click and drag to adjust the video playback progress.\n\nmacOS natively only supports video formats such as \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" and \"vob”. Other formats still need to be played using an external player.\n\n\"Auto Play Visible Video\" refers to looping the videos within the visible area in thumbnail view. Since video playback is a resource-intensive task, it may cause scrolling lag when loading."
+            "value" : "In the player interface, pressing the left mouse button pauses playback, and right-click dragging adjusts the video playback progress. The keyboard left and right arrow keys can fast forward and rewind, and holding the Cmd key allows for frame-by-frame navigation.\n\nmacOS natively supports video formats such as \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", and \"vob\". Other formats still require an external player for playback.\n\n\"Auto-play visible videos\" refers to looping the videos within the visible range in thumbnail view. Since video playback is a demanding task, loading may cause scrolling lag."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En la interfaz del reproductor, presiona el botón izquierdo para pausar la reproducción, y haz clic derecho y arrastra para ajustar el progreso de la reproducción del video.\n\nmacOS solo admite de forma nativa formatos de video como \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" y \"vob”. Otros formatos aún necesitan ser reproducidos usando un reproductor externo.\n\n\"Reproducción automática de video visible\" se refiere a repetir los videos dentro del área visible en vista de miniaturas. Dado que la reproducción de video es una tarea que consume muchos recursos, puede causar retraso al desplazarse al cargarse."
+            "value" : "En la interfaz del reproductor, presionar el botón izquierdo del ratón pausa la reproducción, y arrastrar con el botón derecho ajusta el progreso de la reproducción del video. Las teclas de flecha izquierda y derecha del teclado pueden avanzar y retroceder rápidamente, y mantener presionada la tecla Cmd permite la navegación cuadro por cuadro.\n\nmacOS admite de forma nativa formatos de video como \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" y \"vob\". Otros formatos aún requieren un reproductor externo para la reproducción.\n\n\"Reproducción automática de vídeos visibles\" se refiere a la repetición de los vídeos dentro del rango visible en la vista de miniaturas. Dado que la reproducción de video es una tarea exigente, la carga puede causar retraso al desplazarse."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dans l'interface du lecteur, appuyez sur le bouton gauche pour mettre la lecture en pause et faites un clic droit et faites glisser pour ajuster la progression de la lecture vidéo.\n\nmacOS prend en charge de manière native uniquement les formats vidéo tels que \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" et \"vob\". Les autres formats doivent encore être lus à l'aide d'un lecteur externe.\n\n\"Lecture automatique de la vidéo visible\" désigne la boucle des vidéos dans la zone visible en vue miniature. Étant donné que la lecture vidéo est une tâche gourmande en ressources, cela peut entraîner des ralentissements lors du défilement pendant le chargement."
+            "value" : "Dans l'interface du lecteur, appuyer sur le bouton gauche de la souris met en pause la lecture, et faire glisser avec un clic droit ajuste la progression de la lecture vidéo. Les touches fléchées gauche et droite du clavier permettent d'avancer et de reculer rapidement, et maintenir la touche Cmd permet une navigation image par image.\n\nmacOS prend en charge nativement les formats vidéo tels que \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" et \"vob\". D'autres formats nécessitent encore un lecteur externe pour la lecture.\n\n\"Lecture automatique des vidéos visibles\" fait référence à la boucle des vidéos dans la zone visible en vue miniature. Étant donné que la lecture vidéo est une tâche exigeante, le chargement peut provoquer un décalage de défilement."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nell'interfaccia del lettore, premi il pulsante sinistro per mettere in pausa la riproduzione e fai clic destro e trascina per regolare il progresso della riproduzione video.\n\nmacOS supporta nativamente solo formati video come \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" e \"vob\". Altri formati devono ancora essere riprodotti utilizzando un lettore esterno.\n\n\"Riproduzione Automatica Video Visibile\" si riferisce al loop dei video all'interno dell'area visibile nella vista miniature. Poiché la riproduzione video è un'attività che richiede molte risorse, potrebbe causare ritardi nello scorrimento durante il caricamento."
+            "value" : "Nell'interfaccia del lettore, premendo il pulsante sinistro del mouse si mette in pausa la riproduzione, e trascinando con il tasto destro si regola l'avanzamento del video. I tasti freccia sinistra e destra della tastiera permettono di avanzare rapidamente e riavvolgere, e tenendo premuto il tasto Cmd è possibile navigare fotogramma per fotogramma\n\nmacOS supporta nativamente formati video come \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" e \"vob\". Altri formati richiedono ancora un lettore esterno per la riproduzione\n\n\"Riproduzione automatica dei video visibili\" si riferisce al loop dei video all'interno dell'intervallo visibile in modalità miniatura. Poiché la riproduzione dei video è un'attività impegnativa, il caricamento può causare ritardi nello scorrimento"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "プレーヤーインターフェースでは、左ボタンを押すと再生が一時停止され、右クリックしてドラッグするとビデオ再生の進行状況を調整できます。\n\nmacOSはネイティブで「mp4」、「mov」、「m2ts」、「ts」、「mpeg」、「mpg」、「m4v」、「vob」などのビデオ形式のみをサポートしています。他の形式は外部プレーヤーを使用して再生する必要があります。\n\n「可視ビデオ自動再生」は、サムネイルビュー内の可視エリアのビデオをループ再生することを指します。ビデオ再生はリソースを多く消費するタスクであるため、読み込み時にスクロールの遅延が発生する可能性があります。"
+            "value" : "プレイヤーインターフェースでは、左クリックすると再生が一時停止し、右クリックをドラッグすると動画再生の進行を調整できます。キーボードの左右の矢印キーで早送りや巻き戻しができ、Cmdキーを押すとフレーム単位のナビゲーションが可能です。\n\nmacOSは \"mp4\"、\"mov\"、\"m2ts\"、\"ts\"、\"mpeg\"、\"mpg\"、\"m4v\"、\"vob\" などのビデオフォーマットをネイティブにサポートしています。他のフォーマットは再生のために外部プレイヤーが必要です。\n\n\"自動再生できる動画\"はサムネイル表示で表示範囲内の動画をループ再生することを指します。動画再生は負荷の高いタスクであるため、読み込みがスクロールの遅延を引き起こす可能性があります。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "플레이어 인터페이스에서 재생을 일시 중지하려면 왼쪽 버튼을 누르고, 비디오 재생 진행 상황을 조정하려면 오른쪽 클릭하고 드래그하세요.\n\nmacOS는 기본적으로 \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\" 형식의 비디오만 지원합니다. 다른 형식의 비디오는 여전히 외부 플레이어를 사용해야 합니다.\n\n\"자동 재생 보이는 비디오\"는 썸네일 뷰에서 보이는 영역 내의 비디오를 반복 재생하는 것을 의미합니다. 비디오 재생은 리소스 집약적인 작업이기 때문에 로드 시 스크롤 지연이 발생할 수 있습니다."
+            "value" : "플레이어 인터페이스에서 왼쪽 마우스 버튼을 누르면 재생이 일시 중지되고, 오른쪽 클릭 드래그는 비디오 재생 진행을 조정합니다. 키보드의 왼쪽 및 오른쪽 화살표 키로 앞뒤로 넘길 수 있으며, Cmd 키를 누르고 있으면 프레임별 탐색이 가능합니다. \n\nmacOS는 \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"와 같은 비디오 형식을 기본적으로 지원합니다. 다른 형식은 여전히 외부 플레이어가 필요합니다. \n\n\"자동 재생 보이는 비디오\"는 썸네일 보기에서 보이는 범위 내의 비디오를 반복 재생하는 것을 의미합니다. 비디오 재생은 까다로운 작업이므로 로딩 시 스크롤 지연이 발생할 수 있습니다."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In de spelerinterface drukt u op de linkerknop om de weergave te pauzeren, en klikt u met de rechtermuisknop en sleept u om de voortgang van de videoweergave aan te passen. macOS ondersteunt van nature alleen videoformaten zoals \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" en \"vob\". Andere formaten moeten nog steeds worden afgespeeld met een externe speler. \"Automatisch afspelen van zichtbare video\" verwijst naar het herhalen van de video's binnen het zichtbare gebied in miniatuurweergave. Aangezien videoweergave een intensieve taak is, kan dit vertraging bij scrollen veroorzaken bij het laden."
+            "value" : "In de spelerinterface pauzeert het indrukken van de linker muisknop de weergave, en met rechts klikken en slepen wordt de voortgang van de videoweergave aangepast. De linker en rechter pijltjestoetsen op het toetsenbord kunnen vooruit- en achteruitspoelen, en door de Cmd-toets ingedrukt te houden, is frame-voor-frame navigatie mogelijk.\n\nmacOS ondersteunt van nature videoformaten zoals \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", en \"vob\". Andere formaten vereisen nog steeds een externe speler voor weergave.\n\n\"Automatisch afspelen van zichtbare video's\" verwijst naar het herhalen van de video's binnen het zichtbare bereik in de miniatuurweergave. Aangezien videoweergave een veeleisende taak is, kan laden zorgen voor een vertraagd scrollen."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Na interface do player, pressione o botão esquerdo para pausar a reprodução e clique com o botão direito e arraste para ajustar o progresso da reprodução do vídeo.\n\nO macOS só suporta nativamente formatos de vídeo como \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" e \"vob”. Outros formatos ainda precisam ser reproduzidos usando um player externo.\n\n\"Reprodução Automática de Vídeo Visível\" refere-se aos vídeos em loop dentro da área visível na visualização em miniatura. Como a reprodução de vídeo é uma tarefa que consome muitos recursos, isso pode causar lentidão ao rolar durante o carregamento."
+            "value" : "Na interface do jogador, pressionar o botão esquerdo do mouse pausa a reprodução, e arrastar com o botão direito ajusta o progresso da reprodução do vídeo. As teclas de seta esquerda e direita do teclado podem avançar e retroceder rapidamente, e segurar a tecla Cmd permite navegação quadro a quadro.\n\nO macOS suporta nativamente formatos de vídeo como \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" e \"vob\". Outros formatos ainda exigem um player externo para reprodução.\n\n\"Reprodução automática de vídeos visíveis\" refere-se a reproduzir em loop os vídeos dentro da faixa visível na visualização em miniatura. Como a reprodução de vídeo é uma tarefa exigente, o carregamento pode causar atraso na rolagem."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Na interface do leitor, prima o botão esquerdo para pausar a reprodução e clique com o botão direito e arraste para ajustar o progresso da reprodução do vídeo.\n\nO macOS nativamente só suporta formatos de vídeo como \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" e \"vob\". Outros formatos ainda precisam ser reproduzidos utilizando um leitor externo.\n\n\"Reproduzir Automaticamente Video Visível\" refere-se à repetição dos vídeos na área visível em visualização de miniaturas. Como a reprodução de vídeo é uma tarefa que consome muitos recursos, pode causar atraso no deslocamento ao carregar."
+            "value" : "Na interface do leitor, pressionar o botão esquerdo do rato pausa a reprodução, e arrastar com o botão direito ajusta o progresso da reprodução do vídeo. As teclas de seta esquerda e direita do teclado podem avançar e retroceder rapidamente, e manter a tecla Cmd permite a navegação quadro a quadro.\n\nO macOS suporta nativamente formatos de vídeo como \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" e \"vob\". Outros formatos ainda requerem um leitor externo para reprodução.\n\nReproduzir automaticamente vídeos visíveis refere-se a repetir os vídeos dentro do alcance visível na vista miniatura. Como a reprodução de vídeo é uma tarefa exigente, o carregamento pode causar atrasos na rolagem."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "В интерфейсе плеера нажмите левую кнопку, чтобы приостановить воспроизведение, и щелкните правой кнопкой мыши и перетащите, чтобы настроить прогресс воспроизведения видео.\n\nmacOS поддерживает только такие видеоформаты, как \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" и \"vob\". Для воспроизведения других форматов все еще необходимо использовать внешний плеер.\n\n\"Автоматическое воспроизведение видимого видео\" означает зацикливание видео в видимой области в виде просмотра миниатюр. Поскольку воспроизведение видео является задачей, требующей значительных ресурсов, это может вызвать задержку прокрутки при загрузке."
+            "value" : "В интерфейсе плеера нажатие левой кнопки мыши ставит воспроизведение на паузу, а перетаскивание правой кнопкой изменяет прогресс воспроизведения видео. Стрелки влево и вправо на клавиатуре позволяют перематывать вперед и назад, а удержание клавиши Cmd позволяет осуществлять навигацию по кадрам.\n\nmacOS изначально поддерживает видеоформаты, такие как \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" и \"vob\". Другие форматы по-прежнему требуют внешнего проигрывателя для воспроизведения.\n\n\"Автовоспроизведение видимых видео\" относится к циклическому воспроизведению видео в видимой области в режиме просмотра миниатюр. Поскольку воспроизведение видео является ресурсоемкой задачей, загрузка может вызвать задержку при прокрутке."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I spelargränssnittet trycker du på vänster knapp för att pausa uppspelningen och högerklickar och drar för att justera videouppspelningsframsteg.\n\nmacOS stödjer endast videoformat som \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" och \"vob\" inbyggt. Andra format behöver fortfarande spelas upp med en extern spelare.\n\n\"Auto Play Visible Video\" avser att loopa videorna inom det synliga området i miniatyrvy. Eftersom videouppspelning är en resurskrävande uppgift kan det orsaka fördröjningar vid rullning när den laddas."
+            "value" : "I spelarens gränssnitt pausar vänsterklick på musen uppspelningen, och högerklick och dra justerar videons uppspelningsprogression. Tangentbordets vänster- och högerpilar kan spola framåt och bakåt, och att hålla Cmd-tangenten möjliggör navigering bild-för-bild.\n\nmacOS stöder inbyggt videoformat som \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" och \"vob\". Andra format kräver fortfarande en extern spelare för uppspelning.\n\n\"Auto-play visible videos\" syftar på att loopa videorna inom det synliga området i miniatyrvyn. Eftersom videouppspelning är en krävande uppgift kan laddning orsaka scrollningsfördröjning."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在播放器界面，按左键暂停播放，右键拖拽可以调整视频播放进度。\n\nmacOS原生仅支持 \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\" 视频，其它格式仍需使用外部播放器播放。\n\n\"自动播放可见视频\"指在缩略图视图下，循环播放视野范围内的视频。由于视频播放是一项负荷较大的任务，同时加载时可能造成滚动卡顿。"
+            "value" : "在播放器界面，按鼠标左键暂停播放，右键拖拽可以调整视频播放进度。键盘左右方向键可以快进快退，同时按住Cmd键时可以逐帧定位。\n\nmacOS原生仅支持 \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\" 视频，其它格式仍需使用外部播放器播放。\n\n\"自动播放可见视频\"指在缩略图视图下，循环播放视野范围内的视频。由于视频播放是一项负荷较大的任务，同时加载时可能造成滚动卡顿。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在播放器界面中，按左鍵暫停播放，右鍵拖動可調整視頻播放進度。\n\nmacOS 原生僅支持 \"mp4\"、\"mov\"、\"m2ts\"、\"ts\"、\"mpeg\"、\"mpg\"、\"m4v\" 和 \"vob\" 等視頻格式。其他格式仍需使用外部播放器進行播放。\n\n“自動播放可見視頻”是指在縮略圖視圖中循環播放可見區域內的視頻。由於視頻播放是一項資源密集型任務，載入時可能會導致滾動延遲。"
+            "value" : "在播放器介面中，按下滑鼠左鍵會暫停播放，右鍵拖動可以調整影片的播放進度。鍵盤的左右方向鍵可以快進和倒退，按住 Cmd 鍵可以逐幀導航。\n\nmacOS 原生支持的影片格式包括 \"mp4\"、\"mov\"、\"m2ts\"、\"ts\"、\"mpeg\"、\"mpg\"、\"m4v\" 和 \"vob\"。其他格式仍需使用外部播放器進行播放。\n\n“自動播放可見影片” 指的是在縮圖視圖中循環播放可見範圍內的影片。由於影片播放是個高需求的任務，載入可能會導致滾動滯後。"
           }
         }
       }

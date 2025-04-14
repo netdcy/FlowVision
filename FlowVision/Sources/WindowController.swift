@@ -1217,6 +1217,18 @@ extension WindowController: NSToolbarDelegate {
         
         menu.addItem(NSMenuItem.separator())
 
+        let autoPlayVisibleVideo = menu.addItem(withTitle: NSLocalizedString("Auto Play Visible Video", comment: "自动播放可见视频"), action: #selector(toggleAutoPlayVisibleVideo), keyEquivalent: "g")
+        autoPlayVisibleVideo.keyEquivalentModifierMask = [.command, .shift]
+        autoPlayVisibleVideo.state = viewController.publicVar.autoPlayVisibleVideo ? .on : .off
+        autoPlayVisibleVideo.isEnabled = !viewController.publicVar.isInLargeView
+
+        let useInternalPlayer = menu.addItem(withTitle: NSLocalizedString("Use Internal Video Player", comment: "使用内置视频播放器"), action: #selector(toggleUseInternalPlayer), keyEquivalent: "")
+        useInternalPlayer.state = globalVar.useInternalPlayer ? .on : .off
+
+        let videoPlayInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(videoPlayInfo), keyEquivalent: "")
+        
+        menu.addItem(NSMenuItem.separator())
+
         let recursiveMode = menu.addItem(withTitle: NSLocalizedString("Recursive Mode", comment: "递归浏览模式"), action: #selector(toggleRecursiveMode), keyEquivalent: "r")
         recursiveMode.keyEquivalentModifierMask = [.command, .shift]
         recursiveMode.state = (viewController.publicVar.isRecursiveMode) ? .on : .off
@@ -1250,18 +1262,6 @@ extension WindowController: NSToolbarDelegate {
         }
         let autoPlay = menu.addItem(withTitle: autoPlayMenuText, action: #selector(toggleAutoPlay), keyEquivalent: "")
         autoPlay.isEnabled = viewController.publicVar.isInLargeView
-        
-        menu.addItem(NSMenuItem.separator())
-
-        let autoPlayVisibleVideo = menu.addItem(withTitle: NSLocalizedString("Auto Play Visible Video", comment: "自动播放可见视频"), action: #selector(toggleAutoPlayVisibleVideo), keyEquivalent: "g")
-        autoPlayVisibleVideo.keyEquivalentModifierMask = [.command, .shift]
-        autoPlayVisibleVideo.state = viewController.publicVar.autoPlayVisibleVideo ? .on : .off
-        autoPlayVisibleVideo.isEnabled = !viewController.publicVar.isInLargeView
-
-        let useInternalPlayer = menu.addItem(withTitle: NSLocalizedString("Use Internal Video Player", comment: "使用内置视频播放器"), action: #selector(toggleUseInternalPlayer), keyEquivalent: "")
-        useInternalPlayer.state = globalVar.useInternalPlayer ? .on : .off
-
-        let videoPlayInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(videoPlayInfo), keyEquivalent: "")
 
         menu.addItem(NSMenuItem.separator())
         

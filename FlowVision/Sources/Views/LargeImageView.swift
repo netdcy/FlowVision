@@ -513,6 +513,38 @@ class LargeImageView: NSView {
         let targetTime = CMTimeMakeWithSeconds(Float64(targetSeconds), preferredTimescale: 600)
         player.seek(to: targetTime, toleranceBefore: .zero, toleranceAfter: .zero)
     }
+
+    func seekVideoByFrame(direction: Int) {
+        guard let player = queuePlayer,
+              let asset = player.currentItem?.asset else {
+            return
+        }
+        
+        // 获取视频帧率
+        let tracks = asset.tracks(withMediaType: .video)
+        guard let videoTrack = tracks.first else { return }
+        let frameRate = videoTrack.nominalFrameRate
+        
+        // 计算每帧的时长(秒)
+        let frameDuration = 1.0 / Double(frameRate)
+        
+        // 根据方向决定前进还是后退一帧
+        let seekDuration = direction > 0 ? frameDuration : -frameDuration
+        
+        // 暂停视频
+        pauseVideo()
+        
+        // 获取当前时间并计算目标时间
+        let currentTime = player.currentTime()
+        let targetTime = CMTimeAdd(currentTime, CMTimeMakeWithSeconds(seekDuration, preferredTimescale: 600))
+        
+        // 执行跳转
+        player.seek(to: targetTime, toleranceBefore: .zero, toleranceAfter: .zero)
+        
+        // 显示帧信息
+        //let currentFrame = Int(CMTimeGetSeconds(currentTime) * Double(frameRate))
+        //showInfo("Frame: \(currentFrame)")
+    }
     
     func seekVideo(direction: Int) {
         if direction == -1 {

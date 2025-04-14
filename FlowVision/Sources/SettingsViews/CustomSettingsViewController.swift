@@ -41,6 +41,8 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         usePinyinSearchCheckbox.state = globalVar.usePinyinSearch ? .on : .off
         usePinyinInitialSearchCheckbox.state = globalVar.usePinyinInitialSearch ? .on : .off
         
+        globalVar.useInternalPlayerCheckbox = self.useInternalPlayerCheckbox
+        
         radioGlass.state = (!globalVar.blackBgAlways && !globalVar.blackBgInFullScreen) ? .on : .off
         radioBlack.state = globalVar.blackBgAlways ? .on : .off
         radioFullscreen.state = (!globalVar.blackBgAlways && globalVar.blackBgInFullScreen) ? .on : .off
