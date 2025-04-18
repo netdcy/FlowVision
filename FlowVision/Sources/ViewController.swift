@@ -658,8 +658,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
             }
             
-            if characters == "q" && noModifierKey {
-                if !publicVar.isInLargeView{
+            // 快速搜索唤起键
+            if publicVar.isKeyEventEnabled && characters == "q" && noModifierKey {
+                if !publicVar.isInLargeView {
                     if !quickSearchState && !globalVar.useQuickSearch {
                         quickSearch("backspace")
                         return nil
@@ -675,6 +676,18 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         return nil
                     }
                     if globalVar.useQuickSearch {
+                        return nil
+                    }
+                }
+            }
+            
+            // 快速搜索Esc退出键
+            if publicVar.isKeyEventEnabled && event.keyCode == 53 {
+                if !publicVar.isInLargeView {
+                    if quickSearchState {
+                        quickSearchText = ""
+                        quickSearchState = false
+                        coreAreaView.hideInfo()
                         return nil
                     }
                 }
@@ -1221,7 +1234,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     }
                                     if let toSelect = collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [newIndexPath]) {
                                         collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
-                                        collectionView.reloadData()
+                                        //collectionView.reloadData()
                                         collectionView.selectItems(at: toSelect, scrollPosition: [])
                                         collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: toSelect)
                                         setLoadThumbPriority(ifNeedVisable: true)
@@ -1245,7 +1258,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 
                                 if let newIndexPath = sortedIndexPaths.first{
                                     collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
-                                    collectionView.reloadData()
+                                    //collectionView.reloadData()
                                     collectionView.selectItems(at: [newIndexPath], scrollPosition: [])
                                     collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [newIndexPath])
                                     setLoadThumbPriority(ifNeedVisable: true)
@@ -7522,9 +7535,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         coreAreaView.showInfo(NSLocalizedString("Quick Search", comment: "快速搜索")+": "+quickSearchText, timeOut: 1.5, cannotBeCleard: false)
         
+        if !publicVar.isCollectionViewFirstResponder {
+            view.window?.makeFirstResponder(collectionView)
+        }
+        
         // 设置新的计时器,n秒后清空搜索文本
         quickSearchState = true
-        quickSearchTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false) { [weak self] _ in
+        quickSearchTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { [weak self] _ in
             self?.quickSearchText = ""
             self?.quickSearchState = false
         }

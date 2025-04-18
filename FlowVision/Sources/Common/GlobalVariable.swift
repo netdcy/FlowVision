@@ -16,7 +16,7 @@ var THUMB_SIZES = [Int]()
 let PRELOAD_THUMB_RANGE_PRE = 20
 let PRELOAD_THUMB_RANGE_NEXT = 40
 
-let OFFICIAL_WEBSITE = "http://flowvision.netdcy.com"
+let OFFICIAL_WEBSITE = "https://flowvision.app"
 
 let ROOT_NAME = getSystemVolumeName() ?? "Macintosh HD"
 
