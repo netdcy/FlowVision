@@ -687,7 +687,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     if quickSearchState {
                         quickSearchText = ""
                         quickSearchState = false
-                        coreAreaView.hideInfo()
+                        coreAreaView.hideInfo(force: true)
                         return nil
                     }
                 }
@@ -3846,6 +3846,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //closeSearchOverlay()
         
         //清空快速搜索
+        if quickSearchState {
+            coreAreaView.hideInfo(force: true)
+        }
         quickSearchText = ""
         quickSearchState = false
 
@@ -7533,7 +7536,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 _ = performSearch(searchText: quickSearchText, isEnterKey: false, forceUseRegex: false, firstMatch: true)
             }
         }
-        coreAreaView.showInfo(NSLocalizedString("Quick Search", comment: "快速搜索")+": "+quickSearchText, timeOut: 1.5, cannotBeCleard: false)
+        coreAreaView.showInfo(NSLocalizedString("Quick Search", comment: "快速搜索")+": "+quickSearchText, timeOut: 1.8, cannotBeCleard: true)
         
         if !publicVar.isCollectionViewFirstResponder {
             view.window?.makeFirstResponder(collectionView)
@@ -7541,7 +7544,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         // 设置新的计时器,n秒后清空搜索文本
         quickSearchState = true
-        quickSearchTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { [weak self] _ in
+        quickSearchTimer = Timer.scheduledTimer(withTimeInterval: 1.8, repeats: false) { [weak self] _ in
             self?.quickSearchText = ""
             self?.quickSearchState = false
         }

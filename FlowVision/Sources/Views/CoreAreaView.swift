@@ -39,8 +39,8 @@ class CoreAreaView: NSView {
         self.cannotBeCleard = cannotBeCleard
     }
     
-    func hideInfo() {
-        if !self.cannotBeCleard {
+    func hideInfo(force: Bool = false) {
+        if !self.cannotBeCleard || force {
             infoView.hide()
         }
     }
