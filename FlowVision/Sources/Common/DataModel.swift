@@ -626,13 +626,22 @@ class TreeViewModel {
             }
             subFolders.sort { $0.lastPathComponent.lowercased().localizedStandardCompare($1.lastPathComponent.lowercased()) == .orderedAscending }
             
+            if globalVar.autoHideToolbar && folderURL.path == "root" {
+                subFolders.insert(URL(fileURLWithPath: "/PlaceholderForAutoHideToolbar"), at: 0)
+            }
+            
             let oldChildren=node.children
             node.children=[]
             
             for subFolder in subFolders {
                 var name = subFolder.lastPathComponent
+                var fullPath = subFolder.absoluteString
                 if name == "/" { name = ROOT_NAME }
-                var newNode = TreeNode(name: name, fullPath: subFolder.absoluteString)
+                if name == "PlaceholderForAutoHideToolbar" {
+                    name = "Hidden Volume"
+                    fullPath = "file:///"
+                }
+                var newNode = TreeNode(name: name, fullPath: fullPath)
                 
                 if oldChildren?.contains(where: { $0.name == newNode.name }) ?? false {
                     newNode = oldChildren!.first(where: { $0.name == newNode.name })!
