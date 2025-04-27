@@ -555,7 +555,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         return getVideoThumbnailFFmpeg(for: url)
     }else if (globalVar.HandledImageAndRawExtensions+["pdf"]).contains(url.pathExtension.lowercased()) { //处理其它缩略图
         //使用原图的格式
-        if ["gif", "svg"].contains(url.pathExtension.lowercased()){
+        if ["png", "gif", "svg"].contains(url.pathExtension.lowercased()){
             return NSImage(contentsOf: url)
         }
         //若指定了大小则特殊处理
