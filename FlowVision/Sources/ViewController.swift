@@ -6287,7 +6287,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         if isHDR {
                             largeImage = getHDRImage(url: url, size: doNotGenResized ? nil : largeSize, rotate: rotate)
                         }else if doNotGenResized {
-                            largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
+                            //先判断是否是动画并处理
+                            if let animateImage = getAnimateImage(url: url, rotate: rotate) {
+                                largeImage = animateImage
+                            } else {
+                                largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
+                            }
                         }else{
                             largeImage = getResizedImage(url: url, size: largeSize, rotate: rotate)
                             if largeImage == nil {

@@ -54,6 +54,7 @@
 		F7C2DEB82C4E6AE9003DF765 /* Settings in Frameworks */ = {isa = PBXBuildFile; productRef = F7C2DEB72C4E6AE9003DF765 /* Settings */; };
 		F7C2DEBC2C4E6BEC003DF765 /* GeneralSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C2DEBA2C4E6BEC003DF765 /* GeneralSettingsViewController.swift */; };
 		F7DECD6D2D00939300ECC099 /* CustomEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */; };
+		F7E0B31C2DBF0F55007CBD17 /* SDWebImageWebPCoder in Frameworks */ = {isa = PBXBuildFile; productRef = F7E0B31B2DBF0F55007CBD17 /* SDWebImageWebPCoder */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -150,6 +151,7 @@
 			files = (
 				F7790EDB2BA8581600406D35 /* BTree in Frameworks */,
 				F7C2DEB82C4E6AE9003DF765 /* Settings in Frameworks */,
+				F7E0B31C2DBF0F55007CBD17 /* SDWebImageWebPCoder in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,6 +298,7 @@
 			packageProductDependencies = (
 				F7790EDA2BA8581600406D35 /* BTree */,
 				F7C2DEB72C4E6AE9003DF765 /* Settings */,
+				F7E0B31B2DBF0F55007CBD17 /* SDWebImageWebPCoder */,
 			);
 			productName = FlowVision;
 			productReference = F7A075502BA1D716009C47A6 /* FlowVisionDbg.app */;
@@ -329,6 +332,7 @@
 			packageReferences = (
 				F7790ED92BA8581600406D35 /* XCLocalSwiftPackageReference "../BTree" */,
 				F7C2DEB62C4E6AE9003DF765 /* XCLocalSwiftPackageReference "../Settings" */,
+				F7E0B31A2DBF0F55007CBD17 /* XCRemoteSwiftPackageReference "SDWebImageWebPCoder" */,
 			);
 			productRefGroup = F7A075512BA1D716009C47A6 /* Products */;
 			projectDirPath = "";
@@ -666,6 +670,17 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		F7E0B31A2DBF0F55007CBD17 /* XCRemoteSwiftPackageReference "SDWebImageWebPCoder" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageWebPCoder.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.14.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		F7790EDA2BA8581600406D35 /* BTree */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -674,6 +689,11 @@
 		F7C2DEB72C4E6AE9003DF765 /* Settings */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Settings;
+		};
+		F7E0B31B2DBF0F55007CBD17 /* SDWebImageWebPCoder */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F7E0B31A2DBF0F55007CBD17 /* XCRemoteSwiftPackageReference "SDWebImageWebPCoder" */;
+			productName = SDWebImageWebPCoder;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

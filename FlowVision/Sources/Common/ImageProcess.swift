@@ -9,6 +9,7 @@ import Foundation
 import Cocoa
 import AVFoundation
 import Vision
+import SDWebImageWebPCoder
 
 extension NSImage {
     func rotated(by degrees: CGFloat) -> NSImage {
@@ -566,6 +567,10 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
             }
             //print("resizedImage:",url.absoluteString.removingPercentEncoding!)
         }
+        //判断是否是动画并处理
+        if let animateImage = getAnimateImage(url: url, rotate: 0) {
+            return animateImage
+        }
         do{
             let myOptions = [kCGImageSourceShouldCache : kCFBooleanFalse] as CFDictionary;
             
@@ -675,9 +680,42 @@ func newOrientation(currentOrientation: Int, rotate: Int) -> Int {
     
     return currentOrientation // Return the same orientation if no match found
 }
+
+func getAnimateImage(url: URL, size: NSSize? = nil, rotate: Int = 0) -> NSImage? {
+    
+    if ["webp"].contains(url.pathExtension.lowercased()) && rotate == 0 {
+        if let data = try? Data(contentsOf: url),
+           let source = CGImageSourceCreateWithData(data as CFData, nil),
+           CGImageSourceGetCount(source) > 1 {
+            var options:[SDImageCoderOption: Any] = [:]
+            if size == nil {
+                options = [.decodeThumbnailPixelSize: CGSize(width: 512, height: 512)]
+            }
+            if let image = SDImageWebPCoder.shared.decodedImage(with: data, options: options) {
+                return image
+            }
+        }
+    }
+
+    if ["png"].contains(url.pathExtension.lowercased()) && rotate == 0 {
+        if let data = try? Data(contentsOf: url),
+           let source = CGImageSourceCreateWithData(data as CFData, nil),
+           CGImageSourceGetCount(source) > 1 {
+            return NSImage(contentsOf: url)
+        }
+    }
+    
+    return nil
+}
+
 func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0) -> NSImage? {
     
     let size: NSSize = NSSize(width: round(oriSize.width), height: round(oriSize.height))
+    
+    //先判断是否是动画并处理
+    if let animateImage = getAnimateImage(url: url, size: size, rotate: rotate) {
+        return animateImage
+    }
     
     guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil),
           let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
@@ -1672,7 +1710,12 @@ class LargeImageProcessor {
             if isHDR {
                 image = getHDRImage(url: url, size: useOriginalImage ? nil : size, rotate: rotate)
             }else if useOriginalImage {
-                image = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
+                //先判断是否是动画并处理
+                if let animateImage = getAnimateImage(url: url, rotate: rotate) {
+                    image = animateImage
+                } else {
+                    image = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
+                }
             }else{
                 image = getResizedImage(url: url, size: size, rotate: rotate)
                 if image == nil {
