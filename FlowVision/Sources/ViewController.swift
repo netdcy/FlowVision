@@ -757,7 +757,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
                 if characters == "z" && noModifierKey {
                     if publicVar.isInLargeView{
-                        largeImageView.zoom11()
+                        largeImageView.zoom100()
                     }
                 }
 

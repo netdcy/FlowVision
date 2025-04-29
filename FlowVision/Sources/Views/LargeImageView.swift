@@ -738,8 +738,6 @@ class LargeImageView: NSView {
     }
 
     func zoomFit() {
-        doNotPopRightMenu=true
-        
         if file.type == .image {
             getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: true)
             
@@ -747,9 +745,7 @@ class LargeImageView: NSView {
         }
     }
     
-    func zoom11() {
-        doNotPopRightMenu=true
-        
+    func zoom100() {
         if file.type == .image {
             let zoomSize=customZoomSize()
             let point = NSPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2)
