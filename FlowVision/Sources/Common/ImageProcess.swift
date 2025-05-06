@@ -456,7 +456,7 @@ func getFileTypeIcon(url: URL) -> NSImage {
     return NSWorkspace.shared.icon(forFile: url.absoluteString.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!)
 }
 
-func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil, isPreferInternalThumb: Bool = false) -> NSImage? {
+func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil, isPreferInternalThumb: Bool = false, maxPixSize: Int = 512) -> NSImage? {
     
     let size: NSSize? = oriSize != nil ? NSSize(width: round(oriSize!.width), height: round(oriSize!.height)) : nil
     
@@ -584,13 +584,13 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
             
             let thumbnailOptionsAlways = [kCGImageSourceCreateThumbnailWithTransform : kCFBooleanTrue!,
                                         kCGImageSourceCreateThumbnailFromImageAlways : kCFBooleanTrue!,
-                                                 kCGImageSourceThumbnailMaxPixelSize : 512,
+                                                 kCGImageSourceThumbnailMaxPixelSize : maxPixSize,
                                                            kCGImageSourceShouldCache : kCFBooleanFalse!,
             ] as CFDictionary;
             
             let thumbnailOptionsIfAbsent = [kCGImageSourceCreateThumbnailWithTransform : kCFBooleanTrue!,
                                         kCGImageSourceCreateThumbnailFromImageIfAbsent : kCFBooleanTrue!,
-                                                   kCGImageSourceThumbnailMaxPixelSize : 512,
+                                                   kCGImageSourceThumbnailMaxPixelSize : maxPixSize,
                                                              kCGImageSourceShouldCache : kCFBooleanFalse!,
             ] as CFDictionary;
             
@@ -708,6 +708,10 @@ func getAnimateImage(url: URL, size: NSSize? = nil, rotate: Int = 0) -> NSImage?
     return nil
 }
 
+func getResizedImageThumb(url: URL, size: NSSize? = nil, rotate: Int = 0) -> NSImage? {
+    return getImageThumb(url: url, isPreferInternalThumb: true, maxPixSize: 65535)?.rotated(by: CGFloat(-90*rotate))
+}
+
 func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0) -> NSImage? {
     
     let size: NSSize = NSSize(width: round(oriSize.width), height: round(oriSize.height))
@@ -715,6 +719,13 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0) -> NSImage
     //先判断是否是动画并处理
     if let animateImage = getAnimateImage(url: url, size: size, rotate: rotate) {
         return animateImage
+    }
+
+    if globalVar.rawFileUseThumbnail && globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) {
+        if let imageThumb = getResizedImageThumb(url: url, size: size, rotate: rotate) {
+            //print("Got imageThumb for: ", url, ", size: ", size, ", rotate: ", rotate);
+            return imageThumb
+        }
     }
     
     guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil),
@@ -817,7 +828,11 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0) -> NSImage
 func checkIsHDR(imageInfo: ImageInfo?) -> Bool {
     if let ext = imageInfo?.ext,
        globalVar.HandledRawExtensions.contains(ext) {
-        return true
+        if globalVar.rawFileUseThumbnail {
+            return false
+        } else {
+            return true
+        }
     }
     if let properties = imageInfo?.properties,
        let headroom = properties["Headroom"] as? Double,

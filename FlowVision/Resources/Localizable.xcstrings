@@ -26120,6 +26120,9 @@
         }
       }
     },
+    "Use Embedded Thumbnail for Camera RAW Files" : {
+
+    },
     "Use Full Path" : {
       "comment" : "使用完整路径",
       "localizations" : {
