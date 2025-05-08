@@ -754,6 +754,19 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                     return nil
                 }
+
+                if characters == "z" && noModifierKey {
+                    if publicVar.isInLargeView{
+                        largeImageView.zoom100()
+                    }
+                }
+
+                if characters == "x" && noModifierKey {
+                    if publicVar.isInLargeView{
+                        largeImageView.zoomFit()
+                    }
+                }
+                
                 // 检查按键是否是 "S" 键
                 if characters == "s" && noModifierKey {
                     if publicVar.isInLargeView{

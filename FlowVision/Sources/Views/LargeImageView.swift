@@ -736,6 +736,33 @@ class LargeImageView: NSView {
         
         showRatio()
     }
+
+    func zoomFit() {
+        if file.type == .image {
+            getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: true)
+            
+            showRatio()
+        }
+    }
+    
+    func zoom100() {
+        if file.type == .image {
+            let zoomSize=customZoomSize()
+            let point = NSPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2)
+            let locationInView = self.convert(point, from: nil)
+            let locationInImageView = imageView.convert(locationInView, from: self)
+            
+            let zoomFactorWidth = zoomSize.width / imageView.frame.width
+            let zoomFactorHeight = zoomSize.height / imageView.frame.height
+            
+            imageView.frame.size = zoomSize
+            imageView.frame.origin.x -= (locationInImageView.x * (zoomFactorWidth - 1))
+            imageView.frame.origin.y -= (locationInImageView.y * (zoomFactorHeight - 1))
+            
+            getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: true)
+            showRatio()
+        }
+    }
     
     @objc private func handleMagnification(_ gesture: NSMagnificationGestureRecognizer) {
         let magnification = 1 + gesture.magnification * sensitivity
