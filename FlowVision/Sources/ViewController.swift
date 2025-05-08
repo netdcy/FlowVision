@@ -122,6 +122,7 @@ class PublicVar{
     var isShowAllTypeFile = false
     var isShowImageFile = true
     var isShowRawFile = true
+    var isRawFileUseThumbnail = true
     var isShowVideoFile = true
     var isGenHdThumb = false
     var isPreferInternalThumb = false
@@ -442,6 +443,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         if let isShowRawFile = UserDefaults.standard.value(forKey: "isShowRawFile") as? Bool {
             publicVar.isShowRawFile = isShowRawFile
+        }
+        if let isRawFileUseThumbnail = UserDefaults.standard.value(forKey: "isRawFileUseThumbnail") as? Bool {
+            publicVar.isRawFileUseThumbnail = isRawFileUseThumbnail
+            globalVar.rawFileUseThumbnail = isRawFileUseThumbnail
         }
         if let isShowAllTypeFile = UserDefaults.standard.value(forKey: "isShowAllTypeFile") as? Bool {
             publicVar.isShowAllTypeFile = isShowAllTypeFile
@@ -1797,6 +1802,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.setFileExtensions()
         refreshCollectionView(needLoadThumbPriority: true)
     }
+
+    func toggleIsRawFileUseThumbnail(){
+        publicVar.isRawFileUseThumbnail.toggle()
+        UserDefaults.standard.set(publicVar.isRawFileUseThumbnail, forKey: "isRawFileUseThumbnail")
+        publicVar.setFileExtensions()
+        globalVar.rawFileUseThumbnail = publicVar.isRawFileUseThumbnail
+        LargeImageProcessor.clearCache() 
+        refreshCollectionView([.all], dryRun: true, needLoadThumbPriority: false)
+   }
     
     func toggleIsShowVideoFile(){
         publicVar.isShowVideoFile.toggle()
@@ -6063,6 +6077,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if ["gif", "svg", "ai"].contains(url.pathExtension.lowercased()){
                 doNotGenResized=true
             }
+            if globalVar.rawFileUseThumbnail && globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) {
+                doNotGenResized=false
+            }
+            
 
             DispatchQueue.global(qos: .userInitiated).async {
                 _ = LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: 0, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR, needWaitWhenSame: false)
@@ -6205,6 +6223,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             //使用原图的格式
             if ["gif", "svg", "ai"].contains(url.pathExtension.lowercased()){
                 doNotGenResized=true
+            }
+
+            if globalVar.rawFileUseThumbnail && globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) {
+                doNotGenResized=false
             }
             
             //如果上次生成Resize失败
