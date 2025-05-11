@@ -777,13 +777,20 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                     return nil
                 }
+                
+                // 检查按键是否是 "Q"
+                if characters == "q" && noModifierKey {
+                    if publicVar.isInLargeView{
+                        largeImageView.actRotateL()
+                    }
+                    return nil
+                }
 
                 // 检查按键是否是 "E"
                 if characters == "e" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actRotateR()
                     }else{
-                        closeLargeImage(0)
                         switchDirByDirection(direction: .down_right, stackDeep: 0)
                     }
                     return nil
@@ -989,6 +996,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         handleDelete(isShowPrompt: !isCommandPressed)
                         return nil
                     }
+                }
+                
+                // 检查按键是否是 Alt + 回车、小键盘回车 键
+                if (specialKey == .enter || specialKey == .carriageReturn || specialKey == .newline) && isOnlyAltPressed {
+                    if let window = view.window {
+                        window.toggleFullScreen(nil)
+                    }
+                    return nil
                 }
                 
                 // 检查按键是否是 F2、回车、小键盘回车 键
