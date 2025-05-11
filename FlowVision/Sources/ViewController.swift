@@ -493,11 +493,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let theme=NSApp.effectiveAppearance.name
         if theme == .darkAqua {
             // 暗模式下的颜色
-            collectionView.layer?.backgroundColor = hexToNSColor(hex: "#212223").cgColor
+            collectionView.layer?.backgroundColor = hexToNSColor(hex: COLOR_COLLECTIONVIEW_BG_DARK).cgColor
             lastTheme = .darkAqua
         } else {
             // 光模式下的颜色
-            collectionView.layer?.backgroundColor = hexToNSColor(hex: "#FFFFFF").cgColor
+            collectionView.layer?.backgroundColor = hexToNSColor(hex: COLOR_COLLECTIONVIEW_BG_LIGHT).cgColor
             lastTheme = .aqua
         }
         
@@ -3296,10 +3296,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let theme=NSApp.effectiveAppearance.name
             if theme == .darkAqua {
                 // 暗模式下的颜色
-                collectionView.layer?.backgroundColor = hexToNSColor(hex: "#212223").cgColor
+                collectionView.layer?.backgroundColor = hexToNSColor(hex: COLOR_COLLECTIONVIEW_BG_DARK).cgColor
             } else {
                 // 光模式下的颜色
-                collectionView.layer?.backgroundColor = hexToNSColor(hex: "#FFFFFF").cgColor
+                collectionView.layer?.backgroundColor = hexToNSColor(hex: COLOR_COLLECTIONVIEW_BG_LIGHT).cgColor
             }
             if(lastTheme != theme){
                 refreshAll(dryRun: true, needLoadThumbPriority: false)

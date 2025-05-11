@@ -671,11 +671,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                    let viewController=getViewController(collectionView){
                     
                     if !viewController.publicVar.isInLargeView && !viewController.publicVar.isInLargeViewAfterAnimate {
-                        if !file.isDir && !globalVar.HandledNonExternalExtensions.contains(file.ext.lowercased()) {
-                            viewController.openLargeImageFromIndexPath(selfIndexPath)
-                        }else{
-                            actOpenInNewTab()
-                        }
+                        actOpenInNewTab()
                     }
                 }
             }
@@ -740,7 +736,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     actionItemOpen.keyEquivalentModifierMask = []
                 }
                 
-                if (file.type == .folder || file.type == .image) {
+                if (file.type == .folder || file.type == .image || (file.type == .video && globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(file.ext.lowercased()))) {
                     var titleTmp = NSLocalizedString("Open in New Tab", comment: "在新标签页中打开")
                     if selectedCount > 1 {
                         titleTmp = NSLocalizedString("open-in-new-tab-this", comment: "在新标签页中打开此项")
@@ -850,11 +846,13 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         if let appDelegate=NSApplication.shared.delegate as? AppDelegate {
             if file.type == .folder {
                 _ = appDelegate.createNewWindow(file.path)
-            }else if file.type == .image{
+            }else if file.type == .image || (file.type == .video && globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(file.ext.lowercased())){
                 globalVar.isLaunchFromFile=true
                 if let windowController = appDelegate.createNewWindow(file.path) {
                     appDelegate.openImageInTargetWindow(file.path, windowController: windowController)
                 }
+            }else{
+                actOpen()
             }
         }
     }
