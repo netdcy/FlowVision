@@ -292,7 +292,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             path = FileManager.default.currentDirectoryPath
         }
         
-        if let url=URL(string: getFileStylePath(path)){
+        var file = path.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
+        file = file.hasPrefix("file://") ? file : "file://" + file
+        if let url=URL(string: file){
             NSDocumentController.shared.noteNewRecentDocumentURL(url)
         }
         
@@ -300,7 +302,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         FileManager.default.fileExists(atPath: path, isDirectory: &isDirectoryObj)
         let isDirectory=isDirectoryObj.boolValue
         
-        var file=getFileStylePath(path)
         if isDirectory && file.last != "/" {file=file+"/"}
         
         //新窗口打开（暂时统一新窗口打开）

@@ -58,7 +58,7 @@ brew upgrade flowvision
  - Right/Left: Switch to the next/previous folder with images/videos (logically equivalent to the next folder when sorting all folders on the disk)
  - Up: Switch to the parent directory
  - Down: Return to the previous directory
- - Up-Right/Up-Left: Switch to the next/previous folder with images at the same level as the current folder
+ - Up-Right: Switch to the next folder with images at the same level as the current folder
  - Down-Right: Close the tab/window
 ### Keyboard Shortcuts:
  - W: Same as the right-click gesture Up
@@ -85,6 +85,8 @@ Xcode 15.2+
     ```
     sudo xattr -rd com.apple.quarantine ./ffmpeg-kit-full-gpl-6.0-macos-xcframework
     ```
+    
+    (Due to the project being discontinued and copyright reasons, the prebuilt binaries have been removed. Here is a [backup](https://github.com/netdcy/ffmpeg-kit/releases/download/v6.0/ffmpeg-kit-full-gpl-6.0-macos-xcframework.zip) of original file.)
 
 3. Organize the directory structure as shown below:
 

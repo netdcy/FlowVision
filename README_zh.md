@@ -66,7 +66,7 @@ brew upgrade flowvision
  - 向右/左：切换到下一个/上一个有图片/视频的文件夹(逻辑上等同于将整个磁盘中的文件夹排序后的下一个)
  - 向上：切换到上级目录
  - 向下：返回到上一次的目录
- - 向上右/上左：切换到与当前文件夹平级的下一个/上一个有图片的文件夹
+ - 向上右：切换到与当前文件夹平级的下一个有图片的文件夹
  - 向下右：关闭当前标签页/窗口
 ### 键盘按键:
  - W：同右键手势 向上
@@ -93,6 +93,8 @@ Xcode 15.2+
     ```
     sudo xattr -rd com.apple.quarantine ./ffmpeg-kit-full-gpl-6.0-macos-xcframework
     ```
+
+    (由于项目中止和版权原因，预构建的二进制文件已被移除，[这里](https://github.com/netdcy/ffmpeg-kit/releases/download/v6.0/ffmpeg-kit-full-gpl-6.0-macos-xcframework.zip)是原文件的备份。)
 
 3. 按如下所示组织目录结构：
 
