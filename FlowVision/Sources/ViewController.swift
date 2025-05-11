@@ -5720,6 +5720,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             _ = publicVar.timer.intervalSafe(name: "largeImageZoomForbidSwitch", second: -1)
             return
         }
+        
+        //屏蔽横向滚动
+        if abs(event.scrollingDeltaX) > abs(event.scrollingDeltaY) || abs(event.deltaX) > abs(event.deltaY) {
+            return
+        }
 
         var deltaY=0.0
         if abs(event.scrollingDeltaY)+abs(event.scrollingDeltaX) > abs(event.deltaY) {
