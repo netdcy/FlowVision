@@ -679,14 +679,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "في عرض الصور المصغرة: الأحرف W/S/A/D/E تقابل إيماءات النقر بزر الماوس الأيمن لأعلى/لأسفل/يسار/يمين/يمين-أعلى\nفي عرض الصورة: الأحرف W/S للتكبير/التصغير، والأحرف A/D للصورة السابقة/التالية"
+            "state" : "translated",
+            "value" : "في عرض الصور المصغرة: W/S/A/D/E يقابلها إيماءات الزر الأيمن للأعلى/للأسفل/لليسار/لليمين/للأعلى يمين\nفي عرض الصورة: W/S تكبير/تصغير، Z تكبير إلى 100٪، X ملاءمة التكبير، A/D الصورة السابقة/التالية"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "In der Miniaturansicht: W/S/A/D/E entsprechen den Rechtsklick-Gesten oben/unten/links/rechts/oben-rechts.\nIn der Bildansicht: W/S zoomt ein/aus, A/D vorheriges/nächstes Bild."
+            "state" : "translated",
+            "value" : "In der Miniaturansicht: W/S/A/D/E entsprechen Rechtsklick-Gesten hoch/runter/links/rechts/rechts-oben.  \nIn der Bildansicht: W/S vergrößern/verkleinern, Z auf 100% zoomen, X anpassen, A/D vorheriges/nächstes Bild."
           }
         },
         "en" : {
@@ -697,74 +697,74 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "En vista de miniaturas: W/S/A/D/E corresponden a los gestos de clic derecho arriba/abajo/izquierda/derecha/arriba-derecha.\nEn vista de imagen: W/S acercar/alejar, A/D imagen anterior/siguiente."
+            "state" : "translated",
+            "value" : "En vista de miniaturas: W/S/A/D/E corresponden a gestos de clic derecho arriba/abajo/izquierda/derecha/arriba-derecha.\nEn vista de imagen: W/S acercar/alejar, Z zoom al 100%, X ajustar zoom, A/D imagen anterior/siguiente."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "En vue miniature : W/S/A/D/E correspondent aux gestes de clic droit haut/bas/gauche/droite/haut-droit\nEn vue image : W/S zoom avant/zoom arrière, A/D image précédente/suivante"
+            "state" : "translated",
+            "value" : "En mode vignette : W/S/A/D/E correspondent aux gestes de clic droit haut/bas/gauche/droite/haut-droit.\nEn mode image : W/S zoom avant/zoom arrière, Z zoom 100 %, X ajuster au cadre, A/D image précédente/suivante."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "In visualizzazione miniature: W/S/A/D/E corrispondono ai gesti del tasto destro su/giù/sinistra/destra/su-destra.\nIn visualizzazione immagine: W/S zoom avanti/zoom indietro, A/D immagine precedente/successiva."
+            "state" : "translated",
+            "value" : "Nella visualizzazione miniature: W/S/A/D/E corrispondono ai gesti del clic destro su/giù/sinistra/destra/su-destra.\nNella visualizzazione immagine: W/S zoom avanti/indietro, Z zoom al 100%, X zoom per adattare, A/D immagine precedente/successiva."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "サムネイル表示: W/S/A/D/E は右クリックジェスチャーの上下左右右上に対応しています。\n画像表示: W/S は拡大/縮小, A/D は前/次の画像です。"
+            "state" : "translated",
+            "value" : "サムネイル表示: W/S/A/D/E は右クリックジェスチャーの上下左右および右上に対応します   \n画像表示: W/S でズームイン/ズームアウト, Z で 100% にズーム, X でフィットにズーム, A/D で前/次の画像"
           }
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "섬네일 보기에서: W/S/A/D/E는 우클릭 제스처 위/아래/왼쪽/오른쪽/오른쪽 위에 해당합니다. 이미지 보기에서: W/S 확대/축소, A/D 이전/다음 이미지."
+            "state" : "translated",
+            "value" : "썸네일 보기에서: W/S/A/D/E는 오른쪽 클릭 제스처와 상/하/좌/우/상우에 대응합니다.  \n이미지 보기에서: W/S 확대/축소, Z 100%까지 확대, X 맞춤 확대, A/D 이전/다음 이미지."
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "In de miniatuurweergave: W/S/A/D/E komen overeen met rechtermuisklikgebaren omhoog/omlaag/links/rechts/omhoog-rechts. In de beeldweergave: W/S inzoomen/uitzoomen, A/D vorige/volgende afbeelding."
+            "state" : "translated",
+            "value" : "In miniatuurweergave: W/S/A/D/E komen overeen met rechtsklikgebaren omhoog/omlaag/linksom/rechtsom/omhoog-rechts.\nIn beeldweergave: W/S inzoomen/uitzoomen, Z zoom naar 100%, X zoom passend, A/D vorige/volgende afbeelding."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Na visualização de miniaturas: W/S/A/D/E correspondem aos gestos do botão direito para cima/baixo/esquerda/direita/cima-direita.\nNa visualização de imagem: W/S aproximar/afastar, A/D imagem anterior/próxima imagem."
+            "state" : "translated",
+            "value" : "Na visualização de miniaturas: W/S/A/D/E correspondem aos gestos de clique com o botão direito para cima/baixo/esquerda/direita/acima-direita.\nNa visualização de imagem: W/S para ampliar/reduzir, Z para zoom a 100%, X para ajustar, A/D imagem anterior/próxima."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Na vista de miniaturas: W/S/A/D/E correspondem aos gestos do botão direito para cima/baixo/esquerda/direita/cima-direita.  \nNa visualização de imagem: W/S zoom in/zoom out, A/D imagem anterior/próxima."
+            "state" : "translated",
+            "value" : "Na visualização em miniaturas: W/S/A/D/E correspondem aos gestos de clique direito para cima/baixo/esquerda/direita/cima-direita.\nNa visualização da imagem: W/S ampliar/reduzir, Z ampliar para 100%, X ajustar ao ecrã, A/D imagem anterior/próxima."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "В режиме миниатюр: W/S/A/D/E соответствуют жестам правой кнопкой мыши вверх/вниз/влево/вправо/вверх-вправо.\nВ режиме просмотра изображений: W/S увеличение/уменьшение, A/D предыдущая/следующая картинка."
+            "state" : "translated",
+            "value" : "В режиме миниатюр: W/S/A/D/E соответствуют жестам правой кнопки мыши вверх/вниз/влево/вправо/вверх-вправо  \nВ режиме просмотра изображений: W/S приближение/отдаление, Z увеличение до 100%, X вписать в размер, A/D предыдущая/следующая картинка"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "I miniatyrvyn: W/S/A/D/E motsvarar högerklicksgester upp/ner/vänster/höger/upp-höger\nI bildvyn: W/S zooma in/zooma ut, A/D föregående/nästa bild"
+            "state" : "translated",
+            "value" : "I miniatyrvy: W/S/A/D/E motsvarar högerklicksgester upp/ner/vänster/höger/upp-höger.\nI bildvy: W/S zooma in/zooma ut, Z zooma till 100%, X zooma för att passa, A/D föregående/nästa bild."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "缩略图视图时：W/S/A/D/E 等同于右键手势上/下/左/右/上右。\n图像视图时：W/S 放大/缩小，A/D 上一张/下一张。"
+            "state" : "translated",
+            "value" : "缩略图视图时：W/S/A/D/E 等同于右键手势上/下/左/右/上右。\n图像视图时：W/S 放大/缩小，Z 缩放到100%， X 缩放到适合，A/D 上一张/下一张。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "在縮圖視圖中：W/S/A/D/E 對應於右鍵手勢的上/下/左/右/右上。在圖像視圖中：W/S 放大/縮小，A/D 上一張/下一張圖像。"
+            "state" : "translated",
+            "value" : "在縮略圖檢視中：W/S/A/D/E 對應右鍵手勢 上/下/左/右/右上。\n在圖片檢視中：W/S 放大/縮小，Z 縮放至 100%，X 適合縮放，A/D 上一張/下一張圖片。"
           }
         }
       }
