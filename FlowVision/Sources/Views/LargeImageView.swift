@@ -32,6 +32,7 @@ class LargeImageView: NSView {
     var abPlayPositionA: CMTime?
     var abPlayPositionB: CMTime?
     var lastActionTriggerdReload: String?
+    var isKeyWindowWhenMouseDown: Bool = true
     
     private var blackOverlayView: NSView?
     
@@ -846,6 +847,8 @@ class LargeImageView: NSView {
     override func mouseDown(with event: NSEvent) {
         getViewController(self)!.publicVar.isLeftMouseDown = true//临时按住左键也能缩放
         
+        isKeyWindowWhenMouseDown = self.window?.isKeyWindow ?? true
+        
         if !(getViewController(self)!.publicVar.isRightMouseDown),
            file.type == .video,
            let player = queuePlayer { //通过音量记录来标识是否完整点击事件，而且避免点击音量条时触发暂停
@@ -933,8 +936,8 @@ class LargeImageView: NSView {
             pausedBySeek = false
         }
 
-        // 检测双击
-        if !(getViewController(self)!.publicVar.isRightMouseDown) {
+        // 暂停/恢复视频
+        if !(getViewController(self)!.publicVar.isRightMouseDown) && isKeyWindowWhenMouseDown {
             let currentLocation = event.locationInWindow
             if distanceBetweenPoints(lastClickLocation, currentLocation) < positionThreshold {
                 if file.type == .video,let player = queuePlayer,
