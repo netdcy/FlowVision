@@ -561,7 +561,7 @@ class TreeViewModel {
             
             // 检查是否是根目录
             if folderURL.path != "root" {
-                contents = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: [.isDirectoryKey, .isUbiquitousItemKey, .isHiddenKey], options: [])
+                contents = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: [.isDirectoryKey, .isUbiquitousItemKey, .isHiddenKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey], options: [])
             }else{
 
                 let fileManager = FileManager.default
@@ -624,7 +624,56 @@ class TreeViewModel {
                 }
                 return isDirectory
             }
-            subFolders.sort { $0.lastPathComponent.lowercased().localizedStandardCompare($1.lastPathComponent.lowercased()) == .orderedAscending }
+            
+            //排序
+            if folderURL.path == "root" { //卷列表保持字母序
+                subFolders.sort { $0.lastPathComponent.lowercased().localizedStandardCompare($1.lastPathComponent.lowercased()) == .orderedAscending }
+            }else{
+                let sortType = SortType(rawValue: Int(viewController.publicVar.profile.getValue(forKey: "dirTreeSortType")) ?? 0)
+                if sortType == .pathA {
+                    subFolders.sort { $0.lastPathComponent.lowercased().localizedStandardCompare($1.lastPathComponent.lowercased()) == .orderedAscending }
+                } else if sortType == .pathZ {
+                    subFolders.sort { $0.lastPathComponent.lowercased().localizedStandardCompare($1.lastPathComponent.lowercased()) == .orderedDescending }
+                } else if sortType == .createDateA {
+                    subFolders.sort { 
+                        let date1 = try? $0.resourceValues(forKeys: [.creationDateKey]).creationDate ?? Date.distantPast
+                        let date2 = try? $1.resourceValues(forKeys: [.creationDateKey]).creationDate ?? Date.distantPast
+                        return date1 ?? Date.distantPast < date2 ?? Date.distantPast
+                    }
+                } else if sortType == .createDateZ {
+                    subFolders.sort { 
+                        let date1 = try? $0.resourceValues(forKeys: [.creationDateKey]).creationDate ?? Date.distantPast
+                        let date2 = try? $1.resourceValues(forKeys: [.creationDateKey]).creationDate ?? Date.distantPast
+                        return date1 ?? Date.distantPast > date2 ?? Date.distantPast
+                    }
+                } else if sortType == .modDateA {
+                    subFolders.sort { 
+                        let date1 = try? $0.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate ?? Date.distantPast
+                        let date2 = try? $1.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate ?? Date.distantPast
+                        return date1 ?? Date.distantPast < date2 ?? Date.distantPast
+                    }
+                } else if sortType == .modDateZ {
+                    subFolders.sort { 
+                        let date1 = try? $0.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate ?? Date.distantPast
+                        let date2 = try? $1.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate ?? Date.distantPast
+                        return date1 ?? Date.distantPast > date2 ?? Date.distantPast
+                    }
+                } else if sortType == .addDateA {
+                    subFolders.sort { 
+                        let date1 = try? $0.resourceValues(forKeys: [.addedToDirectoryDateKey]).addedToDirectoryDate ?? Date.distantPast
+                        let date2 = try? $1.resourceValues(forKeys: [.addedToDirectoryDateKey]).addedToDirectoryDate ?? Date.distantPast
+                        return date1 ?? Date.distantPast < date2 ?? Date.distantPast
+                    }
+                } else if sortType == .addDateZ {
+                    subFolders.sort { 
+                        let date1 = try? $0.resourceValues(forKeys: [.addedToDirectoryDateKey]).addedToDirectoryDate ?? Date.distantPast
+                        let date2 = try? $1.resourceValues(forKeys: [.addedToDirectoryDateKey]).addedToDirectoryDate ?? Date.distantPast
+                        return date1 ?? Date.distantPast > date2 ?? Date.distantPast
+                    }
+                } else {
+                    subFolders.sort { $0.lastPathComponent.lowercased().localizedStandardCompare($1.lastPathComponent.lowercased()) == .orderedAscending }
+                }
+            }
             
             if globalVar.autoHideToolbar && folderURL.path == "root" {
                 subFolders.insert(URL(fileURLWithPath: "/PlaceholderForAutoHideToolbar"), at: 0)

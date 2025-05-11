@@ -109,6 +109,35 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             actionItemGetInfo.keyEquivalentModifierMask = []
             
             menu.addItem(NSMenuItem.separator())
+
+            let actionItemSort = menu.addItem(withTitle: NSLocalizedString("Sort", comment: "排序"), action: nil, keyEquivalent: "")
+            actionItemSort.keyEquivalentModifierMask = []
+            
+            let sortSubmenu = NSMenu()
+            let sortTypes: [(SortType, String)] = [
+                (.pathA, NSLocalizedString("sort-pathA", comment: "文件名")),
+                (.pathZ, NSLocalizedString("sort-pathZ", comment: "文件名(倒序)")),
+                (.createDateA, NSLocalizedString("sort-createDateA", comment: "创建日期")),
+                (.createDateZ, NSLocalizedString("sort-createDateZ", comment: "创建日期(倒序)")),
+                (.modDateA, NSLocalizedString("sort-modDateA", comment: "修改日期")),
+                (.modDateZ, NSLocalizedString("sort-modDateZ", comment: "修改日期(倒序)")),
+                (.addDateA, NSLocalizedString("sort-addDateA", comment: "添加日期")),
+                (.addDateZ, NSLocalizedString("sort-addDateZ", comment: "添加日期(倒序)"))
+            ]
+
+            let currentDirTreeSortType = SortType(rawValue: Int(getViewController(self)!.publicVar.profile.getValue(forKey: "dirTreeSortType")) ?? 0)
+            
+            for (sortType, title) in sortTypes {
+                let item = sortSubmenu.addItem(withTitle: title, action: #selector(actSortByType(_:)), keyEquivalent: "")
+                item.representedObject = sortType
+                if sortType == currentDirTreeSortType {
+                    item.state = .on
+                }
+            }
+            
+            actionItemSort.submenu = sortSubmenu
+
+            menu.addItem(NSMenuItem.separator())
             
             let actionItemDelete = menu.addItem(withTitle: NSLocalizedString("Move to Trash", comment: "移动到废纸篓"), action: #selector(actDelete), keyEquivalent: "\u{8}")
             actionItemDelete.keyEquivalentModifierMask = []
@@ -297,5 +326,10 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         task.launchPath = "/usr/bin/open"
         task.arguments = ["-a", "Terminal", url.path]
         task.launch()
+    }
+
+    @objc func actSortByType(_ sender: NSMenuItem) {
+        guard let sortType = sender.representedObject as? SortType else { return }
+        getViewController(self)?.changeDirSortType(sortType: sortType)
     }
 }

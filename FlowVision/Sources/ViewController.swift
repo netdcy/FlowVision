@@ -83,6 +83,9 @@ class CustomProfile: Codable {
         if dict[key] == nil && key == "isWindowTitleShowStatistics" {
             return "true"
         }
+        if dict[key] == nil && key == "dirTreeSortType" {
+            return String(SortType.pathA.rawValue)
+        }
         return dict[key]!
     }
 
@@ -413,11 +416,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         outlineView.setDraggingSourceOperationMask([.every], forLocal: true)  // 本地拖动操作
         outlineView.setDraggingSourceOperationMask([.every], forLocal: false) // 全局拖动操作
         outlineView.columnAutoresizingStyle = .noColumnAutoresizing
-        treeViewData.initData(path: treeRootFolder)
-        outlineView.reloadData()
-        DispatchQueue.main.async {
-            self.outlineViewManager.adjustColumnWidth()
-        }
         
         //初始化splitView
         splitView.delegate = self
@@ -512,6 +510,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         mainScrollView.scrollerStyle = .legacy
         outlineScrollView.scrollerStyle = .legacy
+        
+        treeViewData.initData(path: treeRootFolder)
+        outlineView.reloadData()
+        DispatchQueue.main.async {
+            self.outlineViewManager.adjustColumnWidth()
+        }
         
         //=========以下是事件监听配置==========
         
@@ -1114,14 +1118,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 }
                 
-                // 检查按键是否是 Command+Shift+"G" 键
-                if characters == "g" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
-                    if !publicVar.isInLargeView{
-                        toggleAutoPlayVisibleVideo()
-                        return nil
-                    }
-                }
-                
                 // 检查按键是否是 "U"
                 if characters == "u" && noModifierKey {
                     if publicVar.isInLargeView {
@@ -1649,6 +1645,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if !doNotRefresh {
             refreshCollectionView(dryRun: true, needLoadThumbPriority: true)
         }
+    }
+
+    func changeDirSortType(sortType: SortType){
+        publicVar.profile.setValue(forKey: "dirTreeSortType", value: String(sortType.rawValue))
+        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
+        refreshTreeView()
     }
 
     func toggleSidebar(){

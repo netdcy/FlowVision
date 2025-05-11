@@ -1217,8 +1217,8 @@ extension WindowController: NSToolbarDelegate {
         
         menu.addItem(NSMenuItem.separator())
 
-        let autoPlayVisibleVideo = menu.addItem(withTitle: NSLocalizedString("Auto Play Visible Video", comment: "自动播放可见视频"), action: #selector(toggleAutoPlayVisibleVideo), keyEquivalent: "g")
-        autoPlayVisibleVideo.keyEquivalentModifierMask = [.command, .shift]
+        let autoPlayVisibleVideo = menu.addItem(withTitle: NSLocalizedString("Auto Play Visible Video", comment: "自动播放可见视频"), action: #selector(toggleAutoPlayVisibleVideo), keyEquivalent: "")
+        autoPlayVisibleVideo.keyEquivalentModifierMask = []
         autoPlayVisibleVideo.state = viewController.publicVar.autoPlayVisibleVideo ? .on : .off
         autoPlayVisibleVideo.isEnabled = !viewController.publicVar.isInLargeView
 
