@@ -7027,6 +7027,90 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         refreshCollectionView(dryRun: true, needLoadThumbPriority: true)
     }
     
+    private class AutocompleteTextField: NSTextField {
+        var suggestions: [String] = []
+        var currentSuggestionIndex: Int = -1
+        var initSuggestions: Bool = true
+        
+        override func keyUp(with event: NSEvent) {
+            if event.keyCode == 48 /* Tab */
+                 || event.keyCode == 125 /* Arrow down */ {
+                doAutocomplete(reverse: false)
+            } else if event.keyCode == 126 /* Arrow up */ {
+                doAutocomplete(reverse: true)
+            } else {
+                initSuggestions = true
+                super.keyUp(with: event)
+            }
+        }
+        
+        private func doAutocomplete(reverse: Bool) {
+            if initSuggestions {
+                suggestions = []
+                if let sidx = self.stringValue.lastIndex(of: "/") {
+                    let idx = self.stringValue.distance(from: self.stringValue.startIndex, to: sidx)
+                    let pth = String(self.stringValue.prefix(idx+1))
+                    let q = String(self.stringValue.suffix(self.stringValue.count-(idx+1)))
+                    suggestions = autocompleteFileSystem(path: pth, query: q)
+                }
+                initSuggestions = false
+                currentSuggestionIndex = reverse ? suggestions.count : -1
+            }
+            
+            guard !suggestions.isEmpty else { return }
+            
+            // Cycle through suggestions
+            if reverse {
+                currentSuggestionIndex = currentSuggestionIndex > 0 ? currentSuggestionIndex - 1 : suggestions.count - 1
+            } else {
+                currentSuggestionIndex = (currentSuggestionIndex + 1) % suggestions.count
+            }
+            self.stringValue = suggestions[currentSuggestionIndex]
+            moveCursor(to: self.stringValue.count)
+        }
+
+        private func autocompleteFileSystem(path: String, query: String) -> [String] {
+            let directoryURL = URL(fileURLWithPath: path, isDirectory: true)
+            do {
+                let contents = try FileManager.default.contentsOfDirectory(atPath: directoryURL.path)
+                let subdirs = contents.filter { item in
+                    let itemPath = directoryURL.appendingPathComponent(item).path
+                    var isDirectory: ObjCBool = false
+                    let exists = FileManager.default.fileExists(atPath: itemPath, isDirectory: &isDirectory)
+                    
+                    if exists && isDirectory.boolValue {
+                        return item.lowercased().hasPrefix(query.lowercased())
+                    }
+                    
+                    if let attributes = try? FileManager.default.attributesOfItem(atPath: itemPath),
+                       let fileType = attributes[.type] as? FileAttributeType,
+                       fileType == .typeSymbolicLink {
+                        let resolvedPath = try? FileManager.default.destinationOfSymbolicLink(atPath: itemPath)
+                        var resolvedIsDirectory: ObjCBool = false
+                        if let resolvedPath = resolvedPath,
+                           FileManager.default.fileExists(atPath: resolvedPath, isDirectory: &resolvedIsDirectory),
+                           resolvedIsDirectory.boolValue {
+                            return item.lowercased().hasPrefix(query.lowercased())
+                        }
+                    }
+                    
+                    return false
+                }
+                return (subdirs.map { path + $0 }).sorted()
+            } catch {
+                print("Error reading directory contents: \(error)")
+                return []
+            }
+        }
+
+        private func moveCursor(to position: Int) {
+            guard let editor = self.currentEditor() else { return }
+            let clampedPosition = max(0, min(position, self.stringValue.count)) // Ensure position is within bounds
+            editor.selectedRange = NSRange(location: clampedPosition, length: 0)
+        }
+    }
+    
+    
     func showCmdShiftGWindow(){
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("Go To", comment: "跳转至")
@@ -7035,8 +7119,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
         alert.icon = NSImage(systemSymbolName: "arrowshape.turn.up.forward.circle", accessibilityDescription: nil)
         
-        let inputTextField = NSTextField(frame: NSRect(x: 0, y: 0, width: 400, height: 24))
+        let inputTextField = AutocompleteTextField(frame: NSRect(x: 0, y: 0, width: 400, height: 24))
         inputTextField.placeholderString = ""
+        inputTextField.stringValue =
+          fileDB.curFolder.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!
+        
         if let textFieldCell = inputTextField.cell as? NSTextFieldCell {
             textFieldCell.usesSingleLineMode = true
             textFieldCell.wraps = false
