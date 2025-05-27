@@ -3896,6 +3896,196 @@
         }
       }
     },
+    "Custom Zoom Ratio..." : {
+      "comment" : "自定义缩放比例...",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نسبة التكبير المخصصة..."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benutzerdefiniertes Zoom-Verhältnis..."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom Zoom Ratio..."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Relación de zoom personalizada..."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ratio de zoom personnalisé..."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rapporto zoom personalizzato..."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタムズーム倍率..."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용자 정의 줌 비율..."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aangepaste zoomverhouding..."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Relação de Zoom Personalizada..."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rácio de Zoom Personalizado..."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пользовательский коэффициент увеличения..."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anpassad zoomförhållande..."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义缩放比例..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自訂縮放比例..."
+          }
+        }
+      }
+    },
+    "Custom Zoom Step..." : {
+      "comment" : "自定义缩放梯度...",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خطوة تكبير مخصصة..."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benutzerdefinierte Zoomstufe..."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom Zoom Step..."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso de zoom personalizado..."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Étape de zoom personnalisée..."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passaggio zoom personalizzato..."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタムズームステップ..."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용자 정의 확대/축소 단계..."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aangepaste zoomstap..."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etapa de zoom personalizada..."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personalizar Etapa de Zoom..."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пользовательский шаг увеличения..."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anpassad zoomsteg..."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义缩放梯度..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定義縮放步驟..."
+          }
+        }
+      }
+    },
     "Date Added" : {
       "comment" : "添加日期",
       "localizations" : {
@@ -9972,6 +10162,196 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "載入中"
+          }
+        }
+      }
+    },
+    "Lock Rotation" : {
+      "comment" : "锁定旋转",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قفل التدوير"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rotation sperren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lock Rotation"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquear rotación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verrouiller la rotation"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blocca rotazione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回転をロック"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "회전 잠금"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rotatie vergrendelen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquear Rotação"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquear Rotação"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Блокировка поворота"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lås rotation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "锁定旋转"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鎖定旋轉"
+          }
+        }
+      }
+    },
+    "Lock Zoom" : {
+      "comment" : "锁定缩放",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قفل التكبير"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom sperren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lock Zoom"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquear zoom"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verrouiller le zoom"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blocca Zoom"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ズームを固定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확대/축소 잠금"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom vergrendelen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Travar Zoom"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquear Zoom"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заблокировать масштабирование"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lås zoom"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "锁定缩放"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "锁定縮放"
           }
         }
       }
@@ -24412,6 +24792,196 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最佳窗口大小"
+          }
+        }
+      }
+    },
+    "pan-zoom" : {
+      "comment" : "(放大后滚动变为平移)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قم بتفعيل التمرير البانورامي بعد التكبير"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwenkscrollen nach Zoom aktivieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activate Pan Scrolling After Zoom"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activar desplazamiento panorámico después de hacer zoom"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activer le défilement panoramique après zoom"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attiva scorrimento panoramico dopo lo zoom"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ズーム後のパンスクロールを有効にする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확대 후 팬 스크롤 활성화"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pannen scrollen activeren na inzoomen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativar Rolagem Panorâmica Após Zoom"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativar Deslocamento de Pan Após Zoom"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Активировать панорамирование после увеличения"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktivera panorering efter zoom"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "放大后使用滚动平移"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "放大後啟動平移滾動"
+          }
+        }
+      }
+    },
+    "pan-zoom-info" : {
+      "comment" : "对于缩放后平移的说明...",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "السلوك الافتراضي لعجلة الماوس أو تمرير لوحة التعقب هو التبديل بين الصور. عند تمكين هذه الميزة، بعد تكبير الصورة، يتغير إجراء التمرير إلى التحريك. يُستخدم هذا عادةً في سيناريوهات مثل عرض لقطات الشاشة الطويلة أو القصص المصورة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Standardverhalten des Scrollens mit dem Mausrad oder Trackpad besteht darin, zwischen Bildern zu wechseln. Wenn diese Funktion aktiviert ist, ändert sich die Scroll-Aktion nach dem Vergrößern eines Bildes in das Verschieben. Dies wird typischerweise in Szenarien wie dem Betrachten von langen Screenshots oder Comics verwendet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The default behavior of mouse wheel or trackpad scroll is to switch between images. When this feature is enabled, after an image is zoomed in, the scrolling action changes to panning. This is typically used in scenarios such as viewing long screenshots or comics."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El comportamiento predeterminado del desplazamiento con la rueda del ratón o el trackpad es cambiar entre imágenes. Cuando esta función está habilitada, después de acercar una imagen, la acción de desplazamiento cambia a panear. Esto se utiliza típicamente en escenarios como ver capturas de pantalla largas o cómics."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le comportement par défaut de la molette de la souris ou du défilement du pavé tactile est de passer d'une image à l'autre. Lorsque cette fonctionnalité est activée, après qu'une image est agrandie, l'action de défilement passe au panoramique. Cela est généralement utilisé dans des situations telles que l'affichage de longues captures d'écran ou de bandes dessinées."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il comportamento predefinito della rotella del mouse o dello scorrimento del trackpad è quello di passare tra le immagini. Quando questa funzione è attivata, dopo che un'immagine è stata ingrandita, l'azione di scorrimento cambia in panoramica. Questo è generalmente utilizzato in scenari come la visualizzazione di screenshot lunghi o fumetti."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マウスホイールまたはトラックパッドスクロールのデフォルトの動作は画像間の切り替えです この機能が有効になると 画像が拡大された後 スクロール操作はパンニングに変わります これは通常 長いスクリーンショットや漫画を閲覧するシナリオで使用されます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마우스 휠 또는 트랙패드 스크롤의 기본 동작은 이미지 간 전환입니다. 이 기능이 활성화되면 이미지를 확대 후 스크롤 동작이 패닝으로 변경됩니다. 이는 긴 스크린샷이나 만화를 볼 때 주로 사용됩니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het standaardgedrag van muiswiel of trackpad scroll is om tussen afbeeldingen te schakelen. Wanneer deze functie is ingeschakeld, verandert de scrollactie na inzoomen op een afbeelding in pannen. Dit wordt meestal gebruikt in scenario's zoals het bekijken van lange schermafbeeldingen of strips."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O comportamento padrão da rolagem do mouse ou do trackpad é alternar entre imagens. Quando esse recurso está ativado, após uma imagem ser ampliada, a ação de rolagem muda para deslocamento. Isso é tipicamente usado em cenários como visualização de longas capturas de tela ou quadrinhos."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O comportamento padrão da roda do rato ou do scroll do trackpad é alternar entre imagens. Quando esta funcionalidade está ativada, depois de uma imagem ser ampliada, a acção de scroll muda para panorâmica. Isto é tipicamente usado em cenários como visualizar capturas de ecrã longas ou bandas desenhadas."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поведение по умолчанию для колесика мыши или прокрутки трекпада — переключение между изображениями. Когда эта функция включена, после увеличения изображения действие прокрутки изменяется на панорамирование. Как правило, это используется в сценариях, таких как просмотр длинных скриншотов или комиксов."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Musens hjul eller styrplattans bläddring växlar som standard mellan bilder. När den här funktionen är aktiverad ändras bläddringsåtgärden till panorering efter att en bild har zoomats in. Detta används vanligtvis i scenarier som att visa långa skärmdumpar eller serier."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鼠标滚轮或者触控板滚动的默认行为是切换图片，当启用此功能时，图片被放大后滚动行为变为平移，通常用于查看长截图或者漫画等情景。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "預設的滑鼠滾輪或觸控板滾動功能是用來切換圖片。啟用此功能後，當圖片被放大時，滾動動作會改為平移。這通常用於查看長截圖或漫畫等場景。"
           }
         }
       }

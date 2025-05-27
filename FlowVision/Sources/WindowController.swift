@@ -1240,6 +1240,32 @@ extension WindowController: NSToolbarDelegate {
             recursiveContainFolder.state = (viewController.publicVar.isRecursiveContainFolder) ? .on : .off
             
             let recursiveModeInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(recursiveModeInfo), keyEquivalent: "")
+            
+        } else {
+            
+            menu.addItem(NSMenuItem.separator())
+            
+            let lockRotation = menu.addItem(withTitle: NSLocalizedString("Lock Rotation", comment: "锁定旋转"), action: #selector(toggleLockRotation), keyEquivalent: "")
+            lockRotation.keyEquivalentModifierMask = []
+            lockRotation.state = viewController.publicVar.isRotationLocked ? .on : .off
+            
+            let lockZoom = menu.addItem(withTitle: NSLocalizedString("Lock Zoom", comment: "锁定缩放"), action: #selector(toggleLockZoom), keyEquivalent: "")
+            lockZoom.keyEquivalentModifierMask = []
+            lockZoom.state = viewController.publicVar.isZoomLocked ? .on : .off
+            
+            menu.addItem(NSMenuItem.separator())
+            
+            let panWhenZoomed = menu.addItem(withTitle: NSLocalizedString("pan-zoom", comment: "(放大后滚动变为平移)"), action: #selector(togglePanWhenZoomed), keyEquivalent: "")
+            panWhenZoomed.keyEquivalentModifierMask = []
+            panWhenZoomed.state = viewController.publicVar.isPanWhenZoomed ? .on : .off
+            
+            let panZoomInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(panZoomInfo), keyEquivalent: "")
+            
+//            let customZoomRatio = menu.addItem(withTitle: NSLocalizedString("Custom Zoom Ratio...", comment: "自定义缩放比例..."), action: #selector(showCustomZoomRatioDialog), keyEquivalent: "")
+//            customZoomRatio.keyEquivalentModifierMask = []
+//            
+//            let customZoomStep = menu.addItem(withTitle: NSLocalizedString("Custom Zoom Step...", comment: "自定义缩放梯度..."), action: #selector(showCustomZoomStepDialog), keyEquivalent: "")
+//            customZoomStep.keyEquivalentModifierMask = []
         }
         
         menu.addItem(NSMenuItem.separator())
@@ -1337,6 +1363,36 @@ extension WindowController: NSToolbarDelegate {
             viewController.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false, forceRefresh: true)
         }
     }
+
+    @objc func toggleLockRotation(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleLockRotation()
+    }
+
+    @objc func toggleLockZoom(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleLockZoom()
+    }
+
+    @objc func showCustomZoomRatioDialog(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.showCustomZoomRatioDialog()
+    }
+    
+    @objc func showCustomZoomStepDialog(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.showCustomZoomStepDialog()
+    }
+    
+    @objc func panZoomInfo(_ sender: NSMenuItem){
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("pan-zoom-info", comment: "对于缩放后平移的说明..."), width: 300)
+    }
+    
+    @objc func togglePanWhenZoomed(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.togglePanWhenZoomed()
+    }
+    
     
     @objc func maximizeWindow(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}

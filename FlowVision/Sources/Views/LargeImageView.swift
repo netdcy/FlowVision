@@ -733,23 +733,23 @@ class LargeImageView: NSView {
         }
         
         //重新绘制图像
-        getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false)
+        getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false, isByZoom: true)
         
-        showRatio()
+        calcRatio(isShowPrompt: true)
     }
 
     func zoomFit() {
         if file.type == .image {
-            getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: true)
+            getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: true, isByZoom: true)
             
-            showRatio()
+            calcRatio(isShowPrompt: true)
         }
     }
     
-    func zoom100() {
-        if file.type == .image {
+    func zoom100(point _point: NSPoint? = nil) {
+        if file.type == .image{
+            let point = _point ?? NSPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2)
             let zoomSize=customZoomSize()
-            let point = NSPoint(x: self.frame.size.width / 2, y: self.frame.size.height / 2)
             let locationInView = self.convert(point, from: nil)
             let locationInImageView = imageView.convert(locationInView, from: self)
             
@@ -760,8 +760,8 @@ class LargeImageView: NSView {
             imageView.frame.origin.x -= (locationInImageView.x * (zoomFactorWidth - 1))
             imageView.frame.origin.y -= (locationInImageView.y * (zoomFactorHeight - 1))
             
-            getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: true)
-            showRatio()
+            getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: true, isByZoom: true)
+            calcRatio(isShowPrompt: true)
         }
     }
     
@@ -781,7 +781,7 @@ class LargeImageView: NSView {
             }
         case .ended:
             initialScale *= magnification
-            getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false)
+            getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false, isByZoom: true)
         default:
             break
         }
@@ -813,12 +813,17 @@ class LargeImageView: NSView {
         
         imageView.frame = CGRect(x: newOriginX, y: newOriginY, width: newWidth, height: newHeight)
         
-        showRatio()
+        calcRatio(isShowPrompt: true)
     }
     
-    func showRatio() {
-        let ratio=String(Int(imageView.frame.size.width/customZoomSize().width*100))
-        ratioView.showInfo(text: NSLocalizedString("Zoom", comment: "缩放")+": "+ratio+"%")
+    func calcRatio(isShowPrompt: Bool) {
+        let ratio = imageView.frame.size.width/customZoomSize().width
+        getViewController(self)!.publicVar.zoomLock = ratio
+        
+        if isShowPrompt {
+            let text = String(Int(ratio*100))
+            ratioView.showInfo(text: NSLocalizedString("Zoom", comment: "缩放")+": "+text+"%")
+        }
     }
     
     func showInfo(_ info: String, timeOut: Double = 1.0) {
@@ -897,24 +902,10 @@ class LargeImageView: NSView {
         if file.type == .image {
             
             if !getViewController(self)!.publicVar.isRightMouseDown {
-                let zoomSize=customZoomSize()
-                let locationInView = self.convert(point, from: nil)
-                let locationInImageView = imageView.convert(locationInView, from: self)
-                
-                let zoomFactorWidth = zoomSize.width / imageView.frame.width
-                let zoomFactorHeight = zoomSize.height / imageView.frame.height
-                
-                // 计算新的图像尺寸和位置
-                imageView.frame.size = zoomSize
-                imageView.frame.origin.x -= (locationInImageView.x * (zoomFactorWidth - 1))
-                imageView.frame.origin.y -= (locationInImageView.y * (zoomFactorHeight - 1))
-                
-                getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: true)
+                zoom100(point: point)
             }else{
-                getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: true)
+                zoomFit()
             }
-            
-            showRatio()
             
             //hasZoomed=true
         }
@@ -1145,7 +1136,7 @@ class LargeImageView: NSView {
                 wheelZoomRegenTimer = nil
                 wheelZoomRegenTimer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false) { [weak self] _ in
                     guard let self=self else{return}
-                    getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false)
+                    getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false, isByZoom: true)
                     hasZoomedByWheel=false
                 }
             }
@@ -1178,7 +1169,7 @@ class LargeImageView: NSView {
             //log(imageView.frame.size,imageView.frame.origin)
             
             if abs(event.deltaY) > 0 {
-                showRatio()
+                calcRatio(isShowPrompt: true)
             }
         }
     }
@@ -1292,7 +1283,7 @@ class LargeImageView: NSView {
     }
     
     @objc func actRefresh() {
-        file.rotate = 0
+        //file.rotate = 0
         LargeImageProcessor.clearCache()
         getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false, forceRefresh: true)
     }
@@ -1400,6 +1391,7 @@ class LargeImageView: NSView {
     
     @objc func actRotateR() {
         file.rotate = (file.rotate+1)%4
+        getViewController(self)?.publicVar.rotationLock = file.rotate
         if file.type == .video {
             lastActionTriggerdReload = "Rotate"
             playVideo(reloadForAB: true)
@@ -1411,6 +1403,7 @@ class LargeImageView: NSView {
     
     @objc func actRotateL() {
         file.rotate = (file.rotate+3)%4
+        getViewController(self)?.publicVar.rotationLock = file.rotate
         if file.type == .video {
             lastActionTriggerdReload = "Rotate"
             playVideo(reloadForAB: true)

@@ -130,6 +130,13 @@ class PublicVar{
     var isPreferInternalThumb = false
     var isEnableHDR = true
     var autoPlayVisibleVideo = false
+    var isRotationLocked = false
+    var rotationLock = 0
+    var isZoomLocked = false
+    var zoomLock: Double? = nil
+    var isPanWhenZoomed = false
+    var customZoomRatio: Double = 1.0
+    var customZoomStep: Double = 0.1
 
     //可一键切换的配置
     var profile = CustomProfile()
@@ -464,6 +471,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         if let autoPlayVisibleVideo = UserDefaults.standard.value(forKey: "autoPlayVisibleVideo") as? Bool {
             publicVar.autoPlayVisibleVideo = autoPlayVisibleVideo
+        }
+        if let isRotationLocked = UserDefaults.standard.value(forKey: "isRotationLocked") as? Bool {
+            publicVar.isRotationLocked = isRotationLocked
+        }
+        if let isZoomLocked = UserDefaults.standard.value(forKey: "isZoomLocked") as? Bool {
+            publicVar.isZoomLocked = isZoomLocked
+        }
+        if let isPanWhenZoomed = UserDefaults.standard.value(forKey: "isPanWhenZoomed") as? Bool {
+            publicVar.isPanWhenZoomed = isPanWhenZoomed
         }
         if #available(macOS 14.0, *) {
             //
@@ -1693,7 +1709,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     func adjustWindowSuitable(){
         if globalVar.portableMode {
+            var zoomLockStore = publicVar.isZoomLocked
+            publicVar.isZoomLocked = false
             adjustWindowPortable(firstShowThumb: false, animate: true, isToCenter: true)
+            publicVar.isZoomLocked = zoomLockStore
+            largeImageView.calcRatio(isShowPrompt: true)
         }else{
             adjustWindowToRatio(animate: true, isToCenter: true)
         }
@@ -1705,7 +1725,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         var tmpSize=largeImageView.file.originalSize ?? NSSize(width: 800, height: 600)
         if refSize != nil {tmpSize=refSize!}
         tmpSize = NSSize(width: tmpSize.width/scale, height: tmpSize.height/scale)
+        var zoomLockStore = publicVar.isZoomLocked
+        publicVar.isZoomLocked = false
         adjustWindowTo(tmpSize, firstShowThumb: firstShowThumb, animate: animate, justAdjustWindowFrame: false, isToCenter: false)
+        publicVar.isZoomLocked = zoomLockStore
+        largeImageView.calcRatio(isShowPrompt: true)
     }
     
     func adjustWindowImageCurrent(){
@@ -1724,13 +1748,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
     func adjustWindowPortable(refSize:NSSize? = nil, firstShowThumb: Bool, animate: Bool, justAdjustWindowFrame: Bool = false, isToCenter: Bool = false) {
         if publicVar.isInLargeView {
-            let scale = NSScreen.main?.backingScaleFactor ?? 1
+            var scale = NSScreen.main?.backingScaleFactor ?? 1.0
+            if publicVar.isZoomLocked,
+               let zoomLock = publicVar.zoomLock {
+                scale = scale / zoomLock
+            }
             var tmpSize = largeImageView.file.originalSize
             if refSize != nil {tmpSize=refSize}
             if tmpSize == nil {tmpSize=NSSize(width: 400, height: 400)}
             tmpSize = NSSize(width: tmpSize!.width/scale, height: tmpSize!.height/scale)
             
-            if publicVar.isLargeImageFitWindow{
+            if publicVar.isLargeImageFitWindow && !publicVar.isZoomLocked {
                 adjustWindowToImageRatio(refSize: tmpSize, firstShowThumb: firstShowThumb, animate: animate, justAdjustWindowFrame: justAdjustWindowFrame, isToCenter: isToCenter)
             }else{
                 adjustWindowTo(tmpSize!, firstShowThumb: firstShowThumb, animate: false, justAdjustWindowFrame: justAdjustWindowFrame, isToCenter: isToCenter)
@@ -1819,6 +1847,35 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         UserDefaults.standard.set(publicVar.isShowVideoFile, forKey: "isShowVideoFile")
         publicVar.setFileExtensions()
         refreshCollectionView(needLoadThumbPriority: true)
+    }
+
+    func togglePanWhenZoomed(){
+        publicVar.isPanWhenZoomed.toggle()
+        UserDefaults.standard.set(publicVar.isPanWhenZoomed, forKey: "isPanWhenZoomed")
+    }
+
+    func toggleLockRotation(){
+        publicVar.isRotationLocked.toggle()
+        UserDefaults.standard.set(publicVar.isRotationLocked, forKey: "isRotationLocked")
+        if publicVar.isRotationLocked {
+            publicVar.rotationLock = largeImageView.file.rotate
+        }
+    }
+
+    func toggleLockZoom(){
+        publicVar.isZoomLocked.toggle()
+        UserDefaults.standard.set(publicVar.isZoomLocked, forKey: "isZoomLocked")
+        if publicVar.isZoomLocked {
+            largeImageView.calcRatio(isShowPrompt: true)
+        }
+    }
+    
+    func showCustomZoomRatioDialog(){
+        
+    }
+    
+    func showCustomZoomStepDialog(){
+        
     }
     
     func adjustWindowToCenter(animate: Bool = true) {
@@ -5800,6 +5857,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             return
         }
         
+        // 滚动滚轮或者双指操作触控板来移动图像
+        if publicVar.isPanWhenZoomed {
+            let isTrackPad = abs(event.scrollingDeltaY)+abs(event.scrollingDeltaX) > abs(event.deltaY)
+            if largeImageView.imageView.frame.height > largeImageView.frame.height || (isTrackPad && largeImageView.imageView.frame.width > largeImageView.frame.width) {
+                largeImageView.imageView.frame.origin.x += (event.scrollingDeltaX != 0 ? event.scrollingDeltaX : event.deltaX)
+                largeImageView.imageView.frame.origin.y -= (event.scrollingDeltaY != 0 ? event.scrollingDeltaY : event.deltaY)
+                return
+            }
+        }
+        
         //以下是防止按住鼠标缩放后松开，滚轮惯性滚动造成切换
         if publicVar.isRightMouseDown || publicVar.isLeftMouseDown {
             _ = publicVar.timer.intervalSafe(name: "largeImageZoomForbidSwitch", second: -1)
@@ -5912,7 +5979,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         fileDB.unlock()
         
         if ifFoundNextImage {
-            //复原旋转
+            //复原之前图片的旋转
             largeImageView.file.rotate=0
             
             currLargeImagePos=nextLargeImagePos
@@ -6184,7 +6251,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
     }
     
-    func changeLargeImage(firstShowThumb: Bool = true, resetSize: Bool = true, triggeredByLongPress: Bool = false, justChangeLargeImageViewFile: Bool = false, forceRefresh: Bool = false){
+    func changeLargeImage(firstShowThumb: Bool = true, resetSize: Bool = true, triggeredByLongPress: Bool = false, justChangeLargeImageViewFile: Bool = false, forceRefresh: Bool = false, isByZoom: Bool = false){
         let pos=currLargeImagePos
         var file=FileModel(path: "", ver: 0)
         var isThisFromFinder=false
@@ -6225,6 +6292,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 // 预载入附近图像（包括本张），此处对于便携模式计算似乎有一像素小数偏差，待完善
                 preloadLargeImage()
             }
+        }
+        
+        //旋转锁定
+        if publicVar.isRotationLocked {
+            file.rotate = publicVar.rotationLock
         }
         
         largeImageView.file=file
@@ -6295,7 +6367,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 largeSize=NSSize(width: originalSize.width/scale, height: originalSize.height/scale)
             }
             
-            if resetSize{
+            //缩放锁定
+            if !isByZoom && publicVar.isZoomLocked,
+               let ratio = publicVar.zoomLock {
+                largeSize=NSSize(width: originalSize.width/scale*ratio, height: originalSize.height/scale*ratio)
+            }
+            
+            if resetSize { //resetSize则在此处调整frame，否则在largeImageView中调整
                 let rectView=largeImageView.frame
                 let rectImage=NSRect(origin: CGPoint(x: (rectView.width-largeSize.width)/2, y: (rectView.height-largeSize.height)/2), size: largeSize)
                 largeImageView.imageView.frame=rectImage
