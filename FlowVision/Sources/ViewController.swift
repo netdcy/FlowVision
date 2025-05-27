@@ -1278,10 +1278,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 }
                                 let sortedIndexPaths = indexPaths.sorted { $0.item < $1.item }
                                 
-                                if let newIndexPath = sortedIndexPaths.first{
+                                if let newIndexPath = sortedIndexPaths.first,
+                                   let toSelect = collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [newIndexPath]) {
                                     collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
                                     //collectionView.reloadData()
-                                    collectionView.selectItems(at: [newIndexPath], scrollPosition: [])
+                                    collectionView.selectItems(at: toSelect, scrollPosition: [])
                                     collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [newIndexPath])
                                     setLoadThumbPriority(ifNeedVisable: true)
                                 }
@@ -4986,7 +4987,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                                     let indexPath=IndexPath(item: offset, section: 0)
                                                     collectionView.scrollToItems(at: [indexPath], scrollPosition: .nearestHorizontalEdge)
                                                     collectionView.reloadData()
+                                                    collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
                                                     collectionView.selectItems(at: [indexPath], scrollPosition: [])
+                                                    collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
                                                     setLoadThumbPriority(ifNeedVisable: true)
                                                     
                                                 }
@@ -5627,8 +5630,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
 
             collectionView.reloadData()
-            collectionView.selectItems(at: [indexPath], scrollPosition: [])
             collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
+            collectionView.selectItems(at: [indexPath], scrollPosition: [])
             collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
             setLoadThumbPriority(ifNeedVisable: true)
         }
@@ -5711,9 +5714,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     //选中打开的项目
                     collectionView.deselectAll(nil)
                     let indexPath=IndexPath(item: currLargeImagePos, section: 0)
+                    collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
                     collectionView.selectItems(at: [indexPath], scrollPosition: [])
                     collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
-
                 }
             }
         }
@@ -5868,6 +5871,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             collectionView.deselectAll(nil)
             if currLargeImagePos < collectionView.numberOfItems(inSection: 0) {
                 let indexPath=IndexPath(item: currLargeImagePos, section: 0)
+                collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
                 collectionView.selectItems(at: [indexPath], scrollPosition: [])
                 collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
             }
@@ -7407,7 +7411,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         collectionView.deselectAll(nil)
                         collectionView.scrollToItems(at: [indexPath], scrollPosition: .nearestHorizontalEdge)
                         collectionView.reloadData()
+                        collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
                         collectionView.selectItems(at: [indexPath], scrollPosition: [])
+                        collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
                         setLoadThumbPriority(ifNeedVisable: true)
                         return true
                     }
@@ -7442,7 +7448,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 collectionView.deselectAll(nil)
                 collectionView.scrollToItems(at: [indexPath], scrollPosition: .nearestHorizontalEdge)
                 collectionView.reloadData()
+                collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
                 collectionView.selectItems(at: [indexPath], scrollPosition: [])
+                collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
                 setLoadThumbPriority(ifNeedVisable: true)
                 return true
             }
