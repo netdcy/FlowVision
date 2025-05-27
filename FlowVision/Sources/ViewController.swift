@@ -729,8 +729,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         return nil
                     }
                 }
-                // 检查按键是否是 Command+Shift+"E" 键
-                if characters == "e" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
+                // 检查按键是否是 Command+Shift+"F" 键
+                if characters == "f" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
                     if !publicVar.isInLargeView{
                         toggleRecursiveContainFolder()
                         return nil
@@ -903,6 +903,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 if characters == "n" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
                     if !publicVar.isInLargeView{
                         _ = handleNewFolder()
+                        return nil
+                    }
+                }
+
+                // 检查按键是否是 Command+Shift+"V" 键
+                if characters == "v" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
+                    if !publicVar.isInLargeView{
+                        toggleAutoPlayVisibleVideo()
                         return nil
                     }
                 }
@@ -5906,25 +5914,33 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //log("触控板:",event.scrollingDeltaY,event.scrollingDeltaX)
         //log("滚轮的:",event.deltaY)
         
+        // 滚动缩放在
         if largeImageView.isHidden {return}
+        
+        // 滚动滚轮或者双指操作触控板来移动图像
+        if publicVar.isPanWhenZoomed && !publicVar.isLeftMouseDown && !publicVar.isRightMouseDown {
+            let isTrackPad = abs(event.scrollingDeltaY)+abs(event.scrollingDeltaX) > abs(event.deltaY)
+            if largeImageView.imageView.frame.height > largeImageView.frame.height || (isTrackPad && largeImageView.imageView.frame.width > largeImageView.frame.width) {
+                if isTrackPad {
+                    largeImageView.imageView.frame.origin.x += event.scrollingDeltaX
+                    largeImageView.imageView.frame.origin.y -= event.scrollingDeltaY
+                } else {
+                    largeImageView.imageView.frame.origin.x += event.deltaX * 10
+                    largeImageView.imageView.frame.origin.y -= event.deltaY * 10
+                }
+                return
+            }
+        }
+        
+        // 屏蔽惯性阶段的滚动
         if event.momentumPhase == .changed
             && event.timestamp - lastScrollSwitchLargeImageTime > 0.2
         {
             return
         }
         
-        // 滚动滚轮或者双指操作触控板来移动图像
-        if publicVar.isPanWhenZoomed {
-            let isTrackPad = abs(event.scrollingDeltaY)+abs(event.scrollingDeltaX) > abs(event.deltaY)
-            if largeImageView.imageView.frame.height > largeImageView.frame.height || (isTrackPad && largeImageView.imageView.frame.width > largeImageView.frame.width) {
-                largeImageView.imageView.frame.origin.x += (event.scrollingDeltaX != 0 ? event.scrollingDeltaX : event.deltaX)
-                largeImageView.imageView.frame.origin.y -= (event.scrollingDeltaY != 0 ? event.scrollingDeltaY : event.deltaY)
-                return
-            }
-        }
-        
-        //以下是防止按住鼠标缩放后松开，滚轮惯性滚动造成切换
-        if publicVar.isRightMouseDown || publicVar.isLeftMouseDown {
+        // 以下是防止按住鼠标缩放后松开，滚轮惯性滚动造成切换
+        if publicVar.isRightMouseDown {
             _ = publicVar.timer.intervalSafe(name: "largeImageZoomForbidSwitch", second: -1)
             return
         }
@@ -5933,14 +5949,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             return
         }
         
-        //屏蔽横向滚动
+        // 屏蔽横向滚动
         if abs(event.scrollingDeltaX) > abs(event.scrollingDeltaY) || abs(event.deltaX) > abs(event.deltaY) {
             return
         }
 
         var deltaY=0.0
         if abs(event.scrollingDeltaY)+abs(event.scrollingDeltaX) > abs(event.deltaY) {
-            //通常是触控板事件
+            // 通常是触控板事件
             var sign = 1.0
             var absv = 1.0
             if abs(event.scrollingDeltaY) >= abs(event.scrollingDeltaX) {
@@ -5953,9 +5969,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if absv == 1.0 {absv=0.1}
             deltaY=sign*pow(absv,1.0/1.4)/3
         }else{
-            //通常是滚轮事件
+            // 通常是滚轮事件
             deltaY=event.deltaY
-            //没有使用LineMouse时
+            // 没有使用LineMouse时
             if abs(deltaY) < 1.5 {
                 deltaY = 1.5 * deltaY / abs(deltaY)
             }

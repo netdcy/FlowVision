@@ -1219,8 +1219,8 @@ extension WindowController: NSToolbarDelegate {
             
             menu.addItem(NSMenuItem.separator())
 
-            let autoPlayVisibleVideo = menu.addItem(withTitle: NSLocalizedString("Auto Play Visible Video", comment: "自动播放可见视频"), action: #selector(toggleAutoPlayVisibleVideo), keyEquivalent: "")
-            autoPlayVisibleVideo.keyEquivalentModifierMask = []
+            let autoPlayVisibleVideo = menu.addItem(withTitle: NSLocalizedString("Auto Play Visible Video", comment: "自动播放可见视频"), action: #selector(toggleAutoPlayVisibleVideo), keyEquivalent: "v")
+            autoPlayVisibleVideo.keyEquivalentModifierMask = [.command, .shift]
             autoPlayVisibleVideo.state = viewController.publicVar.autoPlayVisibleVideo ? .on : .off
             autoPlayVisibleVideo.isEnabled = !viewController.publicVar.isInLargeView
 
@@ -1235,7 +1235,7 @@ extension WindowController: NSToolbarDelegate {
             recursiveMode.keyEquivalentModifierMask = [.command, .shift]
             recursiveMode.state = (viewController.publicVar.isRecursiveMode) ? .on : .off
 
-            let recursiveContainFolder = menu.addItem(withTitle: NSLocalizedString("Include Folders", comment: "包含文件夹"), action: #selector(toggleRecursiveContainFolder), keyEquivalent: "e")
+            let recursiveContainFolder = menu.addItem(withTitle: NSLocalizedString("Include Folders", comment: "包含文件夹"), action: #selector(toggleRecursiveContainFolder), keyEquivalent: "f")
             recursiveContainFolder.keyEquivalentModifierMask = [.command, .shift]
             recursiveContainFolder.state = (viewController.publicVar.isRecursiveContainFolder) ? .on : .off
             

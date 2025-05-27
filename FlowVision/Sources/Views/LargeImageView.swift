@@ -1121,15 +1121,15 @@ class LargeImageView: NSView {
     override func scrollWheel(with event: NSEvent) {
         //保证鼠标在图像上才缩放
         //guard imageView.frame.contains(event.locationInWindow) else { return }
+        
+        //注意：触控板按下右键的同时会触发deltaY为0的滚动事件
+        if abs(event.deltaY) > 0 {
+            longPressZoomTimer?.invalidate()
+            longPressZoomTimer = nil
+            doNotPopRightMenu=true
+        }
 
-        if getViewController(self)!.publicVar.isRightMouseDown || getViewController(self)!.publicVar.isLeftMouseDown {
-            
-            //注意：触控板按下右键的同时会触发deltaY为0的滚动事件
-            if abs(event.deltaY) > 0 {
-                longPressZoomTimer?.invalidate()
-                longPressZoomTimer = nil
-                doNotPopRightMenu=true
-            }
+        if getViewController(self)!.publicVar.isRightMouseDown {
             
             do {
                 wheelZoomRegenTimer?.invalidate()
