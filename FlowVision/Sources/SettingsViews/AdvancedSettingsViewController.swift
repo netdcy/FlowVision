@@ -32,6 +32,9 @@ final class AdvancedSettingsViewController: NSViewController, SettingsPane {
     
     @IBOutlet weak var useFFmpegRadioButton: NSButton!
     @IBOutlet weak var doNotUseFFmpegRadioButton: NSButton!
+    
+    @IBOutlet weak var searchDepthWarningText: NSTextField!
+    @IBOutlet weak var searchDepthWarningText_External: NSTextField!
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -51,6 +54,18 @@ final class AdvancedSettingsViewController: NSViewController, SettingsPane {
         
         folderSearchDepthStepper_External.integerValue = globalVar.folderSearchDepth_External
         updateFolderSearchDepthLabel_External(value: globalVar.folderSearchDepth_External)
+        
+        if folderSearchDepthStepper.integerValue == 0 {
+            searchDepthWarningText.textColor = .systemRed
+        } else {
+            searchDepthWarningText.textColor = .labelColor
+        }
+        
+        if folderSearchDepthStepper_External.integerValue == 0 {
+            searchDepthWarningText_External.textColor = .systemRed
+        } else {
+            searchDepthWarningText_External.textColor = .labelColor
+        }
         
         // 初始化 Radio Buttons
         updateFFmpegRadioButtons()
@@ -91,6 +106,12 @@ final class AdvancedSettingsViewController: NSViewController, SettingsPane {
         globalVar.folderSearchDepth = newFolderSearchDepth
         UserDefaults.standard.set(newFolderSearchDepth, forKey: "folderSearchDepth")
         updateFolderSearchDepthLabel(value: newFolderSearchDepth)
+        
+        if folderSearchDepthStepper.integerValue == 0 {
+            searchDepthWarningText.textColor = .systemRed
+        } else {
+            searchDepthWarningText.textColor = .labelColor
+        }
     }
     
     private func updateFolderSearchDepthLabel(value: Int) {
@@ -115,6 +136,12 @@ final class AdvancedSettingsViewController: NSViewController, SettingsPane {
         globalVar.folderSearchDepth_External = newFolderSearchDepth_External
         UserDefaults.standard.set(newFolderSearchDepth_External, forKey: "folderSearchDepth_External")
         updateFolderSearchDepthLabel_External(value: newFolderSearchDepth_External)
+        
+        if folderSearchDepthStepper_External.integerValue == 0 {
+            searchDepthWarningText_External.textColor = .systemRed
+        } else {
+            searchDepthWarningText_External.textColor = .labelColor
+        }
     }
     
     private func updateFolderSearchDepthLabel_External(value: Int) {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23094" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23504" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23094"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23504"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,6 +15,8 @@
                 <outlet property="folderSearchDepthStepper_External" destination="zwA-Dc-pzB" id="Iy2-di-mBH"/>
                 <outlet property="memUseLimitLabel" destination="7Xg-hi-ROx" id="RDr-sY-qPs"/>
                 <outlet property="memUseLimitSlider" destination="WIL-Sz-1r8" id="liU-Ah-5fL"/>
+                <outlet property="searchDepthWarningText" destination="E2R-gU-fDF" id="Io2-CI-mZ1"/>
+                <outlet property="searchDepthWarningText_External" destination="QE9-Tu-7hp" id="Jh4-02-Lov"/>
                 <outlet property="thumbThreadNumLabel" destination="6bW-aR-2l5" id="XyQ-8G-baq"/>
                 <outlet property="thumbThreadNumLabel_External" destination="zZQ-EJ-dYu" id="sFN-c4-PA5"/>
                 <outlet property="thumbThreadNumStepper" destination="j4j-Kz-49j" id="Upr-53-WhI"/>
@@ -309,7 +311,7 @@
                                 <rect key="frame" x="144" y="140" width="308" height="28"/>
                                 <textFieldCell key="cell" selectable="YES" title="For network drives, it is recommended to set it to 0 (do not generate folder thumbnails)." id="v0X-zl-sTc">
                                     <font key="font" metaFont="message" size="11"/>
-                                    <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
