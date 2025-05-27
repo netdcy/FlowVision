@@ -830,9 +830,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     @objc func actRefresh() {
-        LargeImageProcessor.clearCache()
-        ThumbImageProcessor.clearCache()
-        getViewController(collectionView!)?.refreshAll([.all], needLoadThumbPriority: true)
+        getViewController(collectionView!)?.handleUserRefresh()
     }
     
     @objc func actOpen() {

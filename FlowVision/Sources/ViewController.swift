@@ -363,6 +363,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     private var searchField: NSSearchField?
     private var searchOverlay: SearchOverlayView?
     
+    var dirURLCache: [URL] = []
+    var dirURLCacheParameters: Any = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -853,16 +856,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 
                 // 检查按键是否是 Cmd + "R" / F5 键
                 if (characters == "r" && isCommandPressed) || specialKey == .f5 {
-                    if publicVar.isInLargeView{
-                        LargeImageProcessor.clearCache()
-                        largeImageView.actRefresh()
-                        return nil
-                    }else{
-                        LargeImageProcessor.clearCache()
-                        ThumbImageProcessor.clearCache()
-                        refreshAll([.all], needLoadThumbPriority: true)
-                        return nil
-                    }
+                    handleUserRefresh()
+                    return nil
                 }
                 
                 // 检查按键是否是 Command+[ 键
@@ -2497,9 +2492,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 针对递归模式处理
-                if publicVar.isRecursiveMode {
-                    scheduledRefresh()
-                }
+//                if publicVar.isRecursiveMode {
+//                    scheduledRefresh()
+//                }
                 
             } else {
                 log("要删除的文件不存在")
@@ -3328,6 +3323,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
     }
     
+    func handleUserRefresh(){
+        if publicVar.isInLargeView{
+            largeImageView.actRefresh()
+        }else{
+            LargeImageProcessor.clearCache()
+            ThumbImageProcessor.clearCache()
+            dirURLCache.removeAll()
+            refreshAll([.all], needLoadThumbPriority: true)
+        }
+    }
+    
     func refreshAll(_ reloadThumbType: [FileType] = [], dryRun: Bool = false, needStopAutoScroll: Bool = true, needLoadThumbPriority: Bool){
         refreshTreeView()
         refreshCollectionView(reloadThumbType, dryRun: dryRun, needStopAutoScroll: needStopAutoScroll, needLoadThumbPriority: needLoadThumbPriority)
@@ -4128,11 +4134,22 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         if !skip {
             do {
-                if publicVar.isRecursiveMode {
-                    scanFiles(at: folderURL, contents: &contents, properties: properties)
-                }else{
-                    contents = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: properties, options: [])
+                let curDirURLCacheParameters = (folderURL, publicVar.isRecursiveMode, publicVar.isShowHiddenFile, publicVar.isRecursiveContainFolder, properties)
+                if let dirURLCacheParameters = dirURLCacheParameters as? (URL, Bool, Bool, Bool, [URLResourceKey]) {
+                    if dirURLCacheParameters != curDirURLCacheParameters {
+                        dirURLCache.removeAll()
+                    }
                 }
+                dirURLCacheParameters = curDirURLCacheParameters
+                
+                if dirURLCache.isEmpty {
+                    if publicVar.isRecursiveMode {
+                        scanFiles(at: folderURL, contents: &dirURLCache, properties: properties)
+                    }else{
+                        dirURLCache = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: properties, options: [])
+                    }
+                }
+                contents.append(contentsOf: dirURLCache)
             }catch{}
         }
         
@@ -6435,6 +6452,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             guard let self = self else { return }
             folderMonitorTimer?.invalidate()
             folderMonitorTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { [weak self] _ in
+                self?.dirURLCache.removeAll()
                 self?.refreshAll(needStopAutoScroll: false, needLoadThumbPriority: true)
             }
         }
