@@ -31,6 +31,7 @@ class GlobalVar{
     var randomSeed = Int.random(in: 0...Int.max)
     var toolbarIndex = 0
     var operationLogs: [String] = []
+    var closedPaths: [String] = []
     
     //TODO: 临时公用状态变量
     var isLaunchFromFile = false

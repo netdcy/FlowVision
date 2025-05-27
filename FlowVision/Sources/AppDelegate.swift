@@ -36,6 +36,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     @IBOutlet weak var toggleIsShowVideoFileMenuItem: NSMenuItem!
     @IBOutlet weak var toggleIsShowAllTypeFileMenuItem: NSMenuItem!
     @IBOutlet weak var deselectMenuItem: NSMenuItem!
+    @IBOutlet weak var reopenClosedTabsMenuItem: NSMenuItem!
     
     var commonParentPath=""
     
@@ -569,6 +570,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if menuItem.action == #selector(fileNewTab(_:)) && isWindowNumMax() {
             return false
         }
+        //重新打开关闭的标签页
+        if menuItem.action == #selector(reopenClosedTabs(_:)) {
+            if globalVar.closedPaths.isEmpty {
+                return false
+            }else{
+                return true
+            }
+        }
         //根据图片大小调整窗口
         if menuItem.action == #selector(adjustWindowActual(_:)) || menuItem.action == #selector(adjustWindowCurrent(_:)) {
             if !mainViewController.publicVar.isInLargeView {
@@ -757,6 +766,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         let curFolder = getMainViewController()?.fileDB.curFolder
         getMainViewController()?.fileDB.unlock()
         createNewWindow(curFolder)
+    }
+
+    @IBAction func reopenClosedTabs(_ sender: NSMenuItem){
+        getMainViewController()?.reopenClosedTabs()
     }
     
     @IBAction func fileNewFolder(_ sender: NSMenuItem){

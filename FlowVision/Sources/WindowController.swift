@@ -1235,7 +1235,7 @@ extension WindowController: NSToolbarDelegate {
             recursiveMode.keyEquivalentModifierMask = [.command, .shift]
             recursiveMode.state = (viewController.publicVar.isRecursiveMode) ? .on : .off
 
-            let recursiveContainFolder = menu.addItem(withTitle: NSLocalizedString("Include Folders", comment: "包含文件夹"), action: #selector(toggleRecursiveContainFolder), keyEquivalent: "t")
+            let recursiveContainFolder = menu.addItem(withTitle: NSLocalizedString("Include Folders", comment: "包含文件夹"), action: #selector(toggleRecursiveContainFolder), keyEquivalent: "e")
             recursiveContainFolder.keyEquivalentModifierMask = [.command, .shift]
             recursiveContainFolder.state = (viewController.publicVar.isRecursiveContainFolder) ? .on : .off
             

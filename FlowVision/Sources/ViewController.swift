@@ -729,12 +729,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         return nil
                     }
                 }
-                // 检查按键是否是 Command+Shift+"T" 键
-                if characters == "t" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
+                // 检查按键是否是 Command+Shift+"E" 键
+                if characters == "e" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
                     if !publicVar.isInLargeView{
                         toggleRecursiveContainFolder()
                         return nil
                     }
+                }
+                // 检查按键是否是 Command+Shift+"T" 键
+                if characters == "t" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
+                    reopenClosedTabs()
+                    return nil
                 }
                 // 检查按键是否是 F3 键
                 if specialKey == .f3 {
@@ -778,12 +783,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     return nil
                 }
 
+                // 检查按键是否是 "Z" 键
                 if characters == "z" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.zoom100()
                     }
                 }
 
+                // 检查按键是否是 "X" 键
                 if characters == "x" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.zoomFit()
@@ -890,6 +897,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         switchDirByDirection(direction: .forward, stackDeep: 0)
                     }
                     return nil
+                }
+                
+                // 检查按键是否是 Command+Shift+"N" 键
+                if characters == "n" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
+                    if !publicVar.isInLargeView{
+                        _ = handleNewFolder()
+                        return nil
+                    }
                 }
                 
                 // 检查按键是否是 Command+⬅️➡️ 键
@@ -1502,6 +1517,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         // 在这里执行清理工作
         log("ViewController is being deinitialized")
         
+        //存储关闭的目录
+        globalVar.closedPaths.append(fileDB.curFolder)
+        
+        // 移除事件观察者
         if let eventMonitorKeyDown = eventMonitorKeyDown {
             NSEvent.removeMonitor(eventMonitorKeyDown)
         }
@@ -1602,6 +1621,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         //启动后台任务线程
         startBackgroundTaskThread()
+    }
+
+    func reopenClosedTabs(){
+        if let lastPath = globalVar.closedPaths.last {
+            globalVar.closedPaths.removeLast()
+            if let appDelegate=NSApplication.shared.delegate as? AppDelegate {
+                _ = appDelegate.createNewWindow(lastPath)
+            }
+        }
     }
     
     func handlePrint(){

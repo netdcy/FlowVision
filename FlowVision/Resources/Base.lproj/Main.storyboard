@@ -76,7 +76,12 @@
                                                 <action selector="fileNewTab:" target="Voe-Tx-rLC" id="lvF-oG-YUt"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="New Folder" keyEquivalent="N" id="ExL-hL-CrO">
+                                        <menuItem title="Reopen Closed Tabs" keyEquivalent="T" id="zBc-1w-QcQ">
+                                            <connections>
+                                                <action selector="reopenClosedTabs:" target="Voe-Tx-rLC" id="H1g-La-A9P"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="New Folder" hidden="YES" keyEquivalent="N" id="ExL-hL-CrO">
                                             <connections>
                                                 <action selector="fileNewFolder:" target="Voe-Tx-rLC" id="cc6-GJ-16i"/>
                                             </connections>
@@ -894,6 +899,7 @@ Gw
                         <outlet property="maximizeWindowMenuItem" destination="HOx-iw-zko" id="ygq-Rk-ujP"/>
                         <outlet property="onTopMenuItem" destination="aEU-QL-iYf" id="XOy-Dx-Aw4"/>
                         <outlet property="optimizeWindowMenuItem" destination="tmG-gn-Pce" id="iuh-K8-8iB"/>
+                        <outlet property="reopenClosedTabsMenuItem" destination="zBc-1w-QcQ" id="Xxd-rc-TBq"/>
                         <outlet property="switchToActualSizeMenuItem" destination="pzo-yf-TTx" id="DN8-BG-O7v"/>
                         <outlet property="switchToFitToWindowMenuItem" destination="d9h-3l-mAH" id="gda-Df-WtZ"/>
                         <outlet property="systemThemeMenuItem" destination="I6E-O3-RVP" id="AYN-qT-D7o"/>
