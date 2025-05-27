@@ -2455,6 +2455,21 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     log("文件不存在: \(url.path)")
                 }
             }
+
+            // 记录操作到日志
+            var sourceFiles = urlsToDelete.map { url -> String in
+                return url.lastPathComponent
+            }
+            
+            let sourceFilesStr: String
+            if sourceFiles.count > 3 {
+                sourceFilesStr = sourceFiles[0...2].joined(separator: ", ") + "..."
+            } else {
+                sourceFilesStr = sourceFiles.joined(separator: ", ")
+            }
+            
+            let operationLog = "[Delete] \(sourceFilesStr)"
+            globalVar.operationLogs.append(operationLog)
             
             if !urlsToDelete.isEmpty {
                 if isShiftPressed { //永久删除
@@ -2884,6 +2899,22 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 return
             }
         }
+
+        // 记录操作到日志
+        var sourceFiles = items.compactMap { item -> String? in
+            guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { return nil }
+            return fileURL.lastPathComponent
+        }
+        
+        let sourceFilesStr: String
+        if sourceFiles.count > 3 {
+            sourceFilesStr = sourceFiles[0...2].joined(separator: ", ") + "..."
+        } else {
+            sourceFilesStr = sourceFiles.joined(separator: ", ")
+        }
+        
+        let operationLog = "[Paste] \(sourceFilesStr) -> \(destinationURL.lastPathComponent)"
+        globalVar.operationLogs.append(operationLog)
         
         //播放提示音
         triggerFinderSound()
@@ -3039,6 +3070,22 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         }
         
+        // 记录操作到日志
+        var sourceFiles = items.compactMap { item -> String? in
+            guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { return nil }
+            return fileURL.lastPathComponent
+        }
+        
+        let sourceFilesStr: String
+        if sourceFiles.count > 3 {
+            sourceFilesStr = sourceFiles[0...2].joined(separator: ", ") + "..."
+        } else {
+            sourceFilesStr = sourceFiles.joined(separator: ", ")
+        }
+        
+        let operationLog = "[Move] \(sourceFilesStr) -> \(destinationURL.lastPathComponent)"
+        globalVar.operationLogs.append(operationLog)
+        
         //播放提示音
         triggerFinderSound()
         
@@ -3112,6 +3159,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         }
         publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
+    }
+    
+    func showOperationLogs() {
+        var text = ""
+        for log in globalVar.operationLogs.reversed() {
+            text += "\(log)\n"
+        }
+        if globalVar.operationLogs.isEmpty {
+            text = NSLocalizedString("operation-logs-info", comment: "(对操作日志的说明)")
+        }
+        showInformationLong(title: NSLocalizedString("Operation Logs", comment: "操作日志"), message: text)
     }
 
     func getUniqueDestinationURL(for url: URL, isInPlace: Bool = false) -> URL {

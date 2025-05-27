@@ -398,6 +398,22 @@ func renameAlert(urls: [URL]) -> Bool {
         let newBaseName = inputTextField.stringValue
         
         if newBaseName != "" {
+
+            // 记录操作到日志
+            let sourceFiles = urls.map { url -> String in
+                return url.lastPathComponent
+            }
+            
+            let sourceFilesStr: String
+            if sourceFiles.count > 3 {
+                sourceFilesStr = sourceFiles[0...2].joined(separator: ", ") + "..."
+            } else {
+                sourceFilesStr = sourceFiles.joined(separator: ", ")
+            }
+            
+            let operationLog = "[Rename] \(sourceFilesStr) -> \(newBaseName)"
+            globalVar.operationLogs.append(operationLog)
+
             var allSuccess = true
             
             for (index, originalUrl) in urls.enumerated() {

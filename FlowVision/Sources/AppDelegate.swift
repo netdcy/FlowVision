@@ -706,6 +706,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         //menuNeedsUpdate(favoritesMenu)
     }
     
+    @IBAction func editOperationLogs(_ sender: NSMenuItem){
+        getMainViewController()?.showOperationLogs()
+    }
+    
     @IBAction func editMove(_ sender: NSMenuItem){
         getMainViewController()?.handleMove()
     }

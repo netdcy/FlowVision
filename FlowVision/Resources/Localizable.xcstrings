@@ -12066,6 +12066,101 @@
         }
       }
     },
+    "Operation Logs" : {
+      "comment" : "操作日志",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سجلات العمليات"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Betriebsprotokolle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Operation Logs"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registros de operaciones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Journaux des opérations"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registri delle operazioni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作ログ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "운영 로그"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Operatielogs"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logs de Operação"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registos de Operações"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Журналы операций"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Driftsloggar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作日志"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作日志"
+          }
+        }
+      }
+    },
     "Other" : {
       "comment" : "其它",
       "localizations" : {
@@ -24127,6 +24222,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在新分頁中開啟此項"
+          }
+        }
+      }
+    },
+    "operation-logs-info" : {
+      "comment" : "(对操作日志的说明)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سجلات عمليات حذف الملفات وإعادة تسميتها ونقلها ولصقها. لا يوجد حاليًا أي محتوى."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufzeichnungen über Datei-Löschen, Umbenennen, Verschieben und Einfügen-Vorgänge. Derzeit gibt es keinen Inhalt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Records of file deletion, renaming, moving and pasting operations. There is currently no content."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registros de las operaciones de eliminación, cambio de nombre, movimiento y pegado de archivos. Actualmente no hay contenido."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrements des opérations de suppression, de renommage, de déplacement et de collage de fichiers. Il n'y a actuellement aucun contenu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registri delle operazioni di eliminazione, rinominazione, spostamento e incolla di file. Attualmente non c'è contenuto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルの削除、名前変更、移動、貼り付け操作の記録 現在、内容がありません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파일 삭제, 이름 변경, 이동 및 붙여넣기 작업의 기록입니다. 현재 내용이 없습니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Records van het verwijderen, hernoemen, verplaatsen en plakken van bestanden. Er is momenteel geen inhoud."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registros de operações de exclusão, renomeação, movimentação e colagem de arquivos. Atualmente, não há conteúdo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registos de operações de eliminação, renomeação, movimentação e colagem de ficheiros. Atualmente não há conteúdo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи удаления, переименования, перемещения и вставки файлов. В данный момент содержимое отсутствует."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokumentation av borttagning, namnbyte, flytt och inklistring av filer. Det finns för närvarande inget innehåll."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件的删除、重命名、移动和粘贴操作记录。当前无内容。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件刪除、更名、移動和粘貼操作的記錄。目前沒有內容。"
           }
         }
       }
