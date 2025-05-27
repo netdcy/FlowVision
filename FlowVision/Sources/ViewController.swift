@@ -2574,9 +2574,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 publicVar.fileChangedCount += 1
 
                 // 针对递归模式处理
-//                if publicVar.isRecursiveMode {
-//                    scheduledRefresh()
-//                }
+                if publicVar.isRecursiveMode {
+                    if fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD {
+                        scheduledRefresh()
+                    }
+                }
                 
             } else {
                 log("要删除的文件不存在")
@@ -2976,6 +2978,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //播放提示音
         triggerFinderSound()
         
+        // 针对递归模式处理
+        defer {
+            if publicVar.isRecursiveMode {
+                if fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD {
+                    scheduledRefresh()
+                }
+            }
+        }
+        
         var shouldReplaceAll = false
         var shouldSkipAll = false
         
@@ -3145,6 +3156,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         //播放提示音
         triggerFinderSound()
+        
+        // 针对递归模式处理
+        defer {
+            if publicVar.isRecursiveMode {
+                if fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD {
+                    scheduledRefresh()
+                }
+            }
+        }
         
         var shouldReplaceAll = false
         var shouldSkipAll = false
@@ -4670,7 +4690,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         fileDB.unlock()
         
         //如果是切换目录或者文件数量过多，则清空后再insertItems，否则仅reloadData(保持位置)
-        if lastCurFolder != path || fileNum > 5000 || fileDB.db[SortKeyDir(path)]?.keepScrollPos == false {
+        if lastCurFolder != path || fileNum > RESET_VIEW_FILE_NUM_THRESHOLD || fileDB.db[SortKeyDir(path)]?.keepScrollPos == false {
             //必须按顺序执行以下两句，否则频繁切换目录时会出现异常
             collectionView.reloadData() //重载清空
             collectionView.numberOfItems(inSection:0)

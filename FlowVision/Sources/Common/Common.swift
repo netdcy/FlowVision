@@ -452,6 +452,16 @@ func renameAlert(urls: [URL]) -> Bool {
                     }
                 }
             }
+            
+            // 针对递归模式处理
+            if let viewController = getMainViewController() {
+                if viewController.publicVar.isRecursiveMode {
+                    if viewController.fileDB.db[SortKeyDir(viewController.fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD {
+                        viewController.scheduledRefresh()
+                    }
+                }
+            }
+            
             return allSuccess
         }
     }
