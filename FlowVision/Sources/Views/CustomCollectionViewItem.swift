@@ -634,8 +634,13 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         if currentTime - lastClickTime < NSEvent.doubleClickInterval &&
             distanceBetweenPoints(lastClickLocation, currentLocation) < positionThreshold {
             if let collectionView = collectionView,
-               let selfIndexPath=collectionView.indexPath(for: self),
-               let viewController=getViewController(collectionView){
+               var selfIndexPath=collectionView.indexPath(for: self),
+               let viewController = getViewController(collectionView) {
+                
+                // 由于连续点击事件的处理会触发上个目录在当前位置item的事件，其id是随机的，因此需要做此修正
+                if collectionView.selectionIndexPaths.count == 1 {
+                    selfIndexPath = collectionView.selectionIndexPaths.first!
+                }
                 
                 if !viewController.publicVar.isInLargeView && !viewController.publicVar.isInLargeViewAfterAnimate {
                     if event.modifierFlags.contains(.command) || event.modifierFlags.contains(.shift) {
