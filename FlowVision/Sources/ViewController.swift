@@ -2415,10 +2415,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         guard urls.count != 0 else {return false}
         
         let ifHasPermission = requestAppleEventsPermission()
+        let isShiftPressed = isShiftKeyPressed()
         
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("Delete", comment: "删除")
-        if VolumeManager.shared.isExternalVolume(urls.first!) {
+        if isShiftPressed {
+            alert.informativeText = NSLocalizedString("ask-to-delete-shift", comment: "你确定要将这些文件永久删除吗？此操作无法撤销。")
+        }else if VolumeManager.shared.isExternalVolume(urls.first!) {
             alert.informativeText = NSLocalizedString("ask-to-delete-external", comment: "此目录不支持移动到废纸篓。将立即删除这些项目，此操作无法撤销。")
         }else{
             if ifHasPermission{
@@ -2454,44 +2457,50 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             if !urlsToDelete.isEmpty {
-                var appleScriptURLs = ""
-                for url in urlsToDelete {
-                    appleScriptURLs += "\"\(url.path)\" as POSIX file, "
-                }
-                
-                // Remove the trailing comma and space
-                if appleScriptURLs.hasSuffix(", ") {
-                    appleScriptURLs = String(appleScriptURLs.dropLast(2))
-                }
-                
-                let script = """
-                        tell application "Finder"
-                            move { \(appleScriptURLs) } to trash
-                        end tell
-                        """
-                
-                var error: NSDictionary?
-                if let scriptObject = NSAppleScript(source: script) {
-                    // 文件更改计数
-                    publicVar.fileChangedCount += 1
+                if isShiftPressed { //永久删除
+                    for url in urlsToDelete {
+                        try? fileManager.removeItem(at: url)
+                    }
+                } else { //删除到回收站
+                    var appleScriptURLs = ""
+                    for url in urlsToDelete {
+                        appleScriptURLs += "\"\(url.path)\" as POSIX file, "
+                    }
                     
-                    scriptObject.executeAndReturnError(&error)
-                    if let error = error, let errorCode = error[NSAppleScript.errorNumber] as? Int, errorCode == -1743 {
-                        // AppleScript 无权限，回退到 NSWorkspace.shared.recycle
-                        NSWorkspace.shared.recycle(urlsToDelete, completionHandler: { (newURLs, error) in
-                            if let error = error {
-                                log("删除失败: \(error)")
-                            } else {
-                                log("文件已移动到废纸篓")
-                            }
-                        })
-                    } else if let error = error {
-                        log("删除失败: \(error)")
-                    } else {
-                        log("文件已移动到废纸篓")
+                    // Remove the trailing comma and space
+                    if appleScriptURLs.hasSuffix(", ") {
+                        appleScriptURLs = String(appleScriptURLs.dropLast(2))
+                    }
+                    
+                    let script = """
+                            tell application "Finder"
+                                move { \(appleScriptURLs) } to trash
+                            end tell
+                            """
+                    
+                    var error: NSDictionary?
+                    if let scriptObject = NSAppleScript(source: script) {
+                        scriptObject.executeAndReturnError(&error)
+                        if let error = error, let errorCode = error[NSAppleScript.errorNumber] as? Int, errorCode == -1743 {
+                            // AppleScript 无权限，回退到 NSWorkspace.shared.recycle
+                            NSWorkspace.shared.recycle(urlsToDelete, completionHandler: { (newURLs, error) in
+                                if let error = error {
+                                    log("删除失败: \(error)")
+                                } else {
+                                    log("文件已移动到废纸篓")
+                                }
+                            })
+                        } else if let error = error {
+                            log("删除失败: \(error)")
+                        } else {
+                            log("文件已移动到废纸篓")
+                        }
                     }
                 }
                 
+                // 文件更改计数
+                publicVar.fileChangedCount += 1
+
                 // 针对递归模式处理
 //                if publicVar.isRecursiveMode {
 //                    scheduledRefresh()
