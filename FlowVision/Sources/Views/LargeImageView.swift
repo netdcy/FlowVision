@@ -766,6 +766,8 @@ class LargeImageView: NSView {
     }
     
     @objc private func handleMagnification(_ gesture: NSMagnificationGestureRecognizer) {
+        if file.type == .video {return}
+        
         let magnification = 1 + gesture.magnification * sensitivity
         
         switch gesture.state {
