@@ -697,7 +697,7 @@ func captureSnapshot(of view: NSView) -> NSView? {
 
     // 将y坐标转换为从上到下
     if screenRect.origin.y == window.frame.origin.y {
-        if let screen = window.screen ?? NSScreen.main {
+        if let screen = NSScreen.screens.first {
             screenRect.origin.y = screen.frame.height - screenRect.origin.y - screenRect.height
         }
     }
