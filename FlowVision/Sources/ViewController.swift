@@ -855,13 +855,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Cmd + "R" / F5 键
-                if (characters == "r" && isCommandPressed) || specialKey == .f5 {
+                if (characters == "r" && isOnlyCommandPressed) || specialKey == .f5 {
                     handleUserRefresh()
                     return nil
                 }
                 
                 // 检查按键是否是 Command+[ 键
-                if characters == "[" && isCommandPressed {
+                if characters == "[" && isOnlyCommandPressed {
                     if !publicVar.isInLargeView{
                         switchDirByDirection(direction: .back, stackDeep: 0)
                     }
@@ -869,7 +869,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Command+] 键
-                if characters == "]" && isCommandPressed {
+                if characters == "]" && isOnlyCommandPressed {
                     if !publicVar.isInLargeView{
                         switchDirByDirection(direction: .forward, stackDeep: 0)
                     }
@@ -1006,7 +1006,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 F2、回车、小键盘回车 键
-                if specialKey == .f2 || (specialKey == .carriageReturn || specialKey == .enter) {
+                if (specialKey == .f2 || specialKey == .carriageReturn || specialKey == .enter) && noModifierKey {
                     if specialKey == .f2 || !globalVar.isEnterKeyToOpen {
                         //如果焦点在OutlineView
                         if publicVar.isOutlineViewFirstResponder{
