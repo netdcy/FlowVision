@@ -311,7 +311,7 @@
                                 <rect key="frame" x="144" y="140" width="308" height="28"/>
                                 <textFieldCell key="cell" selectable="YES" title="For network drives, it is recommended to set it to 0 (do not generate folder thumbnails)." id="v0X-zl-sTc">
                                     <font key="font" metaFont="message" size="11"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>

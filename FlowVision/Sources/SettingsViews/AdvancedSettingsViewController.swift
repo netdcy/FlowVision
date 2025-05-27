@@ -58,13 +58,13 @@ final class AdvancedSettingsViewController: NSViewController, SettingsPane {
         if folderSearchDepthStepper.integerValue == 0 {
             searchDepthWarningText.textColor = .systemRed
         } else {
-            searchDepthWarningText.textColor = .labelColor
+            searchDepthWarningText.textColor = .systemGray
         }
         
         if folderSearchDepthStepper_External.integerValue == 0 {
             searchDepthWarningText_External.textColor = .systemRed
         } else {
-            searchDepthWarningText_External.textColor = .labelColor
+            searchDepthWarningText_External.textColor = .systemGray
         }
         
         // 初始化 Radio Buttons
@@ -110,7 +110,7 @@ final class AdvancedSettingsViewController: NSViewController, SettingsPane {
         if folderSearchDepthStepper.integerValue == 0 {
             searchDepthWarningText.textColor = .systemRed
         } else {
-            searchDepthWarningText.textColor = .labelColor
+            searchDepthWarningText.textColor = .systemGray
         }
     }
     
@@ -140,7 +140,7 @@ final class AdvancedSettingsViewController: NSViewController, SettingsPane {
         if folderSearchDepthStepper_External.integerValue == 0 {
             searchDepthWarningText_External.textColor = .systemRed
         } else {
-            searchDepthWarningText_External.textColor = .labelColor
+            searchDepthWarningText_External.textColor = .systemGray
         }
     }
     
