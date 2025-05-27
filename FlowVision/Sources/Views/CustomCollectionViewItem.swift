@@ -523,7 +523,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 {
                     view.layer?.backgroundColor = hexToNSColor(hex: "#DDDDDD").cgColor //视频边框
                 }else{
-                    view.layer?.backgroundColor = hexToNSColor(hex: "#333333").cgColor //图片边框
+                    view.layer?.backgroundColor = hexToNSColor(hex: "#3A3A3A").cgColor //图片边框
                 }
             }else{//浅色模式
                 imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#DDDDDD").cgColor //填充
