@@ -486,6 +486,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         
         if menu == historyMenu {
             historyMenu.removeAllItems()
+
+            //返回、前进
+            let backMenuItem = NSMenuItem(title: NSLocalizedString("Go Back", comment: "后退"), action: #selector(historyBack(_:)), keyEquivalent: "[")
+            backMenuItem.keyEquivalentModifierMask=[.command]
+            backMenuItem.target = self
+            historyMenu.addItem(backMenuItem)
+            
+            let forwardMenuItem = NSMenuItem(title: NSLocalizedString("Go Forward", comment: "前进"), action: #selector(historyForward(_:)), keyEquivalent: "]")
+            forwardMenuItem.keyEquivalentModifierMask=[.command]
+            forwardMenuItem.target = self
+            historyMenu.addItem(forwardMenuItem)
+
+            historyMenu.addItem(NSMenuItem.separator())
+
             if mainViewController.publicVar.folderStepStack.count > 0 {
                 for item in mainViewController.publicVar.folderStepStack {
                     let menuItem = NSMenuItem(title: item.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!, action: #selector(pathClick(_:)), keyEquivalent: "")
@@ -576,6 +590,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 return false
             }else{
                 return true
+            }
+        }
+        //返回、前进
+        if menuItem.action == #selector(historyBack(_:)) {
+            if (mainViewController.publicVar.folderStepStack.count > 0) && (!mainViewController.publicVar.isInLargeView) {
+                return true
+            }else{
+                return false
+            }
+        }
+        if menuItem.action == #selector(historyForward(_:)) {
+            if (mainViewController.publicVar.folderStepForwardStack.count > 0) && (!mainViewController.publicVar.isInLargeView) {
+                return true
+            }else{
+                return false
             }
         }
         //根据图片大小调整窗口
@@ -759,6 +788,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 mainViewController.handleDelete()
             }
         }
+    }
+
+    @IBAction func historyBack(_ sender: NSMenuItem){
+        getMainViewController()?.historyBack()
+    }
+    
+    @IBAction func historyForward(_ sender: NSMenuItem){
+        getMainViewController()?.historyForward()
     }
     
     @IBAction func fileNewTab(_ sender: NSMenuItem){

@@ -1631,7 +1631,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         }
     }
-    
+
+    func historyBack(){
+        switchDirByDirection(direction: .back, stackDeep: 0)
+    }
+
+    func historyForward(){
+        switchDirByDirection(direction: .forward, stackDeep: 0)
+    }
+
     func handlePrint(){
         if publicVar.isInLargeView {
             printContent(largeImageView.imageView)

@@ -804,13 +804,13 @@ extension WindowController: NSToolbarDelegate {
     
     @objc func goBackAction(_ sender: Any?) {
         if let viewController = contentViewController as? ViewController {
-            viewController.switchDirByDirection(direction: .back, stackDeep: 0)
+            viewController.historyBack()
         }
     }
 
     @objc func goForwardAction(_ sender: Any?) {
         if let viewController = contentViewController as? ViewController {
-            viewController.switchDirByDirection(direction: .forward, stackDeep: 0)
+            viewController.historyForward()
         }
     }
 
