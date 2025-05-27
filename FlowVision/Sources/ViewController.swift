@@ -7224,6 +7224,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         let inputTextField = NSTextField(frame: NSRect(x: 0, y: 0, width: 400, height: 24))
         inputTextField.placeholderString = ""
+        inputTextField.stringValue = fileDB.curFolder.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!
         if let textFieldCell = inputTextField.cell as? NSTextFieldCell {
             textFieldCell.usesSingleLineMode = true
             textFieldCell.wraps = false
@@ -7254,7 +7255,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         path = String(path.dropFirst().dropLast())
                     }
                     // 解码URL编码
-                    path = path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!
+                    guard var path = path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding else {
+                        coreAreaView.showInfo(NSLocalizedString("Invalid current path", comment: "当前路径无效"), timeOut: 2, cannotBeCleard: false)
+                        return
+                    }
+                    
+                    //替换连续双斜杠
+                    while path.contains("//") {
+                        path = path.replacingOccurrences(of: "//", with: "/")
+                    }
 
                     // 检查路径是否为空
                     if path.isEmpty {
