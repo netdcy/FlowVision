@@ -638,8 +638,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                let viewController = getViewController(collectionView) {
                 
                 // 由于连续点击事件的处理会触发上个目录在当前位置item的事件，其id是随机的，因此需要做此修正
-                if collectionView.selectionIndexPaths.count == 1 {
-                    selfIndexPath = collectionView.selectionIndexPaths.first!
+                if let clickedIndexPath = collectionView.indexPathForItem(at: collectionView.convert(event.locationInWindow, from: nil)) {
+                    selfIndexPath = clickedIndexPath
                 }
                 
                 if !viewController.publicVar.isInLargeView && !viewController.publicVar.isInLargeViewAfterAnimate {
