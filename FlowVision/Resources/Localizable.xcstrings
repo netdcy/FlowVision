@@ -24897,91 +24897,91 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "التصرف الافتراضي لعجلة الماوس أو تمرير لوحة اللمس هو تبديل الصور. عند تفعيل هذه الميزة، بعد تكبير الصورة، يتغير سلوك التمرير إلى التحريك. يستخدم هذا عادةً لعرض لقطات الشاشة الطويلة أو الرسوم الهزلية، حيث يمكنك الضغط باستمرار على زر الماوس الأيسر للتمرير وتبديل الصور."
+            "value" : "السلوك الافتراضي لعجلة الفأرة أو التمرير بلوحة اللمس هو تبديل الصور. عندما يتم تفعيل هذه الميزة، بعد تكبير الصورة، يتغير سلوك التمرير إلى التحريك. يُستخدم هذا عادةً لعرض لقطات شاشة طويلة أو رسومات هزلية."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das Standardverhalten des Mausrads oder Touchpad-Scrollens besteht darin, Bilder zu wechseln. Wenn diese Funktion aktiviert ist, ändert sich das Scrollverhalten nach dem Vergrößern des Bildes in Schwenken. Dies wird typischerweise für das Betrachten von langen Screenshots oder Comics verwendet, bei denen Sie die linke Maustaste gedrückt halten können, um zu scrollen und Bilder zu wechseln."
+            "value" : "Das Standardverhalten des Mausrads oder Touchpads beim Scrollen ist der Bildwechsel. Wenn diese Funktion aktiviert ist, ändert sich das Scrollverhalten nach dem Vergrößern des Bildes zu Schwenken. Dies wird typischerweise für die Ansicht von langen Screenshots oder Comics verwendet."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The default behavior of the mouse wheel or touchpad scrolling is to switch images. When this feature is enabled, after the image is zoomed in, the scrolling behavior changes to panning. This is typically used for viewing long screenshots or comics, where you can hold down the left mouse button to scroll and switch images."
+            "value" : "The default behavior of the mouse wheel or touchpad scrolling is to switch images. When this feature is enabled, after the image is zoomed in, the scrolling behavior changes to panning. This is typically used for viewing long screenshots or comics."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El comportamiento predeterminado de la rueda del ratón o del desplazamiento del touchpad es cambiar de imagen. Cuando esta función está activada, después de hacer zoom en la imagen, el comportamiento de desplazamiento cambia a panorámica. Esto se utiliza típicamente para ver capturas de pantalla largas o cómics, donde puedes mantener presionado el botón izquierdo del ratón para desplazar y cambiar de imagen."
+            "value" : "El comportamiento predeterminado de la rueda del mouse o el desplazamiento del touchpad es cambiar imágenes. Cuando esta función está habilitada, después de acercar la imagen, el comportamiento de desplazamiento cambia a panorámica. Esto se usa típicamente para ver capturas de pantalla largas o cómics."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le comportement par défaut de la molette de la souris ou du défilement du pavé tactile est de changer d'image. Lorsque cette fonctionnalité est activée, après le zoom de l'image, le comportement de défilement passe au panoramique. Cela est généralement utilisé pour visualiser de longues captures d'écran ou des bandes dessinées, où vous pouvez maintenir le bouton gauche de la souris enfoncé pour faire défiler et changer d'image."
+            "value" : "Le comportement par défaut de la molette de la souris ou du défilement du pavé tactile est de changer d'image. Lorsque cette fonctionnalité est activée, après avoir zoomé sur l'image, le défilement change pour un panoramique. Cela est généralement utilisé pour visualiser de longues captures d'écran ou des bandes dessinées."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il comportamento predefinito della rotellina del mouse o dello scorrimento del touchpad è di cambiare immagine. Quando questa funzione è attivata, dopo l'ingrandimento dell'immagine, il comportamento di scorrimento cambia in panoramica. Questo è tipicamente utilizzato per visualizzare screenshot lunghi o fumetti, dove puoi tenere premuto il pulsante sinistro del mouse per scorrere e cambiare immagine."
+            "value" : "Il comportamento predefinito della rotella del mouse o dello scorrimento del touchpad è di cambiare immagini. Quando questa funzione è abilitata, dopo l'ingrandimento dell'immagine, il comportamento di scorrimento cambia in spostamento. Questo è generalmente utilizzato per visualizzare lunghe schermate o fumetti."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "マウスホイールやタッチパッドのスクロールのデフォルト動作は画像を切り替えることです。この機能が有効になると、画像がズームされた後、スクロール動作はパンに変わります。これは通常、左マウスボタンを押しながらスクロールして画像を切り替えることができる長いスクリーンショットやコミックを表示するために使用されます。"
+            "value" : "マウスホイールやタッチパッドのスクロールのデフォルトの動作は画像を切り替えることです。この機能が有効になると、画像をズームインした後、スクロール動作がパンに変わります。これは通常、長いスクリーンショットや漫画を表示するために使用されます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "마우스 휠이나 터치패드 스크롤의 기본 동작은 이미지를 전환하는 것입니다. 이 기능이 활성화되면, 이미지를 확대 한 후 스크롤 동작이 평면 이동으로 변경됩니다. 이는 주로 긴 스크린샷이나 만화를 볼 때 사용되며, 왼쪽 마우스 버튼을 눌러 스크롤하고 이미지를 전환할 수 있습니다."
+            "value" : "마우스 휠이나 터치패드 스크롤의 기본 동작은 이미지를 전환하는 것입니다. 이 기능이 활성화되면 이미지를 확대한 후 스크롤 동작이 평면 이동으로 변경됩니다. 이는 주로 긴 스크린샷 또는 만화를 볼 때 사용됩니다."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Het standaardgedrag van het muiswiel of touchpad scrollen is het wisselen van afbeeldingen. Wanneer deze functie is ingeschakeld, verandert het scrollgedrag naar pannen nadat de afbeelding is ingezoomd. Dit wordt meestal gebruikt voor het bekijken van lange schermafbeeldingen of strips, waarbij u de linkermuisknop ingedrukt kunt houden om te scrollen en afbeeldingen te wisselen."
+            "value" : "Het standaardgedrag van het muiswiel of touchpad scrollen is om afbeeldingen te wisselen. Wanneer deze functie is ingeschakeld, verandert het scrollgedrag na het inzoomen van de afbeelding naar pannen. Dit wordt meestal gebruikt voor het bekijken van lange schermafbeeldingen of strips."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O comportamento padrão da roda do mouse ou do scrolling do touchpad é alternar imagens. Quando esse recurso está ativado, após a imagem ser ampliada, o comportamento de rolagem muda para pan. Isso é tipicamente usado para visualizar capturas de tela longas ou quadrinhos, onde você pode segurar o botão esquerdo do mouse para rolar e alternar imagens."
+            "value" : "O comportamento padrão da rolagem do mouse ou touchpad é alternar imagens Quando este recurso está habilitado, após a imagem ser ampliada, o comportamento de rolagem muda para deslocamento Este é tipicamente usado para visualizar capturas de tela longas ou quadrinhos"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O comportamento padrão da roda do rato ou do scroll do touchpad é de alternar imagens. Quando esta funcionalidade está ativada, depois da imagem ser ampliada, o comportamento do scroll muda para arrastar. Isto é tipicamente usado para visualizar capturas de ecrã longas ou bandas desenhadas, onde pode manter pressionado o botão esquerdo do rato para fazer scroll e alternar imagens."
+            "value" : "O comportamento padrão da roda do rato ou do scroll do touchpad é alternar imagens. Quando esta funcionalidade está ativada, após a imagem ser ampliada, o comportamento de scroll muda para pan. Isto é tipicamente utilizado para visualizar capturas de ecrã longas ou bandas desenhadas."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Стандартное поведение колесика мыши или прокрутки тачпада заключается в переключении изображений. Когда эта функция включена, после увеличения изображения поведение прокрутки изменяется на панорамирование. Это обычно используется для просмотра длинных скриншотов или комиксов, где вы можете удерживать левую кнопку мыши для прокрутки и переключения изображений."
+            "value" : "Прокрутка колесика мыши или сенсорной панели по умолчанию переключает изображения. Когда эта функция включена, после увеличения изображения прокрутка изменяет свое поведение на панорамирование. Это обычно используется для просмотра длинных скриншотов или комиксов."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Standardbeteendet för musens rullhjul eller pekplattans rullning är att byta bilder. När den här funktionen är aktiverad ändras rullningsbeteendet till panorering efter att bilden har zoomats in. Detta används vanligtvis för att visa långa skärmdumpar eller serier, där du kan hålla ned vänster musknapp för att rulla och byta bilder."
+            "value" : "Musens eller styrplattans rullningsbeteende är som standard att byta bilder. När denna funktion är aktiverad ändras rullningsbeteendet till panorering efter att bilden har zoomats in. Detta används vanligtvis för att visa långa skärmdumpar eller serier."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鼠标滚轮或者触控板滚动的默认行为是切换图片，当启用此功能时，图片被放大后滚动行为变为平移。通常用于查看长截图或者漫画等情景，此时可以按住鼠标左键滚动来切换图像。"
+            "value" : "鼠标滚轮或者触控板滚动的默认行为是切换图片，当启用此功能时，图片被放大后滚动行为变为平移。通常用于查看长截图或者漫画等情景。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "預設情況下，滑鼠滾輪或觸控板滾動會切換圖像。啟用此功能後，當圖像放大時，滾動行為會改為平移。這通常用於查看長截圖或漫畫，您可以按住滑鼠左鍵滾動並切換圖像。"
+            "value" : "鼠标滚轮或触摸板滚动的默认行为是切换图片。启用此功能后，图像放大后，滚动行为将改为平移。这通常用于查看长屏截图或漫画。"
           }
         }
       }

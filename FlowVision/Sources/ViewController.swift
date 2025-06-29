@@ -289,8 +289,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var searchFolderRound=0
     
 #if DEBUG
-    var rootFolder="file://\(homeDirectory)/RepoData/ImageViewerPlus/"
-    var treeRootFolder="file://\(homeDirectory)/RepoData/ImageViewerPlus/"
+    var rootFolder="file://\(homeDirectory)/Repository/XcodeProj/%5BTestData%5D/ImageViewerPlus/"
+    var treeRootFolder="file://\(homeDirectory)/Repository/XcodeProj/%5BTestData%5D/ImageViewerPlus/"
     
 //    var rootFolder="file:///"
 //    var treeRootFolder="root"
@@ -5951,7 +5951,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         // 以下是防止按住鼠标缩放后松开，滚轮惯性滚动造成切换
-        if publicVar.isRightMouseDown {
+        if publicVar.isRightMouseDown || publicVar.isLeftMouseDown {
             _ = publicVar.timer.intervalSafe(name: "largeImageZoomForbidSwitch", second: -1)
             return
         }
@@ -7048,7 +7048,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         alert.alertStyle = .informational
         
         let inputTextField = NSTextField(frame: NSRect(x: 0, y: 0, width: 200, height: 24))
-        inputTextField.stringValue = "100"
+        inputTextField.stringValue = "80"
         alert.accessoryView = inputTextField
         
         alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
@@ -7154,7 +7154,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         alert.alertStyle = .informational
         
         let inputTextField = NSTextField(frame: NSRect(x: 0, y: 0, width: 200, height: 24))
-        inputTextField.stringValue = "1"
+        inputTextField.stringValue = "2"
         alert.accessoryView = inputTextField
         alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
         alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))

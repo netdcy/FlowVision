@@ -1129,7 +1129,7 @@ class LargeImageView: NSView {
             doNotPopRightMenu=true
         }
 
-        if getViewController(self)!.publicVar.isRightMouseDown {
+        if getViewController(self)!.publicVar.isRightMouseDown || getViewController(self)!.publicVar.isLeftMouseDown {
             
             do {
                 wheelZoomRegenTimer?.invalidate()
