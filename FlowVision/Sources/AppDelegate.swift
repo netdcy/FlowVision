@@ -35,8 +35,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     @IBOutlet weak var toggleIsShowRawFileMenuItem: NSMenuItem!
     @IBOutlet weak var toggleIsShowVideoFileMenuItem: NSMenuItem!
     @IBOutlet weak var toggleIsShowAllTypeFileMenuItem: NSMenuItem!
+    @IBOutlet weak var customLayoutStyleMenuItem: NSMenuItem!
     @IBOutlet weak var deselectMenuItem: NSMenuItem!
     @IBOutlet weak var reopenClosedTabsMenuItem: NSMenuItem!
+    @IBOutlet weak var lockRotationMenuItem: NSMenuItem!
+    @IBOutlet weak var lockZoomMenuItem: NSMenuItem!
+    @IBOutlet weak var activatePanScrollMenuItem: NSMenuItem!
+    @IBOutlet weak var activatePanScrollReadmeMenuItem: NSMenuItem!
     
     var commonParentPath=""
     
@@ -537,11 +542,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             toggleIsShowImageFileMenuItem.state = mainViewController.publicVar.isShowImageFile ? .on : .off
             toggleIsShowRawFileMenuItem.state = mainViewController.publicVar.isShowRawFile ? .on : .off
             toggleIsShowVideoFileMenuItem.state = mainViewController.publicVar.isShowVideoFile ? .on : .off
+
+            toggleIsShowHiddenFileMenuItem.isHidden = mainViewController.publicVar.isInLargeView
+            toggleIsShowAllTypeFileMenuItem.isHidden = mainViewController.publicVar.isInLargeView
+            toggleIsShowImageFileMenuItem.isHidden = mainViewController.publicVar.isInLargeView
+            toggleIsShowRawFileMenuItem.isHidden = mainViewController.publicVar.isInLargeView
+            toggleIsShowVideoFileMenuItem.isHidden = mainViewController.publicVar.isInLargeView
             
             justifiedViewMenuItem.state = (mainViewController.publicVar.profile.layoutType == .justified) ? .on : .off
             waterfallViewModeMenuItem.state = (mainViewController.publicVar.profile.layoutType == .waterfall) ? .on : .off
             gridViewMenuItem.state = (mainViewController.publicVar.profile.layoutType == .grid) ? .on : .off
             detailViewModeMenuItem.state = (mainViewController.publicVar.profile.layoutType == .detail) ? .on : .off
+
+            justifiedViewMenuItem.isHidden = mainViewController.publicVar.isInLargeView
+            waterfallViewModeMenuItem.isHidden = mainViewController.publicVar.isInLargeView
+            gridViewMenuItem.isHidden = mainViewController.publicVar.isInLargeView
+            detailViewModeMenuItem.isHidden = mainViewController.publicVar.isInLargeView
             
             maximizeWindowMenuItem.keyEquivalent="1"
             maximizeWindowMenuItem.keyEquivalentModifierMask=[]
@@ -569,6 +585,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             toggleSidebarMenuItem.state = (mainViewController.publicVar.profile.isDirTreeHidden == false) ? .on : .off
             toggleSidebarMenuItem.keyEquivalent="f"
             toggleSidebarMenuItem.keyEquivalentModifierMask=[]
+            toggleSidebarMenuItem.isHidden = mainViewController.publicVar.isInLargeView
+
+            customLayoutStyleMenuItem.isHidden = mainViewController.publicVar.isInLargeView
+
+            lockRotationMenuItem.state = mainViewController.publicVar.isRotationLocked ? .on : .off
+            lockZoomMenuItem.state = mainViewController.publicVar.isZoomLocked ? .on : .off
+            activatePanScrollMenuItem.state = mainViewController.publicVar.isPanWhenZoomed ? .on : .off
+
+            lockRotationMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
+            lockZoomMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
+            activatePanScrollMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
+            activatePanScrollReadmeMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
         }
     }
     
@@ -827,6 +855,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         let printInfo = NSPrintInfo.shared
         
         pageLayout.runModal(with: printInfo)
+    }
+
+    @IBAction func toggleLockRotation(_ sender: NSMenuItem){
+        getMainViewController()?.toggleLockRotation()
+    }
+    
+    @IBAction func toggleLockZoom(_ sender: NSMenuItem){
+        getMainViewController()?.toggleLockZoom()
+    }
+
+    @IBAction func toggleActivatePanScroll(_ sender: NSMenuItem){
+        getMainViewController()?.togglePanWhenZoomed()
+    }
+    
+    @IBAction func toggleActivatePanScrollReadme(_ sender: NSMenuItem){
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("pan-zoom-info", comment: "对于缩放后平移的说明..."), width: 300)
     }
     
     @IBAction func toggleIsShowHiddenFile(_ sender: NSMenuItem){

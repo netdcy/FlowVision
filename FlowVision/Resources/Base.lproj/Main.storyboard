@@ -697,6 +697,32 @@ Gw
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="2Mq-tp-wyX"/>
+                                        <menuItem title="Lock Rotation" id="VCB-ff-DEq">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="toggleLockRotation:" target="Voe-Tx-rLC" id="yUY-s5-RRg"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Lock Zoom" id="rTb-Na-yZj">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="toggleLockZoom:" target="Voe-Tx-rLC" id="pl0-jg-XRg"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="YV6-Oq-8KP"/>
+                                        <menuItem title="Activate Pan Scrolling After Zoom" id="kyz-IP-P6r">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="toggleActivatePanScroll:" target="Voe-Tx-rLC" id="mVT-xn-lCY"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Readme..." id="Nop-qv-3GL">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="toggleActivatePanScrollReadme:" target="Voe-Tx-rLC" id="pJ5-35-Kcj"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="hya-9u-wKp"/>
                                         <menuItem title="Show Hidden Files" keyEquivalent="." id="Tbh-PX-yFW">
                                             <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                             <connections>
@@ -885,9 +911,12 @@ Gw
                 </application>
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="FlowVision" customModuleProvider="target">
                     <connections>
+                        <outlet property="activatePanScrollMenuItem" destination="kyz-IP-P6r" id="rhZ-ML-M7l"/>
+                        <outlet property="activatePanScrollReadmeMenuItem" destination="Nop-qv-3GL" id="kvs-JX-hg0"/>
                         <outlet property="adjustWindowActualMenuItem" destination="6gk-QR-1IE" id="izr-qS-qGD"/>
                         <outlet property="adjustWindowCurrentMenuItem" destination="9zb-jY-FJF" id="fdh-Ck-WgD"/>
                         <outlet property="adjustWindowToCenterMenuItem" destination="6W0-Wg-Cpn" id="ySc-ni-Hwl"/>
+                        <outlet property="customLayoutStyleMenuItem" destination="EGa-rJ-Y1T" id="5O7-tS-thW"/>
                         <outlet property="darkModeMenuItem" destination="BIe-WV-g2r" id="07D-n2-CgM"/>
                         <outlet property="deselectMenuItem" destination="MFt-GP-W33" id="dWr-FB-Nqj"/>
                         <outlet property="detailViewModeMenuItem" destination="aHz-iD-6dU" id="hEJ-gf-r7w"/>
@@ -896,6 +925,8 @@ Gw
                         <outlet property="historyMenu" destination="wPC-H1-Utm" id="3Ye-Kf-Sul"/>
                         <outlet property="justifiedViewMenuItem" destination="rIE-So-qGu" id="P7V-7k-tCV"/>
                         <outlet property="lightModeMenuItem" destination="iPW-fb-GmX" id="wHy-XH-C2B"/>
+                        <outlet property="lockRotationMenuItem" destination="VCB-ff-DEq" id="dAs-PX-MYM"/>
+                        <outlet property="lockZoomMenuItem" destination="rTb-Na-yZj" id="joH-tT-6ZK"/>
                         <outlet property="maximizeWindowMenuItem" destination="HOx-iw-zko" id="ygq-Rk-ujP"/>
                         <outlet property="onTopMenuItem" destination="aEU-QL-iYf" id="XOy-Dx-Aw4"/>
                         <outlet property="optimizeWindowMenuItem" destination="tmG-gn-Pce" id="iuh-K8-8iB"/>
