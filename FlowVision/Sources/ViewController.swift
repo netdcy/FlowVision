@@ -961,7 +961,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     return nil
                 }
                 
-                // 检查按键是否是 Alt+⬆️ 键
+                // 检查按键是否是 Opt+⬆️ 键
                 if (specialKey == .upArrow && isOnlyAltPressed) || (specialKey == .pageUp && noModifierKey) {
                     if !publicVar.isInLargeView{
                         if let scrollView = collectionView.enclosingScrollView {
@@ -985,7 +985,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 
-                // 检查按键是否是 Alt+⬇️ 键
+                // 检查按键是否是 Opt+⬇️ 键
                 if (specialKey == .downArrow && isOnlyAltPressed) || (specialKey == .pageDown && noModifierKey) {
                     if !publicVar.isInLargeView{
                         if let scrollView = collectionView.enclosingScrollView {
@@ -1036,7 +1036,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 }
                 
-                // 检查按键是否是 Alt + 回车、小键盘回车 键
+                // 检查按键是否是 Opt + 回车、小键盘回车 键
                 if (specialKey == .carriageReturn || specialKey == .enter) && isOnlyAltPressed {
                     if let window = view.window {
                         window.toggleFullScreen(nil)
@@ -1136,7 +1136,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 }
                 
-                // 检查按键是否是 Alt+1~9 键
+                // 检查按键是否是 Opt+1~9 键
                 if (["1","2","3","4","5","6","7","8","9"].contains(characters)) && isOnlyAltPressed {
                     if !publicVar.isInLargeView {
                         useCustomProfile(characters)
@@ -1144,7 +1144,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 }
                 
-                // 检查按键是否是 Cmd+Alt+1~9 键
+                // 检查按键是否是 Cmd+Opt+1~9 键
                 if (["1","2","3","4","5","6","7","8","9"].contains(characters)) && isCommandPressed && isAltPressed && !isCtrlPressed && !isShiftPressed {
                     if !publicVar.isInLargeView {
                         setCustomProfileTo(characters)
