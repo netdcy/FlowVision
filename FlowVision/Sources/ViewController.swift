@@ -1525,8 +1525,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         // 在这里执行清理工作
         log("ViewController is being deinitialized")
         
-        //存储关闭的目录
-        globalVar.closedPaths.append(fileDB.curFolder)
+        //存储关闭的目录/文件
+        if publicVar.isInLargeView {
+            globalVar.closedPaths.append(largeImageView.file.path)
+        } else {
+            globalVar.closedPaths.append(fileDB.curFolder)
+        }
         
         // 移除事件观察者
         if let eventMonitorKeyDown = eventMonitorKeyDown {
@@ -1635,7 +1639,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if let lastPath = globalVar.closedPaths.last {
             globalVar.closedPaths.removeLast()
             if let appDelegate=NSApplication.shared.delegate as? AppDelegate {
-                _ = appDelegate.createNewWindow(lastPath)
+                if lastPath.hasSuffix("/") {
+                    _ = appDelegate.createNewWindow(lastPath)
+                } else {
+                    globalVar.isLaunchFromFile=true
+                    if let windowController = appDelegate.createNewWindow(lastPath) {
+                        appDelegate.openImageInTargetWindow(lastPath, windowController: windowController)
+                    }
+                }
             }
         }
     }
