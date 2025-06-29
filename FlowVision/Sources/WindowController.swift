@@ -981,9 +981,10 @@ extension WindowController: NSToolbarDelegate {
         let addFolderMenuItem = NSMenuItem(
             title: NSLocalizedString("Add Current Folder", comment: "添加当前文件夹"),
             action: #selector(favoritesAdd(_:)),
-            keyEquivalent: ""
+            keyEquivalent: "d"
         )
         addFolderMenuItem.target = self
+        addFolderMenuItem.keyEquivalentModifierMask = .command
         favoritesMenu.addItem(addFolderMenuItem)
         
         favoritesMenu.addItem(NSMenuItem.separator())

@@ -1593,50 +1593,55 @@ class InfoView: NSView {
         isHidden = true
     }
     
-    func showInfo(text: String, timeOut: Double = 2.0) {
-        // Update text
+    func showInfo(text: String, timeOut: Double = 2.0, duration: Double = INFO_VIEW_DURATION) {
+        // 更新文本
         label.stringValue = text
 
-        // Invalidate previous timer
+        // 使之前的定时器失效
         hideTimer?.invalidate()
         
-        // Stop any ongoing hide animation
+        // 停止正在进行的隐藏动画
         if isAnimating {
-            layer?.removeAllAnimations() // Stop all animations
+            layer?.removeAllAnimations() // 停止所有动画
             isAnimating = false
         }
         
         isHidden = false
         
-        // Calculate the remaining duration based on the current alpha value
+        // 根据当前alpha值计算剩余动画时间
         let currentAlpha = self.alphaValue
-        let remainingDuration = 0.3 * Double(1.0 - currentAlpha)
+        let remainingDuration = duration * Double(1.0 - currentAlpha)
         
-        // Show the view with fade-in animation from the current alpha value
+        // 从当前alpha值开始淡入动画显示视图
         NSAnimationContext.runAnimationGroup({ context in
             context.duration = remainingDuration
             self.animator().alphaValue = 1.0
         })
         
-        // Set a timer to hide the view after xx seconds
+        // 设置定时器在指定时间后隐藏视图
         hideTimer = Timer.scheduledTimer(withTimeInterval: timeOut, repeats: false) { [weak self] _ in
-            self?.hide()
+            self?.hide(duration: duration)
         }
     }
     
     private var isAnimating = false
     
-    func hide() {
-        // Check if the view is already hidden or currently animating
+    func hide(duration: Double = INFO_VIEW_DURATION) {
+        // 检查视图是否已经隐藏或正在动画中
         guard !isAnimating, self.alphaValue != 0.0 else { return }
         
         isAnimating = true
-        // Hide the view with fade-out animation
+        
+        // 根据当前alpha值计算剩余动画时间
+        let currentAlpha = self.alphaValue
+        let remainingDuration = duration * Double(currentAlpha)
+        
+        // 从当前alpha值开始淡出动画
         NSAnimationContext.runAnimationGroup({ context in
-            context.duration = 0.3
+            context.duration = remainingDuration
             self.animator().alphaValue = 0.0
         }) {
-            // Animation completion handler
+            // 动画完成处理
             if self.isAnimating {
                 self.isAnimating = false
                 self.isHidden = true

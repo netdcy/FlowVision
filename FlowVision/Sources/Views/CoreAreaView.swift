@@ -34,14 +34,14 @@ class CoreAreaView: NSView {
         ])
     }
     
-    func showInfo(_ info: String, timeOut: Double = 1.0, cannotBeCleard: Bool = true) {
-        infoView.showInfo(text: info, timeOut: timeOut)
+    func showInfo(_ info: String, timeOut: Double = 1.0, duration: Double = INFO_VIEW_DURATION, cannotBeCleard: Bool = true) {
+        infoView.showInfo(text: info, timeOut: timeOut, duration: duration)
         self.cannotBeCleard = cannotBeCleard
     }
     
-    func hideInfo(force: Bool = false) {
+    func hideInfo(force: Bool = false, duration: Double = INFO_VIEW_DURATION) {
         if !self.cannotBeCleard || force {
-            infoView.hide()
+            infoView.hide(duration: duration)
         }
     }
     

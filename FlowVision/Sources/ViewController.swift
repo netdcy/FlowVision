@@ -7859,7 +7859,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 _ = performSearch(searchText: quickSearchText, isEnterKey: false, forceUseRegex: false, firstMatch: true)
             }
         }
-        coreAreaView.showInfo(NSLocalizedString("Quick Search", comment: "快速搜索")+": "+quickSearchText, timeOut: 1.8, cannotBeCleard: true)
+        coreAreaView.showInfo(NSLocalizedString("Quick Search", comment: "快速搜索")+": "+quickSearchText, timeOut: 1.8, duration: 0.1, cannotBeCleard: true)
         
         if !publicVar.isCollectionViewFirstResponder {
             view.window?.makeFirstResponder(collectionView)
