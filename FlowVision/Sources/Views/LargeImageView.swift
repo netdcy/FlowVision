@@ -962,6 +962,24 @@ class LargeImageView: NSView {
             if file.type == .image {
                 imageView.frame.origin.x += dx
                 imageView.frame.origin.y += dy
+                
+                // 限制图片不能完全移出视野范围
+                let imageFrame = imageView.frame
+                let viewFrame = self.frame
+                
+                // 检查是否完全超出视野
+                if imageFrame.maxX < 0 {
+                    imageView.frame.origin.x = -imageFrame.width
+                }
+                if imageFrame.minX > viewFrame.width {
+                    imageView.frame.origin.x = viewFrame.width
+                }
+                if imageFrame.maxY < 0 {
+                    imageView.frame.origin.y = -imageFrame.height
+                }
+                if imageFrame.minY > viewFrame.height {
+                    imageView.frame.origin.y = viewFrame.height
+                }
             } else if file.type == .video {
                 if getViewController(self)!.publicVar.isRightMouseDown {
                     seekVideoByDrag(deltaX: dx)

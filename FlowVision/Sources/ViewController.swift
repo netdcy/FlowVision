@@ -5939,6 +5939,23 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     largeImageView.imageView.frame.origin.x += event.deltaX * 10
                     largeImageView.imageView.frame.origin.y -= event.deltaY * 10
                 }
+                // 限制图片不能完全移出视野范围
+                let imageFrame = largeImageView.imageView.frame
+                let viewFrame = largeImageView.frame
+                
+                // 检查是否完全超出视野
+                if imageFrame.maxX < 0 {
+                    largeImageView.imageView.frame.origin.x = -imageFrame.width
+                }
+                if imageFrame.minX > viewFrame.width {
+                    largeImageView.imageView.frame.origin.x = viewFrame.width
+                }
+                if imageFrame.maxY < 0 {
+                    largeImageView.imageView.frame.origin.y = -imageFrame.height
+                }
+                if imageFrame.minY > viewFrame.height {
+                    largeImageView.imageView.frame.origin.y = viewFrame.height
+                }
                 return
             }
         }
