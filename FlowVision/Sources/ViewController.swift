@@ -147,7 +147,7 @@ class PublicVar{
     //可一键切换的配置
     var profile = CustomProfile()
     
-    var toolbarTitle = "FlowVision"
+    var toolbarTitle = ""
     var titleStatisticInfo = ""
     var isKeyEventEnabled = true
     var folderStepStack = [String]() {

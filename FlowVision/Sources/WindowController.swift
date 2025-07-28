@@ -19,7 +19,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
         
         self.window?.delegate = self
         
-        window?.title = "FlowVision"
+        window?.title = ""
 
         if let window = self.window {
             // 设置标题栏和工具栏合并效果
