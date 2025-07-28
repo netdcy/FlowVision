@@ -2958,6 +2958,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func handleCopyToDownload() {
+        if publicVar.selectedUrls().isEmpty {return}
+        
         // 备份剪贴板内容
         let backupItems = backupPasteboard()
         
@@ -3047,19 +3049,28 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         globalVar.operationLogs.append(operationLog)
         
         //播放提示音
-        triggerFinderSound()
+        var changeCount = 0
+        defer {
+            if changeCount > 0 {
+                triggerFinderSound()
+            }
+        }
         
         // 针对递归模式处理
+        var currentFolderChangeCount = 0
         defer {
             if publicVar.isRecursiveMode {
-                if fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD {
-                    scheduledRefresh()
+                if currentFolderChangeCount > 0 {
+                    if fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD {
+                        scheduledRefresh()
+                    }
                 }
             }
         }
         
         var shouldReplaceAll = false
         var shouldSkipAll = false
+        var shouldAutoRenameAll = false
         
         let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
         publicVar.isKeyEventEnabled = false
@@ -3072,14 +3083,19 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             // 如果是在同一目录复制粘贴，则修改名称
-            if fileURL.deletingLastPathComponent() == destinationURL {
+            var isInSameFolder = fileURL.deletingLastPathComponent() == destinationURL
+            if isInSameFolder {
                 destURL = getUniqueDestinationURL(for: destURL, isInPlace: true)
             }
             
             if FileManager.default.fileExists(atPath: destURL.path) {
                 if shouldReplaceAll {
                     do {
-                        publicVar.fileChangedCount += 1
+                        changeCount += 1
+                        if isInSameFolder {
+                            currentFolderChangeCount += 1
+                            publicVar.fileChangedCount += 1
+                        }
                         try FileManager.default.removeItem(at: destURL)
                         try FileManager.default.copyItem(at: fileURL, to: destURL)
                     } catch {
@@ -3087,12 +3103,28 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 } else if shouldSkipAll {
                     continue
+                } else if shouldAutoRenameAll {
+                    destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
+                    do {
+                        changeCount += 1
+                        if isInSameFolder {
+                            currentFolderChangeCount += 1
+                            publicVar.fileChangedCount += 1
+                        }
+                        try FileManager.default.copyItem(at: fileURL, to: destURL)
+                    } catch {
+                        log("粘贴失败 \(fileURL): \(error)")
+                    }
                 } else {
                     let userChoice = showReplaceDialog(for: destURL, isSingle: items.count == 1, isMove: false)
                     switch userChoice {
                     case .replace:
                         do {
-                            publicVar.fileChangedCount += 1
+                            changeCount += 1
+                            if isInSameFolder {
+                                currentFolderChangeCount += 1
+                                publicVar.fileChangedCount += 1
+                            }
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
                         } catch {
@@ -3101,8 +3133,37 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     case .replaceAll:
                         shouldReplaceAll = true
                         do {
-                            publicVar.fileChangedCount += 1
+                            changeCount += 1
+                            if isInSameFolder {
+                                currentFolderChangeCount += 1
+                                publicVar.fileChangedCount += 1
+                            }
                             try FileManager.default.removeItem(at: destURL)
+                            try FileManager.default.copyItem(at: fileURL, to: destURL)
+                        } catch {
+                            log("粘贴失败 \(fileURL): \(error)")
+                        }
+                    case .autoRename:
+                        destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
+                        do {
+                            changeCount += 1
+                            if isInSameFolder {
+                                currentFolderChangeCount += 1
+                                publicVar.fileChangedCount += 1
+                            }
+                            try FileManager.default.copyItem(at: fileURL, to: destURL)
+                        } catch {
+                            log("粘贴失败 \(fileURL): \(error)")
+                        }
+                    case .autoRenameAll:
+                        shouldAutoRenameAll = true
+                        destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
+                        do {
+                            changeCount += 1
+                            if isInSameFolder {
+                                currentFolderChangeCount += 1
+                                publicVar.fileChangedCount += 1
+                            }
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
                         } catch {
                             log("粘贴失败 \(fileURL): \(error)")
@@ -3119,7 +3180,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
             } else {
                 do {
-                    publicVar.fileChangedCount += 1
+                    changeCount += 1
+                    if isInSameFolder {
+                        currentFolderChangeCount += 1
+                        publicVar.fileChangedCount += 1
+                    }
                     try FileManager.default.copyItem(at: fileURL, to: destURL)
                 } catch {
                     log("粘贴失败 \(fileURL): \(error)")
@@ -3130,6 +3195,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func handleMoveToDownload() {
+        if publicVar.selectedUrls().isEmpty {return}
+        
         // 备份剪贴板内容
         let backupItems = backupPasteboard()
         
@@ -3226,19 +3293,28 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         globalVar.operationLogs.append(operationLog)
         
         //播放提示音
-        triggerFinderSound()
+        var changeCount = 0
+        defer {
+            if changeCount > 0 {
+                triggerFinderSound()
+            }
+        }
         
         // 针对递归模式处理
+        var currentFolderChangeCount = 0
         defer {
             if publicVar.isRecursiveMode {
-                if fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD {
-                    scheduledRefresh()
+                if currentFolderChangeCount > 0 {
+                    if fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD {
+                        scheduledRefresh()
+                    }
                 }
             }
         }
         
         var shouldReplaceAll = false
         var shouldSkipAll = false
+        var shouldAutoRenameAll = false
         
         let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
         publicVar.isKeyEventEnabled = false
@@ -3247,8 +3323,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             var destURL = destinationURL.appendingPathComponent(fileURL.lastPathComponent)
             
             // 如果是在同一目录移动，则不作动作
-            if fileURL.deletingLastPathComponent() == destinationURL {
-                log("不能将文件/文件夹移动到相同目录中。")
+            var isInSameFolder = fileURL.deletingLastPathComponent() == destinationURL
+            if isInSameFolder {
                 continue
             }
 
@@ -3259,7 +3335,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if FileManager.default.fileExists(atPath: destURL.path) {
                 if shouldReplaceAll {
                     do {
-                        publicVar.fileChangedCount += 1
+                        changeCount += 1
+                        if isInSameFolder {
+                            currentFolderChangeCount += 1
+                            publicVar.fileChangedCount += 1
+                        }
                         try FileManager.default.removeItem(at: destURL)
                         try FileManager.default.moveItem(at: fileURL, to: destURL)
                     } catch {
@@ -3267,12 +3347,28 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 } else if shouldSkipAll {
                     continue
+                } else if shouldAutoRenameAll {
+                    destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
+                    do {
+                        changeCount += 1
+                        if isInSameFolder {
+                            currentFolderChangeCount += 1
+                            publicVar.fileChangedCount += 1
+                        }
+                        try FileManager.default.moveItem(at: fileURL, to: destURL)
+                    } catch {
+                        log("移动失败 \(fileURL): \(error)")
+                    }
                 } else {
                     let userChoice = showReplaceDialog(for: destURL, isSingle: items.count == 1, isMove: true)
                     switch userChoice {
                     case .replace:
                         do {
-                            publicVar.fileChangedCount += 1
+                            changeCount += 1
+                            if isInSameFolder {
+                                currentFolderChangeCount += 1
+                                publicVar.fileChangedCount += 1
+                            }
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
                         } catch {
@@ -3281,8 +3377,37 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     case .replaceAll:
                         shouldReplaceAll = true
                         do {
-                            publicVar.fileChangedCount += 1
+                            changeCount += 1
+                            if isInSameFolder {
+                                currentFolderChangeCount += 1
+                                publicVar.fileChangedCount += 1
+                            }
                             try FileManager.default.removeItem(at: destURL)
+                            try FileManager.default.moveItem(at: fileURL, to: destURL)
+                        } catch {
+                            log("移动失败 \(fileURL): \(error)")
+                        }
+                    case .autoRename:
+                        destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
+                        do {
+                            changeCount += 1
+                            if isInSameFolder {
+                                currentFolderChangeCount += 1
+                                publicVar.fileChangedCount += 1
+                            }
+                            try FileManager.default.moveItem(at: fileURL, to: destURL)
+                        } catch {
+                            log("移动失败 \(fileURL): \(error)")
+                        }
+                    case .autoRenameAll:
+                        shouldAutoRenameAll = true
+                        destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
+                        do {
+                            changeCount += 1
+                            if isInSameFolder {
+                                currentFolderChangeCount += 1
+                                publicVar.fileChangedCount += 1
+                            }
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
                         } catch {
                             log("移动失败 \(fileURL): \(error)")
@@ -3299,7 +3424,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
             } else {
                 do {
-                    publicVar.fileChangedCount += 1
+                    changeCount += 1
+                    if isInSameFolder {
+                        currentFolderChangeCount += 1
+                        publicVar.fileChangedCount += 1
+                    }
                     try FileManager.default.moveItem(at: fileURL, to: destURL)
                 } catch {
                     log("移动失败 \(fileURL): \(error)")
@@ -3377,6 +3506,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         case replaceAll
         case skip
         case skipAll
+        case autoRename
+        case autoRenameAll
         case cancel
     }
 
@@ -3391,29 +3522,29 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         alert.alertStyle = .warning
         alert.icon = NSImage(named: NSImage.infoName)// 设置系统提示图标
         alert.addButton(withTitle: NSLocalizedString("Replace", comment: "替换"))
+        alert.addButton(withTitle: NSLocalizedString("Auto Rename", comment: "自动重命名"))
         if !isSingle {
-            alert.addButton(withTitle: NSLocalizedString("Replace All", comment: "全部替换"))
             alert.addButton(withTitle: NSLocalizedString("Skip", comment: "跳过"))
-            alert.addButton(withTitle: NSLocalizedString("Skip All", comment: "全部跳过"))
         }
         alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
         
+        // 添加复选框
+        let applyToAllCheckbox = NSButton(checkboxWithTitle: NSLocalizedString("Apply to all", comment: "应用到全部"), target: nil, action: nil)
+        if !isSingle {
+            alert.accessoryView = applyToAllCheckbox
+        }
+        
         let response = alert.runModal()
+        let applyToAll = applyToAllCheckbox.state == .on
         
         switch response {
         case .alertFirstButtonReturn:
-            return .replace
+            return applyToAll ? .replaceAll : .replace
         case .alertSecondButtonReturn:
-            if isSingle {
-                return .cancel
-            }else{
-                return .replaceAll
-            }
+            return applyToAll ? .autoRenameAll : .autoRename
         case .alertThirdButtonReturn:
-            return .skip
+            return applyToAll ? .skipAll : .skip
         case NSApplication.ModalResponse(rawValue: 1003):
-            return .skipAll
-        case NSApplication.ModalResponse(rawValue: 1004):
             return .cancel
         default:
             return .cancel
