@@ -1417,13 +1417,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "B" 键
-                if characters == "b" && noModifierKey {
-                    //如果焦点在CollectionView
-                    if publicVar.isCollectionViewFirstResponder{
-                        handleTagging()
-                        return nil
-                    }
-                }
+//                if characters == "b" && noModifierKey {
+//                    //如果焦点在CollectionView
+//                    if publicVar.isCollectionViewFirstResponder{
+//                        handleTagging()
+//                        return nil
+//                    }
+//                }
 
             }
             

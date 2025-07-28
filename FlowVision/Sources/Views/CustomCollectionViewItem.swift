@@ -830,28 +830,28 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 menu.addItem(NSMenuItem.separator())
 
-                // 创建标签子菜单
-                let tagMenu = NSMenu()
-                let currentTag = getViewController(collectionView!)?.publicVar.currentTag ?? TaggingSystem.defaultTag
-                let tagMenuItem = NSMenuItem(title: NSLocalizedString("Tag", comment: "标签")+" "+currentTag, action: nil, keyEquivalent: "")
-                tagMenuItem.submenu = tagMenu
-                
-                // 添加标记/取消标记选项
-                let toggleTagItem = tagMenu.addItem(withTitle: NSLocalizedString("Toggle Tag", comment: "标记/取消标记"), action: #selector(actTag), keyEquivalent: "b")
-                toggleTagItem.keyEquivalentModifierMask = []
-                
-                tagMenu.addItem(NSMenuItem.separator())
-                
-                // 添加不同标签选项
-                for tag in TaggingSystem.getAvailableTags() {
-                    let tagItem = tagMenu.addItem(withTitle: tag, action: #selector(actChangeTag(_:)), keyEquivalent: "")
-                    tagItem.representedObject = tag
-                    if tag == currentTag {
-                        tagItem.state = .on
-                    }
-                }
-                
-                menu.addItem(tagMenuItem)
+//                // 创建标签子菜单
+//                let tagMenu = NSMenu()
+//                let currentTag = getViewController(collectionView!)?.publicVar.currentTag ?? TaggingSystem.defaultTag
+//                let tagMenuItem = NSMenuItem(title: NSLocalizedString("Tag", comment: "标签")+" "+currentTag, action: nil, keyEquivalent: "")
+//                tagMenuItem.submenu = tagMenu
+//                
+//                // 添加标记/取消标记选项
+//                let toggleTagItem = tagMenu.addItem(withTitle: NSLocalizedString("Toggle Tag", comment: "标记/取消标记"), action: #selector(actTag), keyEquivalent: "b")
+//                toggleTagItem.keyEquivalentModifierMask = []
+//                
+//                tagMenu.addItem(NSMenuItem.separator())
+//                
+//                // 添加不同标签选项
+//                for tag in TaggingSystem.getAvailableTags() {
+//                    let tagItem = tagMenu.addItem(withTitle: tag, action: #selector(actChangeTag(_:)), keyEquivalent: "")
+//                    tagItem.representedObject = tag
+//                    if tag == currentTag {
+//                        tagItem.state = .on
+//                    }
+//                }
+//                
+//                menu.addItem(tagMenuItem)
 
                 menu.addItem(NSMenuItem.separator())
                 
