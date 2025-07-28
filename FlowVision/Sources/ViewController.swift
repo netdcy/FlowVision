@@ -292,7 +292,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     var searchFolderRound=0
     
-#if false
+#if DEBUG
     var rootFolder="file://\(homeDirectory)/Repository/XcodeProj/%5BTestData%5D/ImageViewerPlus/"
     var treeRootFolder="file://\(homeDirectory)/Repository/XcodeProj/%5BTestData%5D/ImageViewerPlus/"
     
@@ -4869,8 +4869,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         //是捕获界面，还是将从finder打开替换为目录中打开
         if publicVar.openFromFinderPath == "" {
-            if let snapshot = captureSnapshot(of: mainScrollView){
-                mainScrollView.addSubview(snapshot)
+            if let snapshot = captureSnapshot(of: coreAreaView){
+                coreAreaView.addSubview(snapshot)
                 snapshotQueue.append(snapshot)
             }
 //            currLargeImagePos = -1
