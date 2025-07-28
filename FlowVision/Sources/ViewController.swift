@@ -6145,8 +6145,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //log("触控板:",event.scrollingDeltaY,event.scrollingDeltaX)
         //log("滚轮的:",event.deltaY)
         
-        // 滚动缩放在
+        // 仅在大图模式下响应
         if largeImageView.isHidden {return}
+        
+        // 滚轮用作缩放时
+        if globalVar.scrollMouseWheelToZoom {return}
         
         // 滚动滚轮或者双指操作触控板来移动图像
         if publicVar.isPanWhenZoomed && !publicVar.isLeftMouseDown && !publicVar.isRightMouseDown {

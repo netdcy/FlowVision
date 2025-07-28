@@ -171,6 +171,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let isEnterKeyToOpen = UserDefaults.standard.value(forKey: "isEnterKeyToOpen") as? Bool {
             globalVar.isEnterKeyToOpen = isEnterKeyToOpen
         }
+        if let clickEdgeToSwitchImage = UserDefaults.standard.value(forKey: "clickEdgeToSwitchImage") as? Bool {
+            globalVar.clickEdgeToSwitchImage = clickEdgeToSwitchImage
+        }
+        if let scrollMouseWheelToZoom = UserDefaults.standard.value(forKey: "scrollMouseWheelToZoom") as? Bool {
+            globalVar.scrollMouseWheelToZoom = scrollMouseWheelToZoom
+        }
         
         globalVar.myFavoritesArray = defaults.array(forKey: "globalVar.myFavoritesArray") as? [String] ?? [String]()
         

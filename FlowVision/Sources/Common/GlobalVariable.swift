@@ -70,6 +70,8 @@ class GlobalVar{
     }
     var useQuickSearch = false
     var isEnterKeyToOpen = false
+    var clickEdgeToSwitchImage = false
+    var scrollMouseWheelToZoom = false
     
     //可记忆设置变量
     var isFirstTimeUse = true

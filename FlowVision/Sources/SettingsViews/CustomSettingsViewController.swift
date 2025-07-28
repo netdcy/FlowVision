@@ -17,6 +17,8 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
 
     @IBOutlet weak var randomFolderThumbCheckbox: NSButton!
     @IBOutlet weak var loopBrowsingCheckbox: NSButton!
+    @IBOutlet weak var clickEdgeToSwitchImageCheckbox: NSButton!
+    @IBOutlet weak var scrollMouseWheelToZoomCheckbox: NSButton!
     @IBOutlet weak var useInternalPlayerCheckbox: NSButton!
     @IBOutlet weak var usePinyinSearchCheckbox: NSButton!
     @IBOutlet weak var usePinyinInitialSearchCheckbox: NSButton!
@@ -37,6 +39,8 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         
         randomFolderThumbCheckbox.state = globalVar.randomFolderThumb ? .on : .off
         loopBrowsingCheckbox.state = globalVar.loopBrowsing ? .on : .off
+        clickEdgeToSwitchImageCheckbox.state = globalVar.clickEdgeToSwitchImage ? .on : .off
+        scrollMouseWheelToZoomCheckbox.state = globalVar.scrollMouseWheelToZoom ? .on : .off
         useInternalPlayerCheckbox.state = globalVar.useInternalPlayer ? .on : .off
         usePinyinSearchCheckbox.state = globalVar.usePinyinSearch ? .on : .off
         usePinyinInitialSearchCheckbox.state = globalVar.usePinyinInitialSearch ? .on : .off
@@ -82,6 +86,16 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
     @IBAction func loopBrowsingToggled(_ sender: NSButton) {
         globalVar.loopBrowsing = (sender.state == .on)
         UserDefaults.standard.set(globalVar.loopBrowsing, forKey: "loopBrowsing")
+    }
+
+    @IBAction func clickEdgeToSwitchImageToggled(_ sender: NSButton) {
+        globalVar.clickEdgeToSwitchImage = (sender.state == .on)
+        UserDefaults.standard.set(globalVar.clickEdgeToSwitchImage, forKey: "clickEdgeToSwitchImage")
+    }
+
+    @IBAction func scrollMouseWheelToZoomToggled(_ sender: NSButton) {
+        globalVar.scrollMouseWheelToZoom = (sender.state == .on)
+        UserDefaults.standard.set(globalVar.scrollMouseWheelToZoom, forKey: "scrollMouseWheelToZoom")
     }
 
     @IBAction func useInternalPlayerToggled(_ sender: NSButton) {

@@ -77,7 +77,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     func saveWindowState() {
         guard let window = self.window else { return }
         if let viewController = contentViewController as? ViewController {
-            if viewController.publicVar.isInLargeView || window.styleMask.contains(.fullScreen) {
+            if (viewController.publicVar.isInLargeView && globalVar.portableMode) || window.styleMask.contains(.fullScreen) {
                 return
             }
         }

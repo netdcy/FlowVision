@@ -861,6 +861,29 @@ class LargeImageView: NSView {
            let player = queuePlayer { //通过音量记录来标识是否完整点击事件，而且避免点击音量条时触发暂停
             lastVolumeForPauseRef = player.volume
         }
+
+        // 检测点击左侧、右侧区域来切换图像
+        if globalVar.clickEdgeToSwitchImage && !(getViewController(self)!.publicVar.isRightMouseDown) {
+            let clickLocation = self.convert(event.locationInWindow, from: nil)
+            let viewWidth = self.bounds.width
+            // 先按百分比计算
+            var leftThreshold: CGFloat = viewWidth * 0.15
+            var rightThreshold: CGFloat = viewWidth * 0.85
+            
+            // 限制最小最大阈值
+            leftThreshold = min(max(leftThreshold, 100), 200)
+            rightThreshold = max(min(rightThreshold, viewWidth - 100), viewWidth - 200)
+            
+            if clickLocation.x <= leftThreshold {
+                // 点击左侧，切换到上一张图像
+                getViewController(self)?.previousLargeImage()
+                return
+            } else if clickLocation.x >= rightThreshold {
+                // 点击右侧，切换到下一张图像
+                getViewController(self)?.nextLargeImage()
+                return
+            }
+        }
         
         // 检测双击
         if !(getViewController(self)!.publicVar.isRightMouseDown) {
@@ -1147,7 +1170,7 @@ class LargeImageView: NSView {
             doNotPopRightMenu=true
         }
 
-        if getViewController(self)!.publicVar.isRightMouseDown || getViewController(self)!.publicVar.isLeftMouseDown {
+        if getViewController(self)!.publicVar.isRightMouseDown || getViewController(self)!.publicVar.isLeftMouseDown || globalVar.scrollMouseWheelToZoom {
             
             do {
                 wheelZoomRegenTimer?.invalidate()
