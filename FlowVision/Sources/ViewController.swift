@@ -6149,7 +6149,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if largeImageView.isHidden {return}
         
         // 滚轮用作缩放时
-        if globalVar.scrollMouseWheelToZoom {return}
+        if globalVar.scrollMouseWheelToZoom || isCommandKeyPressed() {return}
         
         // 滚动滚轮或者双指操作触控板来移动图像
         if publicVar.isPanWhenZoomed && !publicVar.isLeftMouseDown && !publicVar.isRightMouseDown {
