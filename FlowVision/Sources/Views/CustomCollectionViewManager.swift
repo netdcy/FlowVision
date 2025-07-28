@@ -82,6 +82,8 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
     }
     
     func collectionView(_ collectionView: NSCollectionView, pasteboardWriterForItemAt indexPath: IndexPath) -> NSPasteboardWriting? {
+        fileDB.lock()
+        defer{fileDB.unlock()}
         let pasteboardItem = NSPasteboardItem()
         if let path = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.elementSafe(atOffset: indexPath.item)?.1.path,
            let url = URL(string: path){

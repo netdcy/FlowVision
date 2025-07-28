@@ -48,6 +48,7 @@ class SortKey: Comparable {
     var exifPixel: Int = 0
     
     static var keyTransformedDict = Dictionary<String,[String]>()
+    static let keyTransformedDictLock = NSLock()
     
     init(_ path: String, createDate: Date = Date(), modDate: Date = Date(), addDate: Date = Date() , size: Int = 0, isDir: Bool = false, isInSameDir: Bool = false, needGetProperties: Bool = false, sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool) {
         self.path = path
@@ -302,6 +303,7 @@ class SortKey: Comparable {
         
         var lhs_paths: [String]
         var rhs_paths: [String]
+        keyTransformedDictLock.lock() // 加锁，防止多线程访问异常
         if keyTransformedDict[lhs.pathCmp] != nil {
             lhs_paths=keyTransformedDict[lhs.pathCmp]!
         }else{
@@ -314,6 +316,7 @@ class SortKey: Comparable {
             rhs_paths=rhs.path.replacingOccurrences(of: "file://", with: "").trimmingCharacters(in: CharacterSet(charactersIn: "/")).components(separatedBy: "/").map(){$0.removingPercentEncoding!.lowercased()}
             keyTransformedDict[rhs.pathCmp]=rhs_paths
         }
+        keyTransformedDictLock.unlock() // 解锁
         //0.17s
 
 //        return lhs.path<rhs.path

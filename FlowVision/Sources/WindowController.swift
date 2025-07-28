@@ -393,7 +393,9 @@ extension WindowController: NSToolbarDelegate {
             let font = NSFont.systemFont(ofSize: 13, weight: .regular)
             
             if let viewController = contentViewController as? ViewController {
+                viewController.fileDB.lock()
                 let curFolder = viewController.fileDB.curFolder
+                viewController.fileDB.unlock()
                 var pathString = curFolder.replacingOccurrences(of: "file:///", with: "")
                 if pathString.hasPrefix("/") {
                     pathString.removeFirst()
