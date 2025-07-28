@@ -121,6 +121,7 @@ class PublicVar{
     weak var refView: NSView!
     weak var viewController: ViewController!
 
+    var randomSeed = Int.random(in: 0...Int.max)
     var isLargeImageFitWindow = true
     var isRecursiveMode = false
     var isRecursiveContainFolder = false
@@ -1720,7 +1721,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.profile.isSortFolderFirst = isSortFolderFirst
         publicVar.profile.isSortUseFullPath = isSortUseFullPath
         publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
-        globalVar.randomSeed = Int.random(in: 0...Int.max)
+        publicVar.randomSeed = Int.random(in: 0...Int.max)
         for dirModel in fileDB.db {
             dirModel.1.changeSortType(publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)
         }
@@ -4711,10 +4712,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 var fileSortKey:SortKeyFile
                 let isDir:Bool
                 if filePath.hasSuffix("_FolderMark") {
-                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: isInSameDir, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)
+                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: isInSameDir, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
                     isDir=true
                 }else{
-                    fileSortKey=SortKeyFile(filePath, isInSameDir: isInSameDir, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)
+                    fileSortKey=SortKeyFile(filePath, isInSameDir: isInSameDir, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
                     isDir=false
                 }
                 //读取文件大小日期
@@ -4888,9 +4889,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let filename=publicVar.openFromFinderPath
             //log(filename)
             fileDB.lock()
-            if let index=fileDB.db[SortKeyDir(path)]?.files.index(forKey: SortKeyFile(filename, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)),
+            if let index=fileDB.db[SortKeyDir(path)]?.files.index(forKey: SortKeyFile(filename, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)),
                let offset=fileDB.db[SortKeyDir(path)]?.files.offset(of: index),
-               let file=fileDB.db[SortKeyDir(path)]?.files[SortKeyFile(filename, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)],
+               let file=fileDB.db[SortKeyDir(path)]?.files[SortKeyFile(filename, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)],
                let url=URL(string: file.path),
                let totalCount=fileDB.db[SortKeyDir(path)]?.files.count,
                let fileCount=fileDB.db[SortKeyDir(path)]?.fileCount
@@ -5376,7 +5377,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                                 publicVar.folderStepForLocate.removeAll()
                                                 
                                                 let targetFolderPath = lastURL.absoluteString
-                                                let targetKey = SortKeyFile(targetFolderPath, isDir: true, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)
+                                                let targetKey = SortKeyFile(targetFolderPath, isDir: true, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
                                                 
                                                 fileDB.lock()
                                                 if let index=fileDB.db[SortKeyDir(curFolder)]?.files.index(forKey: targetKey),
@@ -6350,7 +6351,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let videoCount = fileDB.db[SortKeyDir(folderPath)]?.videoCount ?? 0
         let rangeCount = globalVar.useInternalPlayer ? imageCount+videoCount : imageCount
         if rangeCount != 0 {
-            if let file = fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)] {
+            if let file = fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)] {
                 //fullTitle += " | " + String(format: "(%d/%d)",idInImage+1,imageCount)
                 let idInRange = globalVar.useInternalPlayer ? file.idInImageAndVideo : file.idInImage
                 fullTitle += " " + String(format: "(%d/%d)",idInRange+1,rangeCount)

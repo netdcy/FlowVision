@@ -29,7 +29,6 @@ class GlobalVar{
     var myFavoritesArray = ["/"]
     var WINDOW_LIMIT=16
     var windowNum=0
-    var randomSeed = Int.random(in: 0...Int.max)
     var toolbarIndex = 0
     var operationLogs: [String] = []
     var closedPaths: [String] = []

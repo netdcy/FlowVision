@@ -20,14 +20,15 @@ extension Map {
 
 class SortKeyFile: SortKey, NSCopying {
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = SortKeyFile(path, createDate: createDate, modDate: modDate, addDate: addDate, size: size, isDir: isDir, isInSameDir: isInSameDir, sortType: sortType, isSortFolderFirst: isSortFolderFirst, isSortUseFullPath: isSortUseFullPath)
+        let copy = SortKeyFile(path, createDate: createDate, modDate: modDate, addDate: addDate, size: size, isDir: isDir, isInSameDir: isInSameDir, sortType: sortType, isSortFolderFirst: isSortFolderFirst, isSortUseFullPath: isSortUseFullPath, randomSeed: seed)
         return copy
     }
 }
 
 class SortKeyDir: SortKey {
-    override init(_ path: String, createDate: Date = Date(), modDate: Date = Date(), addDate: Date = Date() , size: Int = 0, isDir: Bool = false, isInSameDir: Bool = false, needGetProperties: Bool = false, sortType: SortType = .pathA, isSortFolderFirst: Bool = true, isSortUseFullPath: Bool = true) {
-        super.init(path, createDate: createDate, modDate: modDate, addDate: addDate, size: size, isDir: isDir, isInSameDir: isInSameDir, needGetProperties: needGetProperties, sortType: sortType, isSortFolderFirst: isSortFolderFirst, isSortUseFullPath: isSortUseFullPath)
+    override init(_ path: String, createDate: Date = Date(), modDate: Date = Date(), addDate: Date = Date() , size: Int = 0, isDir: Bool = false, isInSameDir: Bool = false, needGetProperties: Bool = false, sortType: SortType = .pathA, isSortFolderFirst: Bool = true, isSortUseFullPath: Bool = true, randomSeed: Int = 0) {
+        // 使用SortKeyDir\([^()]*?,[^()]*?\)来匹配多于一个参数的调用，不应该出现此情况，因为需要使用统一的排序参数
+        super.init(path, createDate: createDate, modDate: modDate, addDate: addDate, size: size, isDir: isDir, isInSameDir: isInSameDir, needGetProperties: needGetProperties, sortType: sortType, isSortFolderFirst: isSortFolderFirst, isSortUseFullPath: isSortUseFullPath, randomSeed: randomSeed)
     }
 }
 
@@ -50,7 +51,7 @@ class SortKey: Comparable {
     static var keyTransformedDict = Dictionary<String,[String]>()
     static let keyTransformedDictLock = NSLock()
     
-    init(_ path: String, createDate: Date = Date(), modDate: Date = Date(), addDate: Date = Date() , size: Int = 0, isDir: Bool = false, isInSameDir: Bool = false, needGetProperties: Bool = false, sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool) {
+    init(_ path: String, createDate: Date = Date(), modDate: Date = Date(), addDate: Date = Date() , size: Int = 0, isDir: Bool = false, isInSameDir: Bool = false, needGetProperties: Bool = false, sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool, randomSeed: Int) {
         self.path = path
         self.pathCmp = path.lowercased()
         self.createDate = createDate
@@ -62,7 +63,7 @@ class SortKey: Comparable {
         self.sortType = sortType
         self.isSortFolderFirst = isSortFolderFirst
         self.isSortUseFullPath = isSortUseFullPath
-        self.seed = globalVar.randomSeed
+        self.seed = randomSeed
         
         if needGetProperties,
            let url = URL(string: path) {
