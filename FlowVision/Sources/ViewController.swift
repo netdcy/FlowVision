@@ -1723,7 +1723,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
         publicVar.randomSeed = Int.random(in: 0...Int.max)
         for dirModel in fileDB.db {
-            dirModel.1.changeSortType(publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)
+            dirModel.1.changeSortType(publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
         }
         fileDB.unlock()
         if !doNotRefresh {

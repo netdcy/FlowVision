@@ -457,12 +457,13 @@ class DirModel {
     var isFiltered: Bool = false
     var lock: NSLock = NSLock()
     
-    func changeSortType(_ sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool){
+    func changeSortType(_ sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool, randomSeed: Int){
         let oldFiles=files
         files=Map<SortKeyFile,FileModel>()
         for oldFile in oldFiles {
             if let tmpKey=oldFile.0.copy() as? SortKeyFile{
                 tmpKey.sortType=sortType
+                tmpKey.seed=randomSeed
                 tmpKey.isSortFolderFirst=isSortFolderFirst
                 tmpKey.isSortUseFullPath=isSortUseFullPath
                 files[tmpKey]=oldFile.1
