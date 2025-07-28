@@ -122,9 +122,11 @@ class SortKey: Comparable {
         a.localizedStandardCompare(b) == .orderedAscending
     }
     
-    static func hashFunction(fileName: String, seed: Int) -> Int {
+    static func hashFunction(sortKey: SortKey, seed: Int) -> Int {
         var hasher = Hasher()
-        hasher.combine(fileName)
+        hasher.combine(sortKey.path)
+        hasher.combine(sortKey.addDate)
+        hasher.combine(sortKey.createDate)
         hasher.combine(seed)
         return hasher.finalize()
     }
@@ -230,8 +232,8 @@ class SortKey: Comparable {
         
         //随机排序
         if lhs.sortType == .random {
-            let lhs_hash=hashFunction(fileName: lhs.pathCmp, seed: lhs.seed)
-            let rhs_hash=hashFunction(fileName: rhs.pathCmp, seed: rhs.seed)
+            let lhs_hash=hashFunction(sortKey: lhs, seed: lhs.seed)
+            let rhs_hash=hashFunction(sortKey: rhs, seed: rhs.seed)
             return lhs_hash<rhs_hash
         }
         
