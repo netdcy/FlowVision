@@ -68,8 +68,10 @@ class CoreAreaView: NSView {
                     return true
                 }
             }else{
-                if sender.draggingSource is CustomCollectionView {
-                    return false
+                if let source = sender.draggingSource {
+                    if source is CustomCollectionView && (source as? NSView)?.window == self.window {
+                        return false
+                    }
                 }
                 if let curFolderUrl = URL(string: viewController.fileDB.curFolder){
                     viewController.handleMove(targetURL: curFolderUrl, pasteboard: sender.draggingPasteboard)
