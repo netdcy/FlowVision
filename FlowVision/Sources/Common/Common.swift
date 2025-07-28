@@ -668,6 +668,9 @@ func printContent(_ content: NSView) {
     printInfo.verticalPagination = .fit
 
     let printOperation = NSPrintOperation(view: printView, printInfo: printInfo)
+    printOperation.printPanel.options.insert(.showsPaperSize)
+    printOperation.printPanel.options.insert(.showsOrientation)
+    printOperation.printPanel.options.insert(.showsScaling)
     printOperation.run()
 }
 
