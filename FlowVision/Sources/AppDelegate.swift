@@ -42,6 +42,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     @IBOutlet weak var lockZoomMenuItem: NSMenuItem!
     @IBOutlet weak var activatePanScrollMenuItem: NSMenuItem!
     @IBOutlet weak var activatePanScrollReadmeMenuItem: NSMenuItem!
+    @IBOutlet weak var toggleRawUseEmbeddedThumbMenuItem: NSMenuItem!
+    @IBOutlet weak var toggleRawUseEmbeddedThumbReadmeMenuItem: NSMenuItem!
     
     var commonParentPath=""
     
@@ -595,11 +597,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             lockRotationMenuItem.state = mainViewController.publicVar.isRotationLocked ? .on : .off
             lockZoomMenuItem.state = mainViewController.publicVar.isZoomLocked ? .on : .off
             activatePanScrollMenuItem.state = mainViewController.publicVar.isPanWhenZoomed ? .on : .off
+            toggleRawUseEmbeddedThumbMenuItem.state = mainViewController.publicVar.isRawUseEmbeddedThumb ? .on : .off
 
             lockRotationMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
             lockZoomMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
             activatePanScrollMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
             activatePanScrollReadmeMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
+            toggleRawUseEmbeddedThumbMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
+            toggleRawUseEmbeddedThumbReadmeMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
         }
     }
     
@@ -874,6 +879,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     
     @IBAction func toggleActivatePanScrollReadme(_ sender: NSMenuItem){
         showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("pan-zoom-info", comment: "对于缩放后平移的说明..."), width: 300)
+    }
+
+    @IBAction func toggleRawUseEmbeddedThumb(_ sender: NSMenuItem){
+        getMainViewController()?.toggleRawUseEmbeddedThumb()
+    }
+    
+    @IBAction func toggleRawUseEmbeddedThumbReadme(_ sender: NSMenuItem){
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("raw-use-embeded-info", comment: "raw使用exif内嵌缩略图替代浏览的说明..."), width: 300)
     }
     
     @IBAction func toggleIsShowHiddenFile(_ sender: NSMenuItem){

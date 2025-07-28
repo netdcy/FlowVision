@@ -133,6 +133,7 @@ class PublicVar{
     var isGenHdThumb = false
     var isPreferInternalThumb = false
     var isEnableHDR = true
+    var isRawUseEmbeddedThumb = false
     var autoPlayVisibleVideo = false
     var isRotationLocked = false
     var rotationLock = 0
@@ -470,6 +471,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         if let isEnableHDR = UserDefaults.standard.value(forKey: "isEnableHDR") as? Bool {
             publicVar.isEnableHDR = isEnableHDR
+        }
+        if let isRawUseEmbeddedThumb = UserDefaults.standard.value(forKey: "isRawUseEmbeddedThumb") as? Bool {
+            publicVar.isRawUseEmbeddedThumb = isRawUseEmbeddedThumb
         }
         if let isRecursiveContainFolder = UserDefaults.standard.value(forKey: "isRecursiveContainFolder") as? Bool {
             publicVar.isRecursiveContainFolder = isRecursiveContainFolder
@@ -1939,6 +1943,20 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         UserDefaults.standard.set(publicVar.isZoomLocked, forKey: "isZoomLocked")
         if publicVar.isZoomLocked {
             largeImageView.calcRatio(isShowPrompt: true)
+        }
+    }
+
+    func toggleRawUseEmbeddedThumb(){
+        publicVar.isRawUseEmbeddedThumb.toggle()
+        UserDefaults.standard.set(publicVar.isRawUseEmbeddedThumb, forKey: "isRawUseEmbeddedThumb")
+        if publicVar.isRawUseEmbeddedThumb {
+            coreAreaView.showInfo(NSLocalizedString("RAW Uses Exif Embedded Thumbnail", comment: "RAW使用Exif内嵌缩略图"), timeOut: 1.0, cannotBeCleard: true)
+        }else{
+            coreAreaView.showInfo(NSLocalizedString("Render Original RAW", comment: "渲染原始RAW"), timeOut: 1.0, cannotBeCleard: true)
+        }
+        if publicVar.isInLargeView {
+            changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false, forceRefresh: true)
+            publicVar.updateToolbar()
         }
     }
     
@@ -5464,7 +5482,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     imageExist=true //由于无法正常生成指定大小的缩略图
                                 }
                                 if globalVar.HandledRawExtensions.contains(file.ext.lowercased()){
-                                    imageExist=true //RAW优先使用内嵌缩略图
+                                    //imageExist=true //RAW优先使用内嵌缩略图
+                                    //由于现在实现了缩放内嵌缩略图，因此不再使用此逻辑
                                 }
                             }
                             fileDB.unlock()
@@ -6520,6 +6539,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             
             //判断HDR
             var isHDR = (file.imageInfo?.isHDR ?? false) && publicVar.isEnableHDR
+            if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) && publicVar.isRawUseEmbeddedThumb {
+                isHDR = false
+            }
             
             //计算宽高
             if originalSize.height/originalSize.width*maxBounds.width > maxBounds.height {
@@ -6542,13 +6564,19 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 doNotGenResized=true
             }
             
+            //如果RAW使用Exif内嵌缩略图，则不使用原图（进行缩放）
+            if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) && publicVar.isRawUseEmbeddedThumb {
+                doNotGenResized=false
+            }
+            
             //使用原图的格式
             if ["gif", "svg", "ai"].contains(url.pathExtension.lowercased()){
                 doNotGenResized=true
             }
 
-            DispatchQueue.global(qos: .userInitiated).async {
-                _ = LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: 0, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR, needWaitWhenSame: false)
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                guard let self = self else { return }
+                _ = LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: 0, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb, needWaitWhenSame: false)
             }
             
         }
@@ -6652,6 +6680,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             
             //判断HDR
             var isHDR = (file.imageInfo?.isHDR ?? false) && publicVar.isEnableHDR
+            if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) && publicVar.isRawUseEmbeddedThumb {
+                isHDR = false
+            }
             
             //判断旋转
             if rotate%2 == 1 {
@@ -6695,6 +6726,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if rotate != 0 {
                 doNotGenResized=false
             }
+
+            //如果RAW使用Exif内嵌缩略图，则不使用原图（进行缩放）
+            if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) && publicVar.isRawUseEmbeddedThumb {
+                doNotGenResized=false
+            }
             
             //使用原图的格式
             if ["gif", "svg", "ai"].contains(url.pathExtension.lowercased()){
@@ -6726,7 +6762,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             lastLargeImageRotate=rotate
             
             //检查是否有大图缓存
-            var preGetImageCache = file.type == .image ? LargeImageProcessor.isImageCachedAndGet(url: url, size: largeSize, rotate: rotate, ver: file.ver, isHDR: isHDR) : nil
+            var preGetImageCache = file.type == .image ? LargeImageProcessor.isImageCachedAndGet(url: url, size: largeSize, rotate: rotate, ver: file.ver, isHDR: isHDR, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb) : nil
             if forceRefresh {preGetImageCache = nil}
             let isImageCached = preGetImageCache != nil
             
@@ -6789,7 +6825,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     //按实际目标分辨率绘制效果较差，观察到1080P屏幕双倍插值后绘制与直接使用原图效果才类似，因此即使scale==1，此处size也不除以2
                     var largeImage: NSImage?
                     if resetSize && !forceRefresh {
-                        largeImage=LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR)
+                        largeImage=LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb)
                     }else{
                         if isHDR {
                             largeImage = getHDRImage(url: url, size: doNotGenResized ? nil : largeSize, rotate: rotate)
@@ -6801,7 +6837,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
                             }
                         }else{
-                            largeImage = getResizedImage(url: url, size: largeSize, rotate: rotate)
+                            largeImage = getResizedImage(url: url, size: largeSize, rotate: rotate, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb)
                             if largeImage == nil {
                                 lastResizeFailed = true
                                 largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))

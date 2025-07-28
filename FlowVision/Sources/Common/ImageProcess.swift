@@ -556,13 +556,13 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         return getVideoThumbnailFFmpeg(for: url)
     }else if (globalVar.HandledImageAndRawExtensions+["pdf"]).contains(url.pathExtension.lowercased()) { //处理其它缩略图
         //使用原图的格式
-        if ["gif", "svg"].contains(url.pathExtension.lowercased()){
+        if ["gif", "svg"].contains(url.pathExtension.lowercased()) {
             return NSImage(contentsOf: url)
         }
         //若指定了大小则特殊处理
-        if( size != nil && "ai" != url.pathExtension.lowercased() && !globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased())){
+        if size != nil && "ai" != url.pathExtension.lowercased() {
             //log(size.width,size.height)
-            if let resizedImage=getResizedImage(url: url, size: size!){
+            if let resizedImage=getResizedImage(url: url, size: size!, isRawUseEmbeddedThumb: true){
                 return resizedImage
             }
             //print("resizedImage:",url.absoluteString.removingPercentEncoding!)
@@ -571,63 +571,99 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         if let animateImage = getAnimateImage(url: url, rotate: 0) {
             return animateImage
         }
-        do{
-            let myOptions = [kCGImageSourceShouldCache : kCFBooleanFalse] as CFDictionary;
-            
-            guard let myImageSource = CGImageSourceCreateWithURL(url as NSURL, myOptions) else {
-                log(stderr, "Image source is NULL.");
-                //return getFileTypeIcon(url: url)
-                return nil
-            }
-            
-            var thumbnailOptions: CFDictionary
-            
-            let thumbnailOptionsAlways = [kCGImageSourceCreateThumbnailWithTransform : kCFBooleanTrue!,
-                                        kCGImageSourceCreateThumbnailFromImageAlways : kCFBooleanTrue!,
-                                                 kCGImageSourceThumbnailMaxPixelSize : 512,
-                                                           kCGImageSourceShouldCache : kCFBooleanFalse!,
-            ] as CFDictionary;
-            
-            let thumbnailOptionsIfAbsent = [kCGImageSourceCreateThumbnailWithTransform : kCFBooleanTrue!,
-                                        kCGImageSourceCreateThumbnailFromImageIfAbsent : kCFBooleanTrue!,
-                                                   kCGImageSourceThumbnailMaxPixelSize : 512,
-                                                             kCGImageSourceShouldCache : kCFBooleanFalse!,
-            ] as CFDictionary;
-            
-            if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) || isPreferInternalThumb {
-                thumbnailOptions = thumbnailOptionsIfAbsent
-            }else{
-                thumbnailOptions = thumbnailOptionsAlways
-            }
 
-            guard let scaledImage = CGImageSourceCreateThumbnailAtIndex(myImageSource,0,thumbnailOptions)else {
-                log(stderr, "Thumbnail not created from image source.");
-                //return getFileTypeIcon(url: url)
-                return nil
-            };
-
-            let img = NSImage(cgImage: scaledImage, size: NSSize(width: scaledImage.width, height: scaledImage.height))
-            
-            //对于缩略图旋转异常的情况
-            if refSize != nil && globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
-                let ratio1 = Double(scaledImage.width) / Double(scaledImage.height) / refSize!.width * refSize!.height
-                let ratio2 = Double(scaledImage.height) / Double(scaledImage.width) / refSize!.width * refSize!.height
-                if ratio1 > 1.05 || ratio1 < 0.95 {
-                    if ratio2 < 1.05 && ratio2 > 0.95 {
-                        //return getResizedImage(url: url, size: NSSize(width: scaledImage.self.height, height: scaledImage.self.width))
-                        return img.rotated(by: 90)
-                    }
-                }
-            }
-
-            return img
+        let myOptions = [kCGImageSourceShouldCache : kCFBooleanFalse] as CFDictionary;
+        
+        guard let myImageSource = CGImageSourceCreateWithURL(url as NSURL, myOptions) else {
+            log(stderr, "Image source is NULL.");
+            //return getFileTypeIcon(url: url)
+            return nil
         }
         
+        var thumbnailOptions: CFDictionary
+        
+        let thumbnailOptionsAlways = [kCGImageSourceCreateThumbnailWithTransform : kCFBooleanTrue!,
+                                    kCGImageSourceCreateThumbnailFromImageAlways : kCFBooleanTrue!,
+                                             kCGImageSourceThumbnailMaxPixelSize : 512,
+                                                       kCGImageSourceShouldCache : kCFBooleanFalse!,
+        ] as CFDictionary;
+        
+        let thumbnailOptionsIfAbsent = [kCGImageSourceCreateThumbnailWithTransform : kCFBooleanTrue!,
+                                    kCGImageSourceCreateThumbnailFromImageIfAbsent : kCFBooleanTrue!,
+                                               kCGImageSourceThumbnailMaxPixelSize : 512,
+                                                         kCGImageSourceShouldCache : kCFBooleanFalse!,
+        ] as CFDictionary;
+        
+        if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) || isPreferInternalThumb {
+            thumbnailOptions = thumbnailOptionsIfAbsent
+        }else{
+            thumbnailOptions = thumbnailOptionsAlways
+        }
+        
+        guard let scaledImage = CGImageSourceCreateThumbnailAtIndex(myImageSource,0,thumbnailOptions)else {
+            log(stderr, "Thumbnail not created from image source.");
+            //return getFileTypeIcon(url: url)
+            return nil
+        };
+        
+        let img = NSImage(cgImage: scaledImage, size: NSSize(width: scaledImage.width, height: scaledImage.height))
+        
+        //对于缩略图旋转异常的情况
+        if refSize != nil && globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
+            let ratio1 = Double(scaledImage.width) / Double(scaledImage.height) / refSize!.width * refSize!.height
+            let ratio2 = Double(scaledImage.height) / Double(scaledImage.width) / refSize!.width * refSize!.height
+            if ratio1 > 1.05 || ratio1 < 0.95 {
+                if ratio2 < 1.05 && ratio2 > 0.95 {
+                    //return getResizedImage(url: url, size: NSSize(width: scaledImage.self.height, height: scaledImage.self.width))
+                    return img.rotated(by: 90)
+                }
+            }
+        }
+        
+        return img
     }
     
     //默认情况
     return nil
 
+}
+
+func getFullExifThumbnail(url: URL, size oriSize: NSSize? = nil, rotate: Int = 0) -> NSImage? {
+    
+    var maxSize = 65535
+    if let oriSize = oriSize {
+        maxSize = 2 * Int(min(round(oriSize.width), round(oriSize.height)))
+    }
+
+    let myOptions = [kCGImageSourceShouldCache : kCFBooleanFalse] as CFDictionary;
+    
+    guard let myImageSource = CGImageSourceCreateWithURL(url as NSURL, myOptions) else {
+        log(stderr, "Image source is NULL.");
+        //return getFileTypeIcon(url: url)
+        return nil
+    }
+    
+    let thumbnailOptions = [kCGImageSourceCreateThumbnailWithTransform : kCFBooleanTrue!,
+                          kCGImageSourceCreateThumbnailFromImageAlways : kCFBooleanFalse!,
+                        kCGImageSourceCreateThumbnailFromImageIfAbsent : kCFBooleanFalse!,
+                                   kCGImageSourceThumbnailMaxPixelSize : maxSize,
+                                             kCGImageSourceShouldCache : kCFBooleanFalse!,
+    ] as CFDictionary;
+    
+    guard let scaledImage = CGImageSourceCreateThumbnailAtIndex(myImageSource,0,thumbnailOptions) else {
+        log(stderr, "Thumbnail not created from image source.");
+        //return getFileTypeIcon(url: url)
+        return nil
+    };
+    
+    let img = NSImage(cgImage: scaledImage, size: NSSize(width: scaledImage.width, height: scaledImage.height))
+    
+    // 根据rotate参数旋转图片
+    if rotate != 0 {
+        return img.rotated(by: CGFloat(-90 * rotate))
+    }
+    
+    return img
 }
 
 func rotationAngle(for orientation: Int) -> CGFloat {
@@ -708,9 +744,16 @@ func getAnimateImage(url: URL, size: NSSize? = nil, rotate: Int = 0) -> NSImage?
     return nil
 }
 
-func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0) -> NSImage? {
+func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0, isRawUseEmbeddedThumb: Bool) -> NSImage? {
     
     let size: NSSize = NSSize(width: round(oriSize.width), height: round(oriSize.height))
+
+    // 根据配置优先尝试使用Exif内嵌缩略图
+    if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) && isRawUseEmbeddedThumb {
+        if let thumbnail = getFullExifThumbnail(url: url, size: size, rotate: rotate) {
+            return thumbnail
+        }
+    }
     
     //先判断是否是动画并处理
     if let animateImage = getAnimateImage(url: url, size: size, rotate: rotate) {
@@ -1702,8 +1745,8 @@ class LargeImageProcessor {
 //        return getResizedImage(url: url, size: size, rotate: rotate)
 //    }
     
-    static func getImageCache(url: URL, size: NSSize, rotate: Int = 0, ver: Int, useOriginalImage: Bool, isHDR: Bool, needWaitWhenSame: Bool = true) -> NSImage? {
-        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)" as NSString
+    static func getImageCache(url: URL, size: NSSize, rotate: Int = 0, ver: Int, useOriginalImage: Bool, isHDR: Bool, isRawUseEmbeddedThumb: Bool, needWaitWhenSame: Bool = true) -> NSImage? {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)_embeded\(isRawUseEmbeddedThumb)" as NSString
         //print(cacheKey)
         
         // 先检查缓存中是否已有图像（包括nil情况）
@@ -1743,7 +1786,7 @@ class LargeImageProcessor {
                     image = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
                 }
             }else{
-                image = getResizedImage(url: url, size: size, rotate: rotate)
+                image = getResizedImage(url: url, size: size, rotate: rotate, isRawUseEmbeddedThumb: isRawUseEmbeddedThumb)
                 if image == nil {
                     image = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
                 }
@@ -1768,8 +1811,8 @@ class LargeImageProcessor {
     }
     
     // 检查缓存中是否有图像（且不是nil）
-    static func isImageCached(url: URL, size: NSSize, rotate: Int = 0, ver: Int, isHDR: Bool) -> Bool {
-        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)" as NSString
+    static func isImageCached(url: URL, size: NSSize, rotate: Int = 0, ver: Int, isHDR: Bool, isRawUseEmbeddedThumb: Bool) -> Bool {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)_embeded\(isRawUseEmbeddedThumb)" as NSString
         if let cachedWrapper = cache.object(forKey: cacheKey) {
             return cachedWrapper.image != nil
         }
@@ -1777,8 +1820,8 @@ class LargeImageProcessor {
     }
     
     // 检查缓存中是否有图像，有的话则返回
-    static func isImageCachedAndGet(url: URL, size: NSSize, rotate: Int = 0, ver: Int, isHDR: Bool) -> NSImage? {
-        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)" as NSString
+    static func isImageCachedAndGet(url: URL, size: NSSize, rotate: Int = 0, ver: Int, isHDR: Bool, isRawUseEmbeddedThumb: Bool) -> NSImage? {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)_embeded\(isRawUseEmbeddedThumb)" as NSString
         if let cachedWrapper = cache.object(forKey: cacheKey) {
             return cachedWrapper.image
         }

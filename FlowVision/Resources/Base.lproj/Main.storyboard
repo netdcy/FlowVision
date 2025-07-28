@@ -716,6 +716,19 @@ Gw
                                                 <action selector="toggleActivatePanScrollReadme:" target="Voe-Tx-rLC" id="pJ5-35-Kcj"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="59c-pc-y8c"/>
+                                        <menuItem title="RAW Uses Exif Embedded Thumbnail" id="gd3-kJ-Wxy">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="toggleRawUseEmbeddedThumb:" target="Voe-Tx-rLC" id="AI3-L5-J8e"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Readme..." id="z7K-bZ-CoE">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="toggleRawUseEmbeddedThumbReadme:" target="Voe-Tx-rLC" id="jIU-OC-Wsr"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="hya-9u-wKp"/>
                                         <menuItem title="Show Hidden Files" keyEquivalent="." id="Tbh-PX-yFW">
                                             <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
@@ -933,6 +946,8 @@ Gw
                         <outlet property="toggleIsShowImageFileMenuItem" destination="3W1-Yw-Gn8" id="h0V-QO-99K"/>
                         <outlet property="toggleIsShowRawFileMenuItem" destination="geW-lc-Njk" id="ewW-Y9-72p"/>
                         <outlet property="toggleIsShowVideoFileMenuItem" destination="UYl-gy-bK8" id="Qvg-J9-LTY"/>
+                        <outlet property="toggleRawUseEmbeddedThumbMenuItem" destination="gd3-kJ-Wxy" id="Awo-Hl-XIi"/>
+                        <outlet property="toggleRawUseEmbeddedThumbReadmeMenuItem" destination="z7K-bZ-CoE" id="t5S-ss-Mbd"/>
                         <outlet property="toggleSidebarMenuItem" destination="Yr6-zE-34v" id="Jn2-F6-Uei"/>
                         <outlet property="viewMenu" destination="HyV-fh-RgO" id="zTc-o1-rJn"/>
                         <outlet property="waterfallViewModeMenuItem" destination="5Wy-TF-lsK" id="L3c-YC-ydN"/>

@@ -1348,7 +1348,7 @@ class LargeImageView: NSView {
         if file.type == .video {return}
         guard let url=URL(string:file.path),
               let size=imageView.image?.size,
-              let image=LargeImageProcessor.getImageCache(url: url, size: size, rotate: file.rotate, ver: file.ver, useOriginalImage: true, isHDR: false)
+              let image=LargeImageProcessor.getImageCache(url: url, size: size, rotate: file.rotate, ver: file.ver, useOriginalImage: true, isHDR: false, isRawUseEmbeddedThumb: false)
         else {return}
         image.size = size
         
