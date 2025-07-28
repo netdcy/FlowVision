@@ -180,6 +180,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         historyMenu.delegate = self
         viewMenu.delegate = self
 
+        // 初始化标签系统
+        TaggingSystem.initialize()
+
         log("结束applicationWillFinishLaunching")
     }
 

@@ -680,6 +680,14 @@ class TreeViewModel {
             if globalVar.autoHideToolbar && folderURL.path == "root" {
                 subFolders.insert(URL(fileURLWithPath: "/PlaceholderForAutoHideToolbar"), at: 0)
             }
+
+            if folderURL.path == "root" {
+                let tags = TaggingSystem.getAllTags().reversed()
+                for tag in tags {
+                    let tagURL = URL(string: "file:///VirtualTagFolder/\(tag)/")!
+                    subFolders.insert(tagURL, at: 0)
+                }
+            }
             
             let oldChildren=node.children
             node.children=[]
@@ -691,6 +699,9 @@ class TreeViewModel {
                 if name == "PlaceholderForAutoHideToolbar" {
                     name = "Hidden Volume"
                     fullPath = "file:///"
+                }
+                if subFolder.absoluteString.contains("VirtualTagFolder") {
+                    name = "Tag " + name
                 }
                 var newNode = TreeNode(name: name, fullPath: fullPath)
                 

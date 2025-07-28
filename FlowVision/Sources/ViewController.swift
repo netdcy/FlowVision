@@ -77,6 +77,9 @@ class CustomProfile: Codable {
         if dict[key] == nil && key == "isShowThumbnailBadge" {
             return "true"
         }
+        if dict[key] == nil && key == "isShowThumbnailTag" {
+            return "true"
+        }
         if dict[key] == nil && key == "isWindowTitleUseFullPath" {
             return "true"
         }
@@ -137,6 +140,7 @@ class PublicVar{
     var isPanWhenZoomed = false
     var customZoomRatio: Double = 1.0
     var customZoomStep: Double = 0.1
+    var currentTag:String? = nil
 
     //可一键切换的配置
     var profile = CustomProfile()
@@ -288,7 +292,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     var searchFolderRound=0
     
-#if DEBUG
+#if false
     var rootFolder="file://\(homeDirectory)/Repository/XcodeProj/%5BTestData%5D/ImageViewerPlus/"
     var treeRootFolder="file://\(homeDirectory)/Repository/XcodeProj/%5BTestData%5D/ImageViewerPlus/"
     
@@ -480,6 +484,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         if let isPanWhenZoomed = UserDefaults.standard.value(forKey: "isPanWhenZoomed") as? Bool {
             publicVar.isPanWhenZoomed = isPanWhenZoomed
+        }
+        if let currentTag = UserDefaults.standard.value(forKey: "currentTag") as? String {
+            publicVar.currentTag = currentTag
         }
         if #available(macOS 14.0, *) {
             //
@@ -1400,6 +1407,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     //如果焦点在CollectionView
                     if publicVar.isCollectionViewFirstResponder{
                         handleMoveToDownload()
+                        return nil
+                    }
+                }
+                
+                // 检查按键是否是 "B" 键
+                if characters == "b" && noModifierKey {
+                    //如果焦点在CollectionView
+                    if publicVar.isCollectionViewFirstResponder{
+                        handleTagging()
                         return nil
                     }
                 }
@@ -3304,6 +3320,36 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         showInformationLong(title: NSLocalizedString("Operation Logs", comment: "操作日志"), message: text)
     }
 
+    func handleChangeCurrentTag(tag: String){
+        publicVar.currentTag = tag
+        UserDefaults.standard.setValue(tag, forKey: "currentTag")
+    }
+    
+    func handleTagging(){
+        
+        let urls = publicVar.selectedUrls()
+        guard urls.count != 0 else {return}
+
+        if TaggingSystem.isAllTagged(tag: publicVar.currentTag, urls: urls) {
+            TaggingSystem.remove(tag: publicVar.currentTag, urls: urls)
+        }else{
+            TaggingSystem.add(tag: publicVar.currentTag, urls: urls)
+        }
+        
+        let isInTagView = false
+        if isInTagView{
+            refreshCollectionView(needLoadThumbPriority: true)
+        }else{
+            if let collectionView = collectionView {
+                for item in collectionView.visibleItems() {
+                    if let item = item as? CustomCollectionViewItem {
+                        item.tagChanged()
+                    }
+                }
+            }
+        }
+    }
+
     func getUniqueDestinationURL(for url: URL, isInPlace: Bool = false) -> URL {
         var newURL = url
         var counter = 1
@@ -3962,6 +4008,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             targetPaths.insert(ROOT_NAME, at: 0)
         }
         
+        //标签
+        if path.contains("VirtualTagFolder") {
+            targetPaths = ["Tag " + URL(string: path)!.lastPathComponent]
+        }
+        
         if targetPaths.isEmpty {
             outlineView.deselectAll(nil)
         }else{
@@ -4332,6 +4383,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if VolumeManager.shared.isExternalVolume(folderURL) {
             properties = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey]
         }
+        var isInSameDir = !publicVar.isRecursiveMode
         if !skip {
             do {
                 let curDirURLCacheParameters = (folderURL, publicVar.isRecursiveMode, publicVar.isShowHiddenFile, publicVar.isRecursiveContainFolder, properties)
@@ -4343,7 +4395,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 dirURLCacheParameters = curDirURLCacheParameters
                 
                 if dirURLCache.isEmpty {
-                    if publicVar.isRecursiveMode {
+                    if folderURL.path.contains("VirtualTagFolder") {
+                        dirURLCache = TaggingSystem.getList(tag: folderURL.lastPathComponent)
+                        isInSameDir = false
+                    }else if publicVar.isRecursiveMode {
                         scanFiles(at: folderURL, contents: &dirURLCache, properties: properties)
                     }else{
                         dirURLCache = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: properties, options: [])
@@ -4516,10 +4571,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 var fileSortKey:SortKeyFile
                 let isDir:Bool
                 if filePath.hasSuffix("_FolderMark") {
-                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)
+                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: isInSameDir, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)
                     isDir=true
                 }else{
-                    fileSortKey=SortKeyFile(filePath, isInSameDir: !publicVar.isRecursiveMode, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)
+                    fileSortKey=SortKeyFile(filePath, isInSameDir: isInSameDir, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath)
                     isDir=false
                 }
                 //读取文件大小日期
@@ -7202,6 +7257,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         // 通用布局
         publicVar.profile.setValue(forKey: "isShowThumbnailBadge", value: newStyle.getValue(forKey: "isShowThumbnailBadge"))
+        publicVar.profile.setValue(forKey: "isShowThumbnailTag", value: newStyle.getValue(forKey: "isShowThumbnailTag"))
         publicVar.profile.isShowThumbnailFilename = newStyle.isShowThumbnailFilename
         publicVar.profile.ThumbnailFilenameSize = newStyle.ThumbnailFilenameSize
         publicVar.profile._thumbnailCellPadding = newStyle._thumbnailCellPadding
@@ -7225,7 +7281,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     func customLayoutStylePrompt (){
         if let mainWindow = NSApplication.shared.mainWindow {
-            showThumbnailOptionsPanel(on: mainWindow) { [weak self] isUseFullPath, isShowStatistics, isShowBadge, isShowFilename, filenameSize, cellPadding, borderRadiusInGrid, borderRadius, borderThickness, lineSpaceAdjust, showShadow in
+            showThumbnailOptionsPanel(on: mainWindow) { [weak self] isUseFullPath, isShowStatistics, isShowBadge, isShowTag, isShowFilename, filenameSize, cellPadding, borderRadiusInGrid, borderRadius, borderThickness, lineSpaceAdjust, showShadow in
                 guard let self = self else { return }
                 
                 let newStyle = CustomProfile()
@@ -7235,6 +7291,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 
                 // 通用布局
                 newStyle.setValue(forKey: "isShowThumbnailBadge", value: String(isShowBadge))
+                newStyle.setValue(forKey: "isShowThumbnailTag", value: String(isShowTag))
                 newStyle.isShowThumbnailFilename = isShowFilename
                 newStyle.ThumbnailFilenameSize = filenameSize
                 newStyle._thumbnailCellPadding = cellPadding

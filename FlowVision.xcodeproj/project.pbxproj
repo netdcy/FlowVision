@@ -55,6 +55,7 @@
 		F7C2DEBC2C4E6BEC003DF765 /* GeneralSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C2DEBA2C4E6BEC003DF765 /* GeneralSettingsViewController.swift */; };
 		F7DECD6D2D00939300ECC099 /* CustomEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */; };
 		F7E0B31C2DBF0F55007CBD17 /* SDWebImageWebPCoder in Frameworks */ = {isa = PBXBuildFile; productRef = F7E0B31B2DBF0F55007CBD17 /* SDWebImageWebPCoder */; };
+		F7F600462E1E095400ED8536 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F600452E1E094900ED8536 /* Tag.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -142,6 +143,7 @@
 		F7C2DEBA2C4E6BEC003DF765 /* GeneralSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsViewController.swift; sourceTree = "<group>"; };
 		F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEffectView.swift; sourceTree = "<group>"; };
 		F7E65E342C09C7F100ACC4C0 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		F7F600452E1E094900ED8536 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +163,7 @@
 		F73865DC2C37BD7F00837FE4 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				F7F600452E1E094900ED8536 /* Tag.swift */,
 				F73865D82C37BBCB00837FE4 /* GlobalVariable.swift */,
 				F70F9FC02BAFE7B300C50CDD /* Common.swift */,
 				F73865E72C37C26C00837FE4 /* FFmpegKit.swift */,
@@ -378,6 +381,7 @@
 				F7AAA8BD2D9BD1F2007CE330 /* VideoProcess.swift in Sources */,
 				F795AC6E2C196B80004B487F /* CustomSplitView.swift in Sources */,
 				F73865D52C37B9B800837FE4 /* Layout.swift in Sources */,
+				F7F600462E1E095400ED8536 /* Tag.swift in Sources */,
 				F73865D92C37BBCB00837FE4 /* GlobalVariable.swift in Sources */,
 				F73865E62C37C1AA00837FE4 /* DrawingView.swift in Sources */,
 				F73865D72C37BB2900837FE4 /* CustomOutlineView.swift in Sources */,

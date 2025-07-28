@@ -14,6 +14,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var imageViewObj: CustomThumbImageView!
     @IBOutlet weak var imageNameField: NSTextField!
     @IBOutlet weak var imageLabel: NSTextField!
+    @IBOutlet weak var imageTag: NSTextField!
     @IBOutlet weak var videoFlag: NSImageView!
     @IBOutlet weak var videoView: NSView!
     
@@ -57,6 +58,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         //文件名标签
         imageNameField.cell?.lineBreakMode = .byTruncatingTail
+        
+        //左上角标签
+        imageTag.wantsLayer = true
+        //imageTag.layer?.backgroundColor = NSColor.gray.withAlphaComponent(0.6).cgColor
+        //imageTag.layer?.cornerRadius = 4
         
         //右上角标签
         imageLabel.wantsLayer = true
@@ -177,6 +183,24 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         return itemFrame.intersects(visibleRectExtended)
     }
     
+    func tagChanged(){
+        let isShowThumbnailTag = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailTag") == "true"
+        let tags = TaggingSystem.getFileTags(url: URL(string: file.path)!)
+        if tags.count > 0 {
+            imageTag.stringValue = tags.joined(separator: "\n")
+        }else{
+            imageTag.stringValue=""
+        }
+        if imageTag.stringValue != "" && isShowThumbnailTag {
+            imageTag.sizeToFit() // 先调整文字大小
+            imageTag.frame.origin.x = imageViewObj.frame.origin.x + 5
+            imageTag.frame.origin.y = imageViewObj.frame.origin.y + imageViewObj.frame.height - imageTag.frame.height - 5
+            imageTag.isHidden=false
+        } else {
+            imageTag.isHidden=true
+        }
+    }
+    
     func configureWithImage(_ fileModel: FileModel, playAnimation: Bool = false) {
         
         stopVideo()
@@ -202,6 +226,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             imageViewObj.isFolder = false
         }
 
+        // 左上角标签
+        tagChanged()
+
+        // 右上角标签
         let isShowThumbnailBadge = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailBadge") == "true"
         let isRawImage = globalVar.HandledRawExtensions.contains(imageViewObj.url?.pathExtension.lowercased() ?? "noExtention")
         if isRawImage {
@@ -211,6 +239,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }else{
             imageLabel.stringValue=""
         }
+        
         if imageLabel.stringValue != "" && isShowThumbnailBadge {
             imageLabel.sizeToFit() // 先调整文字大小
             imageLabel.frame.origin.x = imageViewObj.frame.origin.x + imageViewObj.frame.width - imageLabel.frame.width - 5
@@ -800,6 +829,31 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 actionItemMoveToDownload.keyEquivalentModifierMask = []
                 
                 menu.addItem(NSMenuItem.separator())
+
+                // 创建标签子菜单
+                let tagMenu = NSMenu()
+                let currentTag = getViewController(collectionView!)?.publicVar.currentTag ?? TaggingSystem.defaultTag
+                let tagMenuItem = NSMenuItem(title: NSLocalizedString("Tag", comment: "标签")+" "+currentTag, action: nil, keyEquivalent: "")
+                tagMenuItem.submenu = tagMenu
+                
+                // 添加标记/取消标记选项
+                let toggleTagItem = tagMenu.addItem(withTitle: NSLocalizedString("Toggle Tag", comment: "标记/取消标记"), action: #selector(actTag), keyEquivalent: "b")
+                toggleTagItem.keyEquivalentModifierMask = []
+                
+                tagMenu.addItem(NSMenuItem.separator())
+                
+                // 添加不同标签选项
+                for tag in TaggingSystem.getAvailableTags() {
+                    let tagItem = tagMenu.addItem(withTitle: tag, action: #selector(actChangeTag(_:)), keyEquivalent: "")
+                    tagItem.representedObject = tag
+                    if tag == currentTag {
+                        tagItem.state = .on
+                    }
+                }
+                
+                menu.addItem(tagMenuItem)
+
+                menu.addItem(NSMenuItem.separator())
                 
                 // 创建"新建"子菜单
                 let newMenu = NSMenu()
@@ -832,6 +886,15 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
         self.mouseDownLocation = nil // 重置按下位置
         super.rightMouseUp(with: event)
+    }
+
+    @objc func actChangeTag(_ sender: NSMenuItem) {
+        guard let tag = sender.representedObject as? String else { return }
+        getViewController(collectionView!)?.handleChangeCurrentTag(tag: tag)
+    }
+
+    @objc func actTag() {
+        getViewController(collectionView!)?.handleTagging()
     }
     
     @objc func actRefresh() {
