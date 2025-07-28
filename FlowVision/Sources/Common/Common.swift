@@ -416,38 +416,94 @@ func renameAlert(urls: [URL]) -> Bool {
 
             var allSuccess = true
             
-            for (index, originalUrl) in urls.enumerated() {
-                // 构建新文件名
+            // 第一步：生成最终目标名字列表
+            var finalNames: [(originalUrl: URL, finalUrl: URL)] = []
+            var nameIndex = 1
+            
+            for originalUrl in urls {
                 var newName = newBaseName
-                if index >= 0 && urls.count > 1 {
-                    // 如果有扩展名，在扩展名前添加序号
-                    if let ext = originalUrl.pathExtension.isEmpty ? nil : originalUrl.pathExtension {
-                        let nameWithoutExt = (newBaseName as NSString).deletingPathExtension
-                        newName = "\(nameWithoutExt)_\(index + 1).\(ext)"
-                    } else {
-                        newName = "\(newBaseName)_\(index + 1)"
+                // 批量重命名
+                if urls.count > 1 {
+                    var newUrl: URL
+                    var collision = false
+                    repeat {
+                        // 如果有扩展名，在扩展名前添加序号
+                        if let ext = originalUrl.pathExtension.isEmpty ? nil : originalUrl.pathExtension {
+                            let nameWithoutExt = (newBaseName as NSString).deletingPathExtension
+                            newName = "\(nameWithoutExt)_\(nameIndex).\(ext)"
+                        } else {
+                            newName = "\(newBaseName)_\(nameIndex)"
+                        }
+                        newUrl = originalUrl.deletingLastPathComponent().appendingPathComponent(newName)
+                        nameIndex += 1
+                        
+                        // 检查是否存在同名文件，但排除当前待重命名列表中的文件
+                        if FileManager.default.fileExists(atPath: newUrl.path) &&
+                             !urls.contains(where: { $0.path.lowercased() == newUrl.path.lowercased() })
+                        {
+                            collision = true
+                            
+                            let alert = NSAlert()
+                            alert.messageText = NSLocalizedString("File Already Exists", comment: "文件已存在")
+                            alert.informativeText = NSLocalizedString("file-exists-continue-batch-rename", comment: "批量重命名的序号与已有文件重名，是否继续?")
+                            alert.alertStyle = .warning
+                            alert.addButton(withTitle: NSLocalizedString("Continue", comment: "继续"))
+                            alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
+                            
+                            if alert.runModal() == .alertSecondButtonReturn {
+                                return false
+                            }
+                        }else{
+                            collision = false
+                        }
+                    } while collision
+                }else{
+                    // 单个重命名
+                    let newUrl = originalUrl.deletingLastPathComponent().appendingPathComponent(newName)
+                    if FileManager.default.fileExists(atPath: newUrl.path) {
+                        showAlert(message: NSLocalizedString("renaming-conflict", comment: "该名称的文件已存在，请选择其他名称。"))
+                        allSuccess = false
+                        return false
                     }
                 }
                 
-                let newUrl = originalUrl.deletingLastPathComponent().appendingPathComponent(newName)
+                let finalUrl = originalUrl.deletingLastPathComponent().appendingPathComponent(newName)
+                finalNames.append((originalUrl: originalUrl, finalUrl: finalUrl))
+            }
+            
+            // 第二步：将所有文件改成临时文件名
+            var tempNames: [(tempUrl: URL, finalUrl: URL)] = []
+            for (index, item) in finalNames.enumerated() {
+                let tempName = "temp_rename_\(UUID().uuidString)"
+                let tempUrl = item.originalUrl.deletingLastPathComponent().appendingPathComponent(tempName)
                 
-                // 检查是否存在同名文件
-                if FileManager.default.fileExists(atPath: newUrl.path) &&
-                    originalUrl.path.lowercased() != newUrl.path.lowercased() {
-                    showAlert(message: NSLocalizedString("renaming-conflict", comment: "该名称的文件已存在，请选择其他名称。"))
+                do {
+                    try FileManager.default.moveItem(at: item.originalUrl, to: tempUrl)
+                    tempNames.append((tempUrl: tempUrl, finalUrl: item.finalUrl))
+                } catch {
+                    // 如果临时重命名失败，回滚之前的临时重命名
+                    for prevTemp in tempNames {
+                        try? FileManager.default.moveItem(at: prevTemp.tempUrl, to: finalNames[tempNames.count].originalUrl)
+                    }
+                    log("Failed to create temp name: \(error)")
                     allSuccess = false
                     break
-                } else if originalUrl.path != newUrl.path {
-                    // 执行重命名操作
+                }
+            }
+            
+            // 第三步：将临时文件名改成最终文件名
+            if allSuccess {
+                for item in tempNames {
                     do {
                         // 文件更改计数
                         getMainViewController()?.publicVar.fileChangedCount += 1
                         
-                        try FileManager.default.moveItem(at: originalUrl, to: newUrl)
-                        log("File renamed to \(newName)")
+                        try FileManager.default.moveItem(at: item.tempUrl, to: item.finalUrl)
+                        log("File renamed to \(item.finalUrl.lastPathComponent)")
                     } catch {
                         log("Failed to rename file: \(error)")
                         allSuccess = false
+                        // 这里不需要回滚，因为用户可以通过临时文件找回
                         break
                     }
                 }
