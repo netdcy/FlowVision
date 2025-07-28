@@ -72,6 +72,8 @@ class GlobalVar{
     var isEnterKeyToOpen = false
     var clickEdgeToSwitchImage = false
     var scrollMouseWheelToZoom = false
+    var openLastFolder = true
+    var homeFolder = "file:///"
     
     //可记忆设置变量
     var isFirstTimeUse = true

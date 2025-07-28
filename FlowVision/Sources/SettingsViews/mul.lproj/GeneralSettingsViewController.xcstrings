@@ -1,6 +1,102 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "6dV-cD-yRh.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Homepage\"; ObjectID = \"6dV-cD-yRh\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الصفحة الرئيسية"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startseite"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Homepage"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página principal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page d'accueil"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homepage"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホームページ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "홈페이지"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startpagina"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página inicial"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página Inicial"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Главная страница"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hemsida"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主页"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "首頁"
+          }
+        }
+      }
+    },
     "7aF-tg-6Qj.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Permissions:\"; ObjectID = \"7aF-tg-6Qj\";",
       "extractionState" : "extracted_with_value",
@@ -97,98 +193,98 @@
         }
       }
     },
-    "dB2-6s-xY8.title" : {
-      "comment" : "Class = \"NSButtonCell\"; title = \"Quit Application When Closing Last Window\"; ObjectID = \"dB2-6s-xY8\";",
+    "BFV-85-Ue3.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Select Folder...\"; ObjectID = \"BFV-85-Ue3\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "إنهاء التطبيق عند إغلاق النافذة الأخيرة"
+            "value" : "حدد المجلد..."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anwendung beim Schließen des letzten Fensters beenden"
+            "value" : "Ordner auswählen..."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Quit Application When Closing Last Window"
+            "value" : "Select Folder..."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Salir de la aplicación al cerrar la última ventana"
+            "value" : "Seleccionar carpeta..."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quitter l'application lors de la fermeture de la dernière fenêtre"
+            "value" : "Sélectionner un dossier..."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esci dall'applicazione quando chiudi l'ultima finestra"
+            "value" : "Seleziona cartella..."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最後のウィンドウを閉じたときにアプリケーションを終了"
+            "value" : "フォルダを選択…"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "마지막 창을 닫을 때 응용 프로그램 종료"
+            "value" : "폴더 선택..."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toepassing afsluiten bij sluiten laatste venster"
+            "value" : "Map selecteren..."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sair do aplicativo ao fechar a última janela"
+            "value" : "Selecionar Pasta..."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sair da Aplicação ao Fechar a Última Janela"
+            "value" : "Selecionar Pasta..."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Выход из приложения при закрытии последнего окна"
+            "value" : "Выберите папку..."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avsluta programmet när sista fönstret stängs"
+            "value" : "Välj mapp..."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "关闭最后一个窗口时退出程序"
+            "value" : "选择目录…"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "關閉最後一個窗口時退出應用程序"
+            "value" : "選擇資料夾..."
           }
         }
       }
@@ -289,102 +385,6 @@
         }
       }
     },
-    "hGF-9Y-ejC.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"Auto\"; ObjectID = \"hGF-9Y-ejC\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تلقائي"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatisch"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Auto"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automático"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatico"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "자동"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automático"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automático"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Авто"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動"
-          }
-        }
-      }
-    },
     "NOF-sJ-b0B.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Click the button to set this application as the default program for common image formats. For other image formats such as PSD and RAW, please associate them manually.\"; ObjectID = \"NOF-sJ-b0B\";",
       "extractionState" : "extracted_with_value",
@@ -481,102 +481,6 @@
         }
       }
     },
-    "pPv-HR-smI.title" : {
-      "comment" : "Class = \"NSButtonCell\"; title = \"Set as Default Application\"; ObjectID = \"pPv-HR-smI\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تعيين كتطبيق افتراضي"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Als Standardanwendung festlegen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Set as Default Application"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Establecer como aplicación predeterminada"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Définir comme application par défaut"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Imposta come applicazione predefinita"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "デフォルトアプリケーションに設定"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "기본 응용 프로그램으로 설정"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Als standaardapplicatie instellen"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Definir como Aplicativo Padrão"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Definir como Aplicação Padrão"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Установить как приложение по умолчанию"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ange som standardapplikation"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "设为默认应用"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設為預設應用程式"
-          }
-        }
-      }
-    },
     "PZ6-Ug-5uU.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"File Associations:\"; ObjectID = \"PZ6-Ug-5uU\";",
       "extractionState" : "extracted_with_value",
@@ -669,102 +573,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "檔案關聯："
-          }
-        }
-      }
-    },
-    "qe3-7u-Trn.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Restart the application for changes to take effect.\"; ObjectID = \"qe3-7u-Trn\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أعد تشغيل التطبيق لتأخذ التغييرات مفعولها"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Starten Sie die Anwendung neu, damit die Änderungen wirksam werden."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Restart the application for changes to take effect."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reinicie la aplicación para que los cambios surtan efecto."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Redémarrez l'application pour que les modifications prennent effet"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Riavvia l'applicazione affinché le modifiche abbiano effetto"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "変更を適用するにはアプリケーションを再起動してください"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "변경 사항이 적용되도록 애플리케이션을 다시 시작하십시오."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start de applicatie opnieuw op om de wijzigingen door te voeren"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reinicie o aplicativo para que as alterações tenham efeito"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reinicie a aplicação para que as alterações tenham efeito"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Перезапустите приложение, чтобы изменения вступили в силу"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Starta om applikationen för att ändringarna ska träda i kraft"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重启应用以使更改生效。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重新啟動應用程式以使更改生效"
           }
         }
       }
@@ -961,6 +769,678 @@
         }
       }
     },
+    "Z13-dJ-JBv.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"\\\"Files and Folders\\\" permission is required to open directories and files.\\n\\\"Automation\\\" permission is required to retain original location information when deleting to the Trash (without this permission, the \\\"Put Back\\\" feature in the Trash will not work).\"; ObjectID = \"Z13-dJ-JBv\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يلزم الحصول على إذن \"الملفات والمجلدات\" لفتح الأدلة والملفات. يلزم الحصول على إذن \"الأتمتة\" للاحتفاظ بمعلومات الموقع الأصلي عند الحذف إلى سلة المهملات (بدون هذا الإذن، لن تعمل ميزة \"إعادة الوضع\" في سلة المهملات)."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Berechtigung \"Dateien und Ordner\" ist erforderlich, um Verzeichnisse und Dateien zu öffnen. Die Berechtigung \"Automatisierung\" ist erforderlich, um ursprüngliche Standortinformationen beim Löschen in den Papierkorb beizubehalten (ohne diese Berechtigung funktioniert die Funktion \"Zurücklegen\" im Papierkorb nicht)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "\"Files and Folders\" permission is required to open directories and files.\n\"Automation\" permission is required to retain original location information when deleting to the Trash (without this permission, the \"Put Back\" feature in the Trash will not work)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se requiere permiso de \"Archivos y Carpetas\" para abrir directorios y archivos. Se requiere permiso de \"Automatización\" para conservar la información de ubicación original al eliminar a la Papelera (sin este permiso, la función de \"Restaurar\" en la Papelera no funcionará)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'autorisation \"Fichiers et dossiers\" est requise pour ouvrir des répertoires et des fichiers  \nL'autorisation \"Automatisation\" est requise pour conserver les informations de localisation d'origine lors de la suppression vers la Corbeille (sans cette autorisation, la fonctionnalité \"Remettre\" dans la Corbeille ne fonctionnera pas)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "È necessario il permesso \"File e cartelle\" per aprire directory e file. È necessario il permesso \"Automazione\" per mantenere le informazioni sulla posizione originale quando si spostano elementi nel Cestino (senza questo permesso, la funzione \"Ripristina\" nel Cestino non funzionerà)."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ディレクトリやファイルを開くには「ファイルとフォルダ」権限が必要です。「自動化」権限がないと、ゴミ箱に削除する際に元の場所情報を保持できません（この権限がないと、ゴミ箱の「元に戻す」機能が使えません）。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"파일 및 폴더\" 권한이 디렉토리 및 파일을 열기 위해 필요합니다. 휴지통으로 삭제할 때 원래 위치 정보를 유지하려면 \"자동화\" 권한이 필요합니다 (이 권한이 없으면 휴지통의 \"되돌리기\" 기능이 작동하지 않습니다)."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toestemming voor \"Bestanden en Mappen\" is vereist om mappen en bestanden te openen. Toestemming voor \"Automatisering\" is vereist om oorspronkelijke locatie-informatie te behouden bij het verwijderen naar de prullenbak (zonder deze toestemming zal de functie \"Zet Terug\" in de prullenbak niet werken)."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "É necessária a permissão de \"Arquivos e Pastas\" para abrir diretórios e arquivos. É necessária a permissão de \"Automação\" para reter as informações de localização original ao excluir para a Lixeira (sem essa permissão, o recurso \"Recolocar\" na Lixeira não funcionará)."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "É necessário permissão de \"Ficheiros e Pastas\" para abrir diretórios e ficheiros. É necessária permissão de \"Automação\" para reter a informação da localização original ao eliminar para o Lixo (sem esta permissão, a funcionalidade \"Repor\" no Lixo não funcionará)."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для открытия каталогов и файлов требуется разрешение \"Файлы и папки\". Для сохранения исходной информации о местоположении при удалении в корзину требуется разрешение \"Автоматизация\" (без этого разрешения функция \"Вернуть обратно\" в корзине не будет работать)."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Behörighet för \"Filer och mappar\" krävs för att öppna kataloger och filer \"Automatisering\" behörighet krävs för att behålla ursprunglig platsinformation när du raderar till papperskorgen (utan denna behörighet kommer funktionen \"Återställ\" i papperskorgen inte att fungera)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要“文件和文件夹”权限以打开目录和文件。\n需要“自动化”权限以支持删除到废纸篓时保留原位置信息（不授予时无法在废纸篓使用“还原到原位置”功能）。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要“文件和文件夾”權限才能打開目錄和文件。將文件刪除至垃圾桶時需要“自動化”權限才能保留原始位置資訊（若無此權限，垃圾桶中的“放回”功能將無法使用）。"
+          }
+        }
+      }
+    },
+    "dB2-6s-xY8.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Quit Application When Closing Last Window\"; ObjectID = \"dB2-6s-xY8\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إنهاء التطبيق عند إغلاق النافذة الأخيرة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anwendung beim Schließen des letzten Fensters beenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Quit Application When Closing Last Window"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salir de la aplicación al cerrar la última ventana"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitter l'application lors de la fermeture de la dernière fenêtre"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esci dall'applicazione quando chiudi l'ultima finestra"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最後のウィンドウを閉じたときにアプリケーションを終了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마지막 창을 닫을 때 응용 프로그램 종료"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toepassing afsluiten bij sluiten laatste venster"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sair do aplicativo ao fechar a última janela"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sair da Aplicação ao Fechar a Última Janela"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выход из приложения при закрытии последнего окна"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avsluta programmet när sista fönstret stängs"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭最后一个窗口时退出程序"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉最後一個窗口時退出應用程序"
+          }
+        }
+      }
+    },
+    "hGF-9Y-ejC.title" : {
+      "comment" : "Class = \"NSMenuItem\"; title = \"Auto\"; ObjectID = \"hGF-9Y-ejC\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تلقائي"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatisch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Auto"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automático"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatico"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자동"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automático"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automático"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Авто"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動"
+          }
+        }
+      }
+    },
+    "mMX-oZ-Z7y.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Last Folder\"; ObjectID = \"mMX-oZ-Z7y\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آخر مجلد"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzter Ordner"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Last Folder"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última carpeta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dernier dossier"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultima cartella"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最後のフォルダ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마지막 폴더"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laatste map"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última Pasta"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última Pasta"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последняя папка"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senaste mappen"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次的目录"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上一個資料夾"
+          }
+        }
+      }
+    },
+    "nKY-fu-OXx.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Homepage\"; ObjectID = \"nKY-fu-OXx\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الصفحة الرئيسية"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startseite"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Homepage"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página principal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page d'accueil"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pagina principale"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホームページ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "홈페이지"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startpagina"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página inicial"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página Inicial"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Главная страница"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hemsida"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主页"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主頁"
+          }
+        }
+      }
+    },
+    "pPv-HR-smI.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Set as Default Application\"; ObjectID = \"pPv-HR-smI\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعيين كتطبيق افتراضي"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als Standardanwendung festlegen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Set as Default Application"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Establecer como aplicación predeterminada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Définir comme application par défaut"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imposta come applicazione predefinita"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デフォルトアプリケーションに設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기본 응용 프로그램으로 설정"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als standaardapplicatie instellen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Definir como Aplicativo Padrão"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Definir como Aplicação Padrão"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установить как приложение по умолчанию"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ange som standardapplikation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设为默认应用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設為預設應用程式"
+          }
+        }
+      }
+    },
+    "qe3-7u-Trn.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Restart the application for changes to take effect.\"; ObjectID = \"qe3-7u-Trn\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أعد تشغيل التطبيق لتأخذ التغييرات مفعولها"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starten Sie die Anwendung neu, damit die Änderungen wirksam werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Restart the application for changes to take effect."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reinicie la aplicación para que los cambios surtan efecto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redémarrez l'application pour que les modifications prennent effet"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riavvia l'applicazione affinché le modifiche abbiano effetto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "変更を適用するにはアプリケーションを再起動してください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "변경 사항이 적용되도록 애플리케이션을 다시 시작하십시오."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start de applicatie opnieuw op om de wijzigingen door te voeren"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reinicie o aplicativo para que as alterações tenham efeito"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reinicie a aplicação para que as alterações tenham efeito"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перезапустите приложение, чтобы изменения вступили в силу"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starta om applikationen för att ändringarna ska träda i kraft"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重启应用以使更改生效。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新啟動應用程式以使更改生效"
+          }
+        }
+      }
+    },
     "s9c-vd-E8g.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Language:\"; ObjectID = \"s9c-vd-E8g\";",
       "extractionState" : "extracted_with_value",
@@ -1153,6 +1633,102 @@
         }
       }
     },
+    "uga-eQ-cEz.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Open Behavior:\"; ObjectID = \"uga-eQ-cEz\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سلوك الفتح:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnungsverhalten:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Open Behavior:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comportamiento de apertura:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comportement d'ouverture :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comportamento di apertura:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開く動作:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "열기 동작:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Openingsgedrag:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comportamento de Abertura:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comportamento ao Abrir:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть поведение:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öppningsbeteende:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开行为："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟行為："
+          }
+        }
+      }
+    },
     "x5i-CI-gSv.title" : {
       "comment" : "Class = \"NSButtonCell\"; title = \"Open Permissions Settings\"; ObjectID = \"x5i-CI-gSv\";",
       "extractionState" : "extracted_with_value",
@@ -1245,102 +1821,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟權限設定"
-          }
-        }
-      }
-    },
-    "Z13-dJ-JBv.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"\\\"Files and Folders\\\" permission is required to open directories and files.\\n\\\"Automation\\\" permission is required to retain original location information when deleting to the Trash (without this permission, the \\\"Put Back\\\" feature in the Trash will not work).\"; ObjectID = \"Z13-dJ-JBv\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يلزم الحصول على إذن \"الملفات والمجلدات\" لفتح الأدلة والملفات. يلزم الحصول على إذن \"الأتمتة\" للاحتفاظ بمعلومات الموقع الأصلي عند الحذف إلى سلة المهملات (بدون هذا الإذن، لن تعمل ميزة \"إعادة الوضع\" في سلة المهملات)."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die Berechtigung \"Dateien und Ordner\" ist erforderlich, um Verzeichnisse und Dateien zu öffnen. Die Berechtigung \"Automatisierung\" ist erforderlich, um ursprüngliche Standortinformationen beim Löschen in den Papierkorb beizubehalten (ohne diese Berechtigung funktioniert die Funktion \"Zurücklegen\" im Papierkorb nicht)."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\"Files and Folders\" permission is required to open directories and files.\n\"Automation\" permission is required to retain original location information when deleting to the Trash (without this permission, the \"Put Back\" feature in the Trash will not work)."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se requiere permiso de \"Archivos y Carpetas\" para abrir directorios y archivos. Se requiere permiso de \"Automatización\" para conservar la información de ubicación original al eliminar a la Papelera (sin este permiso, la función de \"Restaurar\" en la Papelera no funcionará)."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'autorisation \"Fichiers et dossiers\" est requise pour ouvrir des répertoires et des fichiers  \nL'autorisation \"Automatisation\" est requise pour conserver les informations de localisation d'origine lors de la suppression vers la Corbeille (sans cette autorisation, la fonctionnalité \"Remettre\" dans la Corbeille ne fonctionnera pas)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "È necessario il permesso \"File e cartelle\" per aprire directory e file. È necessario il permesso \"Automazione\" per mantenere le informazioni sulla posizione originale quando si spostano elementi nel Cestino (senza questo permesso, la funzione \"Ripristina\" nel Cestino non funzionerà)."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ディレクトリやファイルを開くには「ファイルとフォルダ」権限が必要です。「自動化」権限がないと、ゴミ箱に削除する際に元の場所情報を保持できません（この権限がないと、ゴミ箱の「元に戻す」機能が使えません）。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\"파일 및 폴더\" 권한이 디렉토리 및 파일을 열기 위해 필요합니다. 휴지통으로 삭제할 때 원래 위치 정보를 유지하려면 \"자동화\" 권한이 필요합니다 (이 권한이 없으면 휴지통의 \"되돌리기\" 기능이 작동하지 않습니다)."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toestemming voor \"Bestanden en Mappen\" is vereist om mappen en bestanden te openen. Toestemming voor \"Automatisering\" is vereist om oorspronkelijke locatie-informatie te behouden bij het verwijderen naar de prullenbak (zonder deze toestemming zal de functie \"Zet Terug\" in de prullenbak niet werken)."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "É necessária a permissão de \"Arquivos e Pastas\" para abrir diretórios e arquivos. É necessária a permissão de \"Automação\" para reter as informações de localização original ao excluir para a Lixeira (sem essa permissão, o recurso \"Recolocar\" na Lixeira não funcionará)."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "É necessário permissão de \"Ficheiros e Pastas\" para abrir diretórios e ficheiros. É necessária permissão de \"Automação\" para reter a informação da localização original ao eliminar para o Lixo (sem esta permissão, a funcionalidade \"Repor\" no Lixo não funcionará)."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Для открытия каталогов и файлов требуется разрешение \"Файлы и папки\". Для сохранения исходной информации о местоположении при удалении в корзину требуется разрешение \"Автоматизация\" (без этого разрешения функция \"Вернуть обратно\" в корзине не будет работать)."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Behörighet för \"Filer och mappar\" krävs för att öppna kataloger och filer \"Automatisering\" behörighet krävs för att behålla ursprunglig platsinformation när du raderar till papperskorgen (utan denna behörighet kommer funktionen \"Återställ\" i papperskorgen inte att fungera)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要“文件和文件夹”权限以打开目录和文件。\n需要“自动化”权限以支持删除到废纸篓时保留原位置信息（不授予时无法在废纸篓使用“还原到原位置”功能）。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要“文件和文件夾”權限才能打開目錄和文件。將文件刪除至垃圾桶時需要“自動化”權限才能保留原始位置資訊（若無此權限，垃圾桶中的“放回”功能將無法使用）。"
           }
         }
       }

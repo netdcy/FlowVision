@@ -19,6 +19,12 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
     @IBOutlet weak var autoHideToolbarCheckbox: NSButton!
     @IBOutlet weak var languagePopUpButton: NSPopUpButton!
 
+    @IBOutlet weak var radioHomeFolder: NSButton!
+    @IBOutlet weak var radioLastFolder: NSButton!
+
+    @IBOutlet weak var labelHomeFolder: NSTextField!
+    @IBOutlet weak var buttonSelectHomeFolder: NSButton!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -70,6 +76,12 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
         } else {
             languagePopUpButton.selectItem(withTitle: autoTitle)
         }
+
+        radioLastFolder.state = globalVar.openLastFolder ? .on : .off
+        radioHomeFolder.state = !globalVar.openLastFolder ? .on : .off
+        labelHomeFolder.stringValue = globalVar.homeFolder.removingPercentEncoding!.replacingOccurrences(of: "file://", with: "")
+        labelHomeFolder.textColor = globalVar.openLastFolder ? .disabledControlTextColor : .controlTextColor
+        buttonSelectHomeFolder.isEnabled = !globalVar.openLastFolder
     }
     
     @IBAction func languageSelectionChanged(_ sender: NSPopUpButton) {
@@ -178,5 +190,36 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
             }
         }
         return fileTypes
+    }
+
+    @IBAction func openBehaviorToggled(_ sender: NSButton) {
+        let tag = sender.tag
+        if tag == 0 {
+            globalVar.openLastFolder = false
+        } else if tag == 1 {
+            globalVar.openLastFolder = true
+        }
+        UserDefaults.standard.set(globalVar.openLastFolder, forKey: "openLastFolder")
+        if globalVar.openLastFolder {
+            labelHomeFolder.textColor = .disabledControlTextColor
+            buttonSelectHomeFolder.isEnabled = false
+        } else {
+            labelHomeFolder.textColor = .controlTextColor
+            buttonSelectHomeFolder.isEnabled = true
+        }
+    }
+
+    @IBAction func selectHomeFolder(_ sender: Any) {
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        panel.allowsMultipleSelection = false
+        panel.directoryURL = URL(string: globalVar.homeFolder)
+        panel.runModal()
+        if let url = panel.url {
+            globalVar.homeFolder = url.absoluteString
+            labelHomeFolder.stringValue = globalVar.homeFolder.removingPercentEncoding!.replacingOccurrences(of: "file://", with: "")
+            UserDefaults.standard.set(globalVar.homeFolder, forKey: "homeFolder")
+        }
     }
 }

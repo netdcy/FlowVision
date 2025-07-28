@@ -98,9 +98,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             NSApp.appearance = nil
         }
         
+        if let openLastFolder = UserDefaults.standard.value(forKey: "openLastFolder") as? Bool {
+            globalVar.openLastFolder = openLastFolder
+        }
+        if let homeFolder = UserDefaults.standard.value(forKey: "homeFolder") as? String {
+            globalVar.homeFolder = homeFolder
+        }
         if let hasNormalExit = UserDefaults.standard.value(forKey: "hasNormalExit") as? Bool {
             if !hasNormalExit {
                 UserDefaults.standard.set("file:///", forKey: "lastFolder")
+                globalVar.homeFolder = "file:///"
             }
         }
         UserDefaults.standard.set(false, forKey: "hasNormalExit")

@@ -1634,6 +1634,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if globalVar.isLaunchFromFile == false { //从文件夹启动
             let defaults = UserDefaults.standard
             var lastFolder = defaults.string(forKey: "lastFolder")
+            if !globalVar.openLastFolder  {
+                if let appDelegate=NSApplication.shared.delegate as? AppDelegate,
+                   appDelegate.windowControllers.count == 1 {
+                    lastFolder = globalVar.homeFolder
+                }
+            }
             if lastFolder == nil {
                 lastFolder = rootFolder
             }
