@@ -1467,8 +1467,12 @@ class ExifTextView: NSView {
         didSet {
             invalidateIntrinsicContentSize()
             needsDisplay = true
+            updateMapButtonVisibility()
         }
     }
+    
+    private var mapButton: NSButton?
+    private var gpsCoordinates: (latitude: Double, longitude: Double, altitude: Double)?
 
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
@@ -1501,6 +1505,18 @@ class ExifTextView: NSView {
         var yOffset: CGFloat = rect.origin.y + rect.height - padding
 
         let keyMaxWidth = textItems.map { $0.0.size(withAttributes: keyAttributes).width }.max() ?? 0
+        // 根据keyMaxWidth设置mapButton的左边距
+        if let mapButton = mapButton {
+            if let superview = mapButton.superview {
+                mapButton.removeFromSuperview()
+                superview.addSubview(mapButton)
+                mapButton.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    mapButton.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: rect.origin.x + padding + keyMaxWidth + 10),
+                    mapButton.centerYAnchor.constraint(equalTo: superview.topAnchor, constant: rect.origin.y + rect.height - padding - 8)
+                ])
+            }
+        }
 
         for (key, value) in textItems {
             if key == "-" {
@@ -1526,6 +1542,23 @@ class ExifTextView: NSView {
 
             yOffset -= max(keySize.height, valueSize.height) + 5
         }
+
+        // 如果有GPS坐标信息,添加一行"Open"
+        if gpsCoordinates != nil {
+            let openKey = NSLocalizedString("Location", comment: "位置")
+            let openValue = ""
+            
+            let openKeySize = openKey.size(withAttributes: keyAttributes)
+            let openValueSize = openValue.size(withAttributes: attributes)
+            
+            let openKeyX = rect.origin.x + padding
+            let openValueX = openKeyX + keyMaxWidth + 10
+            
+            openKey.draw(at: CGPoint(x: openKeyX, y: yOffset - openKeySize.height), withAttributes: keyAttributes)
+            openValue.draw(at: CGPoint(x: openValueX, y: yOffset - openValueSize.height), withAttributes: attributes)
+            
+            yOffset -= max(openKeySize.height, openValueSize.height) + 5
+        }
     }
 
     override var intrinsicContentSize: NSSize {
@@ -1539,15 +1572,87 @@ class ExifTextView: NSView {
         
         for (key, _) in textItems {
             if key == "-" {
-                additionalHeight += 18 // 分割线高度 + 间距
+                additionalHeight += 15 // 分割线高度 + 间距
                 numLines -= 1 // 分割线不算在内
             }
+        }
+        
+        // 如果有GPS坐标信息，为按钮预留额外空间
+        if gpsCoordinates != nil {
+            additionalHeight += 20
         }
 
         let height = numLines * lineHeight + (numLines - 1) * 5 + padding * 2 + additionalHeight
         let width = keyMaxWidth + valueMaxWidth + 35 + padding * 2
 
         return NSSize(width: width, height: height)
+    }
+    
+    private func updateMapButtonVisibility() {
+        // 检查是否有GPS坐标信息
+        var latitude: Double?
+        var longitude: Double?
+        var altitude: Double?
+        
+        for (key, value) in textItems {
+            if key == NSLocalizedString("Exif-GPSLatitude", comment: "GPS纬度") {
+                if let latString = value as? String {
+                    // 提取数字部分，去掉"°"符号
+                    let cleanString = latString.replacingOccurrences(of: "°", with: "")
+                    latitude = Double(cleanString)
+                }
+            } else if key == NSLocalizedString("Exif-GPSLongitude", comment: "GPS经度") {
+                if let lonString = value as? String {
+                    // 提取数字部分，去掉"°"符号
+                    let cleanString = lonString.replacingOccurrences(of: "°", with: "")
+                    longitude = Double(cleanString)
+                }
+            } else if key == NSLocalizedString("Exif-GPSAltitude", comment: "GPS海拔") {
+                if let altString = value as? String {
+                    // 提取数字部分，去掉"m"符号
+                    let cleanString = altString.replacingOccurrences(of: "m", with: "")
+                    altitude = Double(cleanString)
+                }
+            }
+        }
+        
+        if latitude != nil || longitude != nil || altitude != nil {
+            gpsCoordinates = (
+                latitude: latitude ?? 0,
+                longitude: longitude ?? 0,
+                altitude: altitude ?? 0
+            )
+            createMapButton()
+        } else {
+            gpsCoordinates = nil
+            removeMapButton()
+        }
+    }
+    
+    private func createMapButton() {
+        guard mapButton == nil else { return }
+        
+        mapButton = NSButton(title: NSLocalizedString("Open in Map", comment: "在地图中打开"), target: self, action: #selector(openInMap))
+        mapButton?.bezelStyle = .rounded
+        mapButton?.font = NSFont.systemFont(ofSize: 12)
+        
+        addSubview(mapButton!)
+    }
+    
+    private func removeMapButton() {
+        mapButton?.removeFromSuperview()
+        mapButton = nil
+    }
+    
+    @objc private func openInMap() {
+        guard let coordinates = gpsCoordinates else { return }
+        
+        // 构建地图URL，使用Apple Maps
+        let mapURLString = "http://maps.apple.com/?q=\(coordinates.latitude),\(coordinates.longitude)"
+        
+        if let mapURL = URL(string: mapURLString) {
+            NSWorkspace.shared.open(mapURL)
+        }
     }
 }
 

@@ -1491,7 +1491,13 @@ func formatExifData(_ imageProperties: [String: Any]) -> [(String, Any)] {
         (kCGImagePropertyColorModel, NSLocalizedString("Exif-ColorModel", comment: "色彩空间")),
         (kCGImagePropertyProfileName, NSLocalizedString("Exif-ProfileName", comment: "配置文件名称")),
         (kCGImagePropertyDepth, NSLocalizedString("Exif-Depth", comment: "位深度")),
-        ("HDR Mode" as CFString, "HDR")
+        ("HDR Mode" as CFString, "HDR"),
+        
+        ("-" as CFString, "-"),
+        
+        (kCGImagePropertyGPSLongitude, NSLocalizedString("Exif-GPSLongitude", comment: "GPS经度")),
+        (kCGImagePropertyGPSLatitude, NSLocalizedString("Exif-GPSLatitude", comment: "GPS纬度")),
+        (kCGImagePropertyGPSAltitude, NSLocalizedString("Exif-GPSAltitude", comment: "GPS海拔")),
     ]
     
     for i in 0..<translationMap.count {
@@ -1565,7 +1571,27 @@ func formatExifData(_ imageProperties: [String: Any]) -> [(String, Any)] {
             }else{
                 formattedData.append((translationKey, value))
             }
-        }else if key == "custom-HDR" as CFString {
+        } else if let gpsData = imageProperties[kCGImagePropertyGPSDictionary as String] as? [String: Any] {
+            if key == kCGImagePropertyGPSLatitude {
+                if let latitude = gpsData[kCGImagePropertyGPSLatitude as String] as? Double,
+                   let latitudeRef = gpsData[kCGImagePropertyGPSLatitudeRef as String] as? String {
+                    let finalLatitude = latitudeRef == "S" ? -latitude : latitude
+                    formattedData.append((translationKey, String(format: "%.6f°", finalLatitude)))
+                }
+            } else if key == kCGImagePropertyGPSLongitude {
+                if let longitude = gpsData[kCGImagePropertyGPSLongitude as String] as? Double,
+                   let longitudeRef = gpsData[kCGImagePropertyGPSLongitudeRef as String] as? String {
+                    let finalLongitude = longitudeRef == "W" ? -longitude : longitude
+                    formattedData.append((translationKey, String(format: "%.6f°", finalLongitude)))
+                }
+            } else if key == kCGImagePropertyGPSAltitude {
+                if let altitude = gpsData[kCGImagePropertyGPSAltitude as String] as? Double,
+                   let altitudeRef = gpsData[kCGImagePropertyGPSAltitudeRef as String] as? Int {
+                    let finalAltitude = altitudeRef == 1 ? -altitude : altitude
+                    formattedData.append((translationKey, String(format: "%.2fm", finalAltitude)))
+                }
+            }
+        } else if key == "custom-HDR" as CFString {
             if let _ = imageProperties["Headroom"]{
                 if let depth = imageProperties["Depth"] as? Int {
                     if depth == 8 {
