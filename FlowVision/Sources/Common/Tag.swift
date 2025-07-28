@@ -132,7 +132,7 @@ class TaggingSystem {
     // 获取所有标签
     static func getAllTags() -> [String] {
         let tags = Array(db.keys).sorted() // 对标签列表进行排序
-        return tags.isEmpty ? [defaultTag] : tags
+        return tags
     }
 
     static func getAvailableTags() -> [String] {
