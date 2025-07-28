@@ -63,6 +63,10 @@ class LargeImageView: NSView {
     
     private var magnificationGesture: NSMagnificationGestureRecognizer?
     
+    // 边缘切换箭头视图
+    private var leftArrowImageView: NSImageView?
+    private var rightArrowImageView: NSImageView?
+    
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         commonInit()
@@ -123,11 +127,160 @@ class LargeImageView: NSView {
         if let gesture = magnificationGesture {
             self.addGestureRecognizer(gesture)
         }
+        
+        // 创建边缘切换箭头视图
+        createEdgeArrowViews()
+        
+        // 设置鼠标跟踪
+        setupMouseTracking()
+        
+        // 延迟更新箭头视图位置，确保视图已完全加载
+        DispatchQueue.main.async { [weak self] in
+            self?.updateArrowViewPositions()
+        }
     }
     
     func updateTextItems(_ items: [(String, Any)]) {
         exifTextView.textItems = items
         exifTextView.invalidateIntrinsicContentSize()
+    }
+    
+    // MARK: - 边缘切换箭头视图
+    
+    private func createEdgeArrowViews() {
+        // 定义箭头视图的样式
+        let arrowBackgroundColor = NSColor.black.withAlphaComponent(0.2)
+        let arrowBorderColor = NSColor.black.withAlphaComponent(0.3)
+        let arrowTintColor = NSColor.black.withAlphaComponent(0.5)
+        let arrowSize = NSSize(width: 60, height: 60)
+        let arrowIconSize = NSSize(width: 32, height: 32)
+        let cornerRadius: CGFloat = 30
+        let borderWidth: CGFloat = 1
+        
+        // 创建左侧箭头视图
+        leftArrowImageView = NSImageView(frame: NSRect(x: 0, y: 0, width: arrowSize.width, height: arrowSize.height))
+        leftArrowImageView?.wantsLayer = true
+        leftArrowImageView?.layer?.backgroundColor = arrowBackgroundColor.cgColor
+        leftArrowImageView?.layer?.cornerRadius = cornerRadius
+        leftArrowImageView?.layer?.borderWidth = borderWidth
+        leftArrowImageView?.layer?.borderColor = arrowBorderColor.cgColor
+        leftArrowImageView?.alphaValue = 0
+        leftArrowImageView?.isHidden = true
+        
+        // 设置左侧箭头图标
+        if let leftArrowImage = NSImage(systemSymbolName: "chevron.left", accessibilityDescription: "Previous") {
+            leftArrowImage.size = arrowIconSize
+            leftArrowImageView?.image = leftArrowImage
+            leftArrowImageView?.contentTintColor = arrowTintColor
+        }
+        
+        // 创建右侧箭头视图
+        rightArrowImageView = NSImageView(frame: NSRect(x: 0, y: 0, width: arrowSize.width, height: arrowSize.height))
+        rightArrowImageView?.wantsLayer = true
+        rightArrowImageView?.layer?.backgroundColor = arrowBackgroundColor.cgColor
+        rightArrowImageView?.layer?.cornerRadius = cornerRadius
+        rightArrowImageView?.layer?.borderWidth = borderWidth
+        rightArrowImageView?.layer?.borderColor = arrowBorderColor.cgColor
+        rightArrowImageView?.alphaValue = 0
+        rightArrowImageView?.isHidden = true
+        
+        // 设置右侧箭头图标
+        if let rightArrowImage = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: "Next") {
+            rightArrowImage.size = arrowIconSize
+            rightArrowImageView?.image = rightArrowImage
+            rightArrowImageView?.contentTintColor = arrowTintColor
+        }
+        
+        // 添加视图到视图，确保在最上层
+        if let leftImageView = leftArrowImageView {
+            addSubview(leftImageView, positioned: .above, relativeTo: nil)
+        }
+        if let rightImageView = rightArrowImageView {
+            addSubview(rightImageView, positioned: .above, relativeTo: nil)
+        }
+    }
+    
+    private func updateArrowViewPositions() {
+        let buttonSize: CGFloat = 60
+        let margin: CGFloat = 30
+        
+        // 左侧箭头位置
+        leftArrowImageView?.frame = NSRect(
+            x: margin,
+            y: (bounds.height - buttonSize) / 2,
+            width: buttonSize,
+            height: buttonSize
+        )
+        
+        // 右侧箭头位置
+        rightArrowImageView?.frame = NSRect(
+            x: bounds.width - margin - buttonSize,
+            y: (bounds.height - buttonSize) / 2,
+            width: buttonSize,
+            height: buttonSize
+        )
+    }
+    
+    private func showArrowView(_ imageView: NSImageView?, animated: Bool = true) {
+        guard let imageView = imageView else { return }
+        
+        imageView.isHidden = false
+        if animated {
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.2
+                imageView.animator().alphaValue = 1.0
+            })
+        } else {
+            imageView.alphaValue = 1.0
+        }
+    }
+    
+    private func hideArrowView(_ imageView: NSImageView?, animated: Bool = true) {
+        guard let imageView = imageView else { return }
+        
+        if animated {
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.2
+                imageView.animator().alphaValue = 0.0
+            }) {
+                imageView.isHidden = true
+            }
+        } else {
+            imageView.alphaValue = 0.0
+            imageView.isHidden = true
+        }
+    }
+    
+    private func checkMousePositionAndUpdateArrows() {
+        // 获取当前鼠标位置
+        guard let window = self.window else { return }
+        let mouseLocation = window.mouseLocationOutsideOfEventStream
+        
+        let locationInView = self.convert(mouseLocation, from: nil)
+        let viewWidth = self.bounds.width
+        // 先按百分比计算
+        var leftThreshold: CGFloat = viewWidth * 0.15
+        var rightThreshold: CGFloat = viewWidth * 0.85
+        
+        // 限制最小最大阈值
+        leftThreshold = min(max(leftThreshold, 100), 200)
+        rightThreshold = max(min(rightThreshold, viewWidth - 100), viewWidth - 200)
+        
+        // 检查是否在左侧区域
+        if locationInView.x <= leftThreshold && locationInView.x >= 0 {
+            showArrowView(leftArrowImageView)
+            hideArrowView(rightArrowImageView)
+        }
+        // 检查是否在右侧区域
+        else if locationInView.x >= rightThreshold && locationInView.x <= viewWidth {
+            showArrowView(rightArrowImageView)
+            hideArrowView(leftArrowImageView)
+        }
+        // 在中间区域，隐藏所有箭头
+        else {
+            hideArrowView(leftArrowImageView)
+            hideArrowView(rightArrowImageView)
+        }
     }
     
     override func resizeSubviews(withOldSize oldSize: NSSize) {
@@ -148,6 +301,13 @@ class LargeImageView: NSView {
         if file.type == .video {
             determineBlackBg()
         }
+        
+        // 更新箭头视图位置
+        updateArrowViewPositions()
+        
+        // 重新设置鼠标跟踪区域
+        self.trackingAreas.forEach { self.removeTrackingArea($0) }
+        setupMouseTracking()
     }
     
     func pauseOrResumeVideo() {
@@ -851,6 +1011,38 @@ class LargeImageView: NSView {
         return NSSize(width: imageView.frame.width * 2, height: imageView.frame.height * 2)
     }
     
+    override func mouseExited(with event: NSEvent) {
+        super.mouseExited(with: event)
+        
+        // 鼠标离开视图，隐藏箭头
+        hideArrowView(leftArrowImageView)
+        hideArrowView(rightArrowImageView)
+    }
+    
+    override func mouseMoved(with event: NSEvent) {
+        super.mouseMoved(with: event)
+        
+        // 只在启用边缘切换功能且在大图模式下才处理
+        guard globalVar.clickEdgeToSwitchImage,
+              let viewController = getViewController(self),
+              viewController.publicVar.isInLargeView else {
+            return
+        }
+        
+        checkMousePositionAndUpdateArrows()
+    }
+    
+    private func setupMouseTracking() {
+        // 设置鼠标跟踪区域，包含mouseMoved事件
+        let trackingArea = NSTrackingArea(
+            rect: self.bounds,
+            options: [.mouseEnteredAndExited, .mouseMoved, .activeInActiveApp, .inVisibleRect],
+            owner: self,
+            userInfo: nil
+        )
+        self.addTrackingArea(trackingArea)
+    }
+    
     override func mouseDown(with event: NSEvent) {
         getViewController(self)!.publicVar.isLeftMouseDown = true//临时按住左键也能缩放
         
@@ -876,12 +1068,16 @@ class LargeImageView: NSView {
             
             if clickLocation.x <= leftThreshold {
                 // 点击左侧，切换到上一张图像
-                getViewController(self)?.previousLargeImage()
-                return
+                if leftArrowImageView?.isHidden == false {
+                    getViewController(self)?.previousLargeImage()
+                    return
+                }
             } else if clickLocation.x >= rightThreshold {
                 // 点击右侧，切换到下一张图像
-                getViewController(self)?.nextLargeImage()
-                return
+                if rightArrowImageView?.isHidden == false {
+                    getViewController(self)?.nextLargeImage()
+                    return
+                }
             }
         }
         
