@@ -108,7 +108,7 @@ Xcode 15.2+
     ```
 
 4. Open `FlowVision.xcodeproj` by Xcode, click 'Product' -> 'Build For' -> 'Profiling' in menu bar.
-5. Then 'Product' -> 'Show Build Folder in Finder', and you will find the app is at `Products/Release/FlowVison.app`.
+5. Then 'Product' -> 'Show Build Folder in Finder', and you will find the app is at `Products/Release/FlowVision.app`.
 
 ## Donate
 
