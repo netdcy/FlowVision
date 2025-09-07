@@ -68,7 +68,7 @@ class SortKey: Comparable {
         if needGetProperties,
            let url = URL(string: path) {
             do{
-                let properties: [URLResourceKey] = [.isDirectoryKey, .fileSizeKey, .creationDateKey, .contentModificationDateKey]
+                let properties: [URLResourceKey] = [.isDirectoryKey, .fileSizeKey, .creationDateKey, .contentModificationDateKey, .addedToDirectoryDateKey]
                 let resourceValues = try url.resourceValues(forKeys: Set(properties))
                 if let tmp = resourceValues.fileSize {
                     self.size=tmp
@@ -129,6 +129,7 @@ class SortKey: Comparable {
         hasher.combine(sortKey.path)
         hasher.combine(sortKey.addDate)
         hasher.combine(sortKey.createDate)
+        hasher.combine(sortKey.modDate)
         hasher.combine(seed)
         return hasher.finalize()
     }
