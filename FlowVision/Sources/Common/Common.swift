@@ -872,7 +872,7 @@ class ThumbnailOptionsWindow: NSWindow {
     var thumbnailShowShadow: Bool
     
     init() {
-        let windowSize = NSSize(width: 740, height: 520)
+        let windowSize = NSSize(width: 740, height: 540)
         let windowRect = NSRect(origin: .zero, size: windowSize)
         
         // Get current values
@@ -926,10 +926,30 @@ class ThumbnailOptionsWindow: NSWindow {
         stackView.addArrangedSubview(titleStackView)
         
         // Add spacing below the title
-        let spacingView = NSView()
-        spacingView.translatesAutoresizingMaskIntoConstraints = false
-        spacingView.heightAnchor.constraint(equalToConstant: 0).isActive = true
-        stackView.addArrangedSubview(spacingView)
+        // let spacingView = NSView()
+        // spacingView.translatesAutoresizingMaskIntoConstraints = false
+        // spacingView.heightAnchor.constraint(equalToConstant: 0).isActive = true
+        // stackView.addArrangedSubview(spacingView)
+        
+        // Create separator line
+        let separatorLine = NSView()
+        separatorLine.translatesAutoresizingMaskIntoConstraints = false
+        separatorLine.wantsLayer = true
+        separatorLine.layer?.backgroundColor = NSColor.separatorColor.cgColor
+        stackView.addArrangedSubview(separatorLine)
+        
+        // Add spacing after separator
+        // let bottomSpacingView = NSView()
+        // bottomSpacingView.translatesAutoresizingMaskIntoConstraints = false
+        // bottomSpacingView.heightAnchor.constraint(equalToConstant: 0).isActive = true
+        // stackView.addArrangedSubview(bottomSpacingView)
+        
+        // Set separator constraints
+        NSLayoutConstraint.activate([
+            separatorLine.heightAnchor.constraint(equalToConstant: 1),
+            separatorLine.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 10),
+            separatorLine.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -10)
+        ])
         
         // Create labeled controls
         let windowTitleFullPathCheckboxView = createLabeledCheckbox(label: NSLocalizedString("Use Full Path in Window Title", comment: "在窗口标题中使用完整路径"), isChecked: isWindowTitleUseFullPath)
@@ -965,12 +985,32 @@ class ThumbnailOptionsWindow: NSWindow {
         buttonStackView.spacing = 20
         
         let okButton = NSButton(title: NSLocalizedString("OK", comment: "确定"), target: self, action: #selector(okButtonPressed))
+        okButton.bezelStyle = .rounded
+        okButton.keyEquivalent = "\r"
+        okButton.font = NSFont.systemFont(ofSize: 13, weight: .medium)
+        
         let cancelButton = NSButton(title: NSLocalizedString("Cancel", comment: "取消"), target: self, action: #selector(cancelButtonPressed))
+        cancelButton.bezelStyle = .rounded
+        cancelButton.keyEquivalent = "\u{1b}"
+        cancelButton.font = NSFont.systemFont(ofSize: 13, weight: .medium)
+        
         let resetButton = NSButton(title: NSLocalizedString("Reset", comment: "重置"), target: self, action: #selector(resetButtonPressed))
+        resetButton.bezelStyle = .rounded
+        resetButton.font = NSFont.systemFont(ofSize: 13, weight: .medium)
         
         buttonStackView.addArrangedSubview(okButton)
         buttonStackView.addArrangedSubview(resetButton)
         buttonStackView.addArrangedSubview(cancelButton)
+        
+        // Set button sizes
+        NSLayoutConstraint.activate([
+            okButton.widthAnchor.constraint(equalToConstant: 80),
+            okButton.heightAnchor.constraint(equalToConstant: 28),
+            resetButton.widthAnchor.constraint(equalToConstant: 80),
+            resetButton.heightAnchor.constraint(equalToConstant: 28),
+            cancelButton.widthAnchor.constraint(equalToConstant: 80),
+            cancelButton.heightAnchor.constraint(equalToConstant: 28)
+        ])
         
         stackView.addArrangedSubview(buttonStackView)
         

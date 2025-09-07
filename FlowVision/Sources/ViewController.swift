@@ -7313,7 +7313,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         alert.alertStyle = .informational
         
         let inputTextField = NSTextField(frame: NSRect(x: 0, y: 0, width: 200, height: 24))
-        inputTextField.stringValue = "80"
+        inputTextField.stringValue = "60"
         alert.accessoryView = inputTextField
         
         alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
