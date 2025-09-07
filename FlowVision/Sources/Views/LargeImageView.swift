@@ -547,7 +547,7 @@ class LargeImageView: NSView {
            let url = url,
            let specificMetadata = getVideoMetadataFormatedFFmpeg(for: url) {
             let exifData = convertExifData(file: file)
-            updateTextItems(formatExifData(exifData ?? [:]) + [("-","-")] + specificMetadata)
+            updateTextItems(formatExifData(exifData ?? [:], isVideo: true, needWarp: true) + [("-","-")] + specificMetadata)
             isVideoMetadataUpdated = true
         }
     }

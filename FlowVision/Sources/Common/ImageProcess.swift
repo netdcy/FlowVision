@@ -1434,6 +1434,8 @@ func convertExifData(file: FileModel) -> [String: Any]? {
     }
     
     guard var imageProperties = file.imageInfo?.properties else {return [:]}
+    
+    imageProperties["Filename"]=(file.path as NSString).lastPathComponent.removingPercentEncoding!
 
     if let fileSize = file.fileSize {
         imageProperties["FileSize"]=readableFileSize(fileSize)
@@ -1497,13 +1499,14 @@ func approximateFraction(_ value: Double, withPrecision precision: Double = 1.0e
     return (Int(h), Int(k))
 }
 
-func formatExifData(_ imageProperties: [String: Any]) -> [(String, Any)] {
+func formatExifData(_ imageProperties: [String: Any], isVideo: Bool, needWarp: Bool) -> [(String, Any)] {
     var isUseMultiLang=true
     if Bundle.main.preferredLocalizations.first != "en"{
         isUseMultiLang=true
     }
     
     var translationMap: [(CFString, String)] = [
+        ("Filename" as CFString, NSLocalizedString("Filename", comment: "文件名")),
         ("FileSize" as CFString, NSLocalizedString("Exif-FileSize", comment: "文件大小")),
         ("Resolution" as CFString, NSLocalizedString("Exif-Resolution", comment: "分辨率")),
         ("FileCreatedTime" as CFString, NSLocalizedString("Exif-FileCreatedTime", comment: "文件创建时间")),
@@ -1536,12 +1539,17 @@ func formatExifData(_ imageProperties: [String: Any]) -> [(String, Any)] {
         (kCGImagePropertyDepth, NSLocalizedString("Exif-Depth", comment: "位深度")),
         ("HDR Mode" as CFString, "HDR"),
         
-        ("-" as CFString, "-"),
-        
-        (kCGImagePropertyGPSLongitude, NSLocalizedString("Exif-GPSLongitude", comment: "GPS经度")),
-        (kCGImagePropertyGPSLatitude, NSLocalizedString("Exif-GPSLatitude", comment: "GPS纬度")),
-        (kCGImagePropertyGPSAltitude, NSLocalizedString("Exif-GPSAltitude", comment: "GPS海拔")),
     ]
+    
+    if !isVideo {
+        translationMap += [
+            ("-" as CFString, "-"),
+            
+            (kCGImagePropertyGPSLongitude, NSLocalizedString("Exif-GPSLongitude", comment: "GPS经度")),
+            (kCGImagePropertyGPSLatitude, NSLocalizedString("Exif-GPSLatitude", comment: "GPS纬度")),
+            (kCGImagePropertyGPSAltitude, NSLocalizedString("Exif-GPSAltitude", comment: "GPS海拔")),
+        ]
+    }
     
     for i in 0..<translationMap.count {
         if !isUseMultiLang {
@@ -1555,7 +1563,28 @@ func formatExifData(_ imageProperties: [String: Any]) -> [(String, Any)] {
         if translationKey == "-" {
             formattedData.append(("-", "-"))
         }else if let value = imageProperties[key as String] {
-            formattedData.append((translationKey, value))
+            if key as String == "Filename" && needWarp {
+                let str = value as? String ?? ""
+                let chunkSize = 30
+                var startIndex = str.startIndex
+                var isFirst = true
+                
+                while startIndex < str.endIndex {
+                    let endIndex = str.index(startIndex, offsetBy: chunkSize, limitedBy: str.endIndex) ?? str.endIndex
+                    let chunk = String(str[startIndex..<endIndex])
+                    
+                    if isFirst {
+                        formattedData.append((translationKey, chunk))
+                        isFirst = false
+                    } else {
+                        formattedData.append(("", chunk))
+                    }
+                    
+                    startIndex = endIndex
+                }
+            } else {
+                formattedData.append((translationKey, value))
+            }
         } else if let exifData = imageProperties[kCGImagePropertyExifDictionary as String] as? [String: Any], let value = exifData[key as String] {
             switch key {
             case kCGImagePropertyExifExposureTime:
