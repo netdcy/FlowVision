@@ -10641,91 +10641,91 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "انقر نقرًا مزدوجًا على الزر الأيسر لإغلاق الصورة\nاضغط مع الاستمرار على الزر الأيمن أو الأيسر ومرر العجلة للتكبير أو التصغير"
+            "value" : "انقر نقراً مزدوجاً على الزر الأيسر للإغلاق\nالصورة: اضغط مع الاستمرار على الزر الأيمن أو الأيسر ومرر العجلة للتكبير أو التصغير\nالفيديو: اضغط مع الاستمرار على زر الماوس الأيمن واسحب لضبط تقدم التشغيل"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Doppelklicken Sie auf die linke Taste, um das Bild zu schließen.\nHalten Sie die rechte oder linke Taste gedrückt und scrollen Sie das Rad, um hinein- oder herauszuzoomen."
+            "value" : "Doppelklicken Sie die linke Taste, um zu schließen.\nBild: Halten Sie die rechte oder linke Taste gedrückt und scrollen Sie mit dem Rad zum Vergrößern oder Verkleinern.\nVideo: Halten Sie die rechte Maustaste gedrückt und ziehen Sie, um den Wiedergabefortschritt anzupassen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Double-click the left button to close the image.\nHold the right or left button and scroll the wheel to zoom in or out."
+            "value" : "Double-click the left button to close.\nImage: Hold the right or left button and scroll the wheel to zoom in or out.\nVideo: Hold down the right mouse button and drag to adjust playback progress."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Haga doble clic en el botón izquierdo para cerrar la imagen.\nMantenga presionado el botón derecho o izquierdo y desplace la rueda para acercar o alejar."
+            "value" : "Haga doble clic en el botón izquierdo para cerrar\nImagen: Mantenga presionado el botón derecho o izquierdo y desplácese con la rueda para acercar o alejar\nVideo: Mantenga presionado el botón derecho del ratón y arrastre para ajustar el progreso de reproducción"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Double-cliquez sur le bouton gauche pour fermer l'image.\nMaintenez le bouton droit ou gauche et faites défiler la molette pour zoomer ou dézoomer."
+            "value" : "Double-cliquez sur le bouton gauche pour fermer. Image : Maintenez le bouton droit ou gauche enfoncé et faites défiler la molette pour zoomer ou dézoomer. Vidéo : Maintenez le bouton droit de la souris enfoncé et faites glisser pour ajuster la progression de la lecture."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fare doppio clic sul pulsante sinistro per chiudere l'immagine.\nTieni premuto il pulsante destro o sinistro e scorri la rotellina per ingrandire o ridurre."
+            "value" : "Fai doppio clic sul pulsante sinistro per chiudere. Immagine: tieni premuto il pulsante destro o sinistro e scorri la rotellina per ingrandire o ridurre. Video: tieni premuto il pulsante destro del mouse e trascina per regolare il progresso della riproduzione."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "画像を閉じるには左ボタンをダブルクリックします。\nホイールをスクロールしてズームインまたはズームアウトするには、右または左ボタンを押し続けます。"
+            "value" : "左ボタンをダブルクリックして閉じます\n画像: 右または左ボタンを押しながらホイールをスクロールしてズームインまたはズームアウト\nビデオ: 右マウスボタンを押し続けてドラッグし、再生進行を調整します"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "왼쪽 버튼을 두 번 클릭하여 이미지를 닫습니다. 오른쪽 또는 왼쪽 버튼을 누른 상태에서 스크롤 휠을 굴려 확대하거나 축소하세요."
+            "value" : "마우스 왼쪽 버튼을 더블 클릭하여 닫으세요\n이미지: 오른쪽 또는 왼쪽 버튼을 누른 상태에서 휠을 스크롤하여 확대하거나 축소합니다\n비디오: 마우스 오른쪽 버튼을 누른 상태에서 드래그하여 재생 진행을 조정하세요"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dubbelklik op de linkerknop om de afbeelding te sluiten.\nHoud de rechter- of linkerknop ingedrukt en scroll met het wiel om in of uit te zoomen."
+            "value" : "Dubbelklik op de linkerknop om te sluiten.\nAfbeelding: Houd de rechter- of linkerknop ingedrukt en scroll met het wiel om in of uit te zoomen.\nVideo: Houd de rechter muisknop ingedrukt en sleep om de afspeelvoortgang aan te passen."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clique duas vezes com o botão esquerdo para fechar a imagem.\nMantenha pressionado o botão direito ou esquerdo e role a roda para aumentar ou diminuir o zoom."
+            "value" : "Clique duas vezes no botão esquerdo para fechar.\nImagem: Mantenha pressionado o botão direito ou esquerdo e role a roda para aproximar ou afastar.\nVídeo: Mantenha pressionado o botão direito do mouse e arraste para ajustar o progresso da reprodução."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Faça duplo clique no botão esquerdo para fechar a imagem. \nMantenha pressionado o botão direito ou esquerdo e role a roda para aumentar ou diminuir o zoom."
+            "value" : "Faça duplo clique no botão esquerdo para fechar. Imagem: Mantenha o botão direito ou esquerdo pressionado e role a roda para aumentar ou diminuir o zoom. Vídeo: Mantenha o botão direito do rato pressionado e arraste para ajustar o progresso da reprodução."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Дважды щелкните левой кнопкой, чтобы закрыть изображение. \nУдерживайте правую или левую кнопку и прокручивайте колесо, чтобы увеличить или уменьшить масштаб."
+            "value" : "Дважды щелкните левой кнопкой, чтобы закрыть. Изображение: удерживайте правую или левую кнопку и прокручивайте колесо, чтобы увеличить или уменьшить масштаб. Видео: удерживайте правую кнопку мыши и перетаскивайте, чтобы настроить прогресс воспроизведения."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dubbelklicka på vänster knapp för att stänga bilden.\nHåll nere höger eller vänster knapp och rulla hjulet för att zooma in eller ut."
+            "value" : "Dubbelklicka på vänster knapp för att stänga\nBild: Håll ned höger eller vänster knapp och rulla hjulet för att zooma in eller ut\nVideo: Håll ned höger musknapp och dra för att justera uppspelningsprogressionen"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "双击左键关闭图片。\n按住右键或左键滚动滚轮可以缩放。"
+            "value" : "双击左键关闭。\n图片：按住右键或左键滚动滚轮可以缩放。\n视频：按住右键拖动可以调整播放进度。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "雙擊左鍵關閉圖像。\n按住右鍵或左鍵並滾動滾輪來放大或縮小。"
+            "value" : "雙擊左鍵以關閉。\n圖像：按住右鍵或左鍵並滾動滾輪來縮放。\n視頻：按住鼠標右鍵並拖動以調整播放進度。"
           }
         }
       }
@@ -25741,7 +25741,7 @@
       }
     },
     "sort-sizeA" : {
-      "comment" : "大小",
+      "comment" : "文件大小",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -25824,7 +25824,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "大小"
+            "value" : "文件大小"
           }
         },
         "zh-Hant" : {
@@ -25836,7 +25836,7 @@
       }
     },
     "sort-sizeZ" : {
-      "comment" : "大小(倒序)",
+      "comment" : "文件大小(倒序)",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -25919,7 +25919,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "大小(降序)"
+            "value" : "文件大小(降序)"
           }
         },
         "zh-Hant" : {

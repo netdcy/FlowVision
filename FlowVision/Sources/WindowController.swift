@@ -884,11 +884,31 @@ extension WindowController: NSToolbarDelegate {
     
     @objc func showSortMenu(_ sender: Any?) {
         guard let viewController = contentViewController as? ViewController else {return}
+        // 图标映射
+        let sortTypeIcons: [SortType: NSImage?] = [
+            .pathA: NSImage(systemSymbolName: "square.and.pencil", accessibilityDescription: ""),
+            .pathZ: NSImage(systemSymbolName: "square.and.pencil", accessibilityDescription: ""),
+            .sizeA: NSImage(systemSymbolName: "arrow.up.left.and.arrow.down.right", accessibilityDescription: ""),
+            .sizeZ: NSImage(systemSymbolName: "arrow.up.left.and.arrow.down.right", accessibilityDescription: ""),
+            .extA: NSImage(systemSymbolName: "text.below.photo", accessibilityDescription: ""),
+            .extZ: NSImage(systemSymbolName: "text.below.photo", accessibilityDescription: ""),
+            .createDateA: NSImage(systemSymbolName: "clock", accessibilityDescription: ""),
+            .createDateZ: NSImage(systemSymbolName: "clock", accessibilityDescription: ""),
+            .modDateA: NSImage(systemSymbolName: "clock", accessibilityDescription: ""),
+            .modDateZ: NSImage(systemSymbolName: "clock", accessibilityDescription: ""),
+            .addDateA: NSImage(systemSymbolName: "clock", accessibilityDescription: ""),
+            .addDateZ: NSImage(systemSymbolName: "clock", accessibilityDescription: ""),
+            .random: NSImage(systemSymbolName: "arrow.2.circlepath", accessibilityDescription: ""),
+            .exifDateA: NSImage(systemSymbolName: "clock", accessibilityDescription: ""),
+            .exifDateZ: NSImage(systemSymbolName: "clock", accessibilityDescription: ""),
+            .exifPixelA: NSImage(systemSymbolName: "camera.aperture", accessibilityDescription: ""),
+            .exifPixelZ: NSImage(systemSymbolName: "camera.aperture", accessibilityDescription: "")
+        ]
         let sortTypes: [(SortType, String)] = [
             (.pathA, NSLocalizedString("sort-pathA", comment: "文件名")),
             (.pathZ, NSLocalizedString("sort-pathZ", comment: "文件名(倒序)")),
-            (.sizeA, NSLocalizedString("sort-sizeA", comment: "大小")),
-            (.sizeZ, NSLocalizedString("sort-sizeZ", comment: "大小(倒序)")),
+            (.sizeA, NSLocalizedString("sort-sizeA", comment: "文件大小")),
+            (.sizeZ, NSLocalizedString("sort-sizeZ", comment: "文件大小(倒序)")),
             (.extA, NSLocalizedString("sort-extA", comment: "文件类型")),
             (.extZ, NSLocalizedString("sort-extZ", comment: "文件类型(倒序)")),
             (.createDateA, NSLocalizedString("sort-createDateA", comment: "创建日期")),
@@ -927,12 +947,16 @@ extension WindowController: NSToolbarDelegate {
             menuItem.representedObject = sortType
             let curSortType = viewController.publicVar.profile.sortType
             menuItem.state = curSortType == sortType ? .on : .off
+            if let icon = sortTypeIcons[sortType] ?? nil {
+                menuItem.image = icon
+            }
             menu.addItem(menuItem)
         }
         
         // 添加 EXIF 排序子菜单
         let exifSubmenu = NSMenu()
         let exifMenuItem = NSMenuItem(title: NSLocalizedString("Sort by EXIF Info", comment: "根据Exif信息排序"), action: nil, keyEquivalent: "")
+        exifMenuItem.image = NSImage(systemSymbolName: "camera", accessibilityDescription: "")
         exifMenuItem.submenu = exifSubmenu
         
         for (sortType, title) in exifSortTypes {
@@ -941,6 +965,9 @@ extension WindowController: NSToolbarDelegate {
             menuItem.representedObject = sortType
             let curSortType = viewController.publicVar.profile.sortType
             menuItem.state = curSortType == sortType ? .on : .off
+            if let icon = sortTypeIcons[sortType] ?? nil {
+                menuItem.image = icon
+            }
             exifSubmenu.addItem(menuItem)
         }
         
