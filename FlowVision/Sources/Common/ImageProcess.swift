@@ -472,7 +472,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
             //TODO: 如果返回nil则不计数
             var imgs=[NSImage]()
             var isVideos=[Bool]()
-            for url in urls {
+            for url in urls.reversed() {
                 var img = getImageThumb(url: url, isPreferInternalThumb: isPreferInternalThumb)
                 if img == nil {
                     img = getFileTypeIcon(url: url)
