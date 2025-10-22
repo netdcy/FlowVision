@@ -1102,9 +1102,15 @@ class LargeImageView: NSView {
         doNotPopRightMenu = false
         
         // 设置定时器实现长按检测
+        // 先取消之前的定时器，避免重复添加
+        longPressZoomTimer?.invalidate()
+        longPressZoomTimer = nil
+        
         longPressZoomTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
             self?.performLongPressZoom(at: event.locationInWindow)
         }
+        // 确保定时器在所有 RunLoop 模式下都能运行
+        RunLoop.current.add(longPressZoomTimer!, forMode: .common)
         
         super.mouseDown(with: event)
     }
