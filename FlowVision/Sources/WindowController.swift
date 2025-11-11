@@ -318,8 +318,11 @@ extension WindowController: NSToolbarDelegate {
             }
         }
         
-        identifiers.append(NSToolbarItem.Identifier("CustomSeparator"))
-        
+        if #available(macOS 26.0, *) {
+            
+        }else{
+            identifiers.append(NSToolbarItem.Identifier("CustomSeparator"))
+        }
         
         identifiers.append(.more)
         identifiers.append(.newtab)

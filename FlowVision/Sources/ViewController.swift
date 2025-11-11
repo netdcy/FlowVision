@@ -67,7 +67,7 @@ class CustomProfile: Codable {
         }
     }
     var ThumbnailScrollbarWidth: Double {
-        return 16
+        return 15
     }
 
     //可扩展值
