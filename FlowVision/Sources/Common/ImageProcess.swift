@@ -348,14 +348,14 @@ func compressImageToThumbnail(_ image: NSImage) -> NSImage? {
 func createCGImageSource(from nsImage: NSImage) -> CGImageSource? {
     // 尝试将NSImage转换为CGImage
     guard let cgImage = nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
-        log("无法从NSImage创建CGImage")
+        log("无法从NSImage创建CGImage / Cannot create CGImage from NSImage")
         return nil
     }
 
     // 创建CGImage的Bitmap Representation
     let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
     guard let data = bitmapRep.representation(using: .png, properties: [:]) else {
-        log("无法从Bitmap Representation获取数据")
+        log("无法从Bitmap Representation获取数据 / Cannot get data from Bitmap Representation")
         return nil
     }
 

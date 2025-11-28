@@ -142,24 +142,31 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
         DispatchQueue.main.async {
 
             let columnIndex = 0 // 指定你需要调整的列的索引
+            // Specify the index of the column you need to adjust
             let column = outlineView.tableColumns[columnIndex]
             var maxWidth: CGFloat = 10
             
             // 遍历所有可见行
+            // Iterate through all visible rows
             for i in 0..<outlineView.numberOfRows {
                 // 获取每行对应列的单元格内容
+                // Get cell content for each row's corresponding column
                 if let item = outlineView.item(atRow: i) as? TreeNode {
                     // 计算这个单元格内容的宽度
+                    // Calculate width of this cell content
                     let content = item.name
                     let attributes = [NSAttributedString.Key.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]
                     let size = (content as NSString).size(withAttributes: attributes)
                     
                     // 获取当前行的层级，并计算缩进
+                    // Get current row's level and calculate indentation
                     let level = outlineView.level(forRow: i)
                     let indentation = outlineView.indentationPerLevel * CGFloat(level)
                     
                     // 更新最大宽度
+                    // Update maximum width
                     maxWidth = max(maxWidth, size.width + indentation + 30)  // 再留一点边距
+                    // Leave some margin
                 }
             }
             
@@ -228,18 +235,24 @@ class CustomTableRowView: NSTableRowView {
     override func drawSelection(in dirtyRect: NSRect) {
         if self.selectionHighlightStyle != .none {
             let selectionRect = NSInsetRect(self.bounds, 8, 1.5)//边距
+            // Margin
             let selectionPath = NSBezierPath(roundedRect: selectionRect, xRadius: 4, yRadius: 4)//圆角半径
+            // Corner radius
             
             // 自定义选中状态下的背景色
+            // Customize background color in selected state
             let theme=NSApp.effectiveAppearance.name
             
             // 检查是否是第一响应者
+            // Check if it's the first responder
             if let window = self.window, let firstResponder = window.firstResponder as? NSView, (firstResponder === self || self.isDescendant(of: firstResponder)) {
                 if theme == .darkAqua {
                     // 暗模式下的颜色
+                    // Color in dark mode
                     NSColor.controlAccentColor.setFill()
                 } else {
                     // 光模式下的颜色
+                    // Color in light mode
                     NSColor.controlAccentColor.setFill()
                 }
             }else{
@@ -251,18 +264,22 @@ class CustomTableRowView: NSTableRowView {
     }
 
     // 为了更好的视觉效果，可能还需要重写背景色绘制方法
+    // For better visual effect, may need to override background color drawing method
     override func drawBackground(in dirtyRect: NSRect) {
         super.drawBackground(in: dirtyRect)
 
         // 自定义非选中状态下的背景色
+        // Customize background color in non-selected state
         let theme=NSApp.effectiveAppearance.name
         
         if theme == .darkAqua {
             // 暗模式下的颜色
+            // Color in dark mode
             //hexToNSColor(hex: "#333333").setFill()
             NSColor(named: NSColor.Name("OutlineViewBgColor"))?.setFill()
         }else {
             // 光模式下的颜色
+            // Color in light mode
             //hexToNSColor(hex: "#F4F5F5").setFill()
             NSColor(named: NSColor.Name("OutlineViewBgColor"))?.setFill()
         }
@@ -270,14 +287,20 @@ class CustomTableRowView: NSTableRowView {
         __NSRectFillUsingOperation(dirtyRect, .sourceOver)
         
         let selectionRect = NSInsetRect(self.bounds, 9, 2.5) // 边距
+        // Margin
         let selectionPath = NSBezierPath(roundedRect: selectionRect, xRadius: 4, yRadius: 4) // 圆角半径
+        // Corner radius
         // 获取当前 row 的 index
+        // Get current row's index
         if let tableView = self.superview as? NSTableView {
             let rowIndex = tableView.row(for: self)
             if rowIndex == getViewController(self)?.outlineView.curRightClickedIndex {
                 NSColor.controlAccentColor.setStroke() // 设置边框颜色
+                // Set border color
                 selectionPath.lineWidth = 2.0 // 设置边框宽度
+                // Set border width
                 selectionPath.stroke() // 绘制边框
+                // Draw border
             }
         }
     }

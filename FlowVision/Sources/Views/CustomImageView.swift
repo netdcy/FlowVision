@@ -89,6 +89,7 @@ class BorderedImageView: IntegerImageView {
     var isDrawBorder=false
     
     //发现会导致加载速度变慢，因此暂时不使用
+    // Found to cause slower loading speed, so temporarily not used
 //    override func draw(_ dirtyRect: NSRect) {
 //        super.draw(dirtyRect)
 //        
@@ -99,15 +100,18 @@ class BorderedImageView: IntegerImageView {
     
     func drawBorder(_ dirtyRect: NSRect) {
         // 确保图像存在
+        // Ensure image exists
         guard let image = self.image else {
             return
         }
         
         // 设置边框颜色和宽度
+        // Set border color and width
         let borderColor = NSColor.gray
         let borderWidth: CGFloat = 2.0
         
         // 计算图像在视图中的绘制区域，考虑边框宽度
+        // Calculate image drawing area in view, considering border width
         let imageSize = image.size
         let viewSize = self.bounds.size
         let imageAspect = imageSize.width / imageSize.height
@@ -128,12 +132,15 @@ class BorderedImageView: IntegerImageView {
         }
         
         // 平移绘制区域以确保边框不会被裁剪
+        // Translate drawing area to ensure border won't be clipped
         drawRect = drawRect.insetBy(dx: -borderWidth / 2, dy: -borderWidth / 2)
         
         // 绘制图像
+        // Draw image
         //image.draw(in: drawRect)
         
         // 绘制边框
+        // Draw border
         borderColor.set()
         let borderPath = NSBezierPath(rect: drawRect)
         borderPath.lineWidth = borderWidth
@@ -144,8 +151,11 @@ class BorderedImageView: IntegerImageView {
 
 class InterpolatedImageView: CustomImageView {
     //对于小图此方法可以提高质量
+    // This method can improve quality for small images
     //但只要override，即使不设置插值方法，也会导致巨大图像例如清明上河图100%显示时不够清晰，奇怪
+    // But just by overriding, even without setting interpolation method, it causes large images like "Along the River During the Qingming Festival" to be unclear at 100% display, strange
     //因此暂时不使用
+    // So temporarily not used
 //    override func draw(_ dirtyRect: NSRect) {
 //        NSGraphicsContext.current!.imageInterpolation = NSImageInterpolation.high
 //        super.draw(dirtyRect)

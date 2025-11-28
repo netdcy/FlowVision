@@ -13,20 +13,25 @@ import DiskArbitration
 class CustomProfile: Codable {
     
     //布局类型
+    // Layout type
     var layoutType: LayoutType = .justified
     
     //侧边栏
+    // Sidebar
     var isDirTreeHidden = false
     
     //排序
+    // Sorting
     var sortType: SortType = .pathA
     var isSortFolderFirst: Bool = true
     var isSortUseFullPath = true
     
     //缩略图大小
+    // Thumbnail size
     var thumbSize = 512
     
     //布局（通用）
+    // Layout (general)
     var isShowThumbnailFilename = true
     var ThumbnailFilenameSize: Double = 12
     var _thumbnailCellPadding: Double = 5
@@ -39,8 +44,10 @@ class CustomProfile: Codable {
         }
     }
     //布局（网格视图）
+    // Layout (grid view)
     var ThumbnailBorderRadiusInGrid: Double = 0
     //布局（非网格视图）
+    // Layout (non-grid view)
     var ThumbnailBorderRadius: Double = 5
     var _thumbnailBorderThickness: Double = 6
     var ThumbnailBorderThickness: Double {
@@ -55,6 +62,7 @@ class CustomProfile: Codable {
     var ThumbnailShowShadow: Bool = false
 
     //计算获得
+    // Calculated value
     var ThumbnailFilenamePadding: Double {
         if isShowThumbnailFilename {
             var tmp = round(ThumbnailFilenameSize*1.3) + 2
@@ -71,6 +79,7 @@ class CustomProfile: Codable {
     }
 
     //可扩展值
+    // Extensible values
     private var dict: [String: String] = [:]
 
     func getValue(forKey key: String) -> String {
@@ -114,6 +123,7 @@ class CustomProfile: Codable {
             }
         }
         return CustomProfile() //读取异常时返回默认值
+        // Return default value when read fails
     }
 }
 
@@ -145,6 +155,7 @@ class PublicVar{
     var currentTag:String? = nil
 
     //可一键切换的配置
+    // Configuration that can be switched with one key
     var profile = CustomProfile()
     
     var toolbarTitle = ""
@@ -230,7 +241,9 @@ class PublicVar{
         }
         HandledOtherExtensions = globalVar.HandledOtherExtensions
         HandledFileExtensions = HandledImageAndRawExtensions + HandledVideoExtensions + HandledOtherExtensions //文件列表显示的
+        // Files displayed in file list
         HandledSearchExtensions = HandledImageAndRawExtensions + HandledVideoExtensions //作为鼠标手势查找的目标
+        // Target for mouse gesture search
     }
     
     var selectedUrls2 = [URL]()
@@ -356,6 +369,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var arrowScrollDebounceWorkItem: DispatchWorkItem?
     
     private var cumulativeScroll: CGFloat = 0 //累积滚动量
+    // Cumulative scroll amount
     private var lastScrollSwitchLargeImageTime: TimeInterval = 0
     
     var gestureTriggeredSwitch = false
@@ -382,13 +396,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        log("开始viewDidLoad")
+        log("开始viewDidLoad / Start viewDidLoad")
         
         publicVar.refView=collectionView
         publicVar.viewController=self
         treeViewData.viewController=self
         
         //初始化大图
+        // Initialize large image view
         if globalVar.isLaunchFromFile {
             largeImageView.isHidden=false
             largeImageBgEffectView.isHidden=false
@@ -404,10 +419,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         //防止设置上面值时触发动作
+        // Prevent triggering actions when setting the above values
         publicVar.isInInitStage = false
         
         
         //初始化collectionView
+        // Initialize collection view
         collectionViewManager=CustomCollectionViewManager(fileDB: fileDB)
         collectionView.wantsLayer = true
         collectionView.allowsMultipleSelection = true
@@ -416,7 +433,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         collectionView.dataSource = collectionViewManager
         collectionView.register(CustomCollectionViewItem.self, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: "CustomCollectionViewItem"))
         collectionView.setDraggingSourceOperationMask([.every], forLocal: true)  // 本地拖动操作
+        // Local drag operation
         collectionView.setDraggingSourceOperationMask([.every], forLocal: false) // 全局拖动操作
+        // Global drag operation
         
 //        publicVar.justifiedLayout.minimumInteritemSpacing=10
 //        publicVar.justifiedLayout.minimumLineSpacing=10
@@ -425,25 +444,33 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //        publicVar.justifiedLayout.itemsVerticalAlignment = JQCollectionViewItemsVerticalAlignment.center;
         
         //初始化目录树
+        // Initialize directory tree
         outlineViewManager=CustomOutlineViewManager(fileDB: fileDB, treeViewData: treeViewData, outlineView: outlineView)
         outlineView.delegate = outlineViewManager
         outlineView.dataSource = outlineViewManager
         outlineView.registerForDraggedTypes([.fileURL])
         outlineView.setDraggingSourceOperationMask([.every], forLocal: true)  // 本地拖动操作
+        // Local drag operation
         outlineView.setDraggingSourceOperationMask([.every], forLocal: false) // 全局拖动操作
+        // Global drag operation
         outlineView.columnAutoresizingStyle = .noColumnAutoresizing
         
         //初始化splitView
+        // Initialize split view
         splitView.delegate = self
         
         // 初始化DrawingView
+        // Initialize DrawingView
         drawingView = DrawingView(frame: self.view.bounds)
         drawingView?.autoresizingMask = [.width, .height]  // 使视图随父视图改变大小而改变大小
+        // Make view resize with parent view
         self.view.addSubview(drawingView!)
         
         //-----开始读取配置-----
+        //-----Start reading configuration-----
         
         //TODO: 没有工具栏时，载入时折叠且divider宽度设为0会造成菜单栏变白
+        //TODO: When there's no toolbar, collapsing on load and setting divider width to 0 will cause menu bar to turn white
 
         if let isLargeImageFitWindow = UserDefaults.standard.value(forKey: "isLargeImageFitWindow") as? Bool {
             publicVar.isLargeImageFitWindow=isLargeImageFitWindow
@@ -501,6 +528,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.profile = CustomProfile.loadFromUserDefaults(withKey: "CustomStyle_v2_current")
         
         //-----结束读取配置------
+        //-----End reading configuration-----
         
         publicVar.setFileExtensions()
         
@@ -522,10 +550,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let theme=NSApp.effectiveAppearance.name
         if theme == .darkAqua {
             // 暗模式下的颜色
+            // Color in dark mode
             collectionView.layer?.backgroundColor = hexToNSColor(hex: COLOR_COLLECTIONVIEW_BG_DARK).cgColor
             lastTheme = .darkAqua
         } else {
             // 光模式下的颜色
+            // Color in light mode
             collectionView.layer?.backgroundColor = hexToNSColor(hex: COLOR_COLLECTIONVIEW_BG_LIGHT).cgColor
             lastTheme = .aqua
         }
@@ -549,13 +579,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         //=========以下是事件监听配置==========
+        //=========Event listener configuration below==========
         
         NSApp.addObserver(self, forKeyPath: "effectiveAppearance", options: [.new, .old], context: nil)
         
         //双击目录树
+        // Double-click directory tree
         outlineView.doubleAction = #selector(outlineViewDoubleClicked(_:))
         
         //鼠标左键事件
+        // Left mouse button event
         eventMonitorLeftMouseDown = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { [weak self] event in
             guard let self = self else { return event }
             if event.window != self.view.window { return event }
@@ -572,6 +605,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                    clickLocation.x > videoControlXmin && clickLocation.x < videoControlXmax,
                    clickLocation.y < coreAreaYmax {
                     largeImageView.mouseDown(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
+                    // Only respond within video area, outside area handled normally by mouse events in largeImageView
                     //return nil
                 }
             }
@@ -595,6 +629,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                    clickLocation.x > videoControlXmin && clickLocation.x < videoControlXmax,
                    clickLocation.y < coreAreaYmax {
                     largeImageView.mouseUp(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
+                    // Only respond within video area, outside area handled normally by mouse events in largeImageView
                     //return nil
                 }
             }
@@ -603,6 +638,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
 
         //拖动音量滚动条时无法触发这个事件
+        // Cannot trigger this event when dragging volume scroll bar
 //        eventMonitorLeftMouseDragged = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDragged) { [weak self] event in
 //            guard let self = self else { return event }
 //            if event.window != self.view.window { return event }
@@ -625,16 +661,19 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //        }
         
         //双击collectionView
+        // Double-click collection view
 //        let clickCollectionItemGesture = NSClickGestureRecognizer(target: self, action: #selector(openLargeImageFromPos(_:)))
 //        clickCollectionItemGesture.numberOfClicksRequired = 2 // 设置为双击
 //        clickCollectionItemGesture.delaysPrimaryMouseButtonEvents = false // 阻止延迟主按钮事件
 //        collectionView.addGestureRecognizer(clickCollectionItemGesture)
         
         //全局滚动事件
+        // Global scroll event
         eventMonitorScrollWheel = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { [weak self] event in
             guard let self=self else{return event}
             //if getMainViewController() != self {return event}
             // 检查事件的窗口是否是激活窗口
+            // Check if event window is the active window
             if event.window != self.view.window {
                 return event
             }
@@ -647,31 +686,41 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         //滚动collectionView
+        // Scroll collection view
         if let scrollView = collectionView.enclosingScrollView {
             // 监听滚动开始和结束的通知
+            // Listen for scroll start and end notifications
             NotificationCenter.default.addObserver(self, selector: #selector(scrollViewDidScroll(_:)), name: NSScrollView.didLiveScrollNotification, object: scrollView)
             NotificationCenter.default.addObserver(self, selector: #selector(scrollViewScrollEnd(_:)), name: NSScrollView.didEndLiveScrollNotification, object: scrollView)
         }
         
         //监听键盘按键
+        // Listen for keyboard keys
         eventMonitorKeyDown = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self=self else{return event}
             // 检查事件的窗口是否是当前窗口，如果不是、也非弹窗状态，就不处理，事件继续传递
+            // Check if event window is current window, if not and not popup state, don't handle, let event continue
             if event.window != self.view.window && publicVar.isKeyEventEnabled {
                 return event
             }
             
             // 获取修饰键
+            // Get modifier keys
             let modifierFlags = event.modifierFlags
             // 检测是否按下了 Control 键
+            // Detect if Control key is pressed
             let isCtrlPressed = modifierFlags.contains(.control)
             // 检测是否按下了 Command 键
+            // Detect if Command key is pressed
             let isCommandPressed = modifierFlags.contains(.command)
             // 检测是否按下了 Option 键
+            // Detect if Option key is pressed
             let isAltPressed = modifierFlags.contains(.option)
             // 检测是否按下了 Shift 键
+            // Detect if Shift key is pressed
             let isShiftPressed = modifierFlags.contains(.shift)
             // 检测是否按下了 Fn 键 (部分按键例如方向键按下时此值也为true)
+            // Detect if Fn key is pressed (this value is also true when some keys like arrow keys are pressed)
             let isFnPressed = modifierFlags.contains(.function)
             
             let noModifierKey = !isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
@@ -684,6 +733,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let specialKey = event.specialKey ?? .f30
             
             // 快速搜索
+            // Quick search
             if publicVar.isKeyEventEnabled && characters.count == 1 && (characters.first!.isLetter || characters.first!.isNumber) && noModifierKey {
                 if !publicVar.isInLargeView {
                     if quickSearchState || globalVar.useQuickSearch {
@@ -694,6 +744,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             // 快速搜索唤起键
+            // Quick search activation key
             if publicVar.isKeyEventEnabled && characters == "q" && noModifierKey {
                 if !publicVar.isInLargeView {
                     if !quickSearchState && !globalVar.useQuickSearch {
@@ -704,6 +755,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
 
             // 快速搜索删除键
+            // Quick search delete key
             if publicVar.isKeyEventEnabled && specialKey == .delete && noModifierKey {
                 if !publicVar.isInLargeView {
                     if quickSearchState {
@@ -717,6 +769,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             // 快速搜索Esc退出键
+            // Quick search Esc exit key
             if publicVar.isKeyEventEnabled && event.keyCode == 53 {
                 if !publicVar.isInLargeView {
                     if quickSearchState {
@@ -729,12 +782,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             // 防止过快触发事件
+            // Prevent events from triggering too quickly
             if !publicVar.timer.intervalSafe(name: "keyEvent", second: 0.1) {
                 return event
             }
             
             if publicVar.isInSearchState || publicVar.isKeyEventEnabled {
                 // 检查按键是否是 Command+Shift+"R" 键
+                // Check if key is Command+Shift+"R"
                 if characters == "r" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
                     if !publicVar.isInLargeView{
                         toggleRecursiveMode()
@@ -742,6 +797,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 }
                 // 检查按键是否是 Command+Shift+"F" 键
+                // Check if key is Command+Shift+"F"
                 if characters == "f" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
                     if !publicVar.isInLargeView{
                         toggleRecursiveContainFolder()
@@ -749,11 +805,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 }
                 // 检查按键是否是 Command+Shift+"T" 键
+                // Check if key is Command+Shift+"T"
                 if characters == "t" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
                     reopenClosedTabs()
                     return nil
                 }
                 // 检查按键是否是 F3 键
+                // Check if key is F3
                 if specialKey == .f3 {
                     if !publicVar.isInLargeView{
                         toggleSearchOverlay()
@@ -765,6 +823,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if publicVar.isKeyEventEnabled {
                 
                 // 检查按键是否是 "A" 键
+                // Check if key is "A"
                 if characters == "a" && noModifierKey {
                     if publicVar.isInLargeView{
                         previousLargeImage()
@@ -775,6 +834,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     return nil
                 }
                 // 检查按键是否是 "D" 键
+                // Check if key is "D"
                 if characters == "d" && noModifierKey {
                     if publicVar.isInLargeView{
                         nextLargeImage()
@@ -785,6 +845,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     return nil
                 }
                 // 检查按键是否是 "W" 键
+                // Check if key is "W"
                 if characters == "w" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.zoom(direction: +1)
@@ -796,6 +857,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 "Z" 键
+                // Check if key is "Z"
                 if characters == "z" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.zoom100()
@@ -803,6 +865,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 "X" 键
+                // Check if key is "X"
                 if characters == "x" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.zoomFit()
@@ -810,6 +873,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "S" 键
+                // Check if key is "S"
                 if characters == "s" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.zoom(direction: -1)
@@ -821,6 +885,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "Q"
+                // Check if key is "Q"
                 if characters == "q" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actRotateL()
@@ -829,6 +894,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 "E"
+                // Check if key is "E"
                 if characters == "e" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actRotateR()
@@ -839,14 +905,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "R" 键
+                // Check if key is "R"
                 if characters == "r" && noModifierKey {
                     //如果焦点在OutlineView
+                    // If focus is in OutlineView
                     if publicVar.isOutlineViewFirstResponder{
                         outlineView.actRename(isByKeyboard: true)
                         return nil
                     }
                     
                     //如果焦点在CollectionView
+                    // If focus is in CollectionView
                     if publicVar.isCollectionViewFirstResponder{
                         renameAlert(urls: publicVar.selectedUrls())
                         return nil
@@ -854,6 +923,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 "," 键
+                // Check if key is ","
                 if characters == "," && noModifierKey {
                     if publicVar.isInLargeView,
                        largeImageView.file.type == .video {
@@ -863,6 +933,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 "." 键
+                // Check if key is "."
                 if characters == "." && noModifierKey {
                     if publicVar.isInLargeView,
                        largeImageView.file.type == .video {
@@ -872,6 +943,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "L" 键
+                // Check if key is "L"
                 if characters == "l" && noModifierKey {
                     if publicVar.isInLargeView,
                        largeImageView.file.type == .video {
@@ -881,6 +953,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 "K" 键
+                // Check if key is "K"
                 if characters == "k" && noModifierKey {
                     if publicVar.isInLargeView,
                        largeImageView.file.type == .video {
@@ -890,12 +963,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Cmd + "R" / F5 键
+                // Check if key is Cmd + "R" / F5
                 if (characters == "r" && isOnlyCommandPressed) || specialKey == .f5 {
                     handleUserRefresh()
                     return nil
                 }
                 
                 // 检查按键是否是 Command+[ 键
+                // Check if key is Command+[
                 if characters == "[" && isOnlyCommandPressed {
                     if !publicVar.isInLargeView{
                         switchDirByDirection(direction: .back, stackDeep: 0)
@@ -904,6 +979,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Command+] 键
+                // Check if key is Command+]
                 if characters == "]" && isOnlyCommandPressed {
                     if !publicVar.isInLargeView{
                         switchDirByDirection(direction: .forward, stackDeep: 0)
@@ -912,6 +988,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Command+Shift+"N" 键
+                // Check if key is Command+Shift+"N"
                 if characters == "n" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
                     if !publicVar.isInLargeView{
                         _ = handleNewFolder()
@@ -920,6 +997,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 Command+Shift+"V" 键
+                // Check if key is Command+Shift+"V"
                 if characters == "v" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
                     if !publicVar.isInLargeView{
                         toggleAutoPlayVisibleVideo()
@@ -928,6 +1006,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Command+⬅️➡️ 键
+                // Check if key is Command+⬅️➡️
                 if (specialKey == .leftArrow || specialKey == .rightArrow) && isOnlyCommandPressed {
                     if publicVar.isInLargeView,
                        largeImageView.file.type == .video {
@@ -941,6 +1020,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Command+⬆️ 键
+                // Check if key is Command+⬆️
                 if (specialKey == .upArrow && isOnlyCommandPressed) || (specialKey == .home && noModifierKey) {
                     if publicVar.isInLargeView{
                         locateLargeImage(direction: -2)
@@ -957,6 +1037,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Command+⬇️ 键
+                // Check if key is Command+⬇️
                 if (specialKey == .downArrow && isOnlyCommandPressed) || (specialKey == .end && noModifierKey) {
                     if publicVar.isInLargeView{
                         locateLargeImage(direction: 2)
@@ -974,6 +1055,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Opt+⬆️ 键
+                // Check if key is Opt+⬆️
                 if (specialKey == .upArrow && isOnlyAltPressed) || (specialKey == .pageUp && noModifierKey) {
                     if !publicVar.isInLargeView{
                         if let scrollView = collectionView.enclosingScrollView {
@@ -998,6 +1080,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
                 
                 // 检查按键是否是 Opt+⬇️ 键
+                // Check if key is Opt+⬇️
                 if (specialKey == .downArrow && isOnlyAltPressed) || (specialKey == .pageDown && noModifierKey) {
                     if !publicVar.isInLargeView{
                         if let scrollView = collectionView.enclosingScrollView {
@@ -1021,6 +1104,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Esc 键
+                // Check if key is Esc
                 if event.keyCode == 53 {
 //                    self.view.window?.close()
                     if publicVar.isInLargeView{
@@ -1035,13 +1119,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Delete(117) Backspace(51) 键
+                // Check if key is Delete(117) Backspace(51)
                 if specialKey == .delete || specialKey == .backspace || specialKey == .deleteForward {
                     //如果焦点在OutlineView
+                    // If focus is in OutlineView
                     if publicVar.isOutlineViewFirstResponder{
                         outlineView.actDelete(isByKeyboard: true, isShowPrompt: !isCommandPressed)
                         return nil
                     }
                     //如果焦点在CollectionView
+                    // If focus is in CollectionView
                     if publicVar.isCollectionViewFirstResponder{
                         handleDelete(isShowPrompt: !isCommandPressed)
                         return nil
@@ -1049,6 +1136,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Opt + 回车、小键盘回车 键
+                // Check if key is Opt + Enter, numpad Enter
                 if (specialKey == .carriageReturn || specialKey == .enter) && isOnlyAltPressed {
                     if let window = view.window {
                         window.toggleFullScreen(nil)
@@ -1538,7 +1626,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //startListeningForFileSystemEvents(in: "/Users")
         //startWatchingDirectory(atPath: "/Users")
         
-        log("结束viewDidLoad")
+        log("结束viewDidLoad / End viewDidLoad")
 
     }
     
@@ -1630,7 +1718,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func afterFinishLoad(_ openFolder: String? = nil){
-        log("开始afterFinishLoad")
+        log("开始afterFinishLoad / Start afterFinishLoad")
         if globalVar.isLaunchFromFile == false { //从文件夹启动
             let defaults = UserDefaults.standard
             var lastFolder = defaults.string(forKey: "lastFolder")
@@ -2605,7 +2693,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 if fileManager.fileExists(atPath: url.path) {
                     urlsToDelete.append(url)
                 } else {
-                    log("文件不存在: \(url.path)")
+                    log("文件不存在 / File does not exist: \(url.path)")
                 }
             }
 
@@ -2653,15 +2741,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             // AppleScript 无权限，回退到 NSWorkspace.shared.recycle
                             NSWorkspace.shared.recycle(urlsToDelete, completionHandler: { (newURLs, error) in
                                 if let error = error {
-                                    log("删除失败: \(error)")
+                                    log("删除失败 / Delete failed: \(error)")
                                 } else {
-                                    log("文件已移动到废纸篓")
+                                    log("文件已移动到废纸篓 / File moved to trash")
                                 }
                             })
                         } else if let error = error {
-                            log("删除失败: \(error)")
+                            log("删除失败 / Delete failed: \(error)")
                         } else {
-                            log("文件已移动到废纸篓")
+                            log("文件已移动到废纸篓 / File moved to trash")
                         }
                     }
                 }
@@ -2680,12 +2768,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
             } else {
-                log("要删除的文件不存在")
+                log("要删除的文件不存在 / File to delete does not exist")
             }
             return true
         } else {
             // 用户取消操作
-            log("删除操作已取消")
+            log("删除操作已取消 / Delete operation cancelled")
             return false
         }
     }
@@ -3130,7 +3218,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         try FileManager.default.removeItem(at: destURL)
                         try FileManager.default.copyItem(at: fileURL, to: destURL)
                     } catch {
-                        log("粘贴失败 \(fileURL): \(error)")
+                        log("粘贴失败 / Paste failed \(fileURL): \(error)")
                     }
                 } else if shouldSkipAll {
                     continue
@@ -3144,7 +3232,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         }
                         try FileManager.default.copyItem(at: fileURL, to: destURL)
                     } catch {
-                        log("粘贴失败 \(fileURL): \(error)")
+                        log("粘贴失败 / Paste failed \(fileURL): \(error)")
                     }
                 } else {
                     let userChoice = showReplaceDialog(for: destURL, isSingle: items.count == 1, isMove: false)
@@ -3159,7 +3247,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
                         } catch {
-                            log("粘贴失败 \(fileURL): \(error)")
+                            log("粘贴失败 / Paste failed \(fileURL): \(error)")
                         }
                     case .replaceAll:
                         shouldReplaceAll = true
@@ -3172,7 +3260,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
                         } catch {
-                            log("粘贴失败 \(fileURL): \(error)")
+                            log("粘贴失败 / Paste failed \(fileURL): \(error)")
                         }
                     case .autoRename:
                         destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
@@ -3184,7 +3272,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             }
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
                         } catch {
-                            log("粘贴失败 \(fileURL): \(error)")
+                            log("粘贴失败 / Paste failed \(fileURL): \(error)")
                         }
                     case .autoRenameAll:
                         shouldAutoRenameAll = true
@@ -3197,7 +3285,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             }
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
                         } catch {
-                            log("粘贴失败 \(fileURL): \(error)")
+                            log("粘贴失败 / Paste failed \(fileURL): \(error)")
                         }
                     case .skip:
                         continue
@@ -3218,7 +3306,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                     try FileManager.default.copyItem(at: fileURL, to: destURL)
                 } catch {
-                    log("粘贴失败 \(fileURL): \(error)")
+                    log("粘贴失败 \(fileURL): \(error) / Paste failed \(fileURL): \(error)")
                 }
             }
         }
@@ -3377,7 +3465,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         try FileManager.default.removeItem(at: destURL)
                         try FileManager.default.moveItem(at: fileURL, to: destURL)
                     } catch {
-                        log("移动失败 \(fileURL): \(error)")
+                        log("移动失败 / Move failed \(fileURL): \(error)")
                     }
                 } else if shouldSkipAll {
                     continue
@@ -3391,7 +3479,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         }
                         try FileManager.default.moveItem(at: fileURL, to: destURL)
                     } catch {
-                        log("移动失败 \(fileURL): \(error)")
+                        log("移动失败 / Move failed \(fileURL): \(error)")
                     }
                 } else {
                     let userChoice = showReplaceDialog(for: destURL, isSingle: items.count == 1, isMove: true)
@@ -3406,7 +3494,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
                         } catch {
-                            log("移动失败 \(fileURL): \(error)")
+                            log("移动失败 / Move failed \(fileURL): \(error)")
                         }
                     case .replaceAll:
                         shouldReplaceAll = true
@@ -3419,7 +3507,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
                         } catch {
-                            log("移动失败 \(fileURL): \(error)")
+                            log("移动失败 / Move failed \(fileURL): \(error)")
                         }
                     case .autoRename:
                         destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
@@ -3431,7 +3519,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             }
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
                         } catch {
-                            log("移动失败 \(fileURL): \(error)")
+                            log("移动失败 / Move failed \(fileURL): \(error)")
                         }
                     case .autoRenameAll:
                         shouldAutoRenameAll = true
@@ -3444,7 +3532,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             }
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
                         } catch {
-                            log("移动失败 \(fileURL): \(error)")
+                            log("移动失败 / Move failed \(fileURL): \(error)")
                         }
                     case .skip:
                         continue
@@ -3465,7 +3553,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                     try FileManager.default.moveItem(at: fileURL, to: destURL)
                 } catch {
-                    log("移动失败 \(fileURL): \(error)")
+                    log("移动失败 \(fileURL): \(error) / Move failed \(fileURL): \(error)")
                 }
             }
         }
@@ -3636,10 +3724,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         publicVar.fileChangedCount += 1
                         
                         try FileManager.default.createDirectory(at: newFolderURL, withIntermediateDirectories: true, attributes: nil)
-                        log("新建文件夹成功: \(newFolderURL.path)")
+                        log("新建文件夹成功 / Create folder success: \(newFolderURL.path)")
                         return (true,newFolderURL)
                     } catch {
-                        log("新建文件夹失败: \(error)")
+                        log("新建文件夹失败 / Create folder failed: \(error)")
                     }
                 }
             }
@@ -3705,10 +3793,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         // 文件更改计数
                         publicVar.fileChangedCount += 1
                         
-                        log("新建文本文件成功: \(newFileURL.path)")
+                        log("新建文本文件成功 / Create text file success: \(newFileURL.path)")
                         return (true,newFileURL)
                     } catch {
-                        log("新建文本文件失败: \(error)")
+                        log("新建文本文件失败 / Create text file failed: \(error)")
                     }
                 }
             }
@@ -4423,7 +4511,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let curTime = DispatchTime.now()
             let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
             let timeInterval = Double(nanoTime) / 1_000_000_000
-            log("完成文件列表耗时: \(timeInterval) seconds")
+            log("完成文件列表耗时 / File list completed in: \(timeInterval) seconds")
         }
         
         if nextFolder != lastFolder {
@@ -5051,7 +5139,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             let curTime = DispatchTime.now()
                             let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                             let timeInterval = Double(nanoTime) / 1_000_000_000
-                            log("到隐藏快照原因2耗时: \(timeInterval) seconds")
+                            log("到隐藏快照原因2耗时 / Time to hide snapshot reason 2: \(timeInterval) seconds")
                             log("-----------------------------------------------------------")
                         }
                         
@@ -5085,12 +5173,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let curTime = DispatchTime.now()
             let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
             let timeInterval = Double(nanoTime) / 1_000_000_000
-            log("分派完info任务耗时: \(timeInterval) seconds")
+            log("分派完info任务耗时 / Info tasks dispatched in: \(timeInterval) seconds")
         }
         
     }
     func startBackgroundTaskThread(){
-        log("开始startBackgroundTaskThread")
+        log("开始startBackgroundTaskThread / Start startBackgroundTaskThread")
 
         //读取信息线程
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -5209,7 +5297,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     let curTime = DispatchTime.now()
                                     let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                                     let timeInterval = Double(nanoTime) / 1_000_000_000
-                                    log("大小的信息完全载入耗时: \(timeInterval) seconds")
+                                    log("大小的信息完全载入耗时 / Size info fully loaded in: \(timeInterval) seconds")
                                 }
                                 
                                 //                            if nowLayoutCalcPos-lastLayoutCalcPosUsed > 100 {
@@ -5264,7 +5352,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                             let curTime = DispatchTime.now()
                                             let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                                             let timeInterval = Double(nanoTime) / 1_000_000_000
-                                            log("第一张添加进readImage池耗时: \(timeInterval) seconds")
+                                            log("第一张添加进readImage池耗时 / First image added to readImage pool in: \(timeInterval) seconds")
                                         }
                                     }
                                     fileDB.lock()
@@ -5362,7 +5450,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             let curTime = DispatchTime.now()
                             let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                             let timeInterval = Double(nanoTime) / 1_000_000_000
-                            log("图像的缩略完全载入耗时: \(timeInterval) seconds")
+                            log("图像的缩略完全载入耗时 / Image thumbnail fully loaded in: \(timeInterval) seconds")
                             log("-----------------------------------------------------------")
                         }
                         //此时开始渐变动画
@@ -5388,7 +5476,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         let curTime = DispatchTime.now()
                                         let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                                         let timeInterval = Double(nanoTime) / 1_000_000_000
-                                        log("到隐藏快照原因1耗时: \(timeInterval) seconds")
+                                        log("到隐藏快照原因1耗时 / Time to hide snapshot reason 1: \(timeInterval) seconds")
                                         log("-----------------------------------------------------------")
                                         
                                         //向上或者后退时定位文件夹
@@ -5454,7 +5542,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 let curTime = DispatchTime.now()
                                 let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                                 let timeInterval = Double(nanoTime) / 1_000_000_000
-                                log("第一张图片开始载入耗时: \(timeInterval) seconds")
+                                log("第一张图片开始载入耗时 / First image started loading in: \(timeInterval) seconds")
                             }
                             
                             var revisedSize = NSSize(width: thumbSize!.width-2*publicVar.profile.ThumbnailBorderThickness, height: thumbSize!.height-2*publicVar.profile.ThumbnailBorderThickness-publicVar.profile.ThumbnailFilenamePadding)
@@ -5557,7 +5645,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                                     let curTime = DispatchTime.now()
                                                     let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                                                     let timeInterval = Double(nanoTime) / 1_000_000_000
-                                                    log("第一张图片载入完毕耗时: \(timeInterval) seconds")
+                                                    log("第一张图片载入完毕耗时 / First image loaded completely in: \(timeInterval) seconds")
                                                 }
                                                 fileDB.unlock()
                                             }
@@ -6782,10 +6870,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             
             //有大图缓存则直接载入
             if isImageCached {
-                log("命中缓存:",url.absoluteString.removingPercentEncoding!)
+                log("命中缓存 / Cache hit: \(url.absoluteString.removingPercentEncoding!)")
                 largeImageView.imageView.image=preGetImageCache
             }else{
-                log("即时载入:",url.absoluteString.removingPercentEncoding!)
+                log("即时载入 / Immediate load: \(url.absoluteString.removingPercentEncoding!)")
             }
             
             //显示窗口

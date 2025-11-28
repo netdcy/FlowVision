@@ -46,6 +46,7 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
     func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
         for indexPath in indexPaths{
             //注意：下面这句当item不在视野内时为nil
+            // Note: The following line returns nil when item is not in view
             //let item = collectionView.item(at: indexPath) as? ImageCollectionViewItem
 //            fileDB.lock()
 //            if let file=fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.elementSafe(atOffset: indexPath.item)?.1{
@@ -60,6 +61,7 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
     func collectionView(_ collectionView: NSCollectionView, didDeselectItemsAt indexPaths: Set<IndexPath>) {
         for indexPath in indexPaths {
             //注意：下面这句当item不在视野内时为nil
+            // Note: The following line returns nil when item is not in view
             //let item = collectionView.item(at: indexPath) as? ImageCollectionViewItem
 //            fileDB.lock()
 //            if let file=fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.elementSafe(atOffset: indexPath.item)?.1{
