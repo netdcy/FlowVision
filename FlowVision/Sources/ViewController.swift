@@ -379,6 +379,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var dirURLCache: [URL] = []
     var dirURLCacheParameters: Any = []
     
+    // Saved scroll position for file system refresh
+    private var savedScrollPosition: NSPoint?
+    private var savedScrollPositionFolder: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -3753,6 +3757,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     func refreshCollectionView(_ reloadThumbType: [FileType] = [], dryRun: Bool = false, needStopAutoScroll: Bool = true, needLoadThumbPriority: Bool){
         fileDB.lock()
         let curFolder = fileDB.curFolder
+        
+        // If we have a saved scroll position for this folder, set keepScrollPos to preserve it
+        if let savedFolder = savedScrollPositionFolder, savedFolder == curFolder, savedScrollPosition != nil {
+            if let dirModel = fileDB.db[SortKeyDir(curFolder)] {
+                dirModel.keepScrollPos = true
+            }
+        }
+        
         if let files = fileDB.db[SortKeyDir(curFolder)]?.files {
             for file in files {
                 if reloadThumbType.contains(file.1.type) || reloadThumbType.contains(.all) {
@@ -4966,7 +4978,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         //如果是切换目录或者文件数量过多，则清空后再insertItems，否则仅reloadData(保持位置)
         fileDB.lock()
-        let needClearThenInsert = lastCurFolder != path || fileNum > RESET_VIEW_FILE_NUM_THRESHOLD || fileDB.db[SortKeyDir(path)]?.keepScrollPos == false
+        var needClearThenInsert = lastCurFolder != path || fileNum > RESET_VIEW_FILE_NUM_THRESHOLD || fileDB.db[SortKeyDir(path)]?.keepScrollPos == false
+        // If we have a saved scroll position for this folder, preserve keepScrollPos to maintain scroll position
+        if let savedFolder = savedScrollPositionFolder, savedFolder == path, savedScrollPosition != nil {
+            if let dirModel = fileDB.db[SortKeyDir(path)] {
+                dirModel.keepScrollPos = true
+                // Only do clear then insert if we're switching folders or file count exceeds threshold
+                needClearThenInsert = lastCurFolder != path || fileNum > RESET_VIEW_FILE_NUM_THRESHOLD
+            }
+        }
         fileDB.unlock()
         if needClearThenInsert {
             //必须按顺序执行以下两句，否则频繁切换目录时会出现异常
@@ -4974,7 +4994,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             collectionView.numberOfItems(inSection:0)
             
             fileDB.lock()
-            fileDB.db[SortKeyDir(path)]?.keepScrollPos=false
+            // Only set keepScrollPos to false if we don't have a saved scroll position to restore
+            if savedScrollPositionFolder != path || savedScrollPosition == nil {
+                fileDB.db[SortKeyDir(path)]?.keepScrollPos=false
+            }
             fileDB.unlock()
         }
         
@@ -5194,10 +5217,41 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     //collectionView.reloadData()
                                 }
                                 
-                                if(dir == curFolder && keepScrollPos && i == count-1){
-                                    //publicVar.timer.intervalSafe(name: "recalcLayoutReloadData", second: 0.02+Double(i)*0.0001)
-                                    collectionView.reloadData()
-                                    collectionView.numberOfItems(inSection:0)
+                                if(dir == curFolder && i == count-1){
+                                    // Restore saved scroll position if we have one for this folder
+                                    let shouldRestoreScroll = (savedScrollPositionFolder == dir && savedScrollPosition != nil)
+                                    
+                                    if keepScrollPos {
+                                        //publicVar.timer.intervalSafe(name: "recalcLayoutReloadData", second: 0.02+Double(i)*0.0001)
+                                        collectionView.reloadData()
+                                        collectionView.numberOfItems(inSection:0)
+                                        
+                                        if shouldRestoreScroll {
+                                            DispatchQueue.main.async { [weak self] in
+                                                guard let self = self, let savedPos = self.savedScrollPosition else { return }
+                                                if let scrollView = self.collectionView.enclosingScrollView {
+                                                    scrollView.contentView.setBoundsOrigin(savedPos)
+                                                    scrollView.reflectScrolledClipView(scrollView.contentView)
+                                                    // Clear saved position after restoring
+                                                    self.savedScrollPosition = nil
+                                                    self.savedScrollPositionFolder = nil
+                                                }
+                                            }
+                                        }
+                                    } else if shouldRestoreScroll {
+                                        // Even if keepScrollPos is false, restore scroll if we have a saved position
+                                        // This handles the case where needClearThenInsert was true
+                                        DispatchQueue.main.async { [weak self] in
+                                            guard let self = self, let savedPos = self.savedScrollPosition else { return }
+                                            if let scrollView = self.collectionView.enclosingScrollView {
+                                                scrollView.contentView.setBoundsOrigin(savedPos)
+                                                scrollView.reflectScrolledClipView(scrollView.contentView)
+                                                // Clear saved position after restoring
+                                                self.savedScrollPosition = nil
+                                                self.savedScrollPositionFolder = nil
+                                            }
+                                        }
+                                    }
                                 }
                                 
                                 fileDB.lock()
@@ -5238,6 +5292,22 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                                 fileDB.lock()
                                                 dirModel.keepScrollPos=true
                                                 fileDB.unlock()
+                                                
+                                                // Restore saved scroll position if we have one for this folder
+                                                if let savedFolder = savedScrollPositionFolder,
+                                                   let savedPos = savedScrollPosition,
+                                                   dir == curFolder && dir == savedFolder {
+                                                    DispatchQueue.main.async { [weak self] in
+                                                        guard let self = self else { return }
+                                                        if let scrollView = self.collectionView.enclosingScrollView {
+                                                            scrollView.contentView.setBoundsOrigin(savedPos)
+                                                            scrollView.reflectScrolledClipView(scrollView.contentView)
+                                                            // Clear saved position after restoring
+                                                            self.savedScrollPosition = nil
+                                                            self.savedScrollPositionFolder = nil
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                         //collectionView.reloadData()
@@ -6947,6 +7017,20 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.fileChangedCount = 0
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
+            
+            // Save current scroll position before refresh
+            fileDB.lock()
+            let curFolder = fileDB.curFolder
+            fileDB.unlock()
+            
+            // Only save scroll position if collection view is visible (not in large image view)
+            if largeImageView.isHidden && collectionView.numberOfItems(inSection: 0) > 0 {
+                if let scrollView = collectionView.enclosingScrollView {
+                    savedScrollPosition = scrollView.contentView.bounds.origin
+                    savedScrollPositionFolder = curFolder
+                }
+            }
+            
             folderMonitorTimer?.invalidate()
             folderMonitorTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { [weak self] _ in
                 self?.dirURLCache.removeAll()
