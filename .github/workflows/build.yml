@@ -1,0 +1,111 @@
+name: Build FlowVision
+
+on:
+  push:
+    branches: [ main, 'issue-*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+# Permissions for public repositories
+permissions:
+  contents: read
+  actions: write  # Required for uploading artifacts
+
+jobs:
+  build:
+    name: Build macOS App
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout FlowVision code
+      uses: actions/checkout@v4
+      with:
+        path: FlowVision
+      
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '15.2'
+        
+    - name: Show Xcode version
+      run: xcodebuild -version
+      
+    - name: Clone BTree library
+      run: |
+        cd ..
+        git clone --depth 1 https://github.com/attaswift/BTree.git
+        echo "✓ BTree cloned"
+      
+    - name: Clone Settings library
+      run: |
+        cd ..
+        git clone --depth 1 https://github.com/sindresorhus/Settings.git
+        echo "✓ Settings cloned"
+      
+    - name: Download and setup ffmpeg-kit
+      run: |
+        cd ..
+        mkdir -p ffmpeg-kit-build/bundle-apple-xcframework-macos
+        cd ffmpeg-kit-build/bundle-apple-xcframework-macos
+        
+        echo "Downloading ffmpeg-kit pre-built binary..."
+        # Try backup URL first, fallback to alternative if needed
+        if ! curl -fL -o ffmpeg-kit-full-gpl-6.0-macos-xcframework.zip \
+          https://github.com/netdcy/ffmpeg-kit/releases/download/v6.0/ffmpeg-kit-full-gpl-6.0-macos-xcframework.zip; then
+          echo "Primary URL failed, trying alternative..."
+          curl -fL -o ffmpeg-kit-full-gpl-6.0-macos-xcframework.zip \
+            https://github.com/arthenica/ffmpeg-kit/releases/download/v6.0/ffmpeg-kit-full-gpl-6.0-macos-xcframework.zip || exit 1
+        fi
+        
+        echo "Extracting ffmpeg-kit..."
+        unzip -q ffmpeg-kit-full-gpl-6.0-macos-xcframework.zip || exit 1
+        
+        echo "Removing quarantine attribute..."
+        xattr -rd com.apple.quarantine . || true
+        
+        echo "✓ ffmpeg-kit setup complete"
+        ls -la
+      
+    - name: Verify directory structure
+      run: |
+        cd ..
+        echo "Directory structure:"
+        ls -la
+        echo ""
+        echo "Checking required directories:"
+        [ -d "FlowVision" ] && echo "✓ FlowVision" || echo "✗ FlowVision missing"
+        [ -d "BTree" ] && echo "✓ BTree" || echo "✗ BTree missing"
+        [ -d "Settings" ] && echo "✓ Settings" || echo "✗ Settings missing"
+        [ -d "ffmpeg-kit-build/bundle-apple-xcframework-macos" ] && echo "✓ ffmpeg-kit-build" || echo "✗ ffmpeg-kit-build missing"
+      
+    - name: Build FlowVision
+      run: |
+        cd FlowVision
+        xcodebuild \
+          -project FlowVision.xcodeproj \
+          -scheme FlowVision \
+          -configuration Release \
+          -derivedDataPath build \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+          
+    - name: Verify build
+      run: |
+        cd FlowVision
+        if [ -d "build/Build/Products/Release/FlowVision.app" ]; then
+          echo "✓ Build successful!"
+          ls -lh build/Build/Products/Release/FlowVision.app
+        else
+          echo "✗ Build failed - app not found"
+          exit 1
+        fi
+        
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: FlowVision.app
+        path: FlowVision/build/Build/Products/Release/FlowVision.app
+        retention-days: 7
+
