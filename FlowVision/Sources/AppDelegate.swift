@@ -62,8 +62,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     
     func applicationWillFinishLaunching(_ aNotification: Notification) {
 
-        log("开始applicationWillFinishLaunching")
-        // Start applicationWillFinishLaunching
+        log("开始applicationWillFinishLaunching / Start applicationWillFinishLaunching")
         
         func generateRoundedArray() -> [Int] {
             var result: [Int] = []
@@ -200,14 +199,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         // Initialize tagging system
         TaggingSystem.initialize()
 
-        log("结束applicationWillFinishLaunching")
-        // End applicationWillFinishLaunching
+        log("结束applicationWillFinishLaunching / End applicationWillFinishLaunching")
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
 
-        log("开始applicationDidFinishLaunching")
-        // Start applicationDidFinishLaunching
+        log("开始applicationDidFinishLaunching / Start applicationDidFinishLaunching")
         
         if windowControllers.count == 0 {
             _ = createNewWindow()
@@ -218,8 +215,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
 //            FFmpegKitWrapper.shared.loadFFmpegKitIfNeeded()
 //        }
         
-        log("结束applicationDidFinishLaunching")
-        // End applicationDidFinishLaunching
+        log("结束applicationDidFinishLaunching / End applicationDidFinishLaunching")
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
@@ -239,8 +235,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
 //    }
     
     func createNewWindow(_ path: String? = nil) -> WindowController? {
-        log("开始createNewWindow")
-        // Start createNewWindow
+        log("开始createNewWindow / Start createNewWindow")
         if isWindowNumMax() {
             showAlert(message: NSLocalizedString("window-num-max", comment: "窗口数量超过限制"))
             return nil

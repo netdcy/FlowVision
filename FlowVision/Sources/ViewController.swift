@@ -396,8 +396,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        log("开始viewDidLoad")
-        // Start viewDidLoad
+        log("开始viewDidLoad / Start viewDidLoad")
         
         publicVar.refView=collectionView
         publicVar.viewController=self
@@ -1627,7 +1626,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //startListeningForFileSystemEvents(in: "/Users")
         //startWatchingDirectory(atPath: "/Users")
         
-        log("结束viewDidLoad")
+        log("结束viewDidLoad / End viewDidLoad")
 
     }
     
@@ -1719,7 +1718,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func afterFinishLoad(_ openFolder: String? = nil){
-        log("开始afterFinishLoad")
+        log("开始afterFinishLoad / Start afterFinishLoad")
         if globalVar.isLaunchFromFile == false { //从文件夹启动
             let defaults = UserDefaults.standard
             var lastFolder = defaults.string(forKey: "lastFolder")
@@ -2694,7 +2693,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 if fileManager.fileExists(atPath: url.path) {
                     urlsToDelete.append(url)
                 } else {
-                    log("文件不存在: \(url.path)")
+                    log("文件不存在: \(url.path) / File does not exist: \(url.path)")
                 }
             }
 
@@ -2742,15 +2741,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             // AppleScript 无权限，回退到 NSWorkspace.shared.recycle
                             NSWorkspace.shared.recycle(urlsToDelete, completionHandler: { (newURLs, error) in
                                 if let error = error {
-                                    log("删除失败: \(error)")
+                                    log("删除失败: \(error) / Delete failed: \(error)")
                                 } else {
-                                    log("文件已移动到废纸篓")
+                                    log("文件已移动到废纸篓 / File moved to trash")
                                 }
                             })
                         } else if let error = error {
-                            log("删除失败: \(error)")
+                            log("删除失败: \(error) / Delete failed: \(error)")
                         } else {
-                            log("文件已移动到废纸篓")
+                            log("文件已移动到废纸篓 / File moved to trash")
                         }
                     }
                 }
@@ -2769,12 +2768,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
             } else {
-                log("要删除的文件不存在")
+                log("要删除的文件不存在 / File to delete does not exist")
             }
             return true
         } else {
             // 用户取消操作
-            log("删除操作已取消")
+            log("删除操作已取消 / Delete operation cancelled")
             return false
         }
     }
@@ -3219,7 +3218,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         try FileManager.default.removeItem(at: destURL)
                         try FileManager.default.copyItem(at: fileURL, to: destURL)
                     } catch {
-                        log("粘贴失败 \(fileURL): \(error)")
+                        log("粘贴失败 \(fileURL): \(error) / Paste failed \(fileURL): \(error)")
                     }
                 } else if shouldSkipAll {
                     continue
@@ -3233,7 +3232,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         }
                         try FileManager.default.copyItem(at: fileURL, to: destURL)
                     } catch {
-                        log("粘贴失败 \(fileURL): \(error)")
+                        log("粘贴失败 \(fileURL): \(error) / Paste failed \(fileURL): \(error)")
                     }
                 } else {
                     let userChoice = showReplaceDialog(for: destURL, isSingle: items.count == 1, isMove: false)
@@ -3248,7 +3247,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
                         } catch {
-                            log("粘贴失败 \(fileURL): \(error)")
+                            log("粘贴失败 \(fileURL): \(error) / Paste failed \(fileURL): \(error)")
                         }
                     case .replaceAll:
                         shouldReplaceAll = true
@@ -3261,7 +3260,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
                         } catch {
-                            log("粘贴失败 \(fileURL): \(error)")
+                            log("粘贴失败 \(fileURL): \(error) / Paste failed \(fileURL): \(error)")
                         }
                     case .autoRename:
                         destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
@@ -3273,7 +3272,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             }
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
                         } catch {
-                            log("粘贴失败 \(fileURL): \(error)")
+                            log("粘贴失败 \(fileURL): \(error) / Paste failed \(fileURL): \(error)")
                         }
                     case .autoRenameAll:
                         shouldAutoRenameAll = true
@@ -3286,7 +3285,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             }
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
                         } catch {
-                            log("粘贴失败 \(fileURL): \(error)")
+                            log("粘贴失败 \(fileURL): \(error) / Paste failed \(fileURL): \(error)")
                         }
                     case .skip:
                         continue
@@ -3307,7 +3306,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                     try FileManager.default.copyItem(at: fileURL, to: destURL)
                 } catch {
-                    log("粘贴失败 \(fileURL): \(error)")
+                    log("粘贴失败 \(fileURL): \(error) / Paste failed \(fileURL): \(error)")
                 }
             }
         }
@@ -3466,7 +3465,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         try FileManager.default.removeItem(at: destURL)
                         try FileManager.default.moveItem(at: fileURL, to: destURL)
                     } catch {
-                        log("移动失败 \(fileURL): \(error)")
+                        log("移动失败 \(fileURL): \(error) / Move failed \(fileURL): \(error)")
                     }
                 } else if shouldSkipAll {
                     continue
@@ -3480,7 +3479,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         }
                         try FileManager.default.moveItem(at: fileURL, to: destURL)
                     } catch {
-                        log("移动失败 \(fileURL): \(error)")
+                        log("移动失败 \(fileURL): \(error) / Move failed \(fileURL): \(error)")
                     }
                 } else {
                     let userChoice = showReplaceDialog(for: destURL, isSingle: items.count == 1, isMove: true)
@@ -3495,7 +3494,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
                         } catch {
-                            log("移动失败 \(fileURL): \(error)")
+                            log("移动失败 \(fileURL): \(error) / Move failed \(fileURL): \(error)")
                         }
                     case .replaceAll:
                         shouldReplaceAll = true
@@ -3508,7 +3507,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
                         } catch {
-                            log("移动失败 \(fileURL): \(error)")
+                            log("移动失败 \(fileURL): \(error) / Move failed \(fileURL): \(error)")
                         }
                     case .autoRename:
                         destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
@@ -3520,7 +3519,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             }
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
                         } catch {
-                            log("移动失败 \(fileURL): \(error)")
+                            log("移动失败 \(fileURL): \(error) / Move failed \(fileURL): \(error)")
                         }
                     case .autoRenameAll:
                         shouldAutoRenameAll = true
@@ -3533,7 +3532,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             }
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
                         } catch {
-                            log("移动失败 \(fileURL): \(error)")
+                            log("移动失败 \(fileURL): \(error) / Move failed \(fileURL): \(error)")
                         }
                     case .skip:
                         continue
@@ -3554,7 +3553,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                     try FileManager.default.moveItem(at: fileURL, to: destURL)
                 } catch {
-                    log("移动失败 \(fileURL): \(error)")
+                    log("移动失败 \(fileURL): \(error) / Move failed \(fileURL): \(error)")
                 }
             }
         }
@@ -3725,10 +3724,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         publicVar.fileChangedCount += 1
                         
                         try FileManager.default.createDirectory(at: newFolderURL, withIntermediateDirectories: true, attributes: nil)
-                        log("新建文件夹成功: \(newFolderURL.path)")
+                        log("新建文件夹成功: \(newFolderURL.path) / Create folder success: \(newFolderURL.path)")
                         return (true,newFolderURL)
                     } catch {
-                        log("新建文件夹失败: \(error)")
+                        log("新建文件夹失败: \(error) / Create folder failed: \(error)")
                     }
                 }
             }
@@ -3794,10 +3793,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         // 文件更改计数
                         publicVar.fileChangedCount += 1
                         
-                        log("新建文本文件成功: \(newFileURL.path)")
+                        log("新建文本文件成功: \(newFileURL.path) / Create text file success: \(newFileURL.path)")
                         return (true,newFileURL)
                     } catch {
-                        log("新建文本文件失败: \(error)")
+                        log("新建文本文件失败: \(error) / Create text file failed: \(error)")
                     }
                 }
             }
@@ -4512,7 +4511,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let curTime = DispatchTime.now()
             let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
             let timeInterval = Double(nanoTime) / 1_000_000_000
-            log("完成文件列表耗时: \(timeInterval) seconds")
+            log("完成文件列表耗时: \(timeInterval) seconds / File list completed in: \(timeInterval) seconds")
         }
         
         if nextFolder != lastFolder {
@@ -5140,7 +5139,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             let curTime = DispatchTime.now()
                             let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                             let timeInterval = Double(nanoTime) / 1_000_000_000
-                            log("到隐藏快照原因2耗时: \(timeInterval) seconds")
+                            log("到隐藏快照原因2耗时: \(timeInterval) seconds / Time to hide snapshot reason 2: \(timeInterval) seconds")
                             log("-----------------------------------------------------------")
                         }
                         
@@ -5174,12 +5173,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let curTime = DispatchTime.now()
             let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
             let timeInterval = Double(nanoTime) / 1_000_000_000
-            log("分派完info任务耗时: \(timeInterval) seconds")
+            log("分派完info任务耗时: \(timeInterval) seconds / Info tasks dispatched in: \(timeInterval) seconds")
         }
         
     }
     func startBackgroundTaskThread(){
-        log("开始startBackgroundTaskThread")
+        log("开始startBackgroundTaskThread / Start startBackgroundTaskThread")
 
         //读取信息线程
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -5298,7 +5297,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     let curTime = DispatchTime.now()
                                     let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                                     let timeInterval = Double(nanoTime) / 1_000_000_000
-                                    log("大小的信息完全载入耗时: \(timeInterval) seconds")
+                                    log("大小的信息完全载入耗时: \(timeInterval) seconds / Size info fully loaded in: \(timeInterval) seconds")
                                 }
                                 
                                 //                            if nowLayoutCalcPos-lastLayoutCalcPosUsed > 100 {
@@ -5353,7 +5352,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                             let curTime = DispatchTime.now()
                                             let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                                             let timeInterval = Double(nanoTime) / 1_000_000_000
-                                            log("第一张添加进readImage池耗时: \(timeInterval) seconds")
+                                            log("第一张添加进readImage池耗时: \(timeInterval) seconds / First image added to readImage pool in: \(timeInterval) seconds")
                                         }
                                     }
                                     fileDB.lock()
@@ -5451,7 +5450,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             let curTime = DispatchTime.now()
                             let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                             let timeInterval = Double(nanoTime) / 1_000_000_000
-                            log("图像的缩略完全载入耗时: \(timeInterval) seconds")
+                            log("图像的缩略完全载入耗时: \(timeInterval) seconds / Image thumbnail fully loaded in: \(timeInterval) seconds")
                             log("-----------------------------------------------------------")
                         }
                         //此时开始渐变动画
@@ -5477,7 +5476,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         let curTime = DispatchTime.now()
                                         let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                                         let timeInterval = Double(nanoTime) / 1_000_000_000
-                                        log("到隐藏快照原因1耗时: \(timeInterval) seconds")
+                                        log("到隐藏快照原因1耗时: \(timeInterval) seconds / Time to hide snapshot reason 1: \(timeInterval) seconds")
                                         log("-----------------------------------------------------------")
                                         
                                         //向上或者后退时定位文件夹
@@ -5543,7 +5542,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 let curTime = DispatchTime.now()
                                 let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                                 let timeInterval = Double(nanoTime) / 1_000_000_000
-                                log("第一张图片开始载入耗时: \(timeInterval) seconds")
+                                log("第一张图片开始载入耗时: \(timeInterval) seconds / First image started loading in: \(timeInterval) seconds")
                             }
                             
                             var revisedSize = NSSize(width: thumbSize!.width-2*publicVar.profile.ThumbnailBorderThickness, height: thumbSize!.height-2*publicVar.profile.ThumbnailBorderThickness-publicVar.profile.ThumbnailFilenamePadding)
@@ -5646,7 +5645,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                                     let curTime = DispatchTime.now()
                                                     let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                                                     let timeInterval = Double(nanoTime) / 1_000_000_000
-                                                    log("第一张图片载入完毕耗时: \(timeInterval) seconds")
+                                                    log("第一张图片载入完毕耗时: \(timeInterval) seconds / First image loaded completely in: \(timeInterval) seconds")
                                                 }
                                                 fileDB.unlock()
                                             }
@@ -6871,10 +6870,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             
             //有大图缓存则直接载入
             if isImageCached {
-                log("命中缓存:",url.absoluteString.removingPercentEncoding!)
+                log("命中缓存: \(url.absoluteString.removingPercentEncoding!) / Cache hit: \(url.absoluteString.removingPercentEncoding!)")
                 largeImageView.imageView.image=preGetImageCache
             }else{
-                log("即时载入:",url.absoluteString.removingPercentEncoding!)
+                log("即时载入: \(url.absoluteString.removingPercentEncoding!) / Immediate load: \(url.absoluteString.removingPercentEncoding!)")
             }
             
             //显示窗口

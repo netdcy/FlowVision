@@ -15,8 +15,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     override func windowDidLoad() {
         super.windowDidLoad()
         
-        log("开始windowDidLoad")
-        // Start windowDidLoad
+        log("开始windowDidLoad / Start windowDidLoad")
         
         self.window?.delegate = self
         
@@ -71,8 +70,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
             window?.makeFirstResponder(viewController.collectionView)
         }
         
-        log("结束windowDidLoad")
-        // End windowDidLoad
+        log("结束windowDidLoad / End windowDidLoad")
     }
     
     func prepareForDeinit() {
