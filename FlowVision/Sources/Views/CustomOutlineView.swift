@@ -29,6 +29,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
     
     override func keyDown(with event: NSEvent) {
         // 不执行任何操作，从而忽略按键，避免字母定位与目录切换快捷键同时触发
+        // Do nothing to ignore key press, avoid letter navigation and directory switch shortcut triggering simultaneously
         //super.keyDown(with: event)
         return
     }
@@ -39,12 +40,16 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         let clickedRow = row(at: locationInOutlineView)
         
         // 检查是否在有效的区域内点击
+        // Check if click is in valid area
         // 为了解决点击目录树后，在右边CollectionView中空白处快速右击左击，会出现目录树异常响应的问题
+        // To solve the problem where after clicking directory tree, quickly right-clicking and left-clicking in blank area of CollectionView on the right causes abnormal response in directory tree
         // 且弹出重命名对话框时异常响应的问题
+        // And abnormal response when rename dialog pops up
         if clickedRow >= 0 && getViewController(self)!.publicVar.isKeyEventEnabled {
             super.mouseDown(with: event)
         } else {
             // 如果点击区域无效，不执行默认的点击处理
+            // If click area is invalid, don't perform default click handling
             nextResponder?.mouseDown(with: event)
         }
     }
@@ -91,6 +96,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             }
 
             // 创建菜单
+            // Create menu
             let menu = NSMenu()
             menu.autoenablesItems = false
             
@@ -272,10 +278,12 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
 
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()  // 清除剪贴板现有内容
+        // Clear existing clipboard contents
 
         var urls=[URL]()
         urls.append(url)
         // 将文件URL添加到剪贴板
+        // Add file URL to clipboard
         pasteboard.writeObjects(urls as [NSPasteboardWriting])
     }
     

@@ -16,6 +16,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
         super.windowDidLoad()
         
         log("开始windowDidLoad")
+        // Start windowDidLoad
         
         self.window?.delegate = self
         
@@ -23,11 +24,13 @@ class WindowController: NSWindowController, NSWindowDelegate {
 
         if let window = self.window {
             // 设置标题栏和工具栏合并效果
+            // Set title bar and toolbar merge effect
             window.titleVisibility = .hidden
             window.titlebarAppearsTransparent = false
             window.isMovableByWindowBackground = false
             
             // 创建并配置工具栏
+            // Create and configure toolbar
             globalVar.toolbarIndex += 1
             let toolbar = NSToolbar(identifier: "MainToolbar"+String(globalVar.toolbarIndex))
             toolbar.delegate = self
@@ -63,11 +66,13 @@ class WindowController: NSWindowController, NSWindowDelegate {
         }
         
         //设置焦点
+        // Set focus
         if let viewController = contentViewController as? ViewController {
             window?.makeFirstResponder(viewController.collectionView)
         }
         
         log("结束windowDidLoad")
+        // End windowDidLoad
     }
     
     func prepareForDeinit() {
@@ -87,6 +92,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     
     func windowWillClose(_ notification: Notification) {
         // 移除引用
+        // Remove reference
         if let window = notification.object as? NSWindow {
             log("Window \(window) will close")
             if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
@@ -95,6 +101,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
         }
         
         // 在窗口关闭时执行清理，例如，保存数据、释放资源等
+        // Perform cleanup when window closes, e.g., save data, release resources, etc.
         if let viewController = contentViewController as? ViewController {
             viewController.largeImageView.prepareForDeinit()
             viewController.prepareForDeinit()
@@ -105,6 +112,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
         log("Window closed, remain: " + String(globalVar.windowNum))
         if globalVar.windowNum == 0 && globalVar.terminateAfterLastWindowClosed {
             DispatchQueue.main.async { // 不这样会导致windowWillClose被调用两遍
+                // Without this, windowWillClose will be called twice
                 NSApplication.shared.terminate(nil)
             }
         }
@@ -120,13 +128,16 @@ class WindowController: NSWindowController, NSWindowDelegate {
     }
 
     // 在窗口将要进入全屏模式时执行
+    // Called when window is about to enter full screen mode
     func windowWillEnterFullScreen(_ notification: Notification) {
         guard let window = self.window else { return }
         // 保存当前窗口大小
+        // Save current window size
         windowFrameBeforeFullScreen = window.frame
     }
     
     // 在窗口已经进入全屏模式时执行
+    // Called when window has entered full screen mode
     func windowDidEnterFullScreen(_ notification: Notification) {
         guard let viewController = contentViewController as? ViewController else {return}
 
@@ -145,6 +156,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     }
     
     // 在窗口已经退出全屏模式时执行
+    // Called when window has exited full screen mode
     func windowDidExitFullScreen(_ notification: Notification) {
         guard let viewController = contentViewController as? ViewController else {return}
 
@@ -208,6 +220,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     }
     
     // 显示标题栏和工具栏
+    // Show title bar and toolbar
     func showTitleBar() {
         guard let window = window else { return }
         guard let toolbar = window.toolbar else { return }
@@ -220,6 +233,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     }
     
     // 隐藏标题栏和工具栏
+    // Hide title bar and toolbar
     func hideTitleBar() {
         guard let window = window else { return }
         guard let toolbar = window.toolbar else { return }
@@ -430,6 +444,7 @@ extension WindowController: NSToolbarDelegate {
                 pathItems.insert(rootItem, at: 0)
                 
                 var maxWidth = (window?.frame.width ?? 1000) - 600 // 指定总宽度
+                // Specify total width
                 if viewController.publicVar.autoPlayVisibleVideo {
                     maxWidth -= 45
                 }
@@ -446,8 +461,10 @@ extension WindowController: NSToolbarDelegate {
                 var startIndex = pathItems.count - 1
                 
                 // 从后往前计算每个路径项的实际宽度
+                // Calculate actual width of each path item from back to front
                 for i in (0..<pathItems.count).reversed() {
                     let itemWidth = pathItems[i].title.size(withAttributes: [.font: font]).width + 15 // 15为分隔符宽度
+                    // 15 is separator width
                     totalWidth += itemWidth
                     if totalWidth > maxWidth {
                         startIndex = i + 1
@@ -456,11 +473,13 @@ extension WindowController: NSToolbarDelegate {
                 }
 
                 // 最后一个时已经超过
+                // Already exceeded when it's the last one
                 if startIndex == pathItems.count {
                     startIndex = pathItems.count - 1
                 }
                 
                 // 如果超过最大字符数,替换前面的为...
+                // If exceeds max character count, replace front with ...
                 if totalWidth > maxWidth && startIndex != 0 {
                     let item = CustomPathControlItem()
                     item.title = "..."
@@ -675,6 +694,7 @@ extension WindowController: NSToolbarDelegate {
             setButtonStyle(button)
             
             // 自定义title的字体大小和颜色
+            // Customize title font size and color
             let font = NSFont.systemFont(ofSize: 13)
             let attributedTitle = NSAttributedString(string: title, attributes: [
                 .font: font,
@@ -778,6 +798,7 @@ extension WindowController: NSToolbarDelegate {
     class NonClickableTextField: NSTextField {
         override func hitTest(_ point: NSPoint) -> NSView? {
             return nil  // 忽略所有鼠标事件
+            // Ignore all mouse events
         }
     }
     
@@ -873,12 +894,15 @@ extension WindowController: NSToolbarDelegate {
         switch sender.selectedSegment {
         case 0:
             // 切换到自适应视图的代码
+            // Code to switch to justified view
             viewController.switchToJustifiedView()
         case 1:
             // 切换到瀑布流视图的代码
+            // Code to switch to waterfall view
             viewController.switchToWaterfallView()
         case 2:
             // 切换到网格视图的代码
+            // Code to switch to grid view
             viewController.switchToGridView()
         default:
             break
@@ -888,6 +912,7 @@ extension WindowController: NSToolbarDelegate {
     @objc func showSortMenu(_ sender: Any?) {
         guard let viewController = contentViewController as? ViewController else {return}
         // 图标映射
+        // Icon mapping
         let sortTypeIcons: [SortType: NSImage?] = [
             .pathA: NSImage(systemSymbolName: "square.and.pencil", accessibilityDescription: ""),
             .pathZ: NSImage(systemSymbolName: "square.and.pencil", accessibilityDescription: ""),
@@ -957,6 +982,7 @@ extension WindowController: NSToolbarDelegate {
         }
         
         // 添加 EXIF 排序子菜单
+        // Add EXIF sort submenu
         let exifSubmenu = NSMenu()
         let exifMenuItem = NSMenuItem(title: NSLocalizedString("Sort by EXIF Info", comment: "根据Exif信息排序"), action: nil, keyEquivalent: "")
         exifMenuItem.image = NSImage(systemSymbolName: "camera", accessibilityDescription: "")
@@ -1034,9 +1060,11 @@ extension WindowController: NSToolbarDelegate {
                 folderMenuItem.target = self
                 
                 // 创建子菜单
+                // Create submenu
                 let subMenu = NSMenu(title: folderPath)
                 
                 // 创建删除项
+                // Create delete item
                 let deleteMenuItem = NSMenuItem(
                     title: NSLocalizedString("Delete", comment: "删除"),
                     action: #selector(deleteFavorite(_:)),
@@ -1046,6 +1074,7 @@ extension WindowController: NSToolbarDelegate {
                 deleteMenuItem.representedObject = folderPath
                 
                 // 创建上移项
+                // Create move up item
                 let moveUpMenuItem = NSMenuItem(
                     title: NSLocalizedString("Move Up", comment: "上移"),
                     action: #selector(moveUpFavorite(_:)),
@@ -1055,6 +1084,7 @@ extension WindowController: NSToolbarDelegate {
                 moveUpMenuItem.representedObject = index
                 
                 // 创建下移项
+                // Create move down item
                 let moveDownMenuItem = NSMenuItem(
                     title: NSLocalizedString("Move Down", comment: "下移"),
                     action: #selector(moveDownFavorite(_:)),
@@ -1064,14 +1094,17 @@ extension WindowController: NSToolbarDelegate {
                 moveDownMenuItem.representedObject = index
                 
                 // 将项添加到子菜单
+                // Add items to submenu
                 subMenu.addItem(deleteMenuItem)
                 subMenu.addItem(moveUpMenuItem)
                 subMenu.addItem(moveDownMenuItem)
                 
                 // 将子菜单添加到主菜单项
+                // Add submenu to main menu item
                 folderMenuItem.submenu = subMenu
                 
                 // 将主菜单项添加到 favoritesMenu
+                // Add main menu item to favoritesMenu
                 favoritesMenu.addItem(folderMenuItem)
             }
         } else {
@@ -1222,6 +1255,7 @@ extension WindowController: NSToolbarDelegate {
         actionItemSettings.keyEquivalentModifierMask = [.command]
 
         if !viewController.publicVar.isInLargeView { // 文件夹视图
+            // Folder view
             
             menu.addItem(NSMenuItem.separator())
             
@@ -1278,6 +1312,7 @@ extension WindowController: NSToolbarDelegate {
             let recursiveModeInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(recursiveModeInfo), keyEquivalent: "")
             
         } else { // 大图视图
+            // Large image view
             
             menu.addItem(NSMenuItem.separator())
             
@@ -1526,6 +1561,7 @@ extension WindowController: NSToolbarDelegate {
         guard let folderPath = sender.representedObject as? String else { return }
         
         // 在这里处理删除逻辑
+        // Handle delete logic here
         if let index = globalVar.myFavoritesArray.firstIndex(of: folderPath) {
             globalVar.myFavoritesArray.remove(at: index)
             let defaults = UserDefaults.standard
@@ -1533,17 +1569,20 @@ extension WindowController: NSToolbarDelegate {
         }
         
         // 更新菜单以反映更改
+        // Update menu to reflect changes
         //menuNeedsUpdate(favoritesMenu)
     }
     @objc func moveUpFavorite(_ sender: NSMenuItem) {
         guard let index = sender.representedObject as? Int, index > 0 else { return }
         
         // 在这里处理上移逻辑
+        // Handle move up logic here
         globalVar.myFavoritesArray.swapAt(index, index - 1)
         let defaults = UserDefaults.standard
         defaults.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
         
         // 更新菜单以反映更改
+        // Update menu to reflect changes
         //menuNeedsUpdate(favoritesMenu)
     }
 
@@ -1551,11 +1590,13 @@ extension WindowController: NSToolbarDelegate {
         guard let index = sender.representedObject as? Int, index < globalVar.myFavoritesArray.count - 1 else { return }
         
         // 在这里处理下移逻辑
+        // Handle move down logic here
         globalVar.myFavoritesArray.swapAt(index, index + 1)
         let defaults = UserDefaults.standard
         defaults.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
         
         // 更新菜单以反映更改
+        // Update menu to reflect changes
         //menuNeedsUpdate(favoritesMenu)
     }
     
