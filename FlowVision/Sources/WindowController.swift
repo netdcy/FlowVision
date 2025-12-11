@@ -11,6 +11,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     
     var pathShortenStore = ""
     var windowFrameBeforeFullScreen: NSRect?
+    private var isCursorHiddenForFullScreen = false
 
     override func windowDidLoad() {
         super.windowDidLoad()
@@ -86,6 +87,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     }
     
     func windowWillClose(_ notification: Notification) {
+        unhideCursorForFullScreen()
         // 移除引用
         if let window = notification.object as? NSWindow {
             log("Window \(window) will close")
@@ -128,6 +130,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     
     // 在窗口已经进入全屏模式时执行
     func windowDidEnterFullScreen(_ notification: Notification) {
+        hideCursorForFullScreen()
         guard let viewController = contentViewController as? ViewController else {return}
 
         if !globalVar.autoHideToolbar {
@@ -146,6 +149,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     
     // 在窗口已经退出全屏模式时执行
     func windowDidExitFullScreen(_ notification: Notification) {
+        unhideCursorForFullScreen()
         guard let viewController = contentViewController as? ViewController else {return}
 
         if !globalVar.autoHideToolbar {
@@ -229,6 +233,18 @@ class WindowController: NSWindowController, NSWindowDelegate {
         window.standardWindowButton(.zoomButton)?.isHidden = true
         window.titlebarAppearsTransparent = true
         toolbar.isVisible = false
+    }
+
+    private func hideCursorForFullScreen() {
+        if isCursorHiddenForFullScreen { return }
+        NSCursor.hide()
+        isCursorHiddenForFullScreen = true
+    }
+
+    private func unhideCursorForFullScreen() {
+        if !isCursorHiddenForFullScreen { return }
+        NSCursor.unhide()
+        isCursorHiddenForFullScreen = false
     }
 }
 
