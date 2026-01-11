@@ -84,6 +84,7 @@ class GlobalVar{
     var scrollMouseWheelToZoom = false
     var openLastFolder = true
     var homeFolder = "file:///"
+    var keepFilterStateWhenSwitchFolder = false
     
     //可记忆设置变量
     var isFirstTimeUse = true

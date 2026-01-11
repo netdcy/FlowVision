@@ -22,6 +22,7 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
     @IBOutlet weak var useInternalPlayerCheckbox: NSButton!
     @IBOutlet weak var usePinyinSearchCheckbox: NSButton!
     @IBOutlet weak var usePinyinInitialSearchCheckbox: NSButton!
+    @IBOutlet weak var keepFilterStateWhenSwitchFolderCheckbox: NSButton!
     @IBOutlet weak var excludeListView: NSOutlineView!
     @IBOutlet weak var excludeContainerView: NSView!
     @IBOutlet weak var refViewForExcludeListView: NSView!
@@ -44,6 +45,7 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         useInternalPlayerCheckbox.state = globalVar.useInternalPlayer ? .on : .off
         usePinyinSearchCheckbox.state = globalVar.usePinyinSearch ? .on : .off
         usePinyinInitialSearchCheckbox.state = globalVar.usePinyinInitialSearch ? .on : .off
+        keepFilterStateWhenSwitchFolderCheckbox.state = globalVar.keepFilterStateWhenSwitchFolder ? .on : .off
         
         globalVar.useInternalPlayerCheckbox = self.useInternalPlayerCheckbox
         
@@ -157,6 +159,11 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
     @IBAction func usePinyinInitialSearchToggled(_ sender: NSButton) {
         globalVar.usePinyinInitialSearch = (sender.state == .on)
         UserDefaults.standard.set(globalVar.usePinyinInitialSearch, forKey: "usePinyinInitialSearch")
+    }
+
+    @IBAction func keepFilterStateWhenSwitchFolderToggled(_ sender: NSButton) {
+        globalVar.keepFilterStateWhenSwitchFolder = (sender.state == .on)
+        UserDefaults.standard.set(globalVar.keepFilterStateWhenSwitchFolder, forKey: "keepFilterStateWhenSwitchFolder")
     }
     
     @IBAction func segmentedControlValueChanged(_ sender: NSSegmentedControl) {

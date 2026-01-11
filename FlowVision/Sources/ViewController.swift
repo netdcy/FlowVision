@@ -4385,9 +4385,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if direction == .zero && dest != "" { startFolder = dest }
         if !(direction == .zero && lastFolder == startFolder) {
             //重置递归模式
-            publicVar.isRecursiveMode = false
+            if !globalVar.keepFilterStateWhenSwitchFolder{
+                publicVar.isRecursiveMode = false
+            }
             //重置搜索过滤
-            publicVar.isFilenameFilterOn = false
+            if !globalVar.keepFilterStateWhenSwitchFolder{
+                publicVar.isFilenameFilterOn = false
+            }
             //重置自动播放可见视频
             publicVar.autoPlayVisibleVideo = false
         }

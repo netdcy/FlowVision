@@ -187,7 +187,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let scrollSensitivity = UserDefaults.standard.value(forKey: "scrollSensitivity") as? Double {
             globalVar.scrollSensitivity = scrollSensitivity
         }
-        
+        if let keepFilterStateWhenSwitchFolder = UserDefaults.standard.value(forKey: "keepFilterStateWhenSwitchFolder") as? Bool {
+            globalVar.keepFilterStateWhenSwitchFolder = keepFilterStateWhenSwitchFolder
+        }
         globalVar.myFavoritesArray = defaults.array(forKey: "globalVar.myFavoritesArray") as? [String] ?? [String]()
         
         //requestAppleEventsPermission()
