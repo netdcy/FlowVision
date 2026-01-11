@@ -182,6 +182,15 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 // Handle unselected state
                 deselectedColor()
             }
+
+            if (getViewController(collectionView!)!.publicVar.autoPlayVisibleVideo ||
+                (isSelected && getViewController(collectionView!)!.publicVar.autoPlaySelectedVideo)) &&
+                isItemVisible() &&
+                !getViewController(collectionView!)!.publicVar.isInLargeView {
+                playVideo()
+            }else{
+                stopVideo()
+            }
         }
     }
 
@@ -298,7 +307,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             videoFlag.isHidden = true
         }
         
-        if getViewController(collectionView!)!.publicVar.autoPlayVisibleVideo && isItemVisible() {
+        if (getViewController(collectionView!)!.publicVar.autoPlayVisibleVideo || (getViewController(collectionView!)!.publicVar.autoPlaySelectedVideo && isSelected)) && isItemVisible() {
             playVideo()
         }
         

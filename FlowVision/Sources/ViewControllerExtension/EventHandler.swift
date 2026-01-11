@@ -262,6 +262,12 @@ extension ViewController {
         }
         coreAreaView.showInfo(showText, timeOut: 1.0, cannotBeCleard: true)
     }
+
+    func toggleAutoPlaySelectedVideo() {
+        publicVar.autoPlaySelectedVideo.toggle()
+        debounceSetLoadThumbPriority(interval: 0.1, ifNeedVisable: true)
+        UserDefaults.standard.set(publicVar.autoPlaySelectedVideo, forKey: "autoPlaySelectedVideo")
+    }
     
     func toggleUseInternalPlayer() {
         globalVar.useInternalPlayer.toggle()

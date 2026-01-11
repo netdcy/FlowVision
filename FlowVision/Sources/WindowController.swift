@@ -1336,10 +1336,14 @@ extension WindowController: NSToolbarDelegate {
             
             menu.addItem(NSMenuItem.separator())
 
-            let autoPlayVisibleVideo = menu.addItem(withTitle: NSLocalizedString("Auto Play Visible Video", comment: "自动播放可见视频"), action: #selector(toggleAutoPlayVisibleVideo), keyEquivalent: "v")
-            autoPlayVisibleVideo.keyEquivalentModifierMask = [.command, .shift]
-            autoPlayVisibleVideo.state = viewController.publicVar.autoPlayVisibleVideo ? .on : .off
-            autoPlayVisibleVideo.isEnabled = !viewController.publicVar.isInLargeView
+//            let autoPlayVisibleVideo = menu.addItem(withTitle: NSLocalizedString("Auto Play Visible Video", comment: "自动播放可见视频"), action: #selector(toggleAutoPlayVisibleVideo), keyEquivalent: "v")
+//            autoPlayVisibleVideo.keyEquivalentModifierMask = [.command, .shift]
+//            autoPlayVisibleVideo.state = viewController.publicVar.autoPlayVisibleVideo ? .on : .off
+//            autoPlayVisibleVideo.isEnabled = !viewController.publicVar.isInLargeView
+
+            let autoPlaySelectedVideo = menu.addItem(withTitle: NSLocalizedString("Auto Play Selected Video", comment: "自动播放选中视频"), action: #selector(toggleAutoPlaySelectedVideo), keyEquivalent: "")
+            autoPlaySelectedVideo.state = viewController.publicVar.autoPlaySelectedVideo ? .on : .off
+            autoPlaySelectedVideo.isEnabled = !viewController.publicVar.isInLargeView
 
             let useInternalPlayer = menu.addItem(withTitle: NSLocalizedString("Use Internal Video Player", comment: "使用内置视频播放器"), action: #selector(toggleUseInternalPlayer), keyEquivalent: "")
             useInternalPlayer.state = globalVar.useInternalPlayer ? .on : .off
@@ -1719,6 +1723,11 @@ extension WindowController: NSToolbarDelegate {
     @objc func toggleAutoPlayVisibleVideo(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.toggleAutoPlayVisibleVideo()
+    }
+
+    @objc func toggleAutoPlaySelectedVideo(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleAutoPlaySelectedVideo()
     }
 
     @objc func toggleUseInternalPlayer(_ sender: NSMenuItem){

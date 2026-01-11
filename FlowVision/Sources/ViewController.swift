@@ -146,6 +146,7 @@ class PublicVar{
     var isEnableHDR = true
     var isRawUseEmbeddedThumb = false
     var autoPlayVisibleVideo = false
+    var autoPlaySelectedVideo = false
     var isRotationLocked = false
     var rotationLock = 0
     var isZoomLocked = false
@@ -545,6 +546,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         if let autoPlayVisibleVideo = UserDefaults.standard.value(forKey: "autoPlayVisibleVideo") as? Bool {
             publicVar.autoPlayVisibleVideo = autoPlayVisibleVideo
+        }
+        if let autoPlaySelectedVideo = UserDefaults.standard.value(forKey: "autoPlaySelectedVideo") as? Bool {
+            publicVar.autoPlaySelectedVideo = autoPlaySelectedVideo
         }
         if let isRotationLocked = UserDefaults.standard.value(forKey: "isRotationLocked") as? Bool {
             publicVar.isRotationLocked = isRotationLocked
@@ -1899,7 +1903,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + interval, execute: scrollDebounceWorkItem!)
     }
 
-    func setLoadThumbPriority(indexPath: IndexPath? = nil, range: (Int,Int) = (-1,1), ifNeedVisable: Bool){
+    func setLoadThumbPriority(indexPath: IndexPath? = nil, range: (Int,Int) = (-1,1), ifNeedVisable: Bool, stopPlayVideo: Bool = false){
 
         var indexPaths: Set<IndexPath> = Set()
         if indexPath != nil {
@@ -1925,9 +1929,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             // Play video
             let visibleItems = collectionView.indexPathsForVisibleItems()
             let visibleRect = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight))
+            let selectedIndexPaths = collectionView.selectionIndexPaths
             for indexPath in visibleItems {
                 let itemFrame = collectionView.layoutAttributesForItem(at: indexPath)?.frame ?? .zero
-                if publicVar.autoPlayVisibleVideo && itemFrame.intersects(visibleRect) {
+                let isSelected = selectedIndexPaths.contains(indexPath)
+                if (publicVar.autoPlayVisibleVideo || (publicVar.autoPlaySelectedVideo && isSelected)) && itemFrame.intersects(visibleRect) && !stopPlayVideo {
                     if let item = collectionView.item(at: indexPath) as? CustomCollectionViewItem {
                         item.playVideo()
                     }

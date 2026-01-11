@@ -169,10 +169,13 @@ extension ViewController {
             }
 
             collectionView.reloadData()
-            collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
-            collectionView.selectItems(at: [indexPath], scrollPosition: [])
-            collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
-            setLoadThumbPriority(ifNeedVisable: true)
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
+                collectionView.selectItems(at: [indexPath], scrollPosition: [])
+                collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
+                setLoadThumbPriority(ifNeedVisable: true)
+            }
         }
 
         largeImageView.updateTextItems([])
@@ -229,7 +232,7 @@ extension ViewController {
                     lastLargeImageRotate=0
                     
                     // 为了使可见范围自动播放的视频停止
-                    setLoadThumbPriority(ifNeedVisable: true)
+                    setLoadThumbPriority(ifNeedVisable: true, stopPlayVideo: true)
 
                     changeLargeImage(justChangeLargeImageViewFile: globalVar.portableMode)
                     largeImageView.isHidden=false
