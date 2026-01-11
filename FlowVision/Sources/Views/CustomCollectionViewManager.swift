@@ -1,8 +1,6 @@
 //
-//  ImageCollectionViewManager.swift
+//  CustomCollectionViewManager.swift
 //  FlowVision
-//
-//  Created by netdcy on 2024/3/24.
 //
 
 import Foundation

@@ -2,8 +2,6 @@
 //  CoreAreaView.swift
 //  FlowVision
 //
-//  Created by netdcy on 2024/7/5.
-//
 
 import Foundation
 import Cocoa
@@ -92,7 +90,7 @@ class CoreAreaView: NSView {
                 if viewController.publicVar.isInLargeView{
                     viewController.previousLargeImage()
                 }else{
-                    viewController.historyBack()
+                    viewController.handleHistoryBack()
                 }
             }
         // forward
@@ -101,7 +99,7 @@ class CoreAreaView: NSView {
                 if viewController.publicVar.isInLargeView{
                     viewController.nextLargeImage()
                 }else{
-                    viewController.historyForward()
+                    viewController.handleHistoryForward()
                 }
             }
         } else {

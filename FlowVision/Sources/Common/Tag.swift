@@ -2,8 +2,6 @@
 //  Tag.swift
 //  FlowVision
 //
-//  Created by netdcy on 2025/7/9.
-//
 
 import Foundation
 import Cocoa

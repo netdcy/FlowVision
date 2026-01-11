@@ -2,8 +2,6 @@
 //  Common.swift
 //  FlowVision
 //
-//  Created by netdcy on 2024/3/24.
-//
 
 import Foundation
 import Cocoa

@@ -2,8 +2,6 @@
 //  CustomSplitView.swift
 //  FlowVision
 //
-//  Created by netdcy on 2024/6/12.
-//
 
 import Foundation
 import Cocoa

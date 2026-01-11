@@ -2,8 +2,6 @@
 //  WindowController.swift
 //  FlowVision
 //
-//  Created by netdcy on 2024/3/16.
-//
 
 import Cocoa
 
@@ -881,13 +879,13 @@ extension WindowController: NSToolbarDelegate {
     
     @objc func goBackAction(_ sender: Any?) {
         if let viewController = contentViewController as? ViewController {
-            viewController.historyBack()
+            viewController.handleHistoryBack()
         }
     }
 
     @objc func goForwardAction(_ sender: Any?) {
         if let viewController = contentViewController as? ViewController {
-            viewController.historyForward()
+            viewController.handleHistoryForward()
         }
     }
 
@@ -1559,12 +1557,12 @@ extension WindowController: NSToolbarDelegate {
     
     @objc func switchToActualSize(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
-        viewController.switchToActualSize()
+        viewController.switchToActualSizeForLargeImage()
     }
     
     @objc func switchToFitToWindow(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
-        viewController.switchToFitToWindow()
+        viewController.switchToFitToWindowForLargeImage()
     }
     
     @objc func switchToSystemTheme(_ sender: NSMenuItem){

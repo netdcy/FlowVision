@@ -2,8 +2,6 @@
 //  GeneralSettingsViewController.swift
 //  FlowVision
 //
-//  Created by netdcy on 2024/7/22.
-//
 
 import Cocoa
 import Settings

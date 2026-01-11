@@ -2,8 +2,6 @@
 //  AppDelegate.swift
 //  FlowVision
 //
-//  Created by netdcy on 2024/3/13.
-//
 
 import Cocoa
 import Settings
@@ -859,7 +857,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
     
     @IBAction func editOperationLogs(_ sender: NSMenuItem){
-        getMainViewController()?.showOperationLogs()
+        getMainViewController()?.handleShowOperationLogs()
     }
     
     @IBAction func editMove(_ sender: NSMenuItem){
@@ -920,11 +918,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
 
     @IBAction func historyBack(_ sender: NSMenuItem){
-        getMainViewController()?.historyBack()
+        getMainViewController()?.handleHistoryBack()
     }
     
     @IBAction func historyForward(_ sender: NSMenuItem){
-        getMainViewController()?.historyForward()
+        getMainViewController()?.handleHistoryForward()
     }
     
     @IBAction func fileNewTab(_ sender: NSMenuItem){
@@ -935,7 +933,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
 
     @IBAction func reopenClosedTabs(_ sender: NSMenuItem){
-        getMainViewController()?.reopenClosedTabs()
+        getMainViewController()?.handleReopenClosedTabs()
     }
     
     @IBAction func fileNewFolder(_ sender: NSMenuItem){
@@ -1056,11 +1054,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
     
     @IBAction func switchToActualSize(_ sender: NSMenuItem){
-        getMainViewController()?.switchToActualSize()
+        getMainViewController()?.switchToActualSizeForLargeImage()
         
     }
     @IBAction func switchToFitToWindow(_ sender: NSMenuItem){
-        getMainViewController()?.switchToFitToWindow()
+        getMainViewController()?.switchToFitToWindowForLargeImage()
     }
     
     @IBAction func toggleSidebar(_ sender: NSMenuItem){

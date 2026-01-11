@@ -2,8 +2,6 @@
 //  Layout.swift
 //  FlowVision
 //
-//  Created by netdcy on 2024/7/5.
-//
 
 import Foundation
 import Cocoa
@@ -38,8 +36,6 @@ class LeftAlignedCollectionViewFlowLayout: NSCollectionViewFlowLayout {
         return attributes
     }
 }
-
-let xxxxxxx = 14.0
 
 class CustomFlowLayout: NSCollectionViewLayout {
     private var cache: [NSCollectionViewLayoutAttributes] = []

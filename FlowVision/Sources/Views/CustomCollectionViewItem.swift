@@ -1,8 +1,6 @@
 //
-//  ImageCollectionViewItem.swift
+//  CustomCollectionViewItem.swift
 //  FlowVision
-//
-//  Created by netdcy on 2024/3/17.
 //
 
 import Cocoa

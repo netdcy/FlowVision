@@ -1,8 +1,6 @@
 //
-//  TreeOutlineViewManager.swift
+//  CustomOutlineViewManager.swift
 //  FlowVision
-//
-//  Created by netdcy on 2024/4/21.
 //
 
 import Foundation

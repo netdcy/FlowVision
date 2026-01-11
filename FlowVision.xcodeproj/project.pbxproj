@@ -27,7 +27,21 @@
 		F74636442C4FFA340086E920 /* AdvancedSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F74636462C4FFA340086E920 /* AdvancedSettingsViewController.xib */; };
 		F74636552C5237720086E920 /* ActionsSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74636542C5237720086E920 /* ActionsSettingsViewController.swift */; };
 		F74636562C523EFF0086E920 /* ActionsSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F74636582C523EFF0086E920 /* ActionsSettingsViewController.xib */; };
+		F74D554E2F0E459C00C9AB85 /* WindowManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74D554D2F0E459600C9AB85 /* WindowManagement.swift */; };
+		F74D55502F0E467900C9AB85 /* DirTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74D554F2F0E467400C9AB85 /* DirTree.swift */; };
+		F74D55522F0E46D200C9AB85 /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74D55512F0E46D100C9AB85 /* Search.swift */; };
+		F74D55542F0E47D700C9AB85 /* MemoryManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74D55532F0E47D400C9AB85 /* MemoryManagement.swift */; };
+		F74D55562F0E487C00C9AB85 /* RightMouseGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74D55552F0E487800C9AB85 /* RightMouseGesture.swift */; };
+		F74D55582F0E493700C9AB85 /* LayoutProfileConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74D55572F0E491D00C9AB85 /* LayoutProfileConfig.swift */; };
+		F74D555A2F0E49AB00C9AB85 /* AutoScrollPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74D55592F0E49A400C9AB85 /* AutoScrollPlay.swift */; };
+		F74D555C2F0E501200C9AB85 /* EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74D555B2F0E500C00C9AB85 /* EventHandler.swift */; };
+		F74D555E2F0E52F800C9AB85 /* ArrowKeyLocate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74D555D2F0E52EA00C9AB85 /* ArrowKeyLocate.swift */; };
 		F76E2EFE2C3B765C0031B0B4 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76E2EFD2C3B765C0031B0B4 /* Log.swift */; };
+		F77098912F0E3C6B00E7D164 /* KeyShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77098902F0E3C6200E7D164 /* KeyShortcut.swift */; };
+		F77098932F0E411500E7D164 /* FileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77098922F0E411200E7D164 /* FileSystem.swift */; };
+		F77098952F0E427800E7D164 /* FileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77098942F0E427700E7D164 /* FileOperation.swift */; };
+		F77098972F0E436800E7D164 /* LargeImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77098962F0E436600E7D164 /* LargeImage.swift */; };
+		F77098992F0E43E000E7D164 /* LayoutManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77098982F0E43DF00E7D164 /* LayoutManagement.swift */; };
 		F7790ECC2BA5CA9200406D35 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7790ECB2BA5CA9200406D35 /* WindowController.swift */; };
 		F7790ED72BA5FB6A00406D35 /* CustomCollectionViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7790ED52BA5FB6A00406D35 /* CustomCollectionViewItem.swift */; };
 		F7790ED82BA5FB6A00406D35 /* CustomCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = F7790ED62BA5FB6A00406D35 /* CustomCollectionViewItem.xib */; };
@@ -112,6 +126,15 @@
 		F74636542C5237720086E920 /* ActionsSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionsSettingsViewController.swift; sourceTree = "<group>"; };
 		F74636572C523EFF0086E920 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ActionsSettingsViewController.xib; sourceTree = "<group>"; };
 		F74636592C523EFF0086E920 /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/ActionsSettingsViewController.xcstrings; sourceTree = "<group>"; };
+		F74D554D2F0E459600C9AB85 /* WindowManagement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManagement.swift; sourceTree = "<group>"; };
+		F74D554F2F0E467400C9AB85 /* DirTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirTree.swift; sourceTree = "<group>"; };
+		F74D55512F0E46D100C9AB85 /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
+		F74D55532F0E47D400C9AB85 /* MemoryManagement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryManagement.swift; sourceTree = "<group>"; };
+		F74D55552F0E487800C9AB85 /* RightMouseGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightMouseGesture.swift; sourceTree = "<group>"; };
+		F74D55572F0E491D00C9AB85 /* LayoutProfileConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutProfileConfig.swift; sourceTree = "<group>"; };
+		F74D55592F0E49A400C9AB85 /* AutoScrollPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoScrollPlay.swift; sourceTree = "<group>"; };
+		F74D555B2F0E500C00C9AB85 /* EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventHandler.swift; sourceTree = "<group>"; };
+		F74D555D2F0E52EA00C9AB85 /* ArrowKeyLocate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowKeyLocate.swift; sourceTree = "<group>"; };
 		F754F3C72C10393700A25D12 /* libavfilter.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavfilter.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libavfilter.xcframework"; sourceTree = "<group>"; };
 		F754F3C82C10393700A25D12 /* libavutil.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavutil.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libavutil.xcframework"; sourceTree = "<group>"; };
 		F754F3C92C10393700A25D12 /* libavcodec.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavcodec.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libavcodec.xcframework"; sourceTree = "<group>"; };
@@ -121,6 +144,11 @@
 		F754F3CD2C10393700A25D12 /* libavformat.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavformat.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libavformat.xcframework"; sourceTree = "<group>"; };
 		F754F3CE2C10393700A25D12 /* libswresample.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libswresample.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libswresample.xcframework"; sourceTree = "<group>"; };
 		F76E2EFD2C3B765C0031B0B4 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		F77098902F0E3C6200E7D164 /* KeyShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyShortcut.swift; sourceTree = "<group>"; };
+		F77098922F0E411200E7D164 /* FileSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystem.swift; sourceTree = "<group>"; };
+		F77098942F0E427700E7D164 /* FileOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOperation.swift; sourceTree = "<group>"; };
+		F77098962F0E436600E7D164 /* LargeImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeImage.swift; sourceTree = "<group>"; };
+		F77098982F0E43DF00E7D164 /* LayoutManagement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutManagement.swift; sourceTree = "<group>"; };
 		F7790ECB2BA5CA9200406D35 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
 		F7790ED52BA5FB6A00406D35 /* CustomCollectionViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewItem.swift; sourceTree = "<group>"; };
 		F7790ED62BA5FB6A00406D35 /* CustomCollectionViewItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomCollectionViewItem.xib; sourceTree = "<group>"; };
@@ -163,16 +191,16 @@
 		F73865DC2C37BD7F00837FE4 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				F7F600452E1E094900ED8536 /* Tag.swift */,
-				F73865D82C37BBCB00837FE4 /* GlobalVariable.swift */,
 				F70F9FC02BAFE7B300C50CDD /* Common.swift */,
-				F73865E72C37C26C00837FE4 /* FFmpegKit.swift */,
-				F73865E12C37C0A300837FE4 /* Enum.swift */,
 				F73865DF2C37C06C00837FE4 /* DataModel.swift */,
-				F73865DA2C37BC1500837FE4 /* RefCode.swift */,
+				F73865E12C37C0A300837FE4 /* Enum.swift */,
+				F73865E72C37C26C00837FE4 /* FFmpegKit.swift */,
+				F73865D82C37BBCB00837FE4 /* GlobalVariable.swift */,
 				F73865E32C37C11B00837FE4 /* ImageProcess.swift */,
-				F7AAA8BC2D9BD1ED007CE330 /* VideoProcess.swift */,
 				F76E2EFD2C3B765C0031B0B4 /* Log.swift */,
+				F73865DA2C37BC1500837FE4 /* RefCode.swift */,
+				F7F600452E1E094900ED8536 /* Tag.swift */,
+				F7AAA8BC2D9BD1ED007CE330 /* VideoProcess.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -180,16 +208,16 @@
 		F73865E92C37C3EA00837FE4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				F7AC30042D37E25800F48AEF /* CustomPathControl.swift */,
-				F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */,
 				F73865DD2C37BEAC00837FE4 /* CoreAreaView.swift */,
 				F73865D22C37B97500837FE4 /* CustomCollectionView.swift */,
 				F7790ED52BA5FB6A00406D35 /* CustomCollectionViewItem.swift */,
 				F7790ED62BA5FB6A00406D35 /* CustomCollectionViewItem.xib */,
 				F70F9FC22BAFE85D00C50CDD /* CustomCollectionViewManager.swift */,
+				F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */,
 				F78FAB0C2C0EE94D00FE66CC /* CustomImageView.swift */,
 				F73865D62C37BB2900837FE4 /* CustomOutlineView.swift */,
 				F71DCEB82BD425D6006E5B1E /* CustomOutlineViewManager.swift */,
+				F7AC30042D37E25800F48AEF /* CustomPathControl.swift */,
 				F795AC6D2C196B80004B487F /* CustomSplitView.swift */,
 				F73865E52C37C1AA00837FE4 /* DrawingView.swift */,
 				F78960F12BDCC26B00C2571B /* LargeImageView.swift */,
@@ -213,8 +241,9 @@
 			isa = PBXGroup;
 			children = (
 				F7A075532BA1D716009C47A6 /* AppDelegate.swift */,
-				F7A075552BA1D716009C47A6 /* ViewController.swift */,
 				F7790ECB2BA5CA9200406D35 /* WindowController.swift */,
+				F7A075552BA1D716009C47A6 /* ViewController.swift */,
+				F770988F2F0E3C5400E7D164 /* ViewControllerExtension */,
 				F73865DC2C37BD7F00837FE4 /* Common */,
 				F7C2DEB92C4E6BB2003DF765 /* SettingsViews */,
 				F73865E92C37C3EA00837FE4 /* Views */,
@@ -235,6 +264,27 @@
 				F754F3CC2C10393700A25D12 /* libswscale.xcframework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F770988F2F0E3C5400E7D164 /* ViewControllerExtension */ = {
+			isa = PBXGroup;
+			children = (
+				F74D555D2F0E52EA00C9AB85 /* ArrowKeyLocate.swift */,
+				F74D55592F0E49A400C9AB85 /* AutoScrollPlay.swift */,
+				F74D554F2F0E467400C9AB85 /* DirTree.swift */,
+				F74D555B2F0E500C00C9AB85 /* EventHandler.swift */,
+				F77098942F0E427700E7D164 /* FileOperation.swift */,
+				F77098922F0E411200E7D164 /* FileSystem.swift */,
+				F77098902F0E3C6200E7D164 /* KeyShortcut.swift */,
+				F77098962F0E436600E7D164 /* LargeImage.swift */,
+				F77098982F0E43DF00E7D164 /* LayoutManagement.swift */,
+				F74D55572F0E491D00C9AB85 /* LayoutProfileConfig.swift */,
+				F74D55532F0E47D400C9AB85 /* MemoryManagement.swift */,
+				F74D55552F0E487800C9AB85 /* RightMouseGesture.swift */,
+				F74D55512F0E46D100C9AB85 /* Search.swift */,
+				F74D554D2F0E459600C9AB85 /* WindowManagement.swift */,
+			);
+			path = ViewControllerExtension;
 			sourceTree = "<group>";
 		};
 		F7A075472BA1D716009C47A6 = {
@@ -377,15 +427,24 @@
 				F7A075562BA1D716009C47A6 /* ViewController.swift in Sources */,
 				F7AC30052D37E26B00F48AEF /* CustomPathControl.swift in Sources */,
 				F74636372C4F43AE0086E920 /* AdvancedSettingsViewController.swift in Sources */,
+				F77098912F0E3C6B00E7D164 /* KeyShortcut.swift in Sources */,
 				F7790ED72BA5FB6A00406D35 /* CustomCollectionViewItem.swift in Sources */,
+				F74D555C2F0E501200C9AB85 /* EventHandler.swift in Sources */,
+				F74D55522F0E46D200C9AB85 /* Search.swift in Sources */,
+				F74D55542F0E47D700C9AB85 /* MemoryManagement.swift in Sources */,
 				F7AAA8BD2D9BD1F2007CE330 /* VideoProcess.swift in Sources */,
 				F795AC6E2C196B80004B487F /* CustomSplitView.swift in Sources */,
 				F73865D52C37B9B800837FE4 /* Layout.swift in Sources */,
+				F77098972F0E436800E7D164 /* LargeImage.swift in Sources */,
+				F74D55582F0E493700C9AB85 /* LayoutProfileConfig.swift in Sources */,
 				F7F600462E1E095400ED8536 /* Tag.swift in Sources */,
 				F73865D92C37BBCB00837FE4 /* GlobalVariable.swift in Sources */,
+				F74D555A2F0E49AB00C9AB85 /* AutoScrollPlay.swift in Sources */,
 				F73865E62C37C1AA00837FE4 /* DrawingView.swift in Sources */,
+				F77098932F0E411500E7D164 /* FileSystem.swift in Sources */,
 				F73865D72C37BB2900837FE4 /* CustomOutlineView.swift in Sources */,
 				F73865E42C37C11B00837FE4 /* ImageProcess.swift in Sources */,
+				F74D55562F0E487C00C9AB85 /* RightMouseGesture.swift in Sources */,
 				F71DCEB92BD425D6006E5B1E /* CustomOutlineViewManager.swift in Sources */,
 				F7DECD6D2D00939300ECC099 /* CustomEffectView.swift in Sources */,
 				F7790ECC2BA5CA9200406D35 /* WindowController.swift in Sources */,
@@ -393,12 +452,17 @@
 				F70F9FC12BAFE7B300C50CDD /* Common.swift in Sources */,
 				F70F9FC32BAFE85D00C50CDD /* CustomCollectionViewManager.swift in Sources */,
 				F7A075542BA1D716009C47A6 /* AppDelegate.swift in Sources */,
+				F77098952F0E427800E7D164 /* FileOperation.swift in Sources */,
 				F74636552C5237720086E920 /* ActionsSettingsViewController.swift in Sources */,
 				F73865E22C37C0A300837FE4 /* Enum.swift in Sources */,
 				F73865E02C37C06C00837FE4 /* DataModel.swift in Sources */,
 				F73865DB2C37BC1500837FE4 /* RefCode.swift in Sources */,
+				F77098992F0E43E000E7D164 /* LayoutManagement.swift in Sources */,
+				F74D55502F0E467900C9AB85 /* DirTree.swift in Sources */,
 				F73865E82C37C26C00837FE4 /* FFmpegKit.swift in Sources */,
+				F74D554E2F0E459C00C9AB85 /* WindowManagement.swift in Sources */,
 				F73865D32C37B97500837FE4 /* CustomCollectionView.swift in Sources */,
+				F74D555E2F0E52F800C9AB85 /* ArrowKeyLocate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
