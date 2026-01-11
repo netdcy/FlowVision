@@ -121,6 +121,8 @@ class PublicVar{
     weak var refView: NSView!
     weak var viewController: ViewController!
 
+    var isLaunchFromFile = false
+    var isLaunchFromFile_changeLargeImage = false
     var randomSeed = Int.random(in: 0...Int.max)
     var isLargeImageFitWindow = true
     var isRecursiveMode = false
@@ -389,7 +391,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         treeViewData.viewController=self
         
         //初始化大图
-        if globalVar.isLaunchFromFile {
+        publicVar.isLaunchFromFile = globalVar.isLaunchFromFile
+        globalVar.isLaunchFromFile = false
+        publicVar.isLaunchFromFile_changeLargeImage = publicVar.isLaunchFromFile
+        if publicVar.isLaunchFromFile {
             largeImageBgEffectView.blendingMode = .behindWindow
             largeImageView.isHidden=false
             largeImageBgEffectView.isHidden=false
@@ -1633,7 +1638,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     func afterFinishLoad(_ openFolder: String? = nil){
         log("开始afterFinishLoad")
-        if globalVar.isLaunchFromFile == false { //从文件夹启动
+        if publicVar.isLaunchFromFile == false { //从文件夹启动
             let defaults = UserDefaults.standard
             var lastFolder = defaults.string(forKey: "lastFolder")
             if !globalVar.openLastFolder  {
@@ -1657,7 +1662,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 setWindowTitle()
             }
         }else{//从文件启动
-            globalVar.isLaunchFromFile = false //重置
+            
         }
         
         //启动后台任务线程
@@ -6398,7 +6403,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.toolbarTitle = fullTitle
         //publicVar.toolbarTitle = shortTitle
         if let windowController = view.window?.windowController as? WindowController {
-            windowController.updateToolbar()
+            windowController.updateToolbarSync()
         }
     }
     
@@ -6868,21 +6873,35 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     largeImageLoadQueueLock.unlock()
                     
                     if largeImage != nil{
-                        DispatchQueue.main.async { [weak self] in
-                            guard let self = self else { return }
+                        
+                        func doReplace() {
                             if pos != currLargeImagePos && !isThisFromFinder {return}
                             if rotate != largeImageView.file.rotate {return}
                             if largeImageView.file.largeSize != nil && largeSize != largeImageView.file.largeSize {return}
                             largeImageView.imageView.image=largeImage
                             //log("replaced")
                         }
+                        
+                        if publicVar.isLaunchFromFile_changeLargeImage {
+                            doReplace()
+                        } else {
+                            DispatchQueue.main.async { [weak self] in
+                                guard let self = self else { return }
+                                doReplace()
+                            }
+                        }
                     }
                 }
                 // 保存新的任务
                 largeImageLoadTask = task
                 
-                // 在全局队列上异步执行新的任务
-                DispatchQueue.global(qos: .userInitiated).async(execute: task!)
+                // 是否阻塞执行新的任务
+                if publicVar.isLaunchFromFile_changeLargeImage {
+                    DispatchQueue.global(qos: .userInitiated).sync(execute: task!)
+                    publicVar.isLaunchFromFile_changeLargeImage = false
+                } else {
+                    DispatchQueue.global(qos: .userInitiated).async(execute: task!)
+                }
                 
             } else if file.type == .video {
                 largeImageView.imageView.isHidden = true

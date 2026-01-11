@@ -333,17 +333,20 @@ extension WindowController: NSToolbarDelegate {
     func updateToolbar() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            guard let toolbar = window?.toolbar else { return }
-            let itemIdentifiers = getItemIdentifiers()
-            
-            while toolbar.items.count > 0 {
-                toolbar.removeItem(at: 0)
-            }
-            
-            for (index, identifier) in itemIdentifiers.enumerated() {
-                toolbar.insertItem(withItemIdentifier: identifier, at: index)
-            }
-            
+            updateToolbarSync()
+        }
+    }
+    
+    func updateToolbarSync() {
+        guard let toolbar = window?.toolbar else { return }
+        let itemIdentifiers = getItemIdentifiers()
+        
+        while toolbar.items.count > 0 {
+            toolbar.removeItem(at: 0)
+        }
+        
+        for (index, identifier) in itemIdentifiers.enumerated() {
+            toolbar.insertItem(withItemIdentifier: identifier, at: index)
         }
     }
     
