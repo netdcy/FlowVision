@@ -11,6 +11,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     
     var pathShortenStore = ""
     var windowFrameBeforeFullScreen: NSRect?
+    var cursorHideTimer: Timer?
 
     override func windowDidLoad() {
         super.windowDidLoad()
@@ -72,6 +73,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     
     func prepareForDeinit() {
         saveWindowState()
+        cancelCursorHideTimer()
     }
     
     func saveWindowState() {
@@ -129,6 +131,9 @@ class WindowController: NSWindowController, NSWindowDelegate {
     // 在窗口已经进入全屏模式时执行
     func windowDidEnterFullScreen(_ notification: Notification) {
         guard let viewController = contentViewController as? ViewController else {return}
+        
+        // 启动延迟隐藏光标的定时器
+        scheduleCursorHide()
 
         if !globalVar.autoHideToolbar {
             window?.titlebarAppearsTransparent = true
@@ -147,6 +152,10 @@ class WindowController: NSWindowController, NSWindowDelegate {
     // 在窗口已经退出全屏模式时执行
     func windowDidExitFullScreen(_ notification: Notification) {
         guard let viewController = contentViewController as? ViewController else {return}
+        
+        // 取消光标隐藏定时器并显示光标
+        cancelCursorHideTimer()
+        NSCursor.unhide()
 
         if !globalVar.autoHideToolbar {
             if window?.toolbar?.isVisible == false {
@@ -184,6 +193,13 @@ class WindowController: NSWindowController, NSWindowDelegate {
         guard let toolbar = window.toolbar else { return }
         guard let viewController = contentViewController as? ViewController else {return}
         let location = event.locationInWindow
+        
+        // 在全屏模式下，鼠标移动时显示光标并重置隐藏定时器
+        if window.styleMask.contains(.fullScreen) {
+            NSCursor.unhide()
+            scheduleCursorHide()
+        }
+        
         if globalVar.autoHideToolbar {
             if location.y > window.frame.height - 40 {
                 showTitleBar()
@@ -229,6 +245,25 @@ class WindowController: NSWindowController, NSWindowDelegate {
         window.standardWindowButton(.zoomButton)?.isHidden = true
         window.titlebarAppearsTransparent = true
         toolbar.isVisible = false
+    }
+    
+    // 安排延迟隐藏光标（在全屏模式下，鼠标停止移动后1秒隐藏）
+    func scheduleCursorHide() {
+        cancelCursorHideTimer()
+        cursorHideTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [weak self] _ in
+            guard let self = self else { return }
+            guard let window = self.window else { return }
+            // 只在全屏模式下隐藏光标
+            if window.styleMask.contains(.fullScreen) {
+                NSCursor.hide()
+            }
+        }
+    }
+    
+    // 取消光标隐藏定时器
+    func cancelCursorHideTimer() {
+        cursorHideTimer?.invalidate()
+        cursorHideTimer = nil
     }
 }
 
