@@ -86,7 +86,8 @@ class CoreAreaView: NSView {
     }
     
     override func otherMouseDown(with event: NSEvent) {
-        if event.buttonNumber == 3 { //back
+        // back
+        if event.buttonNumber == 3 {
             if let viewController = getViewController(self) {
                 if viewController.publicVar.isInLargeView{
                     viewController.previousLargeImage()
@@ -94,7 +95,8 @@ class CoreAreaView: NSView {
                     viewController.historyBack()
                 }
             }
-        } else if event.buttonNumber == 4 { //forward
+        // forward
+        } else if event.buttonNumber == 4 {
             if let viewController = getViewController(self) {
                 if viewController.publicVar.isInLargeView{
                     viewController.nextLargeImage()

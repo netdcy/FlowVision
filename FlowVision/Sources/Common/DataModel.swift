@@ -28,6 +28,7 @@ class SortKeyFile: SortKey, NSCopying {
 class SortKeyDir: SortKey {
     override init(_ path: String, createDate: Date = Date(), modDate: Date = Date(), addDate: Date = Date() , size: Int = 0, isDir: Bool = false, isInSameDir: Bool = false, needGetProperties: Bool = false, sortType: SortType = .pathA, isSortFolderFirst: Bool = true, isSortUseFullPath: Bool = true, randomSeed: Int = 0) {
         // 使用SortKeyDir\([^()]*?,[^()]*?\)来匹配多于一个参数的调用，不应该出现此情况，因为需要使用统一的排序参数
+        // Use SortKeyDir\([^()]*?,[^()]*?\) to match calls with more than one parameter. This should not occur as unified sort parameters are required
         super.init(path, createDate: createDate, modDate: modDate, addDate: addDate, size: size, isDir: isDir, isInSameDir: isInSameDir, needGetProperties: needGetProperties, sortType: sortType, isSortFolderFirst: isSortFolderFirst, isSortUseFullPath: isSortUseFullPath, randomSeed: randomSeed)
     }
 }
@@ -99,14 +100,18 @@ class SortKey: Comparable {
         let chars2 = Array(path2)
         
         // 找到最短路径长度，防止越界
+        // Find the shortest path length to prevent out of bounds
         let minLength = min(chars1.count, chars2.count)
         
         // 找到公共前缀的长度
+        // Find the length of the common prefix
         var lastCommonSlash = -1
         for i in 0..<minLength {
             if chars1[i] == chars2[i] {
                 if chars1[i] == "/" {
-                    lastCommonSlash = i // 记录最后一个公共斜杠的位置
+                    // 记录最后一个公共斜杠的位置
+                    // Record the position of the last common slash
+                    lastCommonSlash = i
                 }
             } else {
                 break
@@ -114,6 +119,7 @@ class SortKey: Comparable {
         }
 
         // 切割公共前缀后的路径部分
+        // Extract path parts after removing the common prefix
         let uniquePart1 = String(chars1[(lastCommonSlash + 1)...])
         let uniquePart2 = String(chars2[(lastCommonSlash + 1)...])
 
@@ -153,12 +159,17 @@ class SortKey: Comparable {
                 let imageInfo = getImageInfo(url: URL(string: sortKey.path)!, needMetadata: false)
                 let exifData = imageInfo?.properties?[kCGImagePropertyExifDictionary as String] as? [String: Any]
                 let tiffData = imageInfo?.properties?[kCGImagePropertyTIFFDictionary as String] as? [String: Any]
-                //拍摄时间
+                // 拍摄时间
+                // Capture time
                 var dateTimeString = exifData?[kCGImagePropertyExifDateTimeOriginal as String] as? String
-                if dateTimeString == nil { //以数字化时间为备选
+                // 以数字化时间为备选
+                // Use digitized time as fallback
+                if dateTimeString == nil {
                     dateTimeString = exifData?[kCGImagePropertyExifDateTimeDigitized as String] as? String
                 }
-                if dateTimeString == nil {//以TIFF时间为备选
+                // 以TIFF时间为备选
+                // Use TIFF time as fallback
+                if dateTimeString == nil {
                     dateTimeString = tiffData?[kCGImagePropertyTIFFDateTime as String] as? String
                 }
                 if let dateTimeString = dateTimeString {
@@ -168,7 +179,8 @@ class SortKey: Comparable {
                         sortKey.exifDate = date
                     }
                 }
-                //分辨率
+                // 分辨率
+                // Resolution
                 if let size = imageInfo?.size {
                     sortKey.exifPixel = Int(size.width * size.height)
                 }
@@ -192,15 +204,19 @@ class SortKey: Comparable {
     }
     
     static func < (lhs: SortKey, rhs: SortKey) -> Bool {
-        if lhs.sortType != rhs.sortType {return false} // 异常情况，认为相等
+        // 异常情况，认为相等
+        // Abnormal case, consider them equal
+        if lhs.sortType != rhs.sortType {return false}
         
         if lhs.isSortFolderFirst || lhs.sortType == .sizeA || lhs.sortType == .sizeZ {
-            //文件夹优先。另外文件夹size为0，按大小排序时还是优先为好
+            // 文件夹优先。另外文件夹size为0，按大小排序时还是优先为好
+            // Folders first. Also, folders have size 0, so it's better to prioritize them when sorting by size
             if lhs.pathCmp != rhs.pathCmp && lhs.isDir && !(rhs.isDir) { return true}
             if lhs.pathCmp != rhs.pathCmp && !(lhs.isDir) && rhs.isDir { return false}
         }
         
-        //以各种属性排序
+        // 以各种属性排序
+        // Sort by various attributes
         if lhs.sortType == .sizeA {
             if lhs.size == rhs.size {return isSmallerPath(lhs: lhs, rhs: rhs)}
             return lhs.size < rhs.size
@@ -233,14 +249,16 @@ class SortKey: Comparable {
             return lhs.ext() > rhs.ext()
         }
         
-        //随机排序
+        // 随机排序
+        // Random sort
         if lhs.sortType == .random {
             let lhs_hash=hashFunction(sortKey: lhs, seed: lhs.seed)
             let rhs_hash=hashFunction(sortKey: rhs, seed: rhs.seed)
             return lhs_hash<rhs_hash
         }
         
-        //Exif日期排序
+        // Exif日期排序
+        // Exif date sort
         if lhs.sortType == .exifDateA || lhs.sortType == .exifDateZ {
             if lhs.exifDate == Date(timeIntervalSince1970: 0) {
                 writeExifInfo(lhs)
@@ -257,7 +275,8 @@ class SortKey: Comparable {
             }
         }
         
-        //Exif像素数排序
+        // Exif像素数排序
+        // Exif pixel count sort
         if lhs.sortType == .exifPixelA || lhs.sortType == .exifPixelZ {
             if lhs.exifPixel == 0 {
                 writeExifInfo(lhs)
@@ -274,7 +293,8 @@ class SortKey: Comparable {
             }
         }
         
-        //以文件名排序
+        // 以文件名排序
+        // Sort by filename
         if lhs.sortType == .pathZ {
             return isSmallerPath(lhs: rhs, rhs: lhs)
         }else{
@@ -284,12 +304,13 @@ class SortKey: Comparable {
     
     static func isSmallerPath (lhs: SortKey, rhs: SortKey) -> Bool {
 
-        //return lhs.path<rhs.path
-        //return lhs.path.localizedStandardCompare(rhs.path) == .orderedAscending
-        //return lhs.path.compare(rhs.path, options: .numeric) == .orderedAscending
-        //注意：不加lowercased会导致不满足传递性
-        //return lhs.path.removingPercentEncoding!.localizedStandardCompare(rhs.path.removingPercentEncoding!) == .orderedAscending
-        //return lhs.path.lowercased().removingPercentEncoding!.localizedStandardCompare(rhs.path.lowercased().removingPercentEncoding!) == .orderedAscending
+        // return lhs.path<rhs.path
+        // return lhs.path.localizedStandardCompare(rhs.path) == .orderedAscending
+        // return lhs.path.compare(rhs.path, options: .numeric) == .orderedAscending
+        // 注意：不加lowercased会导致不满足传递性
+        // Note: Not adding lowercased will lead to non-transitivity
+        // return lhs.path.removingPercentEncoding!.localizedStandardCompare(rhs.path.removingPercentEncoding!) == .orderedAscending
+        // return lhs.path.lowercased().removingPercentEncoding!.localizedStandardCompare(rhs.path.lowercased().removingPercentEncoding!) == .orderedAscending
         
         if lhs.pathCmp==rhs.pathCmp { return false }
         if lhs.pathCmp=="" { return true }
@@ -305,7 +326,9 @@ class SortKey: Comparable {
         
         var lhs_paths: [String]
         var rhs_paths: [String]
-        keyTransformedDictLock.lock() // 加锁，防止多线程访问异常
+        // 加锁，防止多线程访问异常
+        // Lock to prevent multi-thread access exceptions
+        keyTransformedDictLock.lock()
         if keyTransformedDict[lhs.pathCmp] != nil {
             lhs_paths=keyTransformedDict[lhs.pathCmp]!
         }else{
@@ -318,17 +341,20 @@ class SortKey: Comparable {
             rhs_paths=rhs.path.replacingOccurrences(of: "file://", with: "").trimmingCharacters(in: CharacterSet(charactersIn: "/")).components(separatedBy: "/").map(){$0.removingPercentEncoding!.lowercased()}
             keyTransformedDict[rhs.pathCmp]=rhs_paths
         }
-        keyTransformedDictLock.unlock() // 解锁
-        //0.17s
+        // 解锁
+        // Unlock
+        keyTransformedDictLock.unlock()
+        // 0.17s
 
 //        return lhs.path<rhs.path
-        //0.01s
+        // 0.01s
         
         if lhs_paths.count==0 && rhs_paths.count==0 { return localCompare(lhs.pathCmp,rhs.pathCmp) }
         if lhs_paths.count==0 { return true }
         if rhs_paths.count==0 { return false }
         
         // 先按文件名比较，后按其完整路径（去掉文件名部分）来比较
+        // First compare by filename, then by full path (excluding filename part)
         if !lhs.isSortUseFullPath && !rhs.isSortUseFullPath {
             let lhsFileName = lhs_paths.last ?? ""
             let rhsFileName = rhs_paths.last ?? ""
@@ -338,6 +364,7 @@ class SortKey: Comparable {
             }
             
             // 如果文件名相同，则比较去掉文件名部分的路径
+            // If filenames are the same, compare paths without filename part
             let lhsPathWithoutFileName = lhs_paths.dropLast()
             let rhsPathWithoutFileName = rhs_paths.dropLast()
             
@@ -374,7 +401,9 @@ class SortKey: Comparable {
     }
     
     static func == (lhs: SortKey, rhs: SortKey) -> Bool {
-        if lhs.sortType != rhs.sortType {return true} // 异常情况，认为相等
+        // 异常情况，认为相等
+        // Abnormal case, consider them equal
+        if lhs.sortType != rhs.sortType {return true}
         if lhs.sortType == .random {
             return lhs.pathCmp == rhs.pathCmp && lhs.seed == rhs.seed
         }
@@ -439,7 +468,7 @@ class DirModel {
     init(path: String, ver: Int){
         self.path=path
         self.ver=ver
-        //self.searchVer=searchVer
+        // self.searchVer=searchVer
     }
     var path: String
     
@@ -447,7 +476,7 @@ class DirModel {
     var layoutCalcPos = 0
     var lastLayoutCalcPosUsed = 0
     var ver: Int
-    //var searchVer: Int
+    // var searchVer: Int
     var folderCount: Int = 0
     var fileCount: Int = 0
     var imageCount: Int = 0
@@ -471,7 +500,8 @@ class DirModel {
             }
         }
         
-        //暂时无需在此处重设id，因为改变排序后还会重读一遍文件
+        // 暂时无需在此处重设id，因为改变排序后还会重读一遍文件
+        // No need to reset id here temporarily, as files will be re-read after changing sort order
 //        var idInImage=0
 //        var id=0
 //        for ele in files{
@@ -492,7 +522,7 @@ class DatabaseModel {
     var curFolder = "file:///"
     var dblock: NSLock = NSLock()
     var ver = 0
-    //var searchVer = 0
+    // var searchVer = 0
     
     func lock(){
         dblock.lock()
@@ -507,7 +537,7 @@ func getMapKeysFile (_ theMap : Map<SortKeyFile,FileModel>) -> [(SortKeyFile,Fil
     for ele in theMap{
         keys.append((ele.0,ele.1))
     }
-    //log(keys)
+    // log(keys)
     return keys
 }
 
@@ -532,7 +562,7 @@ class TreeViewModel {
         root = TreeNode(name: "Root", fullPath: path)
         expand(node: root!, isLookSub: true)
 //        var currentNode = root!
-//        //currentNode.children?.append(TreeNode(name: "test", fullPath: "curPath"))
+//        // currentNode.children?.append(TreeNode(name: "test", fullPath: "curPath"))
 //        let newNode = TreeNode(name: "test", fullPath: "curPath")
 //        if currentNode.children == nil {
 //            currentNode.children = [newNode]
@@ -568,6 +598,7 @@ class TreeViewModel {
             var contents = [URL]()
             
             // 检查是否是根目录
+            // Check if it's the root directory
             if folderURL.path != "root" {
                 contents = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: [.isDirectoryKey, .isUbiquitousItemKey, .isHiddenKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey], options: [])
             }else{
@@ -597,35 +628,41 @@ class TreeViewModel {
                     log("No mounted volumes found.")
                 }
                 
-                //let volumesURL = URL(fileURLWithPath: "/Volumes")
-                //contents.append(volumesURL)
+                // let volumesURL = URL(fileURLWithPath: "/Volumes")
+                // contents.append(volumesURL)
             }
             
-            //contents.sort { $0.absoluteString < $1.absoluteString }
-            //contents.sort { $0.lastPathComponent.lowercased().localizedStandardCompare($1.lastPathComponent.lowercased()) == .orderedAscending }
+            // contents.sort { $0.absoluteString < $1.absoluteString }
+            // contents.sort { $0.lastPathComponent.lowercased().localizedStandardCompare($1.lastPathComponent.lowercased()) == .orderedAscending }
             
-            //过滤隐藏文件
+            // 过滤隐藏文件
+            // Filter hidden files
             contents = contents.filter { url in
 
                 // 获取隐藏属性
+                // Get hidden attribute
                 let resourceValues = try? url.resourceValues(forKeys: [.isHiddenKey])
                 let isHidden = resourceValues?.isHidden ?? false
                 
                 // 保留 /Volumes 目录
+                // Keep /Volumes directory
                 if url.path == "/Volumes" {
                     return true
                 }
                 
                 // 保留 用户的 Library 目录
+                // Keep user's Library directory
 //                if url.path == NSHomeDirectory() + "/Library" {
 //                    return true
 //                }
                 
                 // 过滤掉其他隐藏文件
+                // Filter out other hidden files
                 return !isHidden || viewController.publicVar.isShowHiddenFile
             }
             
-            //过滤出目录列表
+            // 过滤出目录列表
+            // Filter out directory list
             var subFolders = contents.filter { url in
                 guard let isDirectoryResourceValue = try? url.resourceValues(forKeys: [.isDirectoryKey]), let isDirectory = isDirectoryResourceValue.isDirectory else {
                     return false
@@ -633,8 +670,11 @@ class TreeViewModel {
                 return isDirectory
             }
             
-            //排序
-            if folderURL.path == "root" { //卷列表保持字母序
+            // 排序
+            // Sort
+            // 卷列表保持字母序
+            // Volume list maintains alphabetical order
+            if folderURL.path == "root" {
                 subFolders.sort { $0.lastPathComponent.lowercased().localizedStandardCompare($1.lastPathComponent.lowercased()) == .orderedAscending }
             }else{
                 let sortType = SortType(rawValue: Int(viewController.publicVar.profile.getValue(forKey: "dirTreeSortType")) ?? 0)
@@ -767,7 +807,7 @@ class TreeViewModel {
             }
         }
         
-        //return root
+        // return root
     }
 
     func findNode(withPath path: String) -> [TreeNode] {
@@ -784,7 +824,7 @@ class TreeViewModel {
                 return [] // Path does not exist
             }
         }
-        //log(currentNode.name)
+        // log(currentNode.name)
         return result
     }
 }

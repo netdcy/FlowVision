@@ -46,7 +46,8 @@ class CustomCollectionView: NSCollectionView {
 
     override func keyDown(with event: NSEvent) {
         // 不执行任何操作，从而忽略按键
-        //super.keyDown(with: event)
+        // Do nothing to ignore key press
+        // super.keyDown(with: event)
         return
     }
     
@@ -63,10 +64,13 @@ class CustomCollectionView: NSCollectionView {
         if let mouseDownLocation = self.mouseDownLocation {
             
             if !getViewController(self)!.publicVar.isColllectionViewItemRightClicked {
-                let maxDistance: CGFloat = 5.0 // 允许的最大移动距离
+                // 允许的最大移动距离
+                // Maximum allowed movement distance
+                let maxDistance: CGFloat = 5.0
                 let distance = hypot(mouseUpLocation.x - mouseDownLocation.x, mouseUpLocation.y - mouseDownLocation.y)
                 
                 // 鼠标移动距离在允许范围内，弹出菜单
+                // If mouse movement is within allowed range, show context menu
                 if distance <= maxDistance {
                     
                     deselectAll(nil)
@@ -78,7 +82,8 @@ class CustomCollectionView: NSCollectionView {
                         canPasteOrMove=false
                     }
                     
-                    //弹出菜单
+                    // 弹出菜单
+                    // Show context menu
                     let menu = NSMenu(title: "Custom Menu")
                     menu.autoenablesItems = false
                     
@@ -95,18 +100,20 @@ class CustomCollectionView: NSCollectionView {
 
                     menu.addItem(NSMenuItem.separator())
                     
-                    //let actionItemCopyPath = menu.addItem(withTitle: NSLocalizedString("Copy Path", comment: "复制路径"), action: #selector(actCopyPath), keyEquivalent: "")
+                    // let actionItemCopyPath = menu.addItem(withTitle: NSLocalizedString("Copy Path", comment: "复制路径"), action: #selector(actCopyPath), keyEquivalent: "")
                     
                     let actionItemOpenInTerminal = menu.addItem(withTitle: NSLocalizedString("Open in Terminal", comment: "在终端中打开"), action: #selector(actOpenInTerminal), keyEquivalent: "")
                     
                     menu.addItem(NSMenuItem.separator())
             
                     // 创建"新建"子菜单
+                    // Create "New" submenu
                     let newMenu = NSMenu()
                     let newMenuItem = NSMenuItem(title: NSLocalizedString("New", comment: "新建"), action: nil, keyEquivalent: "")
                     newMenuItem.submenu = newMenu
                     
                     // 添加新建文件夹选项
+                    // Add new folder option
                     let newFolderItem = newMenu.addItem(withTitle: NSLocalizedString("Folder", comment: "文件夹"), 
                                                        action: #selector(actNewFolder), 
                                                        keyEquivalent: "n")
@@ -115,6 +122,7 @@ class CustomCollectionView: NSCollectionView {
                     newMenu.addItem(NSMenuItem.separator())
                     
                     // 添加新建文本文件选项
+                    // Add new text file option
                     let newTextFileItem = newMenu.addItem(withTitle: NSLocalizedString("Text File", comment: "文本文件"), 
                                                         action: #selector(actNewTextFile), 
                                                         keyEquivalent: "")
@@ -131,7 +139,9 @@ class CustomCollectionView: NSCollectionView {
                 }
             }
         }
-        self.mouseDownLocation = nil // 重置按下位置
+        // 重置按下位置
+        // Reset mouse down location
+        self.mouseDownLocation = nil
         super.rightMouseUp(with: event)
     }
     
@@ -175,6 +185,7 @@ class CustomCollectionView: NSCollectionView {
     }
 
     // 添加新建文本文件的动作处理方法
+    // Add action handler method for new text file
     @objc func actNewTextFile() {
         getViewController(self)?.handleNewTextFile()
     }

@@ -8,7 +8,8 @@
 import Foundation
 import Cocoa
 
-//这个布局有问题，拖动选中触发区域不一致
+// 这个布局有问题，拖动选中触发区域不一致
+// This layout has issues, drag selection trigger area is inconsistent
 class LeftAlignedCollectionViewFlowLayout: NSCollectionViewFlowLayout {
     override func prepare() {
         super.prepare()
@@ -48,7 +49,7 @@ class CustomFlowLayout: NSCollectionViewLayout {
         return getViewController(collectionView)?.mainScrollView.bounds.width ?? collectionView.bounds.width
     }
 
-    //var cellPadding: CGFloat = 5
+    // var cellPadding: CGFloat = 5
     var itemSpacing: CGFloat = 0
     var lineSpacing: CGFloat = 0
 
@@ -123,7 +124,7 @@ class CustomGridLayout: NSCollectionViewLayout {
         return getViewController(collectionView)?.mainScrollView.bounds.width ?? collectionView.bounds.width
     }
 
-    //var cellPadding: CGFloat = 5
+    // var cellPadding: CGFloat = 5
     var itemSpacing: CGFloat = 0
     var lineSpacing: CGFloat = 0
 
@@ -150,6 +151,7 @@ class CustomGridLayout: NSCollectionViewLayout {
             let itemSize = delegate.collectionView!(collectionView, layout: self, sizeForItemAt: indexPath)
             
             // 使用固定尺寸计算位置
+            // Use fixed size to calculate position
             let positionWidth: CGFloat = floor(totalWidth/CGFloat(numberOfColumns+1))
             let positionHeight: CGFloat = positionWidth + filenamePadding
 
@@ -160,12 +162,14 @@ class CustomGridLayout: NSCollectionViewLayout {
             }
 
             // 计算网格单元格的宽度和实际内容的宽度差
+            // Calculate difference between grid cell width and actual content width
             let itemWidth = itemSize.width
             let itemHeight = itemSize.height
             let horizontalOffset = (positionWidth - itemWidth) / 2
             let verticalOffset = (positionHeight - itemHeight) / 2
 
             // 创建居中的frame
+            // Create centered frame
             let frame = CGRect(x: xOffset + horizontalOffset, y: yOffset + verticalOffset, width: itemWidth, height: itemHeight - filenamePadding)
             let insetFrame = frame.insetBy(dx: 0, dy: 0)
             let attributes = NSCollectionViewLayoutAttributes(forItemWith: indexPath)
@@ -173,8 +177,12 @@ class CustomGridLayout: NSCollectionViewLayout {
             cache.append(attributes)
 
             contentHeight = max(contentHeight, yOffset + positionHeight + cellPadding)
-            rowHeight = max(rowHeight, positionHeight)  // 使用固定高度计算行高
-            xOffset += positionWidth + itemSpacing      // 使用固定宽度计算下一个位置
+            // 使用固定高度计算行高
+            // Use fixed height to calculate row height
+            rowHeight = max(rowHeight, positionHeight)
+            // 使用固定宽度计算下一个位置
+            // Use fixed width to calculate next position
+            xOffset += positionWidth + itemSpacing
         }
     }
 
@@ -211,7 +219,7 @@ class WaterfallLayout: NSCollectionViewLayout {
     }
 
     var numberOfColumns = 5
-    //var cellPadding: CGFloat = 5
+    // var cellPadding: CGFloat = 5
 
     override func prepare() {
         guard let collectionView = collectionView else { return }
@@ -239,6 +247,7 @@ class WaterfallLayout: NSCollectionViewLayout {
             let height = round(itemSize.height * (width / itemSize.width) + (cellPadding * 2))
             
             // 找到所有列中高度最小的列
+            // Find the column with minimum height among all columns
             let minYOffset = yOffset.min() ?? 0
             let column = yOffset.firstIndex(of: minYOffset) ?? 0
             

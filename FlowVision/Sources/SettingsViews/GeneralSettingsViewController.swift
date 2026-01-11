@@ -30,19 +30,22 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //self.preferredContentSize = NSSize(width: 600, height: 400)
+        // self.preferredContentSize = NSSize(width: 600, height: 400)
         
         // 初始化 scrollSensitivitySlider 和标签
+        // Initialize scrollSensitivitySlider and labels
         scrollSensitivitySlider.doubleValue = globalVar.scrollSensitivity
         
         terminateAfterLastWindowClosedCheckbox.state = globalVar.terminateAfterLastWindowClosed ? .on : .off
         autoHideToolbarCheckbox.state = globalVar.autoHideToolbar ? .on : .off
         
         // 初始化 NSPopUpButton 的选项
+        // Initialize NSPopUpButton options
         let autoTitle = NSLocalizedString("Auto", comment: "自动")
         languagePopUpButton.removeAllItems()
         languagePopUpButton.addItems(withTitles: [autoTitle, "Arabic(العربية)", "Chinese Simplified(简体中文)", "Chinese Traditional(繁體中文)", "Dutch(Nederlands)", "English(English)", "French(Français)", "German(Deutsch)", "Italian(Italiano)", "Japanese(日本語)", "Korean(한국어)", "Portuguese Brazil(Português)", "Portuguese Portugal(Português)", "Russian(Русский)", "Spanish(Español)", "Swedish(Svenska)"])
         // 设置初始选择
+        // Set initial selection
         if let languageCodes = UserDefaults.standard.array(forKey: "AppleLanguages") as? [String], let firstLanguage = languageCodes.first {
             switch firstLanguage {
             case let lang where lang.hasPrefix("en"):
@@ -150,6 +153,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
 //        let fileTypes = ["public.jpeg", "public.png", "public.gif", "com.microsoft.bmp", "public.tiff", "public.heif", "org.webmproject.webp", "public.image", "public.heic"]
         guard let fileTypes = getSupportedFileTypes() else {
             log("获取支持文件类型失败", level: .error)
+            // Failed to get supported file types
             return
         }
         let appBundleID = Bundle.main.bundleIdentifier!

@@ -8,10 +8,10 @@
 import Foundation
 import Cocoa
 
-//let DEFAULT_SIZE = 512
+// let DEFAULT_SIZE = 512
 let DEFAULT_SIZE = NSSize(width: 512, height: 512)
 let OPEN_LARGEIMAGE_DURATION = 0.1
-//let THUMB_SIZES = [192,256,384,512,640,768,896,1024,1536,2048,4096]
+// let THUMB_SIZES = [192,256,384,512,640,768,896,1024,1536,2048,4096]
 var THUMB_SIZES = [Int]()
 let PRELOAD_THUMB_RANGE_PRE = 20
 let PRELOAD_THUMB_RANGE_NEXT = 40
@@ -35,23 +35,31 @@ class GlobalVar{
     var operationLogs: [String] = []
     var closedPaths: [String] = []
     
-    //TODO: 临时公用状态变量
+    // TODO: 临时公用状态变量
+    // TODO: Temporary shared state variables
     var isLaunchFromFile = false
     var startSpeedUpImageSizeCache: NSSize? = nil
     var useCreateWindowShowDelay = false
     
-    //实时状态变量
+    // 实时状态变量
+    // Real-time state variables
     var isInMiddleMouseDrag = false
     
-    //“设置”中按钮，用于同步状态
+    // "设置"中按钮，用于同步状态
+    // Button in "Settings" for synchronizing state
     weak var useInternalPlayerCheckbox: NSButton?
     
-    //“设置”中的变量
+    // "设置"中的变量
+    // Variables in "Settings"
     var scrollSensitivityRatio: Double {
         // 将滑块值 1.0-9.0 映射到乘数
+        // Map slider value 1.0-9.0 to multiplier
         // 5.0 对应 1.0（原始速度）
+        // 5.0 corresponds to 1.0 (original speed)
         // 1.0 对应 0.25（慢 4 倍）
+        // 1.0 corresponds to 0.25 (4x slower)
         // 9.0 对应 4.0（快 4 倍）
+        // 9.0 corresponds to 4.0 (4x faster)
         return pow(2.0, (scrollSensitivity - 5.0) / 2.0)
     }
     var scrollSensitivity: Double = 5.0
@@ -86,7 +94,8 @@ class GlobalVar{
     var homeFolder = "file:///"
     var keepFilterStateWhenSwitchFolder = false
     
-    //可记忆设置变量
+    // 可记忆设置变量
+    // Rememberable settings variables
     var isFirstTimeUse = true
     var portableMode = false
     var portableImageUseActualSize = false
@@ -116,12 +125,21 @@ class GlobalVar{
         HandledNativeSupportedVideoExtensions = ["mp4", "mov", "m2ts", "ts", "mpeg", "mpg", "m4v", "vob"]
         HandledNotNativeSupportedVideoExtensions = ["mkv", "mts", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2"]
         HandledVideoExtensions = HandledNativeSupportedVideoExtensions + HandledNotNativeSupportedVideoExtensions
-        HandledOtherExtensions = [] //["pdf"] //不能为""，否则会把目录异常包含进来
+        // 不能为""，否则会把目录异常包含进来
+        // Cannot be "", otherwise directories will be incorrectly included
+        HandledOtherExtensions = [] // ["pdf"]
         HandledNonExternalExtensions = HandledImageAndRawExtensions
-        HandledFileExtensions = HandledImageAndRawExtensions + HandledVideoExtensions + HandledOtherExtensions //文件列表显示的
-        HandledSearchExtensions = HandledImageAndRawExtensions + HandledVideoExtensions //作为鼠标手势查找的目标
-        HandledFolderThumbExtensions = HandledImageAndRawExtensions.filter{$0 != "svg"} + HandledVideoExtensions // + ["pdf"] //目录缩略图
-        //使用个别特殊svg作为文件夹缩略图绘图元素会导致程序异常 'NSGenericException', reason: 'NaN point value'
+        // 文件列表显示的
+        // Displayed in file list
+        HandledFileExtensions = HandledImageAndRawExtensions + HandledVideoExtensions + HandledOtherExtensions
+        // 作为鼠标手势查找的目标
+        // As target for mouse gesture search
+        HandledSearchExtensions = HandledImageAndRawExtensions + HandledVideoExtensions
+        // 目录缩略图
+        // Folder thumbnails
+        HandledFolderThumbExtensions = HandledImageAndRawExtensions.filter{$0 != "svg"} + HandledVideoExtensions // + ["pdf"]
+        // 使用个别特殊svg作为文件夹缩略图绘图元素会导致程序异常 'NSGenericException', reason: 'NaN point value'
+        // Using certain special SVGs as folder thumbnail drawing elements will cause program exception 'NSGenericException', reason: 'NaN point value'
     }
 }
 var globalVar = GlobalVar()
@@ -154,10 +172,12 @@ func getSystemVolumeName() -> String? {
     let fileManager = FileManager.default
     
     // 获取根目录的URL
+    // Get root directory URL
     let rootURL = URL(fileURLWithPath: "/")
     
     do {
         // 获取根目录的资源值，特别是卷名
+        // Get root directory resource values, especially volume name
         let resourceValues = try rootURL.resourceValues(forKeys: [.volumeNameKey])
         return resourceValues.volumeName
     } catch {

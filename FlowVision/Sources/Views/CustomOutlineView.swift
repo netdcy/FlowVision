@@ -29,7 +29,8 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
     
     override func keyDown(with event: NSEvent) {
         // 不执行任何操作，从而忽略按键，避免字母定位与目录切换快捷键同时触发
-        //super.keyDown(with: event)
+        // Do nothing to ignore key press, avoid letter navigation and directory switch shortcut triggering simultaneously
+        // super.keyDown(with: event)
         return
     }
     
@@ -39,12 +40,16 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         let clickedRow = row(at: locationInOutlineView)
         
         // 检查是否在有效的区域内点击
+        // Check if clicking in valid area
         // 为了解决点击目录树后，在右边CollectionView中空白处快速右击左击，会出现目录树异常响应的问题
+        // To solve the issue where after clicking directory tree, quickly right-clicking and left-clicking in blank area of CollectionView on the right causes abnormal response in directory tree
         // 且弹出重命名对话框时异常响应的问题
+        // And abnormal response when rename dialog pops up
         if clickedRow >= 0 && getViewController(self)!.publicVar.isKeyEventEnabled {
             super.mouseDown(with: event)
         } else {
             // 如果点击区域无效，不执行默认的点击处理
+            // If click area is invalid, don't execute default click handling
             nextResponder?.mouseDown(with: event)
         }
     }
@@ -55,7 +60,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
     }
     
     func menuDidClose(_ menu: NSMenu) {
-        //curRightClickedPath = ""
+        // curRightClickedPath = ""
         curRightClickedIndex = -1
 
         (self.delegate as? CustomOutlineViewManager)?.ifActWhenSelected=false
@@ -71,7 +76,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         let clickedRow = self.row(at: locationInView)
 
         if clickedRow != -1 {
-            //self.selectRowIndexes(IndexSet(integer: clickedRow), byExtendingSelection: false)
+            // self.selectRowIndexes(IndexSet(integer: clickedRow), byExtendingSelection: false)
             
             let item = self.item(atRow: clickedRow) as? TreeNode
             curRightClickedPath=item!.fullPath
@@ -91,6 +96,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             }
 
             // 创建菜单
+            // Create menu
             let menu = NSMenu()
             menu.autoenablesItems = false
             
@@ -173,6 +179,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             actionItemRefresh.keyEquivalentModifierMask = [.command]
 
             // 可以将点击的对象传递给菜单项动作
+            // Can pass clicked object to menu item action
             menu.items.forEach { item in
                 item.representedObject = item
             }
@@ -271,11 +278,14 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         guard let url = url else {return}
 
         let pasteboard = NSPasteboard.general
-        pasteboard.clearContents()  // 清除剪贴板现有内容
+        // 清除剪贴板现有内容
+        // Clear existing clipboard contents
+        pasteboard.clearContents()
 
         var urls=[URL]()
         urls.append(url)
         // 将文件URL添加到剪贴板
+        // Add file URL to clipboard
         pasteboard.writeObjects(urls as [NSPasteboardWriting])
     }
     

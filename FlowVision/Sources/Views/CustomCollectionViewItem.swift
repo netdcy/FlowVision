@@ -32,7 +32,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     
     private var lastClickTime: TimeInterval = 0
     private var lastClickLocation: NSPoint = NSPoint.zero
-    private let positionThreshold: CGFloat = 4.0 // 双击位置阈值，可以根据需要调整
+    // 双击位置阈值，可以根据需要调整
+    // Double-click position threshold, can be adjusted as needed
+    private let positionThreshold: CGFloat = 4.0
     
     private var middleMouseLastLocation: NSPoint = NSPoint.zero
     
@@ -44,34 +46,41 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         view.layer?.cornerRadius = 5.0
         view.layer?.masksToBounds = false
         
-        //图像容器
+        // 图像容器
+        // Image container
         imageViewObj.imageScaling = .scaleAxesIndependently
         imageViewObj.wantsLayer = true
         imageViewObj.layer?.borderWidth = 0.0
         imageViewObj.layer?.borderColor = nil
-        imageViewObj.layer?.cornerRadius = 5.0 // 这里可以根据需要调整圆角的半径
+        // 这里可以根据需要调整圆角的半径
+        // Corner radius can be adjusted here as needed
+        imageViewObj.layer?.cornerRadius = 5.0
         imageViewObj.layer?.masksToBounds = true
         imageViewObj.animates=true
         if #available(macOS 14.0, *) {
             imageViewObj.preferredImageDynamicRange = .standard
         }
         
-        //文件名标签
+        // 文件名标签
+        // Filename label
         imageNameField.cell?.lineBreakMode = .byTruncatingTail
         
-        //左上角标签
+        // 左上角标签
+        // Top-left corner label
         imageTag.wantsLayer = true
-        //imageTag.layer?.backgroundColor = NSColor.gray.withAlphaComponent(0.6).cgColor
-        //imageTag.layer?.cornerRadius = 4
+        // imageTag.layer?.backgroundColor = NSColor.gray.withAlphaComponent(0.6).cgColor
+        // imageTag.layer?.cornerRadius = 4
         
-        //右上角标签
+        // 右上角标签
+        // Top-right corner label
         imageLabel.wantsLayer = true
         imageLabel.layer?.backgroundColor = NSColor.gray.withAlphaComponent(0.6).cgColor
         imageLabel.layer?.cornerRadius = 4
 //        imageLabel.layer?.borderWidth = 0.5
 //        imageLabel.layer?.borderColor = NSColor.gray.withAlphaComponent(0.5).cgColor
         
-        //视频图标
+        // 视频图标
+        // Video icon
         let playImage = NSImage(systemSymbolName: "play.circle", accessibilityDescription: "Video")?.withSymbolConfiguration(.init(pointSize: 0, weight: .regular, scale: .large))
         playImage?.isTemplate = true
         videoFlag.image = playImage
@@ -79,11 +88,13 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         videoFlag.imageScaling = .scaleAxesIndependently
         videoFlag.wantsLayer = true
 
-        //视频播放器
+        // 视频播放器
+        // Video player
         queuePlayer = AVQueuePlayer()
         queuePlayer?.isMuted = true
         
         // 初始化 AVPlayerLayer
+        // Initialize AVPlayerLayer
         avPlayerLayer = AVPlayerLayer(player: queuePlayer)
         avPlayerLayer?.isHidden = true
         avPlayerLayer?.frame = videoView.bounds
@@ -96,12 +107,12 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 //            // 父视图 - 用于阴影和边框
 //            let shadowView = NSView(frame: CGRect(x: 100, y: 100, width: 200, height: 200))
 //            shadowView.wantsLayer = true
-//            //阴影
+//            // 阴影
 //            shadowView.layer?.shadowColor = NSColor.black.cgColor
 //            shadowView.layer?.shadowOpacity = 0.8
 //            shadowView.layer?.shadowOffset = CGSize(width: 3, height: -3)
 //            shadowView.layer?.shadowRadius = 5
-//            //边框
+//            // 边框
 //            shadowView.layer?.masksToBounds = false
 //            shadowView.layer?.borderColor = NSColor.white.cgColor
 //            shadowView.layer?.borderWidth = 2.0
@@ -114,7 +125,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 //            contentView.wantsLayer = true
 //            contentView.layer?.cornerRadius = 4.0
 //            contentView.layer?.masksToBounds = true
-//            //contentView.layer?.backgroundColor = NSColor.white.cgColor // 背景颜色，对于透明png？
+//            // contentView.layer?.backgroundColor = NSColor.white.cgColor // 背景颜色，对于透明png？
 //            contentView.imageScaling = .scaleAxesIndependently
 //            
 //            shadowView.autoresizingMask=[.width, .height, .minXMargin, .minYMargin, .maxXMargin, .maxXMargin]
@@ -144,9 +155,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         super.viewWillAppear()
         if isSelected && !getViewController(collectionView!)!.publicVar.isInLargeView {
             // 选中状态的处理代码
+            // Handle selected state
             selectedColor()
         } else {
             // 未选中状态的处理代码
+            // Handle unselected state
             deselectedColor()
         }
         lastClickTime=0
@@ -161,11 +174,14 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         didSet {
             super.isSelected = isSelected
             // 在这里处理选中状态变化
+            // Handle selection state change here
             if isSelected && !getViewController(collectionView!)!.publicVar.isInLargeView {
                 // 选中状态的处理代码
+                // Handle selected state
                 selectedColor()
             } else {
                 // 未选中状态的处理代码
+                // Handle unselected state
                 deselectedColor()
             }
         }
@@ -196,7 +212,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         imageTag.stringValue = tags.joined(separator: "\n")
         
         if imageTag.stringValue != "" && isShowThumbnailTag {
-            imageTag.sizeToFit() // 先调整文字大小
+            // 先调整文字大小
+            // Adjust text size first
+            imageTag.sizeToFit()
             imageTag.frame.origin.x = imageViewObj.frame.origin.x + 5
             imageTag.frame.origin.y = imageViewObj.frame.origin.y + imageViewObj.frame.height - imageTag.frame.height - 5
             imageTag.isHidden=false
@@ -217,9 +235,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
         if isSelected {
             // 选中状态的处理代码
+            // Handle selected state
             selectedColor()
         } else {
             // 未选中状态的处理代码
+            // Handle unselected state
             deselectedColor()
         }
         
@@ -231,9 +251,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
 
         // 左上角标签
+        // Top-left corner label
         refreshTagLabel()
 
         // 右上角标签
+        // Top-right corner label
         let isShowThumbnailBadge = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailBadge") == "true"
         let isRawImage = globalVar.HandledRawExtensions.contains(imageViewObj.url?.pathExtension.lowercased() ?? "noExtention")
         if isRawImage {
@@ -245,7 +267,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
         
         if imageLabel.stringValue != "" && isShowThumbnailBadge {
-            imageLabel.sizeToFit() // 先调整文字大小
+            // 先调整文字大小
+            // Adjust text size first
+            imageLabel.sizeToFit()
             imageLabel.frame.origin.x = imageViewObj.frame.origin.x + imageViewObj.frame.width - imageLabel.frame.width - 5
             imageLabel.frame.origin.y = imageViewObj.frame.origin.y + imageViewObj.frame.height - imageLabel.frame.height - 5
             imageLabel.isHidden=false
@@ -256,6 +280,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         guard let style = getViewController(collectionView!)?.publicVar.profile else {return}
         if file.type == .video && (getViewController(collectionView!)!.publicVar.profile.layoutType == .grid || style.ThumbnailBorderThickness == 0) {
             // 设置视频播放图标的大小为视图宽度的1/4
+            // Set video play icon size to 1/4 of view width
             let iconSize = max(imageViewObj.frame.width, imageViewObj.frame.height) * 0.25
             let iconPoint = NSPoint(
                 x: imageViewObj.frame.origin.x + (imageViewObj.frame.width - iconSize) / 2,
@@ -278,18 +303,23 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         if(playAnimation){
             NSAnimationContext.runAnimationGroup({ context in
                 // 设置动画持续时间秒
+                // Set animation duration in seconds
                 context.duration = 0.1
                 
                 // 使用Core Animation的crossfade效果
-                imageViewObj.wantsLayer = true // 确保imageView使用了CALayer
+                // Use Core Animation crossfade effect
+                // 确保imageView使用了CALayer
+                // Ensure imageView uses CALayer
+                imageViewObj.wantsLayer = true
                 let transition = CATransition()
                 transition.type = CATransitionType.fade
                 transition.duration = context.duration
                 imageViewObj.layer?.add(transition, forKey: kCATransition)
                 
                 // 设置新图像
+                // Set new image
                 imageViewObj.image = file.image
-                //imageViewObj.sd_setImage(with: URL(string: path), placeholderImage: nil)
+                // imageViewObj.sd_setImage(with: URL(string: path), placeholderImage: nil)
                 
 //                if file.folderImages.count>0{
 //                    folderViews[0].isHidden=false
@@ -301,6 +331,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
             }, completionHandler: {
                 // 动画完成后的操作（如果有）
+                // Operations after animation completes (if any)
             })
         }else{
             if file.image != nil {
@@ -341,13 +372,16 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     func generateTooltip(filePath: String, type: FileType, fileSize: Int?, imageSize: NSSize?, creationDate: Date?, modificationDate: Date?, addDate: Date?) -> String {
-        //当前目录
+        // 当前目录
+        // Current directory
         let curFolder = getViewController(collectionView!)!.fileDB.curFolder.removingPercentEncoding!
 
         // 获取文件名
+        // Get filename
         let fileName = (filePath as NSString).lastPathComponent
         
-        //获取相对路径
+        // 获取相对路径
+        // Get relative path
         var relativePath = "./" + filePath.replacingOccurrences(of: curFolder, with: "")
         if relativePath.hasSuffix("/") {
             relativePath = String(relativePath.dropLast())
@@ -355,6 +389,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         relativePath = relativePath.replacingOccurrences(of: fileName, with: "")
         
         // 准备局部化字符串
+        // Prepare localized strings
         let nameLabel = NSLocalizedString("Name", comment: "名称")
         let sizeLabel = NSLocalizedString("file-size", comment: "文件大小")
         var dimensionsLabel = ""
@@ -369,17 +404,21 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         let relativePathLabel = NSLocalizedString("Relative Path", comment: "相对路径")
         
         // 生成Tooltip字符串的数组
+        // Generate array of Tooltip strings
         var tooltipParts: [String] = []
         
         // 添加文件名
+        // Add filename
         tooltipParts.append("\(nameLabel): \(fileName)")
         
         // 添加相对路径
+        // Add relative path
         if getViewController(collectionView!)!.publicVar.isRecursiveMode {
             tooltipParts.append("\(relativePathLabel): \(relativePath)")
         }
         
         // 如果文件大小存在，添加文件大小
+        // If file size exists, add file size
         if let fileSize = fileSize {
             let byteCountFormatter = ByteCountFormatter()
             byteCountFormatter.allowedUnits = [.useKB, .useMB, .useGB]
@@ -389,35 +428,41 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
         
         // 如果图像尺寸存在，添加图像尺寸
+        // If image size exists, add image size
         if let imageSize = imageSize {
             let formattedImageSize = "\(Int(imageSize.width)) x \(Int(imageSize.height))"
             tooltipParts.append("\(dimensionsLabel): \(formattedImageSize)")
         }
         
         // 日期格式化器
+        // Date formatter
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .medium
         
         // 如果创建日期存在，添加创建日期
+        // If creation date exists, add creation date
         if let creationDate = creationDate {
             let formattedCreationDate = dateFormatter.string(from: creationDate)
             tooltipParts.append("\(creationDateLabel): \(formattedCreationDate)")
         }
         
         // 如果修改日期存在，添加修改日期
+        // If modification date exists, add modification date
         if let modificationDate = modificationDate {
             let formattedModificationDate = dateFormatter.string(from: modificationDate)
             tooltipParts.append("\(modificationDateLabel): \(formattedModificationDate)")
         }
         
         // 如果添加日期存在，添加添加日期
+        // If add date exists, add add date
         if let addDate = addDate {
             let formattedAddDate = dateFormatter.string(from: addDate)
             tooltipParts.append("\(addDateLabel): \(formattedAddDate)")
         }
         
         // 将所有部分连接成最终的Tooltip字符串
+        // Join all parts into final Tooltip string
         let tooltip = tooltipParts.joined(separator: "\n")
         
         return tooltip
@@ -433,6 +478,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         if file.type == .video && globalVar.HandledNativeSupportedVideoExtensions.contains(file.ext) {
             // 检查当前播放的视频是否已经是目标视频
+            // Check if currently playing video is already the target video
             if currentPlayingURL == URL(string: file.path) {
                 return
             }
@@ -471,43 +517,59 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     func selectedColor(){
         guard let style = getViewController(collectionView!)?.publicVar.profile else {return}
         
-        //设置frame
+        // 设置frame
+        // Set frame
         setCustomFrameSize()
         
         let theme=NSApp.effectiveAppearance.name
         
-        //定义失去焦点时的边框颜色
-        var focusColor = NSColor.systemGray //失焦
+        // 定义失去焦点时的边框颜色
+        // Define border color when losing focus
+        // 失焦
+        // Out of focus
+        var focusColor = NSColor.systemGray
         if getViewController(collectionView!)!.publicVar.isCollectionViewFirstResponder || getViewController(collectionView!)!.publicVar.isInSearchState {
-            focusColor = NSColor.controlAccentColor //聚焦
+            // 聚焦
+            // In focus
+            focusColor = NSColor.controlAccentColor
         } else if style.ThumbnailBorderThickness == 0 {
             focusColor = NSColor.black
         }
         
-        //文件名颜色
+        // 文件名颜色
+        // Filename color
         if style.ThumbnailBorderThickness == 0 {
             imageNameField.textColor = focusColor
         }else{
             imageNameField.textColor = hexToNSColor(hex: "#FFFFFF")
         }
         
-        //占位背景色
+        // 占位背景色
+        // Placeholder background color
         if file.isDir {
-            imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor //填充
+            // 填充
+            // Fill
+            imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
         }else{
             if theme == .darkAqua {
-                //imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#505050").cgColor //填充
-                imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#404040").cgColor //填充
+                // 填充
+                // Fill
+                // imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#505050").cgColor
+                imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#404040").cgColor
             }else{
-                //imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#CECECE").cgColor //填充
-                imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#DDDDDD").cgColor //填充
+                // 填充
+                // Fill
+                // imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#CECECE").cgColor
+                imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#DDDDDD").cgColor
             }
         }
         
-        //边框颜色
+        // 边框颜色
+        // Border color
         view.layer?.backgroundColor = focusColor.cgColor
         
-        //边框为0时不显示底色
+        // 边框为0时不显示底色
+        // Don't show background color when border thickness is 0
         if style.ThumbnailBorderThickness == 0 {
             view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
             if file.getThumbFailed || !(file.type == .image || file.type == .video || file.ext == "pdf") {
@@ -515,7 +577,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             }
         }
         
-        //图像高亮-选中
+        // 图像高亮-选中
+        // Image highlight - selected
         if style.ThumbnailBorderThickness == 0 {
             let overlayLayerName = "highlightOverlay"
             videoView.layer?.sublayers?.forEach { sublayer in
@@ -536,40 +599,61 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     func deselectedColor(){
         guard let style = getViewController(collectionView!)?.publicVar.profile else {return}
         
-        //设置frame
+        // 设置frame
+        // Set frame
         setCustomFrameSize()
         
         let theme=NSApp.effectiveAppearance.name
         
-        //文件名颜色
+        // 文件名颜色
+        // Filename color
         imageNameField.textColor = hexToNSColor(hex: "#7E7E7E")
         
-        //占位背景色和边框颜色
+        // 占位背景色和边框颜色
+        // Placeholder background color and border color
         if file.isDir {
             imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
             view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
-        }else{//文件
-            //黑暗模式
+        // 文件
+        // File
+        }else{
+            // 黑暗模式
+            // Dark mode
             if theme == .darkAqua {
-                imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#404040").cgColor //填充
+                // 填充
+                // Fill
+                imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#404040").cgColor
                 if file.type == .video
                 {
-                    view.layer?.backgroundColor = hexToNSColor(hex: "#DDDDDD").cgColor //视频边框
+                    // 视频边框
+                    // Video border
+                    view.layer?.backgroundColor = hexToNSColor(hex: "#DDDDDD").cgColor
                 }else{
-                    view.layer?.backgroundColor = hexToNSColor(hex: "#3A3A3A").cgColor //图片边框
+                    // 图片边框
+                    // Image border
+                    view.layer?.backgroundColor = hexToNSColor(hex: "#3A3A3A").cgColor
                 }
-            }else{//浅色模式
-                imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#DDDDDD").cgColor //填充
+            }else{
+                // 浅色模式
+                // Light mode
+                // 填充
+                // Fill
+                imageViewObj.layer?.backgroundColor = hexToNSColor(hex: "#DDDDDD").cgColor
                 if file.type == .video
                 {
-                    view.layer?.backgroundColor = hexToNSColor(hex: "#404040").cgColor //视频边框
+                    // 视频边框
+                    // Video border
+                    view.layer?.backgroundColor = hexToNSColor(hex: "#404040").cgColor
                 }else{
-                    view.layer?.backgroundColor = hexToNSColor(hex: "#F4F5F5").cgColor //图片边框
+                    // 图片边框
+                    // Image border
+                    view.layer?.backgroundColor = hexToNSColor(hex: "#F4F5F5").cgColor
                 }
             }
         }
         
-        //边框为0时不显示底色
+        // 边框为0时不显示底色
+        // Don't show background color when border thickness is 0
         if style.ThumbnailBorderThickness == 0 {
             view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
             if file.getThumbFailed || !(file.type == .image || file.type == .video || file.ext == "pdf") {
@@ -577,7 +661,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             }
         }
         
-        //图像高亮-取消选中
+        // 图像高亮-取消选中
+        // Image highlight - deselected
         let overlayLayerName = "highlightOverlay"
         videoView.layer?.sublayers?.forEach { sublayer in
             if sublayer.name == overlayLayerName {
@@ -609,6 +694,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         let borderRadius = style.layoutType == .grid ? style.ThumbnailBorderRadiusInGrid : style.ThumbnailBorderRadius
         // 限制圆角半径不超过视图尺寸的一半
+        // Limit corner radius to not exceed half of view size
         let maxRadius = min(newFrame.width, newFrame.height) / 2
         let safeRadius = min(borderRadius, maxRadius)
         view.layer?.cornerRadius = safeRadius
@@ -629,18 +715,21 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         imageNameField.font = NSFont.systemFont(ofSize: style.ThumbnailFilenameSize, weight: .light)
         imageNameField.frame = textFrame
         
-        //阴影效果
+        // 阴影效果
+        // Shadow effect
         if (style.ThumbnailShowShadow || style.layoutType == .grid) && (file.type == .image || file.type == .video || file.ext == "pdf") && !file.getThumbFailed {
             view.layer?.shadowColor = NSColor.black.withAlphaComponent(0.4).cgColor
             view.layer?.shadowOffset = CGSize(width: 1.3, height: -1.3)
             view.layer?.shadowRadius = 2.5
             view.layer?.shadowOpacity = 1
             // 添加shadowPath以提高性能
+            // Add shadowPath to improve performance
             let cutoff = (style.ThumbnailBorderThickness == 0 && style.layoutType != .grid) ? style.ThumbnailFilenamePadding : 0
             let rect = CGRect(x: view.bounds.origin.x, y: view.bounds.origin.y + cutoff, width: view.bounds.width, height: view.bounds.height - cutoff)
             let path = CGMutablePath()
             if borderRadius > 0 {
                 // 限制圆角半径不超过视图尺寸的一半
+                // Limit corner radius to not exceed half of view size
                 let maxRadius = min(rect.width, rect.height) / 2
                 let safeRadius = min(borderRadius, maxRadius)
                 path.addRoundedRect(in: rect, cornerWidth: safeRadius, cornerHeight: safeRadius)
@@ -661,7 +750,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     override func mouseDown(with event: NSEvent) {
-        //print("mouseDownItem: ",file.id)
+        // print("mouseDownItem: ",file.id)
         let currentTime = event.timestamp
         let currentLocation = event.locationInWindow
         if currentTime - lastClickTime < NSEvent.doubleClickInterval &&
@@ -671,6 +760,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                let viewController = getViewController(collectionView) {
                 
                 // 由于连续点击事件的处理会触发上个目录在当前位置item的事件，其id是随机的，因此需要做此修正
+                // Since handling consecutive click events will trigger events from the previous directory's item at the current position, whose id is random, this correction is needed
                 if let clickedIndexPath = collectionView.indexPathForItem(at: collectionView.convert(event.locationInWindow, from: nil)) {
                     selfIndexPath = clickedIndexPath
                 }
@@ -695,7 +785,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     override func otherMouseDown(with event: NSEvent) {
-        if event.buttonNumber == 2 { // 检查是否按下了鼠标中键
+        // 检查是否按下了鼠标中键
+        // Check if middle mouse button is pressed
+        if event.buttonNumber == 2 {
             middleMouseLastLocation = event.locationInWindow
         }
         super.otherMouseDown(with: event)
@@ -727,10 +819,13 @@ class CustomCollectionViewItem: NSCollectionViewItem {
           
         let mouseUpLocation = event.locationInWindow
         if let mouseDownLocation = self.mouseDownLocation {
-            let maxDistance: CGFloat = 5.0 // 允许的最大移动距离
+            // 允许的最大移动距离
+            // Maximum allowed movement distance
+            let maxDistance: CGFloat = 5.0
             let distance = hypot(mouseUpLocation.x - mouseDownLocation.x, mouseUpLocation.y - mouseDownLocation.y)
             
             // 鼠标移动距离在允许范围内，弹出菜单
+            // If mouse movement is within allowed range, show context menu
             if distance <= maxDistance {
                 
                 if !isSelected{
@@ -758,7 +853,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     canPasteOrMove=false
                 }
                 
-                //弹出菜单
+                // 弹出菜单
+                // Show context menu
                 let menu = NSMenu(title: "Custom Menu")
                 menu.autoenablesItems = false
                 
@@ -804,7 +900,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 let actionItemDelete = menu.addItem(withTitle: NSLocalizedString("Move to Trash", comment: "移动到废纸篓"), action: #selector(actDelete), keyEquivalent: "\u{8}")
                 actionItemDelete.keyEquivalentModifierMask = []
-                //actionItemDelete.isEnabled = (items.count>0)
+                // actionItemDelete.isEnabled = (items.count>0)
                 
                 menu.addItem(NSMenuItem.separator())
                 
@@ -837,6 +933,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 if TAGGING_FEATURE_ENABLED {
                     
                     // 创建标签子菜单
+                    // Create tags submenu
                     let tagMenu = NSMenu()
                     let currentTag = getViewController(collectionView!)?.publicVar.currentTag ?? TaggingSystem.defaultTag
                     let tagMenuItem = NSMenuItem(title: NSLocalizedString("Tag", comment: "标签")+" "+currentTag, action: nil, keyEquivalent: "")
@@ -849,6 +946,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     tagMenu.addItem(NSMenuItem.separator())
                     
                     // 添加不同标签选项
+                    // Add different tag options
                     for tag in TaggingSystem.getAvailableTags() {
                         let tagItem = tagMenu.addItem(withTitle: tag, action: #selector(actChangeTag(_:)), keyEquivalent: "")
                         tagItem.representedObject = tag
@@ -863,11 +961,13 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 menu.addItem(NSMenuItem.separator())
                 
                 // 创建"新建"子菜单
+                // Create "New" submenu
                 let newMenu = NSMenu()
                 let newMenuItem = NSMenuItem(title: NSLocalizedString("New", comment: "新建"), action: nil, keyEquivalent: "")
                 newMenuItem.submenu = newMenu
                 
                 // 添加新建文件夹选项
+                // Add new folder option
                 let newFolderItem = newMenu.addItem(withTitle: NSLocalizedString("Folder", comment: "文件夹"), 
                                                     action: #selector(actNewFolder), 
                                                     keyEquivalent: "n")
@@ -876,6 +976,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 newMenu.addItem(NSMenuItem.separator())
                 
                 // 添加新建文本文件选项
+                // Add new text file option
                 let newTextFileItem = newMenu.addItem(withTitle: NSLocalizedString("Text File", comment: "文本文件"), 
                                                     action: #selector(actNewTextFile), 
                                                     keyEquivalent: "")
@@ -891,7 +992,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 NSMenu.popUpContextMenu(menu, with: event, for: self.view)
             }
         }
-        self.mouseDownLocation = nil // 重置按下位置
+        // 重置按下位置
+        // Reset mouse down location
+        self.mouseDownLocation = nil
         super.rightMouseUp(with: event)
     }
 
@@ -999,9 +1102,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         openWithMenuItem.submenu = openWithMenu
         
         // 获取每种文件类型的一个代表 URL
+        // Get a representative URL for each file type
         let representativeUrls = getRepresentativeUrls(for: fileUrls)
         
         // 获取代表 URL 的可用应用程序并计算交集
+        // Get available applications for representative URLs and calculate intersection
         let commonAppURLs = calculateCommonApplications(for: representativeUrls)
         
         for appURL in commonAppURLs {
@@ -1025,6 +1130,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
         
         // 添加到主菜单
+        // Add to main menu
         menu.addItem(openWithMenuItem)
     }
     
@@ -1058,6 +1164,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         guard !representativeUrls.isEmpty else { return [] }
         
         // 获取每个代表 URL 的应用程序列表
+        // Get application list for each representative URL
         var appURLLists: [[URL]] = []
         
         for fileUrl in representativeUrls {
@@ -1067,9 +1174,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
         
         // 计算交集并保留顺序
+        // Calculate intersection and preserve order
         guard let firstList = appURLLists.first else { return [] }
         
         // 从第一个列表开始，过滤出在所有列表中都存在的应用程序
+        // Starting from first list, filter out applications that exist in all lists
         let commonApps = firstList.filter { appURL in
             appURLLists.dropFirst().allSatisfy { $0.contains(appURL) }
         }

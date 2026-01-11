@@ -77,12 +77,14 @@ extension NSImage {
 extension CGImage {
     func deepCopy() -> CGImage? {
         // 创建用于存储新图像数据的缓冲区
+        // Create buffer for storing new image data
         guard let dataProvider = self.dataProvider,
               let data = dataProvider.data else {
             return nil
         }
         
         // 复制原始图像数据
+        // Copy original image data
         let length = CFDataGetLength(data)
         guard let copiedData = malloc(length) else {
             return nil
@@ -91,6 +93,7 @@ extension CGImage {
         CFDataGetBytes(data, CFRangeMake(0, length), copiedData.bindMemory(to: UInt8.self, capacity: length))
         
         // 创建新的 CGDataProvider
+        // Create new CGDataProvider
         guard let copiedDataProvider = CGDataProvider(dataInfo: nil, data: copiedData, size: length, releaseData: { _, data, _ in
             free(UnsafeMutableRawPointer(mutating: data))
         }) else {
@@ -99,6 +102,7 @@ extension CGImage {
         }
 
         // 创建新的 CGImage
+        // Create new CGImage
         return CGImage(
             width: self.width,
             height: self.height,
@@ -115,7 +119,7 @@ extension CGImage {
     }
 }
 //
-//extension NSImage {
+// extension NSImage {
 //    func imageWithWhiteBorder(borderWidth: CGFloat) -> NSImage? {
 //        // 新图像的尺寸
 //        let newWidth = self.size.width + 2 * borderWidth
@@ -140,9 +144,9 @@ extension CGImage {
 //        newImage.unlockFocus()
 //        return newImage
 //    }
-//}
+// }
 //
-//extension NSView { // UIView
+// extension NSView { // UIView
 //    // Set source/destination angle.
 //    // Angle is set in radians (0..2π), hence 360* rotation = 2π/-2π
 //
@@ -171,7 +175,7 @@ extension CGImage {
 //        self.layer?.removeAllAnimations()
 //        Swift.log("Stop rotating")
 //    }
-//}
+// }
 
 func getFileInfo(file: FileModel) {
     let fileManager = FileManager.default
@@ -198,19 +202,25 @@ func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, timeout:
     let fileManager = FileManager.default
     let validExtensions = globalVar.HandledFolderThumbExtensions
     var imageUrls: [URL] = []
-    var directoriesToVisit: [(URL, Int)] = [(directoryURL, 0)] // 包含目录及其深度
+    // 包含目录及其深度
+    // Contains directory and its depth
+    var directoriesToVisit: [(URL, Int)] = [(directoryURL, 0)]
 
     let startTime = Date()
 
     while !directoriesToVisit.isEmpty {
-        let (currentDirectory, currentDepth) = directoriesToVisit.removeFirst() // 广度优先搜索
+        // 广度优先搜索
+        // Breadth-first search
+        let (currentDirectory, currentDepth) = directoriesToVisit.removeFirst()
 
         // 检查是否在排除列表中
+        // Check if in exclude list
         if globalVar.thumbnailExcludeList.contains(currentDirectory.path) {
             continue
         }
         
         // 检查是否超时
+        // Check if timed out
         if Date().timeIntervalSince(startTime) > timeout {
             log("Operation timed out")
             break
@@ -220,6 +230,7 @@ func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, timeout:
             var contents = try fileManager.contentsOfDirectory(at: currentDirectory, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsHiddenFiles])
             
             // 打乱目录内容顺序
+            // Shuffle directory contents order
             if globalVar.randomFolderThumb {
                 contents.shuffle()
             }
@@ -229,15 +240,18 @@ func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, timeout:
                 
                 if resourceValues.isDirectory ?? false {
                     // 仅在深度限制内将子目录及其深度放入栈/队列中
+                    // Only put subdirectories and their depth into stack/queue within depth limit
                     if currentDepth + 1 < maxDepth {
                         directoriesToVisit.append((fileURL, currentDepth + 1))
                     }
                 } else {
                     // 检查文件扩展名是否为可生成缩略图的格式
+                    // Check if file extension is a format that can generate thumbnails
                     if validExtensions.contains(fileURL.pathExtension.lowercased()) {
                         imageUrls.append(fileURL)
                         
                         // 检查是否已经找到足够多的图片
+                        // Check if enough images have been found
                         if imageUrls.count >= maxImages {
                             return imageUrls
                         }
@@ -254,31 +268,38 @@ func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, timeout:
 
 func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Bool], scale: CGFloat, rotationAngles: [CGFloat], borderWidth: CGFloat, borderColor: NSColor, shadowOffset: CGSize, shadowBlurRadius: CGFloat, shadowColor: NSColor, cornerRadius: CGFloat) -> NSImage? {
     // 创建一个新的空白图像，用作最终的合成图像
+    // Create a new blank image as the final composite image
     let resolution=512.0
     let size = NSSize(width: resolution, height: resolution)
     let resultImage = NSImage(size: size)
     resultImage.lockFocus()
     
     // 设置并填充背景颜色
+    // Set and fill background color
 //    hexToNSColor(hex: "#ECECEC").set()
 //    let backgroundRect = NSRect(x: 0, y: 0, width: size.width, height: size.height)
 //    backgroundRect.fill()
 
     // 绘制背景图像
+    // Draw background image
     let rect = CGRect(origin: .zero, size: size)
     background.draw(in: rect)
 
     // 获取图形上下文
+    // Get graphics context
     let context = NSGraphicsContext.current!.cgContext
 
     // 遍历图像数组，应用变换并绘制到背景上
+    // Iterate through image array, apply transformations and draw onto background
     for (index, image) in images.enumerated() {
         context.saveGState()
         
         // 设置阴影
+        // Set shadow
         context.setShadow(offset: shadowOffset, blur: shadowBlurRadius, color: shadowColor.cgColor)
 
         // 计算缩放和旋转后的中心位置
+        // Calculate center position after scaling and rotation
         let centerX = size.width / 2
         let centerY = size.height / 2
         context.translateBy(x: centerX, y: centerY)
@@ -286,24 +307,30 @@ func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Boo
         context.translateBy(x: -centerX, y: -centerY)
 
         // 计算等比缩放因子
+        // Calculate proportional scaling factor
         let totalScale = min(resolution / image.size.width, resolution / image.size.height) * scale
         
         // 应用缩放
+        // Apply scaling
         let newSize = NSSize(width: image.size.width * totalScale, height: image.size.height * totalScale)
         let imageRect = NSRect(x: centerX - newSize.width / 2, y: centerY - newSize.height / 2, width: newSize.width, height: newSize.height)
 
         // 绘制不透明背景(针对透明png图像)
+        // Draw opaque background (for transparent PNG images)
         let opaqueBackgroundPath = NSBezierPath(rect: imageRect)
         hexToNSColor(hex: "#CECECE").setFill()
         opaqueBackgroundPath.fill()
         
         // 绘制图像
+        // Draw image
         image.draw(in: imageRect)
         
         // 取消阴影
+        // Remove shadow
         context.setShadow(offset: CGSize(width: 0, height: 0), blur: 0)
 
         // 添加边框
+        // Add border
         if isVideos[index] {
             hexToNSColor(hex: "#3E3E3E").setStroke()
         }else{
@@ -318,8 +345,8 @@ func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Boo
 
     resultImage.unlockFocus()
     return resultImage
-    //return compressImage(resultImage, format: .jpeg, compressionFactor: 0.8)
-    //return compressImageToThumbnail(resultImage)
+    // return compressImage(resultImage, format: .jpeg, compressionFactor: 0.8)
+    // return compressImageToThumbnail(resultImage)
 }
 
 func compressImageToThumbnail(_ image: NSImage) -> NSImage? {
@@ -347,19 +374,24 @@ func compressImageToThumbnail(_ image: NSImage) -> NSImage? {
 
 func createCGImageSource(from nsImage: NSImage) -> CGImageSource? {
     // 尝试将NSImage转换为CGImage
+    // Try to convert NSImage to CGImage
     guard let cgImage = nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
         log("无法从NSImage创建CGImage")
+        // Unable to create CGImage from NSImage
         return nil
     }
 
     // 创建CGImage的Bitmap Representation
+    // Create Bitmap Representation of CGImage
     let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
     guard let data = bitmapRep.representation(using: .png, properties: [:]) else {
         log("无法从Bitmap Representation获取数据")
+        // Unable to get data from Bitmap Representation
         return nil
     }
 
     // 使用NSData创建CGImageSource
+    // Use NSData to create CGImageSource
     let cfData = data as CFData
     let cgImageSource = CGImageSourceCreateWithData(cfData, nil)
 
@@ -368,12 +400,14 @@ func createCGImageSource(from nsImage: NSImage) -> CGImageSource? {
 
 func compressImage(_ image: NSImage, format: NSBitmapImageRep.FileType, compressionFactor: CGFloat) -> NSImage? {
     // 确保图像有一个有效的表示
+    // Ensure image has a valid representation
     guard let tiffData = image.tiffRepresentation,
           let bitmapImage = NSBitmapImageRep(data: tiffData) else {
         return nil
     }
     
-    //压缩图像
+    // 压缩图像
+    // Compress image
     guard let imgData = bitmapImage.representation(using: format, properties: [.compressionFactor: compressionFactor]) else {
         return nil
     }
@@ -386,10 +420,11 @@ func getVideoThumbnailFFmpeg(for url: URL, at time: TimeInterval = 10) -> NSImag
     let uniqueFilename = UUID().uuidString + ".jpg"
     let thumbnailPath = tempDirectory.appendingPathComponent(uniqueFilename).path
     
-    //let ffmpegCommand = "-i '\(url.path)' -ss \(time) -vf \"select=eq(n\\,100),thumbnail,scale=512:-1\" -qscale:v 2 -frames:v 1 \(thumbnailPath)"
-    //let ffmpegCommand = "-i '\(url.path)' -vf \"scale=1280:-1,blackframe=0,metadata=select:key=lavfi.blackframe.pblack:value=50:function=less\" -frames:v 1 \(thumbnailPath)"
+    // let ffmpegCommand = "-i '\(url.path)' -ss \(time) -vf \"select=eq(n\\,100),thumbnail,scale=512:-1\" -qscale:v 2 -frames:v 1 \(thumbnailPath)"
+    // let ffmpegCommand = "-i '\(url.path)' -vf \"scale=1280:-1,blackframe=0,metadata=select:key=lavfi.blackframe.pblack:value=50:function=less\" -frames:v 1 \(thumbnailPath)"
 
     // 构建 ffmpeg 命令的参数数组
+    // Build ffmpeg command argument array
     let ffmpegArgs: [String] = [
         "-i", url.path,
         "-vf", "scale=1280:-1,blackframe=0,metadata=select:key=lavfi.blackframe.pblack:value=50:function=less",
@@ -399,30 +434,30 @@ func getVideoThumbnailFFmpeg(for url: URL, at time: TimeInterval = 10) -> NSImag
     ]
 
 //    let session = FFmpegKit.execute(withArguments: ffmpegArgs)
-//    //let session = FFmpegKit.execute(ffmpegCommand)
+//    // let session = FFmpegKit.execute(ffmpegCommand)
 //    let returnCode = session?.getReturnCode()
 //    let output = session?.getOutput()
 //
 //    if ReturnCode.isSuccess(returnCode) {
 //        if let thumbnail = NSImage(contentsOf: URL(fileURLWithPath: thumbnailPath)) {
-//        //if let thumbnail = getImageThumb(url: URL(fileURLWithPath: thumbnailPath)) {
+//        // if let thumbnail = getImageThumb(url: URL(fileURLWithPath: thumbnailPath)) {
 //            // 删除临时文件
 //            try? FileManager.default.removeItem(at: URL(fileURLWithPath: thumbnailPath))
 //            return thumbnail
 //        } else {
 //            log("Failed to load thumbnail image from \(thumbnailPath)")
 //            return getFileTypeIcon(url: url)
-//            //return nil
+//            // return nil
 //        }
 //    } else {
 //        log("FFmpeg command failed with return code \(String(describing: returnCode))")
 //        log(output ?? "")
 //        return getFileTypeIcon(url: url)
-//        //return nil
+//        // return nil
 //    }
     
     if !FFmpegKitWrapper.shared.getIfLoaded() {
-        //return getFileTypeIcon(url: url)
+        // return getFileTypeIcon(url: url)
         return nil
     }
     
@@ -433,6 +468,7 @@ func getVideoThumbnailFFmpeg(for url: URL, at time: TimeInterval = 10) -> NSImag
             if FFmpegKitWrapper.shared.isSuccess(returnCode) {
                 if let thumbnail = NSImage(contentsOf: URL(fileURLWithPath: thumbnailPath)) {
                     // 删除临时文件
+                    // Delete temporary file
                     try? FileManager.default.removeItem(at: URL(fileURLWithPath: thumbnailPath))
                     return thumbnail
                 } else {
@@ -448,7 +484,7 @@ func getVideoThumbnailFFmpeg(for url: URL, at time: TimeInterval = 10) -> NSImag
     } else {
         log("FFmpeg execution failed")
     }
-    //return getFileTypeIcon(url: url)
+    // return getFileTypeIcon(url: url)
     return nil
 }
 
@@ -469,7 +505,8 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         }
         
         if urls.count>0 {
-            //TODO: 如果返回nil则不计数
+            // TODO: 如果返回nil则不计数
+            // TODO: If returns nil then don't count
             var imgs=[NSImage]()
             var isVideos=[Bool]()
             for url in urls.reversed() {
@@ -489,28 +526,33 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
 
     }
     
-    //处理不支持的缩略图
+    // 处理不支持的缩略图
+    // Handle unsupported thumbnails
     if globalVar.HandledNotNativeSupportedVideoExtensions.contains(url.pathExtension.lowercased()) {
         if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
             return getVideoThumbnailFFmpeg(for: url)
         }
-        //return getFileTypeIcon(url: url)
+        // return getFileTypeIcon(url: url)
         return nil
     }
 
-    //处理视频缩略图
+    // 处理视频缩略图
+    // Handle video thumbnails
     if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
         let asset = AVAsset(url: url)
         let imageGenerator = AVAssetImageGenerator(asset: asset)
-        imageGenerator.appliesPreferredTrackTransform = true  // 保证图像的正确方向
-        //imageGenerator.requestedTimeToleranceBefore = .zero
-        //imageGenerator.requestedTimeToleranceAfter = .zero
+        // 保证图像的正确方向
+        // Ensure correct image orientation
+        imageGenerator.appliesPreferredTrackTransform = true
+        // imageGenerator.requestedTimeToleranceBefore = .zero
+        // imageGenerator.requestedTimeToleranceAfter = .zero
         imageGenerator.requestedTimeToleranceBefore = CMTime(seconds: 0.1, preferredTimescale: 600)
         imageGenerator.requestedTimeToleranceAfter = CMTime(seconds: 0.1, preferredTimescale: 600)
 
         let durationSeconds = asset.duration.seconds
         
         // 尝试多个时间点，直到找到合适的帧
+        // Try multiple time points until finding a suitable frame
         let timePoints: [Double]
         if durationSeconds < 60 {
             timePoints = [1, 2, 5, 10]
@@ -532,12 +574,14 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
                 let brightness = getFrameBrightness(cgImage)
                 
                 // 检查帧是否为黑屏或过暗
+                // Check if frame is black screen or too dark
                 if brightness >= 0.1 {
                     let thumbnail = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
                     return thumbnail.deepCopy()
                 }
                 
                 // 更新最佳帧
+                // Update best frame
                 if bestFrame == nil || brightness > bestFrame!.brightness {
                     bestFrame = (cgImage, brightness)
                 }
@@ -547,27 +591,34 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         }
         
         // 如果有最佳帧（即使不够亮）也使用它
+        // If there's a best frame (even if not bright enough), use it
         if let bestFrame = bestFrame {
             let thumbnail = NSImage(cgImage: bestFrame.image, size: NSSize(width: bestFrame.image.width, height: bestFrame.image.height))
             return thumbnail.deepCopy()
         }
         
         // 如果所有尝试都失败，则使用FFmpeg方案
+        // If all attempts fail, use FFmpeg solution
         return getVideoThumbnailFFmpeg(for: url)
-    }else if (globalVar.HandledImageAndRawExtensions+["pdf"]).contains(url.pathExtension.lowercased()) { //处理其它缩略图
-        //使用原图的格式
+    }else if (globalVar.HandledImageAndRawExtensions+["pdf"]).contains(url.pathExtension.lowercased()) {
+        // 处理其它缩略图
+        // Handle other thumbnails
+        // 使用原图的格式
+        // Use original image format
         if ["gif", "svg"].contains(url.pathExtension.lowercased()) {
             return NSImage(contentsOf: url)
         }
-        //若指定了大小则特殊处理
+        // 若指定了大小则特殊处理
+        // Special handling if size is specified
         if size != nil && "ai" != url.pathExtension.lowercased() {
-            //log(size.width,size.height)
+            // log(size.width,size.height)
             if let resizedImage=getResizedImage(url: url, size: size!, isRawUseEmbeddedThumb: true){
                 return resizedImage
             }
-            //print("resizedImage:",url.absoluteString.removingPercentEncoding!)
+            // print("resizedImage:",url.absoluteString.removingPercentEncoding!)
         }
-        //判断是否是动画并处理
+        // 判断是否是动画并处理
+        // Determine if it's an animation and handle it
         if let animateImage = getAnimateImage(url: url, rotate: 0) {
             return animateImage
         }
@@ -576,7 +627,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         
         guard let myImageSource = CGImageSourceCreateWithURL(url as NSURL, myOptions) else {
             log(stderr, "Image source is NULL.");
-            //return getFileTypeIcon(url: url)
+            // return getFileTypeIcon(url: url)
             return nil
         }
         
@@ -602,19 +653,20 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         
         guard let scaledImage = CGImageSourceCreateThumbnailAtIndex(myImageSource,0,thumbnailOptions)else {
             log(stderr, "Thumbnail not created from image source.");
-            //return getFileTypeIcon(url: url)
+            // return getFileTypeIcon(url: url)
             return nil
         };
         
         let img = NSImage(cgImage: scaledImage, size: NSSize(width: scaledImage.width, height: scaledImage.height))
         
-        //对于缩略图旋转异常的情况
+        // 对于缩略图旋转异常的情况
+        // For cases where thumbnail rotation is abnormal
         if refSize != nil && globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
             let ratio1 = Double(scaledImage.width) / Double(scaledImage.height) / refSize!.width * refSize!.height
             let ratio2 = Double(scaledImage.height) / Double(scaledImage.width) / refSize!.width * refSize!.height
             if ratio1 > 1.05 || ratio1 < 0.95 {
                 if ratio2 < 1.05 && ratio2 > 0.95 {
-                    //return getResizedImage(url: url, size: NSSize(width: scaledImage.self.height, height: scaledImage.self.width))
+                    // return getResizedImage(url: url, size: NSSize(width: scaledImage.self.height, height: scaledImage.self.width))
                     return img.rotated(by: 90)
                 }
             }
@@ -623,7 +675,8 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         return img
     }
     
-    //默认情况
+    // 默认情况
+    // Default case
     return nil
 
 }
@@ -639,7 +692,7 @@ func getFullExifThumbnail(url: URL, size oriSize: NSSize? = nil, rotate: Int = 0
     
     guard let myImageSource = CGImageSourceCreateWithURL(url as NSURL, myOptions) else {
         log(stderr, "Image source is NULL.");
-        //return getFileTypeIcon(url: url)
+        // return getFileTypeIcon(url: url)
         return nil
     }
     
@@ -652,13 +705,14 @@ func getFullExifThumbnail(url: URL, size oriSize: NSSize? = nil, rotate: Int = 0
     
     guard let scaledImage = CGImageSourceCreateThumbnailAtIndex(myImageSource,0,thumbnailOptions) else {
         log(stderr, "Thumbnail not created from image source.");
-        //return getFileTypeIcon(url: url)
+        // return getFileTypeIcon(url: url)
         return nil
     };
     
     let img = NSImage(cgImage: scaledImage, size: NSSize(width: scaledImage.width, height: scaledImage.height))
     
     // 根据rotate参数旋转图片
+    // Rotate image according to rotate parameter
     if rotate != 0 {
         return img.rotated(by: CGFloat(-90 * rotate))
     }
@@ -690,14 +744,14 @@ extension CGSize {
 
 func newOrientation(currentOrientation: Int, rotate: Int) -> Int {
     // EXIF orientation values
-    // 1: 0° (normal) 正常
+    // 1: 0° (normal) 正常 / Normal
     // 2: 0° (flipped horizontally)
-    // 3: 180° (flipped vertically) 正常
+    // 3: 180° (flipped vertically) 正常 / Normal
     // 4: 180° (flipped horizontally)
     // 5: 90° (flipped vertically)
-    // 6: 90° (normal) 正常
+    // 6: 90° (normal) 正常 / Normal
     // 7: 270° (flipped vertically)
-    // 8: 270° (normal) 正常
+    // 8: 270° (normal) 正常 / Normal
 
     let orientationMap: [Int: [Int: Int]] = [
         1: [0: 1, 1: 6, 2: 3, 3: 8],
@@ -749,13 +803,15 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0, isRawUseEm
     let size: NSSize = NSSize(width: round(oriSize.width), height: round(oriSize.height))
 
     // 根据配置优先尝试使用Exif内嵌缩略图
+    // Try to use Exif embedded thumbnail first according to configuration
     if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) && isRawUseEmbeddedThumb {
         if let thumbnail = getFullExifThumbnail(url: url, size: size, rotate: rotate) {
             return thumbnail
         }
     }
     
-    //先判断是否是动画并处理
+    // 先判断是否是动画并处理
+    // First determine if it's an animation and handle it
     if let animateImage = getAnimateImage(url: url, size: size, rotate: rotate) {
         return animateImage
     }
@@ -775,10 +831,13 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0, isRawUseEm
 
     orientation=newOrientation(currentOrientation: orientation, rotate: rotate)
     
-    //由于传入的是已经正确旋转过的尺寸，因此要旋转回去
+    // 由于传入的是已经正确旋转过的尺寸，因此要旋转回去
+    // Since the passed size is already correctly rotated, need to rotate back
     let pointSize: CGSize
     switch orientation {
-    case 5, 6, 7, 8: // 图像旋转90度或270度
+    case 5, 6, 7, 8:
+        // 图像旋转90度或270度
+        // Image rotated 90 or 270 degrees
         pointSize = CGSize(width: size.height * 2, height: size.width * 2)
     default:
         pointSize = CGSize(width: size.width * 2, height: size.height * 2)
@@ -805,29 +864,34 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0, isRawUseEm
     let alphaInfo = adjustedBitmapInfo & CGBitmapInfo.alphaInfoMask.rawValue
     var colorSpace = image.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!
     if colorSpace.model == CGColorSpaceModel.indexed {
-        colorSpace = CGColorSpace(name: CGColorSpace.sRGB)! //似乎不支持索引色
+        // 似乎不支持索引色
+        // Seems indexed color is not supported
+        colorSpace = CGColorSpace(name: CGColorSpace.sRGB)!
     }
     let anyNonAlpha = (alphaInfo == CGImageAlphaInfo.none.rawValue ||
                        alphaInfo == CGImageAlphaInfo.noneSkipFirst.rawValue ||
                        alphaInfo == CGImageAlphaInfo.noneSkipLast.rawValue)
     if alphaInfo == CGImageAlphaInfo.none.rawValue && colorSpace.model == CGColorSpaceModel.rgb {
         // 无 Alpha 的 RGB 图像只支持 noneSkipFirst
-        // https://developer.apple.com/library/archive/qa/qa1037/_index.html
+        // RGB images without Alpha only support noneSkipFirst
+        // https:// developer.apple.com/library/archive/qa/qa1037/_index.html
         // Unset the old alpha info.
         adjustedBitmapInfo &= ~CGBitmapInfo.alphaInfoMask.rawValue
         // Set noneSkipFirst.
         adjustedBitmapInfo |= CGImageAlphaInfo.noneSkipFirst.rawValue
     } else if !anyNonAlpha && colorSpace.model == CGColorSpaceModel.rgb {
         // 有 Alpha 的 RGB 图像只支持 premultipliedLast
+        // RGB images with Alpha only support premultipliedLast
         // Unset the old alpha info.
         adjustedBitmapInfo &= ~CGBitmapInfo.alphaInfoMask.rawValue
         // Set premultipliedFirst.
         adjustedBitmapInfo |= CGImageAlphaInfo.premultipliedFirst.rawValue
     }
-    //print(image.alphaInfo.rawValue)
-    //print(colorSpace.model.rawValue)
+    // print(image.alphaInfo.rawValue)
+    // print(colorSpace.model.rawValue)
     
     // 创建足够大的上下文以适应旋转后的尺寸
+    // Create context large enough to accommodate rotated size
     let context = CGContext(data: nil,
                             width: Int(rotatedSize.width),
                             height: Int(rotatedSize.height),
@@ -838,6 +902,7 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0, isRawUseEm
     context?.interpolationQuality = .high
 
     // 调整原点到中心并应用旋转
+    // Adjust origin to center and apply rotation
     context?.translateBy(x: rotatedSize.width / 2, y: rotatedSize.height / 2)
     context?.concatenate(transform)
     context?.translateBy(x: -pointSize.width / 2, y: -pointSize.height / 2)
@@ -845,7 +910,9 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0, isRawUseEm
     context?.draw(image, in: CGRect(x: 0, y: 0, width: pointSize.width, height: pointSize.height))
 
     guard let scaledImage = context?.makeImage() else {
-        if image.bitsPerComponent <= 8 { // 本来就不支持8bit以上图像
+        // 本来就不支持8bit以上图像
+        // Images above 8bit are not supported anyway
+        if image.bitsPerComponent <= 8 {
             print("Failed when makeImage:",url.absoluteString.removingPercentEncoding!)
         }
         return getResizedImageUsingCI(url: url, size: size, rotate: rotate)
@@ -889,15 +956,18 @@ func getResizedImageUsingCI(url: URL, size: NSSize? = nil, rotate: Int = 0, useH
     
     if var inputImage = CIImage(contentsOf: url, options: ciOptions) {
         // 根据rotate参数旋转图像
+        // Rotate image according to rotate parameter
         if rotate != 0 {
             inputImage = inputImage.oriented(.right).transformed(by: CGAffineTransform(rotationAngle: CGFloat(-rotate+1) * .pi / 2))
         }
         
         if let size = size {
             // 分别计算宽度和高度的缩放比例
+            // Calculate scaling ratios for width and height separately
             let scaleX = 2 * size.width / inputImage.extent.width
             let scaleY = 2 * size.height / inputImage.extent.height
             // 使用CILanczosScaleTransform进行高质量缩放
+            // Use CILanczosScaleTransform for high-quality scaling
             let scaleFilter = CIFilter(name: "CILanczosScaleTransform")!
             scaleFilter.setValue(inputImage, forKey: kCIInputImageKey)
             scaleFilter.setValue(scaleY, forKey: kCIInputScaleKey)
@@ -924,6 +994,7 @@ func getResizedImageUsingCI(url: URL, size: NSSize? = nil, rotate: Int = 0, useH
 func getVideoMetadataFormatedFFmpeg(for url: URL) -> [(String, String)]? {
 
     // 构建 ffprobe 命令的参数数组
+    // Build ffprobe command argument array
     let ffprobeArgsVideo: [String] = [
         "-v", "error",
         "-select_streams", "v:0",
@@ -931,9 +1002,9 @@ func getVideoMetadataFormatedFFmpeg(for url: URL) -> [(String, String)]? {
         "-show_entries", "format=bit_rate,duration,format_name",
         "-show_entries", "format_tags=creation_time,encoder",
         "-of", "default=noprint_wrappers=1:nokey=0",
-        //"-pretty",
+        // "-pretty",
         url.path
-    ] //avg_frame_rate
+    ] // avg_frame_rate
     
     let ffprobeArgsAudio: [String] = [
         "-v", "error",
@@ -941,7 +1012,7 @@ func getVideoMetadataFormatedFFmpeg(for url: URL) -> [(String, String)]? {
         "-show_entries", "stream=index,codec_name,codec_long_name,bit_rate,sample_rate,channels,channel_layout",
         "-show_entries", "stream_tags=language,title",
         "-of", "default=noprint_wrappers=1:nokey=0",
-        //"-pretty",
+        // "-pretty",
         url.path
     ]
     
@@ -972,7 +1043,7 @@ func getVideoMetadataFormatedFFmpeg(for url: URL) -> [(String, String)]? {
     if result.isEmpty {
         return nil
     } else {
-        //print(result)
+        // print(result)
         return result
     }
 }
@@ -1011,21 +1082,27 @@ func convertFFProbeStringToDictionaries(_ input: String) -> [[String: String]] {
     }
     
     // 合并具有相同index的字典
+    // Merge dictionaries with the same index
     var mergedResults = [[String: String]]()
-    var indexMap = [String: Int]() // 用于记录index对应的位置
+    // 用于记录index对应的位置
+    // Used to record the position corresponding to index
+    var indexMap = [String: Int]()
     
     for dict in results {
         if let index = dict["index"] {
             if let existingIndex = indexMap[index] {
                 // 合并到已存在的字典
+                // Merge into existing dictionary
                 mergedResults[existingIndex].merge(dict) { (current, _) in current }
             } else {
                 // 添加新字典
+                // Add new dictionary
                 indexMap[index] = mergedResults.count
                 mergedResults.append(dict)
             }
         } else {
             // 没有index的直接添加
+            // Add directly if no index
             mergedResults.append(dict)
         }
     }
@@ -1040,6 +1117,7 @@ func dictionaryToArray(_ dictionary: [String: String]) -> [(String, String)] {
 
 func formatVideoMetadata(_ videoMetadata: [String: String]) -> [(String, String)] {
     // 定义翻译映射
+    // Define translation mapping
     let translationMap: [(String, String)] = [
         ("format_name", NSLocalizedString("VideoMetadata-FormatName", comment: "格式名称")),
         ("TAG:encoder", NSLocalizedString("VideoMetadata-EncoderSoftwareName", comment: "编码工具名称")),
@@ -1049,20 +1127,21 @@ func formatVideoMetadata(_ videoMetadata: [String: String]) -> [(String, String)
         ("-", "-"),
         ("index", NSLocalizedString("VideoMetadata-Index", comment: "索引")),
         ("codec_name", NSLocalizedString("VideoMetadata-CodecName", comment: "编码器名称")),
-        //("codec_long_name", NSLocalizedString("VideoMetadata-CodecLongName", comment: "编码器全名")),
-        //("profile", NSLocalizedString("VideoMetadata-Profile", comment: "配置文件")),
-        //("level", NSLocalizedString("VideoMetadata-Level", comment: "级别")),
-        //("width", NSLocalizedString("VideoMetadata-Width", comment: "宽度")),
-        //("height", NSLocalizedString("VideoMetadata-Height", comment: "高度")),
+        // ("codec_long_name", NSLocalizedString("VideoMetadata-CodecLongName", comment: "编码器全名")),
+        // ("profile", NSLocalizedString("VideoMetadata-Profile", comment: "配置文件")),
+        // ("level", NSLocalizedString("VideoMetadata-Level", comment: "级别")),
+        // ("width", NSLocalizedString("VideoMetadata-Width", comment: "宽度")),
+        // ("height", NSLocalizedString("VideoMetadata-Height", comment: "高度")),
         ("pix_fmt", NSLocalizedString("VideoMetadata-PixelFormat", comment: "像素格式")),
         ("color_space", NSLocalizedString("VideoMetadata-ColorSpace", comment: "色彩空间")),
         ("r_frame_rate", NSLocalizedString("VideoMetadata-RFrameRate", comment: "参考帧率")),
-        //("avg_frame_rate", NSLocalizedString("VideoMetadata-AvgFrameRate", comment: "平均帧率")),
+        // ("avg_frame_rate", NSLocalizedString("VideoMetadata-AvgFrameRate", comment: "平均帧率")),
     ]
 
     var formattedData: [(String, String)] = []
 
     // 根据翻译映射格式化数据
+    // Format data according to translation mapping
     for (key, translationKey) in translationMap {
         if let value = videoMetadata[key] {
             var formattedValue = value
@@ -1070,6 +1149,7 @@ func formatVideoMetadata(_ videoMetadata: [String: String]) -> [(String, String)
             if value == "N/A" || value == "und" {continue}
 
             // 对特定字段进行格式化处理
+            // Format specific fields
             switch key {
             case "bit_rate":
                 if let bitRate = Int(value) {
@@ -1089,13 +1169,17 @@ func formatVideoMetadata(_ videoMetadata: [String: String]) -> [(String, String)
             case "TAG:creation_time":
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
-                dateFormatter.timeZone = TimeZone(secondsFromGMT: 0) // 解析为UTC时间
+                // 解析为UTC时间
+                // Parse as UTC time
+                dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
                 if let date = dateFormatter.date(from: value) {
                     let localFormatter = DateFormatter()
                     localFormatter.dateStyle = .medium
                     localFormatter.timeStyle = .medium
                     localFormatter.locale = Locale.current
-                    localFormatter.timeZone = TimeZone.current // 转换为本地时间
+                    // 转换为本地时间
+                    // Convert to local time
+                    localFormatter.timeZone = TimeZone.current
                     formattedValue = localFormatter.string(from: date)
                 }
             case "r_frame_rate":
@@ -1123,12 +1207,13 @@ func formatVideoMetadata(_ videoMetadata: [String: String]) -> [(String, String)
 
 func formatAudioMetadata(_ audioMetadata: [String: String]) -> [(String, String)] {
     // 定义翻译映射
+    // Define translation mapping
     let translationMap: [(String, String)] = [
         ("index", NSLocalizedString("AudioMetadata-Index", comment: "索引")),
         ("codec_name", NSLocalizedString("AudioMetadata-CodecName", comment: "编码器名称")),
-        //("codec_long_name", NSLocalizedString("AudioMetadata-CodecLongName", comment: "编码器全名")),
+        // ("codec_long_name", NSLocalizedString("AudioMetadata-CodecLongName", comment: "编码器全名")),
         ("channel_layout", NSLocalizedString("AudioMetadata-ChannelLayout", comment: "声道布局")),
-        //("channels", NSLocalizedString("AudioMetadata-Channels", comment: "声道数")),
+        // ("channels", NSLocalizedString("AudioMetadata-Channels", comment: "声道数")),
         ("sample_rate", NSLocalizedString("AudioMetadata-SampleRate", comment: "采样率")),
         ("bit_rate", NSLocalizedString("AudioMetadata-BitRate", comment: "比特率")),
         ("TAG:language", NSLocalizedString("AudioMetadata-Language", comment: "语言")),
@@ -1138,6 +1223,7 @@ func formatAudioMetadata(_ audioMetadata: [String: String]) -> [(String, String)
     var formattedData: [(String, String)] = []
 
     // 根据翻译映射格式化数据
+    // Format data according to translation mapping
     for (key, translationKey) in translationMap {
         if let value = audioMetadata[key] {
             var formattedValue = value
@@ -1145,6 +1231,7 @@ func formatAudioMetadata(_ audioMetadata: [String: String]) -> [(String, String)
             if value == "N/A" || value == "und" {continue}
             
             // 对特定字段进行格式化处理
+            // Format specific fields
             switch key {
             case "bit_rate":
                 if let bitRate = Int(value) {
@@ -1172,6 +1259,7 @@ func formatAudioMetadata(_ audioMetadata: [String: String]) -> [(String, String)
 func getVideoMetadataFFmpeg(for url: URL) -> String? {
 
     // 构建 ffprobe 命令的参数数组
+    // Build ffprobe command argument array
     let ffprobeArgs: [String] = [
         "-v", "error",
         "-print_format", "json",
@@ -1188,6 +1276,7 @@ func getVideoMetadataFFmpeg(for url: URL) -> String? {
     if let session = FFmpegKitWrapper.shared.executeFFprobeCommand(ffprobeArgs) {
         if let output = FFmpegKitWrapper.shared.getOutput(from: session) {
             // 解析 ffprobe 的输出
+            // Parse ffprobe output
             return output
         }
     } else {
@@ -1199,6 +1288,7 @@ func getVideoMetadataFFmpeg(for url: URL) -> String? {
 func getVideoResolutionAndDateFFmpeg(for url: URL) -> (Int,Int,Date?)? {
 
     // 构建 ffprobe 命令的参数数组
+    // Build ffprobe command argument array
     let ffprobeArgs: [String] = [
         "-v", "error",
         "-show_entries", "stream=width,height:format_tags=creation_time",
@@ -1213,6 +1303,7 @@ func getVideoResolutionAndDateFFmpeg(for url: URL) -> (Int,Int,Date?)? {
     if let session = FFmpegKitWrapper.shared.executeFFprobeCommand(ffprobeArgs) {
         if let output = FFmpegKitWrapper.shared.getOutput(from: session) {
             // 解析 ffprobe 的输出
+            // Parse ffprobe output
             var width = 0
             var height = 0
             var creationTime: Date?
@@ -1250,26 +1341,30 @@ func getVideoResolutionAndDateFFmpeg(for url: URL) -> (Int,Int,Date?)? {
 
 func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
     // 构建 ffprobe 命令来获取视频流的宽度和高度
-    //let ffprobeCommand = "-v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1:nokey=1 '\(url.path)'"
+    // Build ffprobe command to get video stream width and height
+    // let ffprobeCommand = "-v error -select_streams v:0 -show_entries stream=width,height -of default=noprint_wrappers=1:nokey=1 '\(url.path)'"
     
     // 构建 ffprobe 命令的参数数组
+    // Build ffprobe command argument array
     let ffprobeArgs: [String] = [
         "-v", "error",
         "-select_streams", "v:0",
         "-show_entries", "stream=width,height",
         "-of", "default=noprint_wrappers=1:nokey=1",
-        //"-threads", "2",
+        // "-threads", "2",
         url.path
     ]
     
 //    let session = FFprobeKit.execute(withArguments: ffprobeArgs)
-//    //let session = FFprobeKit.execute(ffprobeCommand)
+//    // let session = FFprobeKit.execute(ffprobeCommand)
 //    let output = session?.getOutput()
 //
 //    // 解析 ffprobe 的输出
 //    if let output = output {
 //        let dimensions = output.split(separator: "\n").compactMap { Int($0) }
-//        if dimensions.count % 2 == 0 && dimensions.count != 0 { //个别时候会有多个视频流，输出类似为"1280\n720\n1280\n720\n"
+//        // 个别时候会有多个视频流，输出类似为"1280\n720\n1280\n720\n"
+//        // Sometimes there are multiple video streams, output like "1280\n720\n1280\n720\n"
+//        if dimensions.count % 2 == 0 && dimensions.count != 0 {
 //            return NSSize(width: dimensions[0], height: dimensions[1])
 //        }
 //    }
@@ -1283,9 +1378,11 @@ func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
     if let session = FFmpegKitWrapper.shared.executeFFprobeCommand(ffprobeArgs) {
         if let output = FFmpegKitWrapper.shared.getOutput(from: session) {
             // 解析 ffprobe 的输出
+            // Parse ffprobe output
             let dimensions = output.split(separator: "\n").compactMap { Int($0) }
             if dimensions.count % 2 == 0 && dimensions.count != 0 {
                 // 个别时候会有多个视频流，输出类似为 "1280\n720\n1280\n720\n"
+                // Sometimes there are multiple video streams, output like "1280\n720\n1280\n720\n"
                 return NSSize(width: dimensions[0], height: dimensions[1])
             }
         }
@@ -1296,7 +1393,7 @@ func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
 }
 
 func getImageInfo(url: URL, needMetadata: Bool) -> ImageInfo? {
-    //let defaultSize = DEFAULT_SIZE
+    // let defaultSize = DEFAULT_SIZE
     if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
         if globalVar.HandledNotNativeSupportedVideoExtensions.contains(url.pathExtension.lowercased()){
             if let sizeUseFFmpeg = getVideoResolutionFFmpeg(for: url){
@@ -1311,12 +1408,13 @@ func getImageInfo(url: URL, needMetadata: Bool) -> ImageInfo? {
             let width = abs(size.width)
             let height = abs(size.height)
 
-            //log("Video dimensions: \(width) x \(height)")
-            //此处获取的是像素size
+            // log("Video dimensions: \(width) x \(height)")
+            // 此处获取的是像素size
+            // Get pixel size here
             return ImageInfo(NSSize(width: width, height: height))
             
         } else {
-            //log("No video track available")
+            // log("No video track available")
             if let sizeUseFFmpeg = getVideoResolutionFFmpeg(for: url){
                 return ImageInfo(sizeUseFFmpeg)
             }else{
@@ -1331,8 +1429,8 @@ func getImageInfo(url: URL, needMetadata: Bool) -> ImageInfo? {
         guard let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as? [String: Any] else { return nil }
         guard let width = imageProperties[kCGImagePropertyPixelWidth as String] as? CGFloat,
               let height = imageProperties[kCGImagePropertyPixelHeight as String] as? CGFloat else { return nil }
-        //此处获取的是像素size
-
+        // 此处获取的是像素size
+        // Get pixel size here
         let orientation = (imageProperties[kCGImagePropertyOrientation as String] as? NSNumber)?.intValue ?? 1
 
         var imageSize: NSSize
@@ -1349,7 +1447,7 @@ func getImageInfo(url: URL, needMetadata: Bool) -> ImageInfo? {
         imageInfo.properties = imageProperties
         imageInfo.ext = url.pathExtension.lowercased()
         imageInfo.isHDR = checkIsHDR(imageInfo: imageInfo)
-        //print(imageProperties)
+        // print(imageProperties)
         
         if needMetadata {
             let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil)
@@ -1377,6 +1475,7 @@ func hexToNSColor(hex: String = "#000000", alpha: Double = 1.0) -> NSColor {
     var rgb: UInt64 = 0
 
     // 尝试转换十六进制字符串
+    // Try to convert hexadecimal string
     Scanner(string: hexSanitized).scanHexInt64(&rgb)
 
     let red = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
@@ -1389,7 +1488,9 @@ func hexToNSColor(hex: String = "#000000", alpha: Double = 1.0) -> NSColor {
 func parseExifDateTime(dateTimeString: String) -> Date? {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
-    dateFormatter.timeZone = TimeZone.current // 设置为你假设的时区
+    // 设置为你假设的时区
+    // Set to assumed timezone
+    dateFormatter.timeZone = TimeZone.current
     return dateFormatter.date(from: dateTimeString)
 }
 
@@ -1690,12 +1791,14 @@ func distanceBetweenPoints(_ point1: NSPoint, _ point2: NSPoint) -> CGFloat {
 
 func recognizeQRCode(from image: NSImage) -> [String]? {
     // 将 NSImage 转换为 CIImage
+    // Convert NSImage to CIImage
     guard let imageData = image.tiffRepresentation,
           let ciImage = CIImage(data: imageData) else {
         return nil
     }
     
     // 创建一个 CIDetector 并设置类型为二维码
+    // Create a CIDetector and set type to QR code
     let context = CIContext()
     let options: [String: Any] = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
     guard let qrDetector = CIDetector(ofType: CIDetectorTypeQRCode, context: context, options: options) else {
@@ -1703,9 +1806,11 @@ func recognizeQRCode(from image: NSImage) -> [String]? {
     }
     
     // 使用 CIDetector 进行二维码检测
+    // Use CIDetector to detect QR codes
     let features = qrDetector.features(in: ciImage)
     
     // 提取检测到的二维码信息
+    // Extract detected QR code information
     var qrCodeStrings: [String] = []
     for feature in features {
         if let qrFeature = feature as? CIQRCodeFeature, let messageString = qrFeature.messageString {
@@ -1742,7 +1847,9 @@ func performLegacyOCR(on image: NSImage, completion: @escaping (Result<[String],
         completion(.success(recognizedTexts))
     }
     
-    request.recognitionLanguages = ["zh-Hans", "en-US"] // 你可以根据需要添加更多的语言
+    // 你可以根据需要添加更多的语言
+    // You can add more languages as needed
+    request.recognitionLanguages = ["zh-Hans", "en-US"]
     
     do {
         try requestHandler.perform([request])
@@ -1754,7 +1861,9 @@ func performLegacyOCR(on image: NSImage, completion: @escaping (Result<[String],
 class LargeImageProcessor {
     private static let cache: CustomCache<NSString, CacheWrapper> = {
         let cache = CustomCache<NSString, CacheWrapper>()
-        cache.countLimit = 16 // 设置缓存容量
+        // 设置缓存容量
+        // Set cache capacity
+        cache.countLimit = 16
         return cache
     }()
     
@@ -1762,6 +1871,7 @@ class LargeImageProcessor {
     private static var ongoingTasks: [String: (DispatchSemaphore, Int)] = [:]
     
     // 用于包装缓存中的图像，包括nil情况
+    // Wrapper for cached images, including nil cases
     private class CacheWrapper {
         let image: NSImage?
         init(image: NSImage?) {
@@ -1770,28 +1880,33 @@ class LargeImageProcessor {
     }
     
     // 原始的图像处理函数
+    // Original image processing function
 //    private static func originalGetResizedImage(url: URL, size: NSSize, rotate: Int = 0) -> NSImage? {
 //        return getResizedImage(url: url, size: size, rotate: rotate)
 //    }
     
     static func getImageCache(url: URL, size: NSSize, rotate: Int = 0, ver: Int, useOriginalImage: Bool, isHDR: Bool, isRawUseEmbeddedThumb: Bool, needWaitWhenSame: Bool = true) -> NSImage? {
         let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)_embeded\(isRawUseEmbeddedThumb)" as NSString
-        //print(cacheKey)
+        // print(cacheKey)
         
         // 先检查缓存中是否已有图像（包括nil情况）
+        // Check if image exists in cache first (including nil cases)
         if let cachedWrapper = cache.object(forKey: cacheKey) {
             return cachedWrapper.image
         }
         
         lock.lock()
         // 检查是否有相同参数的任务正在进行
+        // Check if task with same parameters is in progress
         if let (semaphore, count) = ongoingTasks[cacheKey as String] {
             if needWaitWhenSame {
                 ongoingTasks[cacheKey as String] = (semaphore, count + 1)
                 lock.unlock()
                 // 等待正在进行的任务完成
+                // Wait for ongoing task to complete
                 semaphore.wait()
                 // 任务完成后再检查缓存
+                // Check cache again after task completion
                 return cache.object(forKey: cacheKey)?.image
             }else{
                 lock.unlock()
@@ -1799,16 +1914,19 @@ class LargeImageProcessor {
             }
         } else {
             // 创建新的信号量并标记任务开始
+            // Create new semaphore and mark task start
             let semaphore = DispatchSemaphore(value: 0)
             ongoingTasks[cacheKey as String] = (semaphore, 1)
             lock.unlock()
             
             // 生成图像
+            // Generate image
             var image: NSImage?
             if isHDR {
                 image = getHDRImage(url: url, size: useOriginalImage ? nil : size, rotate: rotate)
             }else if useOriginalImage {
-                //先判断是否是动画并处理
+                // 先判断是否是动画并处理
+                // First determine if it's an animation and handle it
                 if let animateImage = getAnimateImage(url: url, rotate: rotate) {
                     image = animateImage
                 } else {
@@ -1822,15 +1940,18 @@ class LargeImageProcessor {
             }
             
             // 更新缓存（包括nil情况）
+            // Update cache (including nil cases)
             let cacheWrapper = CacheWrapper(image: image)
             cache.setObject(cacheWrapper, forKey: cacheKey)
             
             lock.lock()
             // 任务完成，移除信号量
+            // Task completed, remove semaphore
             let (_, count) = ongoingTasks.removeValue(forKey: cacheKey as String)!
             lock.unlock()
             
             // 释放所有等待的线程
+            // Release all waiting threads
             for _ in 0..<count {
                 semaphore.signal()
             }
@@ -1840,6 +1961,7 @@ class LargeImageProcessor {
     }
     
     // 检查缓存中是否有图像（且不是nil）
+    // Check if image exists in cache (and is not nil)
     static func isImageCached(url: URL, size: NSSize, rotate: Int = 0, ver: Int, isHDR: Bool, isRawUseEmbeddedThumb: Bool) -> Bool {
         let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)_embeded\(isRawUseEmbeddedThumb)" as NSString
         if let cachedWrapper = cache.object(forKey: cacheKey) {
@@ -1849,6 +1971,7 @@ class LargeImageProcessor {
     }
     
     // 检查缓存中是否有图像，有的话则返回
+    // Check if image exists in cache, return it if found
     static func isImageCachedAndGet(url: URL, size: NSSize, rotate: Int = 0, ver: Int, isHDR: Bool, isRawUseEmbeddedThumb: Bool) -> NSImage? {
         let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)_embeded\(isRawUseEmbeddedThumb)" as NSString
         if let cachedWrapper = cache.object(forKey: cacheKey) {
@@ -1858,6 +1981,7 @@ class LargeImageProcessor {
     }
     
     // 清空缓存
+    // Clear cache
     static func clearCache() {
         cache.removeAllObjects()
     }
@@ -1927,7 +2051,9 @@ class CustomCache<Key: Hashable, Value> {
 class ThumbImageProcessor {
     private static let cache: CustomCache<NSString, CacheWrapper> = {
         let cache = CustomCache<NSString, CacheWrapper>()
-        cache.countLimit = 16 // 设置缓存容量
+        // 设置缓存容量
+        // Set cache capacity
+        cache.countLimit = 16
         return cache
     }()
     
@@ -1935,6 +2061,7 @@ class ThumbImageProcessor {
     private static var ongoingTasks: [String: (DispatchSemaphore, Int)] = [:]
     
     // 用于包装缓存中的图像，包括nil情况
+    // Wrapper for cached images, including nil cases
     private class CacheWrapper {
         let image: NSImage?
         init(image: NSImage?) {
@@ -1944,22 +2071,26 @@ class ThumbImageProcessor {
     
     static func getImageCache(url: URL, size: NSSize? = nil, refSize: NSSize? = nil, needWaitWhenSame: Bool = true, isPreferInternalThumb: Bool = false, ver: Int) -> NSImage? {
         let cacheKey = "\(url.absoluteString)_s\(size?.width ?? 0)x\(size?.height ?? 0)_r\(refSize?.width ?? 0)x\(refSize?.height ?? 0)_p\(isPreferInternalThumb)_v\(ver)" as NSString
-        //print(cacheKey)
+        // print(cacheKey)
         
         // 先检查缓存中是否已有图像（包括nil情况）
+        // Check if image exists in cache first (including nil cases)
         if let cachedWrapper = cache.object(forKey: cacheKey) {
             return cachedWrapper.image
         }
         
         lock.lock()
         // 检查是否有相同参数的任务正在进行
+        // Check if task with same parameters is in progress
         if let (semaphore, count) = ongoingTasks[cacheKey as String] {
             if needWaitWhenSame {
                 ongoingTasks[cacheKey as String] = (semaphore, count + 1)
                 lock.unlock()
                 // 等待正在进行的任务完成
+                // Wait for ongoing task to complete
                 semaphore.wait()
                 // 任务完成后再检查缓存
+                // Check cache again after task completion
                 return cache.object(forKey: cacheKey)?.image
             }else{
                 lock.unlock()
@@ -1967,24 +2098,29 @@ class ThumbImageProcessor {
             }
         } else {
             // 创建新的信号量并标记任务开始
+            // Create new semaphore and mark task start
             let semaphore = DispatchSemaphore(value: 0)
             ongoingTasks[cacheKey as String] = (semaphore, 1)
             lock.unlock()
             
             // 生成图像
+            // Generate image
             var image: NSImage?
             image = getImageThumb(url: url, size: size, refSize: refSize, isPreferInternalThumb: isPreferInternalThumb)
             
             // 更新缓存（包括nil情况）
+            // Update cache (including nil cases)
             let cacheWrapper = CacheWrapper(image: image)
             cache.setObject(cacheWrapper, forKey: cacheKey)
             
             lock.lock()
             // 任务完成，移除信号量
+            // Task completed, remove semaphore
             let (_, count) = ongoingTasks.removeValue(forKey: cacheKey as String)!
             lock.unlock()
             
             // 释放所有等待的线程
+            // Release all waiting threads
             for _ in 0..<count {
                 semaphore.signal()
             }
@@ -1994,6 +2130,7 @@ class ThumbImageProcessor {
     }
     
     // 清空缓存
+    // Clear cache
     static func clearCache() {
         cache.removeAllObjects()
     }
@@ -2017,9 +2154,12 @@ func getFrameBrightness(_ cgImage: CGImage) -> Double {
     context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
     
     // 计算平均亮度
+    // Calculate average brightness
     var totalBrightness: Double = 0
     var samplesCount = 0
-    let samplingStep = max(1, (width * height) / 1000) // 采样步长，避免处理所有像素
+    // 采样步长，避免处理所有像素
+    // Sampling step size to avoid processing all pixels
+    let samplingStep = max(1, (width * height) / 1000)
     
     for i in stride(from: 0, to: totalBytes, by: samplingStep * 4) {
         let r = Double(rawData[i])
@@ -2027,6 +2167,7 @@ func getFrameBrightness(_ cgImage: CGImage) -> Double {
         let b = Double(rawData[i + 2])
         
         // 计算亮度 (使用人眼感知的权重)
+        // Calculate brightness (using human eye perception weights)
         let brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255.0
         totalBrightness += brightness
         samplesCount += 1

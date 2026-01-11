@@ -12,21 +12,26 @@ import DiskArbitration
 
 class CustomProfile: Codable {
     
-    //布局类型
+    // 布局类型
+    // Layout type
     var layoutType: LayoutType = .justified
     
-    //侧边栏
+    // 侧边栏
+    // Sidebar
     var isDirTreeHidden = false
     
-    //排序
+    // 排序
+    // Sort
     var sortType: SortType = .pathA
     var isSortFolderFirst: Bool = true
     var isSortUseFullPath = true
     
-    //缩略图大小
+    // 缩略图大小
+    // Thumbnail size
     var thumbSize = 512
     
-    //布局（通用）
+    // 布局（通用）
+    // Layout (general)
     var isShowThumbnailFilename = true
     var ThumbnailFilenameSize: Double = 12
     var _thumbnailCellPadding: Double = 5
@@ -38,9 +43,11 @@ class CustomProfile: Codable {
             abort()
         }
     }
-    //布局（网格视图）
+    // 布局（网格视图）
+    // Layout (grid view)
     var ThumbnailBorderRadiusInGrid: Double = 0
-    //布局（非网格视图）
+    // 布局（非网格视图）
+    // Layout (non-grid view)
     var ThumbnailBorderRadius: Double = 5
     var _thumbnailBorderThickness: Double = 6
     var ThumbnailBorderThickness: Double {
@@ -54,7 +61,8 @@ class CustomProfile: Codable {
     var ThumbnailLineSpaceAdjust: Double = 0
     var ThumbnailShowShadow: Bool = false
 
-    //计算获得
+    // 计算获得
+    // Calculated
     var ThumbnailFilenamePadding: Double {
         if isShowThumbnailFilename {
             var tmp = round(ThumbnailFilenameSize*1.3) + 2
@@ -70,7 +78,8 @@ class CustomProfile: Codable {
         return 15
     }
 
-    //可扩展值
+    // 可扩展值
+    // Extensible values
     private var dict: [String: String] = [:]
 
     func getValue(forKey key: String) -> String {
@@ -113,7 +122,9 @@ class CustomProfile: Codable {
                 log("Failed to decode CustomProfile: \(error)")
             }
         }
-        return CustomProfile() //读取异常时返回默认值
+        // 读取异常时返回默认值
+        // Return default value when read exception occurs
+        return CustomProfile()
     }
 }
 
@@ -146,7 +157,8 @@ class PublicVar{
     var customZoomStep: Double = 0.1
     var currentTag:String? = nil
 
-    //可一键切换的配置
+    // 可一键切换的配置
+    // Configuration that can be switched with one key
     var profile = CustomProfile()
     
     var toolbarTitle = ""
@@ -195,7 +207,7 @@ class PublicVar{
     var justifiedLayout = CustomFlowLayout()
     var gridLayout = CustomGridLayout()
     var waterfallLayout = WaterfallLayout()
-    //weak var viewController:ViewController?
+    // weak var viewController:ViewController?
     var timer = MyTimer()
     var fileChangedCount = 0
     var isInStageOneProgress = false
@@ -231,8 +243,12 @@ class PublicVar{
             HandledVideoExtensions += globalVar.HandledVideoExtensions
         }
         HandledOtherExtensions = globalVar.HandledOtherExtensions
-        HandledFileExtensions = HandledImageAndRawExtensions + HandledVideoExtensions + HandledOtherExtensions //文件列表显示的
-        HandledSearchExtensions = HandledImageAndRawExtensions + HandledVideoExtensions //作为鼠标手势查找的目标
+        // 文件列表显示的
+        // Displayed in file list
+        HandledFileExtensions = HandledImageAndRawExtensions + HandledVideoExtensions + HandledOtherExtensions
+        // 作为鼠标手势查找的目标
+        // As target for mouse gesture search
+        HandledSearchExtensions = HandledImageAndRawExtensions + HandledVideoExtensions
     }
     
     var selectedUrls2 = [URL]()
@@ -280,14 +296,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var readInfoTaskPool = [TaskType]()
     var readInfoTaskPoolLock = NSLock()
     
-    //var loadImageTaskPool = [(String,String,Int)]()
+    // var loadImageTaskPool = [(String,String,Int)]()
     var loadImageTaskPool = TaskPool()
-    //var loadImageTaskPool.lock = NSLock()
+    // var loadImageTaskPool.lock = NSLock()
     
-    //var infoThreadPoolNum = 0
-    //var infoThreadPoolLock = NSLock()
-    //var thumbThreadPoolNum = 0
-    //var thumbThreadPoolLock = NSLock()
+    // var infoThreadPoolNum = 0
+    // var infoThreadPoolLock = NSLock()
+    // var thumbThreadPoolNum = 0
+    // var thumbThreadPoolLock = NSLock()
     
     let readInfoTaskPoolSemaphore = DispatchSemaphore(value: 0)
     let loadImageTaskPoolSemaphore = DispatchSemaphore(value: 0)
@@ -357,7 +373,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     var arrowScrollDebounceWorkItem: DispatchWorkItem?
     
-    private var cumulativeScroll: CGFloat = 0 //累积滚动量
+    // 累积滚动量
+    // Cumulative scroll amount
+    private var cumulativeScroll: CGFloat = 0
     private var lastScrollSwitchLargeImageTime: TimeInterval = 0
     
     var gestureTriggeredSwitch = false
@@ -371,9 +389,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var scrollSpeed: CGFloat = 1.0
     var isAutoScrollPaused: Bool = false
     
-    var autoPlayTimer: Timer? // 定时器，用于控制自动播放的节奏
-    var autoPlayInterval: TimeInterval = 0 // 播放间隔，初始设置为0，用户输入后更新
-    var isAutoPlaying: Bool = false // 自动播放是否正在进行的标志
+    // 定时器，用于控制自动播放的节奏
+    // Timer for controlling auto-play rhythm
+    var autoPlayTimer: Timer?
+    // 播放间隔，初始设置为0，用户输入后更新
+    // Play interval, initially set to 0, updated after user input
+    var autoPlayInterval: TimeInterval = 0
+    // 自动播放是否正在进行的标志
+    // Flag indicating whether auto-play is in progress
+    var isAutoPlaying: Bool = false
     
     private var searchField: NSSearchField?
     private var searchOverlay: SearchOverlayView?
@@ -385,12 +409,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         super.viewDidLoad()
         
         log("开始viewDidLoad")
+        // Start viewDidLoad
         
         publicVar.refView=collectionView
         publicVar.viewController=self
         treeViewData.viewController=self
         
-        //初始化大图
+        // 初始化大图
+        // Initialize large image
         publicVar.isLaunchFromFile = globalVar.isLaunchFromFile
         globalVar.isLaunchFromFile = false
         publicVar.isLaunchFromFile_changeLargeImage = publicVar.isLaunchFromFile
@@ -410,11 +436,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             publicVar.isInLargeView=false
         }
         
-        //防止设置上面值时触发动作
+        // 防止设置上面值时触发动作
+        // Prevent triggering actions when setting above values
         publicVar.isInInitStage = false
         
         
-        //初始化collectionView
+        // 初始化collectionView
+        // Initialize collectionView
         collectionViewManager=CustomCollectionViewManager(fileDB: fileDB)
         collectionView.wantsLayer = true
         collectionView.allowsMultipleSelection = true
@@ -422,8 +450,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         collectionView.delegate = collectionViewManager
         collectionView.dataSource = collectionViewManager
         collectionView.register(CustomCollectionViewItem.self, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: "CustomCollectionViewItem"))
-        collectionView.setDraggingSourceOperationMask([.every], forLocal: true)  // 本地拖动操作
-        collectionView.setDraggingSourceOperationMask([.every], forLocal: false) // 全局拖动操作
+        // 本地拖动操作
+        // Local drag operation
+        collectionView.setDraggingSourceOperationMask([.every], forLocal: true)
+        // 全局拖动操作
+        // Global drag operation
+        collectionView.setDraggingSourceOperationMask([.every], forLocal: false)
         
 //        publicVar.justifiedLayout.minimumInteritemSpacing=10
 //        publicVar.justifiedLayout.minimumLineSpacing=10
@@ -431,26 +463,37 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //        publicVar.justifiedLayout.itemsHorizontalAlignment = JQCollectionViewItemsHorizontalAlignment.left;
 //        publicVar.justifiedLayout.itemsVerticalAlignment = JQCollectionViewItemsVerticalAlignment.center;
         
-        //初始化目录树
+        // 初始化目录树
+        // Initialize directory tree
         outlineViewManager=CustomOutlineViewManager(fileDB: fileDB, treeViewData: treeViewData, outlineView: outlineView)
         outlineView.delegate = outlineViewManager
         outlineView.dataSource = outlineViewManager
         outlineView.registerForDraggedTypes([.fileURL])
-        outlineView.setDraggingSourceOperationMask([.every], forLocal: true)  // 本地拖动操作
-        outlineView.setDraggingSourceOperationMask([.every], forLocal: false) // 全局拖动操作
+        // 本地拖动操作
+        // Local drag operation
+        outlineView.setDraggingSourceOperationMask([.every], forLocal: true)
+        // 全局拖动操作
+        // Global drag operation
+        outlineView.setDraggingSourceOperationMask([.every], forLocal: false)
         outlineView.columnAutoresizingStyle = .noColumnAutoresizing
         
-        //初始化splitView
+        // 初始化splitView
+        // Initialize splitView
         splitView.delegate = self
         
         // 初始化DrawingView
+        // Initialize DrawingView
         drawingView = DrawingView(frame: self.view.bounds)
-        drawingView?.autoresizingMask = [.width, .height]  // 使视图随父视图改变大小而改变大小
+        // 使视图随父视图改变大小而改变大小
+        // Make view resize with parent view
+        drawingView?.autoresizingMask = [.width, .height]
         self.view.addSubview(drawingView!)
         
-        //-----开始读取配置-----
+        // -----开始读取配置-----
+        // -----Start reading configuration-----
         
-        //TODO: 没有工具栏时，载入时折叠且divider宽度设为0会造成菜单栏变白
+        // TODO: 没有工具栏时，载入时折叠且divider宽度设为0会造成菜单栏变白
+        // TODO: When there's no toolbar, collapsing on load and setting divider width to 0 will cause menu bar to turn white
 
         if let isLargeImageFitWindow = UserDefaults.standard.value(forKey: "isLargeImageFitWindow") as? Bool {
             publicVar.isLargeImageFitWindow=isLargeImageFitWindow
@@ -507,7 +550,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         publicVar.profile = CustomProfile.loadFromUserDefaults(withKey: "CustomStyle_v2_current")
         
-        //-----结束读取配置------
+        // -----结束读取配置------
+        // -----End reading configuration------
         
         publicVar.setFileExtensions()
         
@@ -529,10 +573,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let theme=NSApp.effectiveAppearance.name
         if theme == .darkAqua {
             // 暗模式下的颜色
+            // Color in dark mode
             collectionView.layer?.backgroundColor = hexToNSColor(hex: COLOR_COLLECTIONVIEW_BG_DARK).cgColor
             lastTheme = .darkAqua
         } else {
             // 光模式下的颜色
+            // Color in light mode
             collectionView.layer?.backgroundColor = hexToNSColor(hex: COLOR_COLLECTIONVIEW_BG_LIGHT).cgColor
             lastTheme = .aqua
         }
@@ -555,14 +601,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             self.outlineViewManager.adjustColumnWidth()
         }
         
-        //=========以下是事件监听配置==========
+        // =========以下是事件监听配置==========
+        // =========Event monitoring configuration below==========
         
         NSApp.addObserver(self, forKeyPath: "effectiveAppearance", options: [.new, .old], context: nil)
         
-        //双击目录树
+        // 双击目录树
+        // Double-click directory tree
         outlineView.doubleAction = #selector(outlineViewDoubleClicked(_:))
         
-        //鼠标左键事件
+        // 鼠标左键事件
+        // Left mouse button event
         eventMonitorLeftMouseDown = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { [weak self] event in
             guard let self = self else { return event }
             if event.window != self.view.window { return event }
@@ -578,8 +627,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax,
                    clickLocation.x > videoControlXmin && clickLocation.x < videoControlXmax,
                    clickLocation.y < coreAreaYmax {
-                    largeImageView.mouseDown(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
-                    //return nil
+                    // 仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
+                    // Only respond within video range, outside range handled normally by mouse events in largeImageView
+                    largeImageView.mouseDown(with: event)
+                    // return nil
                 }
             }
             
@@ -601,15 +652,18 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax,
                    clickLocation.x > videoControlXmin && clickLocation.x < videoControlXmax,
                    clickLocation.y < coreAreaYmax {
-                    largeImageView.mouseUp(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
-                    //return nil
+                    // 仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
+                    // Only respond within video range, outside range handled normally by mouse events in largeImageView
+                    largeImageView.mouseUp(with: event)
+                    // return nil
                 }
             }
             
             return event
         }
 
-        //拖动音量滚动条时无法触发这个事件
+        // 拖动音量滚动条时无法触发这个事件
+        // This event cannot be triggered when dragging volume scrollbar
 //        eventMonitorLeftMouseDragged = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDragged) { [weak self] event in
 //            guard let self = self else { return event }
 //            if event.window != self.view.window { return event }
@@ -623,24 +677,28 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //                
 //                if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax,
 //                   clickLocation.x > videoControlXmin && clickLocation.x < videoControlXmax {
-//                    largeImageView.mouseDragged(with: event) //仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
-//                    //return nil
+//                    // 仅在视频范围内响应，范围外的由largeImageView中的鼠标事件正常处理
+//                    // Only respond within video range, outside range handled normally by mouse events in largeImageView
+//                    largeImageView.mouseDragged(with: event)
+//                    // return nil
 //                }
 //            }
 //            
 //            return event
 //        }
         
-        //双击collectionView
+        // 双击collectionView
+        // Double-click collectionView
 //        let clickCollectionItemGesture = NSClickGestureRecognizer(target: self, action: #selector(openLargeImageFromPos(_:)))
 //        clickCollectionItemGesture.numberOfClicksRequired = 2 // 设置为双击
 //        clickCollectionItemGesture.delaysPrimaryMouseButtonEvents = false // 阻止延迟主按钮事件
 //        collectionView.addGestureRecognizer(clickCollectionItemGesture)
         
-        //全局滚动事件
+        // 全局滚动事件
+        // Global scroll event
         eventMonitorScrollWheel = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { [weak self] event in
             guard let self=self else{return event}
-            //if getMainViewController() != self {return event}
+            // if getMainViewController() != self {return event}
             // 检查事件的窗口是否是激活窗口
             if event.window != self.view.window {
                 return event
@@ -653,32 +711,42 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         }
         
-        //滚动collectionView
+        // 滚动collectionView
+        // Scroll collectionView
         if let scrollView = collectionView.enclosingScrollView {
             // 监听滚动开始和结束的通知
+            // Listen for scroll start and end notifications
             NotificationCenter.default.addObserver(self, selector: #selector(scrollViewDidScroll(_:)), name: NSScrollView.didLiveScrollNotification, object: scrollView)
             NotificationCenter.default.addObserver(self, selector: #selector(scrollViewScrollEnd(_:)), name: NSScrollView.didEndLiveScrollNotification, object: scrollView)
         }
         
-        //监听键盘按键
+        // 监听键盘按键
+        // Monitor keyboard key presses
         eventMonitorKeyDown = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self=self else{return event}
             // 检查事件的窗口是否是当前窗口，如果不是、也非弹窗状态，就不处理，事件继续传递
+            // Check if event's window is current window, if not and not popup state, don't process, continue passing event
             if event.window != self.view.window && publicVar.isKeyEventEnabled {
                 return event
             }
             
             // 获取修饰键
+            // Get modifier keys
             let modifierFlags = event.modifierFlags
             // 检测是否按下了 Control 键
+            // Detect if Control key is pressed
             let isCtrlPressed = modifierFlags.contains(.control)
             // 检测是否按下了 Command 键
+            // Detect if Command key is pressed
             let isCommandPressed = modifierFlags.contains(.command)
             // 检测是否按下了 Option 键
+            // Detect if Option key is pressed
             let isAltPressed = modifierFlags.contains(.option)
             // 检测是否按下了 Shift 键
+            // Detect if Shift key is pressed
             let isShiftPressed = modifierFlags.contains(.shift)
             // 检测是否按下了 Fn 键 (部分按键例如方向键按下时此值也为true)
+            // Detect if Fn key is pressed (some keys like arrow keys also set this to true)
             let isFnPressed = modifierFlags.contains(.function)
             
             let noModifierKey = !isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
@@ -691,6 +759,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let specialKey = event.specialKey ?? .f30
             
             // 快速搜索
+            // Quick search
             if publicVar.isKeyEventEnabled && characters.count == 1 && (characters.first!.isLetter || characters.first!.isNumber) && noModifierKey {
                 if !publicVar.isInLargeView {
                     if quickSearchState || globalVar.useQuickSearch {
@@ -701,6 +770,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             // 快速搜索唤起键
+            // Quick search activation key
             if publicVar.isKeyEventEnabled && characters == "q" && noModifierKey {
                 if !publicVar.isInLargeView {
                     if !quickSearchState && !globalVar.useQuickSearch {
@@ -711,6 +781,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
 
             // 快速搜索删除键
+            // Quick search delete key
             if publicVar.isKeyEventEnabled && specialKey == .delete && noModifierKey {
                 if !publicVar.isInLargeView {
                     if quickSearchState {
@@ -724,6 +795,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             // 快速搜索Esc退出键
+            // Quick search Esc exit key
             if publicVar.isKeyEventEnabled && event.keyCode == 53 {
                 if !publicVar.isInLargeView {
                     if quickSearchState {
@@ -736,12 +808,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             // 防止过快触发事件
+            // Prevent events from triggering too quickly
             if !publicVar.timer.intervalSafe(name: "keyEvent", second: 0.1) {
                 return event
             }
             
             if publicVar.isInSearchState || publicVar.isKeyEventEnabled {
                 // 检查按键是否是 Command+Shift+"R" 键
+                // Check if key is Command+Shift+"R"
                 if characters == "r" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
                     if !publicVar.isInLargeView{
                         toggleRecursiveMode()
@@ -749,6 +823,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 }
                 // 检查按键是否是 Command+Shift+"F" 键
+                // Check if key is Command+Shift+"F"
                 if characters == "f" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
                     if !publicVar.isInLargeView{
                         toggleRecursiveContainFolder()
@@ -756,11 +831,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 }
                 // 检查按键是否是 Command+Shift+"T" 键
+                // Check if key is Command+Shift+"T"
                 if characters == "t" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
                     reopenClosedTabs()
                     return nil
                 }
                 // 检查按键是否是 F3 键
+                // Check if key is F3
                 if specialKey == .f3 {
                     if !publicVar.isInLargeView{
                         toggleSearchOverlay()
@@ -772,6 +849,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if publicVar.isKeyEventEnabled {
                 
                 // 检查按键是否是 "A" 键
+                // Check if key is "A"
                 if characters == "a" && noModifierKey {
                     if publicVar.isInLargeView{
                         previousLargeImage()
@@ -782,6 +860,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     return nil
                 }
                 // 检查按键是否是 "D" 键
+                // Check if key is "D"
                 if characters == "d" && noModifierKey {
                     if publicVar.isInLargeView{
                         nextLargeImage()
@@ -792,6 +871,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     return nil
                 }
                 // 检查按键是否是 "W" 键
+                // Check if key is "W"
                 if characters == "w" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.zoom(direction: +1)
@@ -803,13 +883,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 "Z" 键
+                // Check if key is "Z"
                 if characters == "z" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.zoom100()
                     }
                 }
-
+                
                 // 检查按键是否是 "X" 键
+                // Check if key is "X"
                 if characters == "x" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.zoomFit()
@@ -817,6 +899,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "S" 键
+                // Check if key is "S"
                 if characters == "s" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.zoom(direction: -1)
@@ -828,6 +911,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "Q"
+                // Check if key is "Q"
                 if characters == "q" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actRotateL()
@@ -836,6 +920,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 "E"
+                // Check if key is "E"
                 if characters == "e" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actRotateR()
@@ -846,14 +931,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "R" 键
+                // Check if key is "R"
                 if characters == "r" && noModifierKey {
-                    //如果焦点在OutlineView
+                    // 如果焦点在OutlineView
+                    // If focus is in OutlineView
                     if publicVar.isOutlineViewFirstResponder{
                         outlineView.actRename(isByKeyboard: true)
                         return nil
                     }
                     
-                    //如果焦点在CollectionView
+                    // 如果焦点在CollectionView
+                    // If focus is in CollectionView
                     if publicVar.isCollectionViewFirstResponder{
                         renameAlert(urls: publicVar.selectedUrls())
                         return nil
@@ -861,6 +949,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 "," 键
+                // Check if key is ","
                 if characters == "," && noModifierKey {
                     if publicVar.isInLargeView,
                        largeImageView.file.type == .video {
@@ -870,6 +959,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 "." 键
+                // Check if key is "."
                 if characters == "." && noModifierKey {
                     if publicVar.isInLargeView,
                        largeImageView.file.type == .video {
@@ -879,6 +969,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "L" 键
+                // Check if key is "L"
                 if characters == "l" && noModifierKey {
                     if publicVar.isInLargeView,
                        largeImageView.file.type == .video {
@@ -888,6 +979,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 "K" 键
+                // Check if key is "K"
                 if characters == "k" && noModifierKey {
                     if publicVar.isInLargeView,
                        largeImageView.file.type == .video {
@@ -897,12 +989,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Cmd + "R" / F5 键
+                // Check if key is Cmd + "R" / F5
                 if (characters == "r" && isOnlyCommandPressed) || specialKey == .f5 {
                     handleUserRefresh()
                     return nil
                 }
                 
                 // 检查按键是否是 Command+[ 键
+                // Check if key is Command+[
                 if characters == "[" && isOnlyCommandPressed {
                     if !publicVar.isInLargeView{
                         switchDirByDirection(direction: .back, stackDeep: 0)
@@ -911,14 +1005,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Command+] 键
+                // Check if key is Command+]
                 if characters == "]" && isOnlyCommandPressed {
                     if !publicVar.isInLargeView{
                         switchDirByDirection(direction: .forward, stackDeep: 0)
                     }
                     return nil
                 }
-                
+
                 // 检查按键是否是 Command+Shift+"N" 键
+                // Check if key is Command+Shift+"N"
                 if characters == "n" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
                     if !publicVar.isInLargeView{
                         _ = handleNewFolder()
@@ -927,6 +1023,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 Command+Shift+"V" 键
+                // Check if key is Command+Shift+"V"
                 if characters == "v" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
                     if !publicVar.isInLargeView{
                         toggleAutoPlayVisibleVideo()
@@ -935,6 +1032,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Command+⬅️➡️ 键
+                // Check if key is Command+⬅️➡️
                 if (specialKey == .leftArrow || specialKey == .rightArrow) && isOnlyCommandPressed {
                     if publicVar.isInLargeView,
                        largeImageView.file.type == .video {
@@ -948,6 +1046,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Command+⬆️ 键
+                // Check if key is Command+⬆️
                 if (specialKey == .upArrow && isOnlyCommandPressed) || (specialKey == .home && noModifierKey) {
                     if publicVar.isInLargeView{
                         locateLargeImage(direction: -2)
@@ -964,6 +1063,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Command+⬇️ 键
+                // Check if key is Command+⬇️
                 if (specialKey == .downArrow && isOnlyCommandPressed) || (specialKey == .end && noModifierKey) {
                     if publicVar.isInLargeView{
                         locateLargeImage(direction: 2)
@@ -981,6 +1081,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Opt+⬆️ 键
+                // Check if key is Opt+⬆️
                 if (specialKey == .upArrow && isOnlyAltPressed) || (specialKey == .pageUp && noModifierKey) {
                     if !publicVar.isInLargeView{
                         if let scrollView = collectionView.enclosingScrollView {
@@ -1005,6 +1106,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
                 
                 // 检查按键是否是 Opt+⬇️ 键
+                // Check if key is Opt+⬇️
                 if (specialKey == .downArrow && isOnlyAltPressed) || (specialKey == .pageDown && noModifierKey) {
                     if !publicVar.isInLargeView{
                         if let scrollView = collectionView.enclosingScrollView {
@@ -1028,6 +1130,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Esc 键
+                // Check if key is Esc
                 if event.keyCode == 53 {
 //                    self.view.window?.close()
                     if publicVar.isInLargeView{
@@ -1042,13 +1145,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Delete(117) Backspace(51) 键
+                // Check if key is Delete(117) Backspace(51)
                 if specialKey == .delete || specialKey == .backspace || specialKey == .deleteForward {
-                    //如果焦点在OutlineView
+                    // 如果焦点在OutlineView
+                    // If focus is on OutlineView
                     if publicVar.isOutlineViewFirstResponder{
                         outlineView.actDelete(isByKeyboard: true, isShowPrompt: !isCommandPressed)
                         return nil
                     }
-                    //如果焦点在CollectionView
+                    // 如果焦点在CollectionView
+                    // If focus is on CollectionView
                     if publicVar.isCollectionViewFirstResponder{
                         handleDelete(isShowPrompt: !isCommandPressed)
                         return nil
@@ -1056,6 +1162,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Opt + 回车、小键盘回车 键
+                // Check if key is Opt + Enter, numpad Enter
                 if (specialKey == .carriageReturn || specialKey == .enter) && isOnlyAltPressed {
                     if let window = view.window {
                         window.toggleFullScreen(nil)
@@ -1064,15 +1171,18 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 F2、回车、小键盘回车 键
+                // Check if key is F2, Enter, numpad Enter
                 if (specialKey == .f2 || specialKey == .carriageReturn || specialKey == .enter) && noModifierKey {
                     if specialKey == .f2 || !globalVar.isEnterKeyToOpen {
-                        //如果焦点在OutlineView
+                        // 如果焦点在OutlineView
+                        // If focus is in OutlineView
                         if publicVar.isOutlineViewFirstResponder{
                             outlineView.actRename(isByKeyboard: true)
                             return nil
                         }
                         
-                        //如果焦点在CollectionView
+                        // 如果焦点在CollectionView
+                        // If focus is in CollectionView
                         if publicVar.isCollectionViewFirstResponder{
                             renameAlert(urls: publicVar.selectedUrls())
                             return nil
@@ -1093,6 +1203,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 空格 键
+                // Check if key is Space
                 if characters == " " && noModifierKey {
                     if publicVar.isInLargeView{
                         if largeImageView.file.type == .video {
@@ -1129,6 +1240,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //                }
                 
                 // 检查按键是否是 12345 键
+                // Check if key is 12345
                 if (["1","2","3","4","5"].contains(characters)) && noModifierKey {
                     if view.window?.styleMask.contains(.fullScreen) == true {
                         return nil
@@ -1156,6 +1268,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Opt+1~9 键
+                // Check if key is Opt+1~9
                 if (["1","2","3","4","5","6","7","8","9"].contains(characters)) && isOnlyAltPressed {
                     if !publicVar.isInLargeView {
                         useCustomProfile(characters)
@@ -1164,6 +1277,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Cmd+Opt+1~9 键
+                // Check if key is Cmd+Opt+1~9
                 if (["1","2","3","4","5","6","7","8","9"].contains(characters)) && isCommandPressed && isAltPressed && !isCtrlPressed && !isShiftPressed {
                     if !publicVar.isInLargeView {
                         setCustomProfileTo(characters)
@@ -1172,6 +1286,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "U"
+                // Check if key is "U"
                 if characters == "u" && noModifierKey {
                     if publicVar.isInLargeView {
                         handleGetInfo()
@@ -1180,6 +1295,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "I"
+                // Check if key is "I"
                 if characters == "i" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actShowExif()
@@ -1197,6 +1313,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "O"
+                // Check if key is "O"
                 if characters == "o" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actOCR()
@@ -1205,6 +1322,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "P"
+                // Check if key is "P"
                 if characters == "p" && noModifierKey {
                     if publicVar.isInLargeView{
                         largeImageView.actQRCode()
@@ -1213,6 +1331,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 ➡️、⬇️、PageDown 键
+                // Check if key is ➡️, ⬇️, PageDown
                 if (specialKey == .rightArrow || specialKey == .downArrow || specialKey == .pageDown || specialKey == .next) && noModifierKey {
                     if publicVar.isInLargeView{
                         if largeImageView.file.type == .video && specialKey == .rightArrow {
@@ -1224,6 +1343,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 }
                 // 检查按键是否是 ⬅️、⬆️、PageUp 键
+                // Check if key is ⬅️, ⬆️, PageUp
                 if (specialKey == .leftArrow || specialKey == .upArrow || specialKey == .pageUp || specialKey == .prev) && noModifierKey {
                     if publicVar.isInLargeView{
                         if largeImageView.file.type == .video && specialKey == .leftArrow {
@@ -1236,6 +1356,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 Tab 键
+                // Check if key is Tab
                 if specialKey == .tab && noModifierKey {
                     if !publicVar.isInLargeView{
                         if publicVar.isOutlineViewFirstResponder{
@@ -1249,27 +1370,38 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
 
                 // 检查按键是否是 "⬅️➡️⬆️⬇️" 或 Space/Enter 键
+                // Check if key is "⬅️➡️⬆️⬇️" or Space/Enter
                 if (specialKey == .leftArrow || specialKey == .rightArrow || specialKey == .upArrow || specialKey == .downArrow || characters == " " || ((specialKey == .carriageReturn || specialKey == .enter) && globalVar.isEnterKeyToOpen))
                     && (noModifierKey || isOnlyShiftPressed) {
                     if !publicVar.isInLargeView{
-                        //如果焦点在OutlineView
+                        // 如果焦点在OutlineView
+                        // If focus is in OutlineView
                         if publicVar.isOutlineViewFirstResponder{
                             if let outlineView = outlineView {
                                 let selectedRow=outlineView.selectedRow
-                                if specialKey == .upArrow {//⬆️
+                                // ⬆️
+                                if specialKey == .upArrow {
                                     if selectedRow > 0 {
                                         let previousRow = selectedRow - 1
                                         outlineView.selectRowIndexes(IndexSet(integer: previousRow), byExtendingSelection: false)
-                                        outlineView.scrollRowToVisible(previousRow) // 可选：滚动视图以确保选中的项可见
+                                        // 可选：滚动视图以确保选中的项可见
+                                        // Optional: Scroll view to ensure selected item is visible
+                                        outlineView.scrollRowToVisible(previousRow)
                                     }
-                                } else if specialKey == .downArrow {//⬇️
+                                // ⬇️
+                                } else if specialKey == .downArrow {
                                     if selectedRow != -1 && selectedRow < outlineView.numberOfRows - 1 {
                                         let nextRow = selectedRow + 1
                                         outlineView.selectRowIndexes(IndexSet(integer: nextRow), byExtendingSelection: false)
-                                        outlineView.scrollRowToVisible(nextRow) // 可选：滚动视图以确保选中的项可见
+                                        // 可选：滚动视图以确保选中的项可见
+                                        // Optional: Scroll view to ensure selected item is visible
+                                        outlineView.scrollRowToVisible(nextRow)
                                     }
-                                }else {//⬅️➡️、Space/Enter
+                                // ⬅️➡️、Space/Enter
+                                // ⬅️➡️, Space/Enter
+                                }else {
                                     // 获取行对应的条目
+                                    // Get item corresponding to row
                                     if let item = outlineView.item(atRow: selectedRow) {
                                         if outlineView.isExpandable(item) {
                                             if outlineView.isItemExpanded(item) {
@@ -1284,11 +1416,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             }
                         }
                         
-                        //如果焦点在CollectionView
+                        // 如果焦点在CollectionView
+                        // If focus is in CollectionView
                         if publicVar.isCollectionViewFirstResponder{
                             if let collectionView = collectionView,
                                let scrollView = collectionView.enclosingScrollView,
-                               !collectionView.selectionIndexPaths.isEmpty //有选中项
+                               // 有选中项
+                               // Has selected items
+                               !collectionView.selectionIndexPaths.isEmpty
                             {
                                 if specialKey == .leftArrow || specialKey == .rightArrow || specialKey == .upArrow || specialKey == .downArrow {
                                     let sortedIndexPaths = collectionView.selectionIndexPaths.sorted()
@@ -1298,12 +1433,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     }
                                     
                                     // 存储当前滚动位置，因为findClosestItem期间会多次滚动
+                                    // Store current scroll position, as findClosestItem will scroll multiple times
                                     let savedContentOffset = scrollView.contentView.bounds.origin
                                     
                                     var newIndexPath: IndexPath?
                                     newIndexPath = findClosestItem(currentIndexPath: currentIndexPath, direction: specialKey)
                                     
                                     // 还原滚动位置
+                                    // Restore scroll position
                                     scrollView.contentView.setBoundsOrigin(savedContentOffset)
                                     scrollView.reflectScrolledClipView(scrollView.contentView)
                                     
@@ -1313,7 +1450,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         }
                                         if let toSelect = collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [newIndexPath]) {
                                             collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
-                                            //collectionView.reloadData()
+                                            // collectionView.reloadData()
                                             collectionView.selectItems(at: toSelect, scrollPosition: [])
                                             collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: toSelect)
                                             setLoadThumbPriority(ifNeedVisable: true)
@@ -1321,7 +1458,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     }
                                 }
 
-                            }else if let collectionView = collectionView { //无选中项
+                            // 无选中项
+                            // No selected items
+                            }else if let collectionView = collectionView {
                                 
                                 var indexPaths = collectionView.indexPathsForVisibleItems()
 
@@ -1329,7 +1468,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 let scrollPos = visibleRectRaw.origin
                                 let scrollWidth = visibleRectRaw.width
                                 let scrollHeight = visibleRectRaw.height
-                                let visibleRect = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight*1)) //注意这里乘了1
+                                // 注意这里乘了1
+                                // Note: multiplied by 1 here
+                                let visibleRect = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight*1))
                                 indexPaths = indexPaths.filter { indexPath in
                                     let itemFrame = collectionView.layoutAttributesForItem(at: indexPath)?.frame ?? .zero
                                     return itemFrame.intersects(visibleRect)
@@ -1339,7 +1480,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 if let newIndexPath = sortedIndexPaths.first,
                                    let toSelect = collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [newIndexPath]) {
                                     collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
-                                    //collectionView.reloadData()
+                                    // collectionView.reloadData()
                                     collectionView.selectItems(at: toSelect, scrollPosition: [])
                                     collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [newIndexPath])
                                     setLoadThumbPriority(ifNeedVisable: true)
@@ -1351,6 +1492,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "F" 键
+                // Check if key is "F"
                 if characters == "f" && noModifierKey && !isFnPressed {
                     if !publicVar.isInLargeView{
                         toggleSidebar()
@@ -1359,12 +1501,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "T" 键
+                // Check if key is "T"
                 if characters == "t" && noModifierKey {
                     toggleOnTop()
                     return nil
                 }
                 
                 // 检查按键是否是 -、-(小键盘) 键
+                // Check if key is -, -(numpad)
                 if characters == "-" && noModifierKey {
                     if publicVar.isInLargeView{
                         if largeImageView.file.type == .video {
@@ -1380,6 +1524,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 +(=)、+(小键盘) 键
+                // Check if key is +(=), +(numpad)
                 if (characters == "=" || characters == "+") && noModifierKey {
                     if publicVar.isInLargeView {
                         if largeImageView.file.type == .video {
@@ -1395,6 +1540,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 0、0(小键盘) 键
+                // Check if key is 0, 0(numpad)
                 if characters == "0" && noModifierKey {
                     if publicVar.isInLargeView {
                         changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: true)
@@ -1406,8 +1552,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "N" 键
+                // Check if key is "N"
                 if characters == "n" && noModifierKey {
-                    //如果焦点在CollectionView
+                    // 如果焦点在CollectionView
+                    // If focus is in CollectionView
                     if publicVar.isCollectionViewFirstResponder{
                         handleCopyToDownload()
                         return nil
@@ -1415,8 +1563,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "M" 键
+                // Check if key is "M"
                 if characters == "m" && noModifierKey {
-                    //如果焦点在CollectionView
+                    // 如果焦点在CollectionView
+                    // If focus is in CollectionView
                     if publicVar.isCollectionViewFirstResponder{
                         handleMoveToDownload()
                         return nil
@@ -1424,8 +1574,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 检查按键是否是 "B" 键
+                // Check if key is "B"
                 if characters == "b" && noModifierKey && TAGGING_FEATURE_ENABLED {
-                    //如果焦点在CollectionView
+                    // 如果焦点在CollectionView
+                    // If focus is in CollectionView
                     if publicVar.isCollectionViewFirstResponder{
                         handleTagging()
                         return nil
@@ -1435,43 +1587,64 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             // 处理弹出重命名对话框、OCR状态的复制粘贴操作
+            // Handle copy/paste operations for rename dialog popup and OCR state
             if (!publicVar.isKeyEventEnabled || largeImageView.isInOcrState) && isOnlyCommandPressed {
                 switch event.charactersIgnoringModifiers {
                 case "a":
                     if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.selectAll(_:))) {
                         responder.perform(#selector(NSText.selectAll(_:)), with: nil)
-                        return nil // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // Event handled, return nil to prevent passing to next responder
+                        return nil
                     } else {
                         // 处理自定义 Command+A 操作
+                        // Handle custom Command+A action
                         log("Custom Command+A action")
-                        return nil // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // Event handled, return nil to prevent passing to next responder
+                        return nil
                     }
                 case "c":
                     if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.copy(_:))) {
                         responder.perform(#selector(NSText.copy(_:)), with: nil)
-                        return nil // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // Event handled, return nil to prevent passing to next responder
+                        return nil
                     } else {
                         // 处理自定义 Command+C 操作
+                        // Handle custom Command+C action
                         log("Custom Command+C action")
-                        return nil // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // Event handled, return nil to prevent passing to next responder
+                        return nil
                     }
                 case "v":
                     if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.paste(_:))) {
                         responder.perform(#selector(NSText.paste(_:)), with: nil)
-                        return nil // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // Event handled, return nil to prevent passing to next responder
+                        return nil
                     } else {
                         // 处理自定义 Command+V 操作
+                        // Handle custom Command+V action
                         log("Custom Command+V action")
-                        return nil // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // Event handled, return nil to prevent passing to next responder
+                        return nil
                     }
                 case "x":
                     if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.cut(_:))) {
                         responder.perform(#selector(NSText.cut(_:)), with: nil)
-                        return nil // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // Event handled, return nil to prevent passing to next responder
+                        return nil
                     } else {
                         // 处理自定义 Command+X 操作
+                        // Handle custom Command+X action
                         log("Custom Command+X action")
-                        return nil // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // 事件已处理，返回 nil 以防止传递给下一个响应者
+                        // Event handled, return nil to prevent passing to next responder
+                        return nil
                     }
                 default:
                     break
@@ -1479,13 +1652,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             return event
-            //return nil
+            // return nil
         }
         
-        //鼠标右键事件
+        // 鼠标右键事件
+        // Right mouse button event
         eventMonitorRightMouseUp = NSEvent.addLocalMonitorForEvents(matching: .rightMouseUp) { [weak self] event in
             guard let self=self else{return event}
-            //if getMainViewController() != self {return event}
+            // if getMainViewController() != self {return event}
             // 检查事件的窗口是否是激活窗口
             if event.window != self.view.window {
                 return event
@@ -1496,15 +1670,19 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }else{
                     self.drawingView?._rightMouseUp(with: event)
                 }
-                return nil  // 不传递事件
+                // 不传递事件
+                // Don't pass event
+                return nil
             } else {
-                return event  // 继续传递事件
+                // 继续传递事件
+                // Continue passing event
+                return event
             }
         }
 
         eventMonitorRightMouseDown = NSEvent.addLocalMonitorForEvents(matching: .rightMouseDown) { [weak self] event in
             guard let self=self else{return event}
-            //if getMainViewController() != self {return event}
+            // if getMainViewController() != self {return event}
             // 检查事件的窗口是否是激活窗口
             if event.window != self.view.window {
                 return event
@@ -1515,15 +1693,19 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }else{
                     self.drawingView?._rightMouseDown(with: event)
                 }
-                return nil  // 不传递事件
+                // 不传递事件
+                // Don't pass event
+                return nil
             } else {
-                return event  // 继续传递事件
+                // 继续传递事件
+                // Continue passing event
+                return event
             }
         }
 
         eventMonitorRightMouseDragged = NSEvent.addLocalMonitorForEvents(matching: .rightMouseDragged) { [weak self] event in
             guard let self=self else{return event}
-            //if getMainViewController() != self {return event}
+            // if getMainViewController() != self {return event}
             // 检查事件的窗口是否是激活窗口
             if event.window != self.view.window {
                 return event
@@ -1534,26 +1716,34 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }else{
                     self.drawingView?._rightMouseDragged(with: event)
                 }
-                return nil  // 不传递事件
+                // 不传递事件
+                // Don't pass event
+                return nil
             } else {
-                return event  // 继续传递事件
+                // 继续传递事件
+                // Continue passing event
+                return event
             }
         }
         
-        //=========结束事件监听配置==========
+        // =========结束事件监听配置==========
+        // =========End event monitoring configuration==========
         
-        //startListeningForFileSystemEvents(in: "/Users")
-        //startWatchingDirectory(atPath: "/Users")
+        // startListeningForFileSystemEvents(in: "/Users")
+        // startWatchingDirectory(atPath: "/Users")
         
         log("结束viewDidLoad")
+        // End viewDidLoad
 
     }
     
     func prepareForDeinit() {
         // 在这里执行清理工作
+        // Perform cleanup work here
         log("ViewController is being deinitialized")
         
-        //存储关闭的目录/文件
+        // 存储关闭的目录/文件
+        // Store closed directory/file
         if publicVar.isInLargeView {
             globalVar.closedPaths.append(largeImageView.file.path)
         } else {
@@ -1561,6 +1751,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         // 移除事件观察者
+        // Remove event observers
         if let eventMonitorKeyDown = eventMonitorKeyDown {
             NSEvent.removeMonitor(eventMonitorKeyDown)
         }
@@ -1587,18 +1778,22 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         // 移除 KVO 观察者
+        // Remove KVO observers
         NSApp.removeObserver(self, forKeyPath: "effectiveAppearance")
         
         // 移除通知中心的观察者
+        // Remove notification center observers
         if let scrollView = collectionView.enclosingScrollView {
             NotificationCenter.default.removeObserver(self, name: NSScrollView.didLiveScrollNotification, object: scrollView)
             NotificationCenter.default.removeObserver(self, name: NSScrollView.didEndLiveScrollNotification, object: scrollView)
         }
         
-        //停止监控
+        // 停止监控
+        // Stop monitoring
         stopWatchingDirectory()
         
         // 取消所有未完成的异步任务
+        // Cancel all unfinished async tasks
         largeImageLoadTask?.cancel()
         largeImageLoadTask = nil
         scrollDebounceWorkItem?.cancel()
@@ -1607,6 +1802,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         arrowScrollDebounceWorkItem = nil
         
         // 停止所有计时器
+        // Stop all timers
         resizeTimer?.invalidate()
         resizeTimer = nil
         folderMonitorTimer?.invalidate()
@@ -1616,29 +1812,34 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         autoScrollTimer?.invalidate()
         autoScrollTimer = nil
         
-        //工作线程结束标志
+        // 工作线程结束标志
+        // Worker thread termination flag
         willTerminate=true
 
-        //产生空任务，防止等待信号量导致窗口无法销毁
+        // 产生空任务，防止等待信号量导致窗口无法销毁
+        // Generate empty task to prevent window from being unable to destroy due to waiting for semaphore
         readInfoTaskPoolSemaphore.signal()
         loadImageTaskPoolSemaphore.signal()
         
-        //清空数据库
+        // 清空数据库
+        // Clear database
         fileDB.lock()
         for (_,dirModel) in fileDB.db {
             for (_,fileModel) in dirModel.files {
                 fileModel.image=nil
                 fileModel.folderImages=[NSImage]()
             }
-            //dirModel.files.removeAll()
+            // dirModel.files.removeAll()
         }
-        //fileDB.db.removeAll()
+        // fileDB.db.removeAll()
         fileDB.unlock()
     }
     
     func afterFinishLoad(_ openFolder: String? = nil){
         log("开始afterFinishLoad")
-        if publicVar.isLaunchFromFile == false { //从文件夹启动
+        // 从文件夹启动
+        // Launch from folder
+        if publicVar.isLaunchFromFile == false {
             let defaults = UserDefaults.standard
             var lastFolder = defaults.string(forKey: "lastFolder")
             if !globalVar.openLastFolder  {
@@ -1661,11 +1862,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 guard let self = self else { return }
                 setWindowTitle()
             }
-        }else{//从文件启动
+        // 从文件启动
+        // Launch from file
+        }else{
             
         }
         
-        //启动后台任务线程
+        // 启动后台任务线程
+        // Start background task thread
         startBackgroundTaskThread()
     }
 
@@ -1698,6 +1902,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             printContent(largeImageView.imageView)
         } else {
             // 临时隐藏滚动条
+            // Temporarily hide scrollbars
             let originalVerticalScroller = mainScrollView.verticalScroller
             let originalHorizontalScroller = mainScrollView.horizontalScroller
             mainScrollView.verticalScroller=nil
@@ -1706,6 +1911,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             printContent(mainScrollView)
             
             // 恢复原始滚动条状态
+            // Restore original scrollbar state
             mainScrollView.verticalScroller = originalVerticalScroller
             mainScrollView.horizontalScroller = originalHorizontalScroller
         }
@@ -1713,7 +1919,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     func changeSortType(sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool, doNotRefresh: Bool = false){
         
-        //Exif排序时间警告
+        // Exif排序时间警告
+        // Exif sort time warning
         if sortType == .exifDateA || sortType == .exifDateZ
             || sortType == .exifPixelA || sortType == .exifPixelZ {
             
@@ -1729,7 +1936,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             fileDB.unlock()
             
             if let folderURL = URL(string: curFolder), isExifSortTimeExceedCancel(folderURL: folderURL, imageCount: imageCount, videoCount: videoCount) {
-                return //提前结束
+                // 提前结束
+                // Early exit
+                return
             }
         }
         
@@ -1773,10 +1982,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             var showText = ""
             if window.level == .floating {
                 // 取消置顶
+                // Unpin from top
                 window.level = .normal
                 showText = NSLocalizedString("Unpin Window from Top", comment: "取消置顶窗口")
             } else {
                 // 置顶
+                // Pin to top
                 window.level = .floating
                 showText = NSLocalizedString("Pin Window to Top", comment: "置顶窗口")
             }
@@ -1809,7 +2020,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func adjustWindowImageActual(refSize:NSSize? = nil, firstShowThumb: Bool = false, animate: Bool = true){
-        //let zoomSize=largeImageView.customZoomSize()
+        // let zoomSize=largeImageView.customZoomSize()
         let scale = NSScreen.main?.backingScaleFactor ?? 1
         var tmpSize=largeImageView.file.originalSize ?? NSSize(width: 800, height: 600)
         if refSize != nil {tmpSize=refSize!}
@@ -1988,34 +2199,42 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let visibleFrame = screen.visibleFrame
             
             // 获取当前窗口的尺寸
+            // Get current window size
             let windowFrame = window.frame
             let newWindowSize = windowFrame.size
             
             // 计算新的窗口位置，使其居中
+            // Calculate new window position to center it
             let newX = visibleFrame.origin.x + round((visibleFrame.width - newWindowSize.width) / 2)
             let newY = visibleFrame.origin.y + round((visibleFrame.height - newWindowSize.height) / 2)
             let newOrigin = NSPoint(x: newX, y: newY)
             
             // 设置窗口的新框架并居中显示
+            // Set window's new frame and display centered
             let newFrame = NSRect(origin: newOrigin, size: newWindowSize)
             window.setFrame(newFrame, display: true, animate: animate)
         }
     }
     
     // ------------以下为调整窗口 间接接口-----------
+    // ------------Below are indirect interfaces for adjusting window-----------
     
     func adjustWindowToRatio(animate: Bool, refRatio: (Double,Double)? = nil, isToCenter: Bool) {
         if let window = view.window {
             // 获取屏幕的可见区域
+            // Get screen's visible area
             if let screen = window.screen {
                 let visibleFrame = screen.visibleFrame
                 let aspectRatio = screen.frame.width / screen.frame.height
                 
                 // 确定最大比例
+                // Determine maximum ratio
                 var ratioWidth: Double
                 var ratioHeight: Double
                 
-                if aspectRatio < 16.0/9.0 { //mbp屏幕或者竖屏
+                // mbp屏幕或者竖屏
+                // MBP screen or portrait orientation
+                if aspectRatio < 16.0/9.0 {
                     ratioWidth = globalVar.portableListWidthRatioHH
                     ratioHeight = globalVar.portableListHeightRatioHH
                 }else{
@@ -2029,35 +2248,42 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 计算目标窗口尺寸（可见区域的%）
+                // Calculate target window size (% of visible area)
                 let targetWidth = visibleFrame.width * ratioWidth
                 let targetHeight = visibleFrame.height * ratioHeight
                 
                 // 计算窗口的边框尺寸（标题栏高度）
+                // Calculate window border size (title bar height)
                 let windowFrame = window.frame
                 let contentRect = window.contentRect(forFrameRect: windowFrame)
                 let titleBarHeight = windowFrame.height - contentRect.height
                 
                 // 计算新的内容区域尺寸
+                // Calculate new content area size
                 let newContentWidth = targetWidth
                 let newContentHeight = targetHeight - titleBarHeight
                 
                 // 确保新的内容区域尺寸不小于最小窗口尺寸
+                // Ensure new content area size is not less than minimum window size
                 let minWindowSize = window.minSize
                 let newContentSize = NSSize(width: max(newContentWidth, minWindowSize.width),
                                             height: max(newContentHeight, minWindowSize.height))
                 
                 // 计算新的窗口尺寸，包括标题栏
+                // Calculate new window size, including title bar
                 let newWindowSize = NSSize(width: newContentSize.width, height: newContentSize.height + titleBarHeight)
                 
                 let newOrigin: NSPoint
                 
                 if isToCenter {
                     // 计算新的窗口位置，使其居中
+                    // Calculate new window position to center it
                     let newX = visibleFrame.origin.x + round((visibleFrame.width - newWindowSize.width) / 2)
                     let newY = visibleFrame.origin.y + round((visibleFrame.height - newWindowSize.height) / 2)
                     newOrigin = NSPoint(x: newX, y: newY)
                 } else {
                     // 保持窗口的中心位置不变
+                    // Keep window center position unchanged
                     let oldCenter = NSPoint(x: windowFrame.midX, y: windowFrame.midY)
                     let newX = oldCenter.x - round(newWindowSize.width / 2)
                     let newY = oldCenter.y - round(newWindowSize.height / 2)
@@ -2065,10 +2291,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 设置窗口的新框架
+                // Set window's new frame
                 let newFrame = NSRect(origin: newOrigin, size: newWindowSize)
                 window.setFrame(newFrame, display: true, animate: animate)
                 
                 // 重置图片大小位置
+                // Reset image size and position
                 if publicVar.isInLargeView {
                     changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: false)
                 }
@@ -2088,6 +2316,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let titleBarHeight = windowFrame.height - contentRect.height
             
             // 确定最大比例
+            // Determine maximum ratio
             var ratioWidth = globalVar.portableImageWidthRatio
             var ratioHeight = globalVar.portableImageHeightRatio
             if let refRatio = refRatio {
@@ -2096,32 +2325,40 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             // 计算可见区域的宽高，减去标题栏的高度
+            // Calculate visible area width/height, subtract title bar height
             let maxWidth = (visibleFrame.width) * ratioWidth
             let maxHeight = (visibleFrame.height) * ratioHeight - titleBarHeight
             
             // 获取图像的宽高比
+            // Get image aspect ratio
             let imageWidth = refSize?.width ?? 1
             let imageHeight = refSize?.height ?? 1
             let imageAspectRatio = imageWidth / imageHeight
             
             // 计算屏幕的宽高比
+            // Calculate screen aspect ratio
             let screenAspectRatio = maxWidth / maxHeight
             
             // 计算缩放比例
+            // Calculate scale factor
             var scaleFactor: CGFloat
             if imageAspectRatio > screenAspectRatio {
                 // 图像宽高比更大，以宽度为基准缩放
+                // Image aspect ratio is larger, scale based on width
                 scaleFactor = maxWidth / imageWidth
             } else {
                 // 图像宽高比更小，以高度为基准缩放
+                // Image aspect ratio is smaller, scale based on height
                 scaleFactor = maxHeight / imageHeight
             }
             
             // 计算新的图像尺寸
+            // Calculate new image size
             var newWidth = imageWidth * scaleFactor
             var newHeight = imageHeight * scaleFactor
             
             // 如果新的宽度或高度超过了屏幕的可见区域，进行调整
+            // If new width or height exceeds screen's visible area, adjust
             if newWidth > maxWidth {
                 scaleFactor = maxWidth / imageWidth
                 newWidth = maxWidth
@@ -2139,6 +2376,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             largeImageView.imageView.frame.size = newContentSize
             
             // 调整窗口的内容尺寸
+            // Adjust window content size
             window.setContentSize(newContentSize)
             if !justAdjustWindowFrame{
                 changeLargeImage(firstShowThumb: firstShowThumb, resetSize: true, triggeredByLongPress: true)
@@ -2163,6 +2401,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             // 设置窗口的新框架
+            // Set window's new frame
             let newFrame = NSRect(origin: newOrigin, size: newWindowSize)
             window.setFrame(newFrame, display: true, animate: animate)
         }
@@ -2175,31 +2414,39 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let visibleFrame = screen.visibleFrame
             
             // 计算窗口的边框尺寸
+            // Calculate window border size
             let windowFrame = window.frame
             let contentRect = window.contentRect(forFrameRect: windowFrame)
             let titleBarHeight = windowFrame.height - contentRect.height
             
             // 计算可见区域的宽高，减去标题栏的高度
+            // Calculate visible area width/height, subtract title bar height
             let maxWidth = visibleFrame.width
             let maxHeight = visibleFrame.height - titleBarHeight
             
             // 计算图像的宽高比
+            // Calculate image aspect ratio
             let imageAspectRatio = zoomSize.width / zoomSize.height
             
             // 计算屏幕的宽高比
+            // Calculate screen aspect ratio
             let screenAspectRatio = maxWidth / maxHeight
             
             // 计算缩放比例
+            // Calculate scale factor
             var scaleFactor: CGFloat
             if imageAspectRatio > screenAspectRatio {
                 // 图像宽高比更大，以宽度为基准缩放
+                // Image aspect ratio is larger, scale based on width
                 scaleFactor = maxWidth / zoomSize.width
             } else {
                 // 图像宽高比更小，以高度为基准缩放
+                // Image aspect ratio is smaller, scale based on height
                 scaleFactor = maxHeight / zoomSize.height
             }
             
             // 计算新的图像尺寸
+            // Calculate new image size
             let newWidth = zoomSize.width * scaleFactor
             let newHeight = zoomSize.height * scaleFactor
             var newContentSize = NSSize(width: newWidth, height: newHeight)
@@ -2209,6 +2456,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             largeImageView.imageView.frame.size = newContentSize
             
             // 调整窗口的内容尺寸
+            // Adjust window content size
             window.setContentSize(newContentSize)
             if !justAdjustWindowFrame{
                 changeLargeImage(firstShowThumb: firstShowThumb, resetSize: true, triggeredByLongPress: false)
@@ -2233,6 +2481,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             // 设置窗口的新框架
+            // Set window's new frame
             let newFrame = NSRect(origin: newOrigin, size: newWindowSize)
             window.setFrame(newFrame, display: true, animate: animate)
         }
@@ -2289,7 +2538,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     func changeThumbSize(thumbSize: Int, doNotRefresh: Bool = false){
         publicVar.profile.thumbSize = thumbSize
-        //UserDefaults.standard.set(thumbSize, forKey: "thumbSize")
+        // UserDefaults.standard.set(thumbSize, forKey: "thumbSize")
         publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
         changeWaterfallLayoutNumberOfColumns()
         if !doNotRefresh {
@@ -2361,7 +2610,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         var noLimit = false
         
-        //let indexPaths = nearbyIndexPaths(around: collectionView.indexPathsForVisibleItems(), range: (-20,20))
+        // let indexPaths = nearbyIndexPaths(around: collectionView.indexPathsForVisibleItems(), range: (-20,20))
         var indexPaths: Set<IndexPath> = []
         if publicVar.profile.layoutType == .grid {
             if direction == .leftArrow || direction == .rightArrow {
@@ -2398,11 +2647,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                    let curLineNo = files.elementSafe(atOffset: currentIndexPath.item)?.1.lineNo {
                     
                     // 向前查找
+                    // Search forward
                     if direction == .upArrow {
                         var prevItem = currentIndexPath.item - 1
                         var preLineNo: Int? = nil
                         
                         // 第一步：把与curLineNo相同的都添加进来
+                        // Step 1: Add all items with same curLineNo
                         while prevItem >= 0 {
                             if let file = files.elementSafe(atOffset: prevItem) {
                                 let lineNo = file.1.lineNo
@@ -2418,6 +2669,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         }
                         
                         // 第二步：找到第一个lineNo和当前curLineNo不一样的preLineNo
+                        // Step 2: Find first preLineNo with different lineNo from current curLineNo
                         while prevItem >= 0 {
                             if let file = files.elementSafe(atOffset: prevItem) {
                                 let lineNo = file.1.lineNo
@@ -2432,6 +2684,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         }
                         
                         // 第三步：一直往前把是preLineNo的都添加进来，直到和它不同了则中断
+                        // Step 3: Keep adding items with preLineNo forward until different, then break
                         while prevItem >= 0 {
                             if let file = files.elementSafe(atOffset: prevItem) {
                                 let lineNo = file.1.lineNo
@@ -2448,11 +2701,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                     
                     // 向后查找
+                    // Search backward
                     if direction == .downArrow {
                         var nextItem = currentIndexPath.item + 1
                         var nextLineNo: Int? = nil
                         
                         // 第一步：把与curLineNo相同的都添加进来
+                        // Step 1: Add all items with same curLineNo
                         while nextItem < files.count {
                             if let file = files.elementSafe(atOffset: nextItem) {
                                 let lineNo = file.1.lineNo
@@ -2468,6 +2723,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         }
                         
                         // 第二步：找到第一个lineNo和当前curLineNo不一样的nextLineNo
+                        // Step 2: Find first nextLineNo with different lineNo from current curLineNo
                         while nextItem < files.count {
                             if let file = files.elementSafe(atOffset: nextItem) {
                                 let lineNo = file.1.lineNo
@@ -2482,6 +2738,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         }
                         
                         // 第三步：一直往后把是nextLineNo的都添加进来，直到和它不同了则中断
+                        // Step 3: Keep adding items with nextLineNo backward until different, then break
                         while nextItem < files.count {
                             if let file = files.elementSafe(atOffset: nextItem) {
                                 let lineNo = file.1.lineNo
@@ -2593,7 +2850,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         alert.alertStyle = .warning
         alert.addButton(withTitle: NSLocalizedString("Delete", comment: "删除"))
         alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
-        alert.icon = NSImage(named: NSImage.cautionName) // 设置系统警告图标
+        // 设置系统警告图标
+        // Set system warning icon
+        alert.icon = NSImage(named: NSImage.cautionName)
 
         var response: NSApplication.ModalResponse = .alertFirstButtonReturn
         if isShowPrompt || !ifHasPermission || VolumeManager.shared.isExternalVolume(urls.first!) {
@@ -2605,6 +2864,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
         if response == .alertFirstButtonReturn {
             // 用户确认删除
+            // User confirmed deletion
             let fileManager = FileManager.default
             var urlsToDelete = [URL]()
             
@@ -2615,8 +2875,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     log("文件不存在: \(url.path)")
                 }
             }
-
+            
             // 记录操作到日志
+            // Record operation to log
             var sourceFiles = urlsToDelete.map { url -> String in
                 return url.lastPathComponent
             }
@@ -2632,11 +2893,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             globalVar.operationLogs.append(operationLog)
             
             if !urlsToDelete.isEmpty {
-                if isShiftPressed { //永久删除
+                // 永久删除
+                // Permanently delete
+                if isShiftPressed {
                     for url in urlsToDelete {
                         try? fileManager.removeItem(at: url)
                     }
-                } else { //删除到回收站
+                // 删除到回收站
+                // Delete to trash
+                } else {
                     var appleScriptURLs = ""
                     for url in urlsToDelete {
                         appleScriptURLs += "\"\(url.path)\" as POSIX file, "
@@ -2674,9 +2939,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
                 
                 // 文件更改计数
+                // File change count
                 publicVar.fileChangedCount += 1
 
                 // 针对递归模式处理
+                // Handle recursive mode
                 if publicVar.isRecursiveMode {
                     fileDB.lock()
                     let ifRefresh = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD
@@ -2692,6 +2959,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             return true
         } else {
             // 用户取消操作
+            // User cancelled operation
             log("删除操作已取消")
             return false
         }
@@ -2718,12 +2986,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         if ifSuccess {
             // 备份剪贴板内容
+            // Backup pasteboard content
             let backupItems = backupPasteboard()
             
             handleCopy()
             handleMove(targetURL: newFolderURL)
             
             // 还原剪贴板内容
+            // Restore pasteboard content
             restorePasteboard(items: backupItems)
         }
         
@@ -2861,7 +3131,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         }
         
-        //以下是针对非单个图像、视频文件的处理
+        // 以下是针对非单个图像、视频文件的处理
+        // Below is handling for non-single image/video files
         
         let result = StatisticInfo()
         
@@ -2896,7 +3167,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             return true
         })
 
-        //var result = StatisticInfo()
+        // var result = StatisticInfo()
         let scanInterval: TimeInterval = 4.0
         var startDate = Date()
         
@@ -2973,6 +3244,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
 
     // 还原剪贴板内容的函数
+    // Function to restore pasteboard content
     func restorePasteboard(items: [[String: Data]]) {
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
@@ -2988,20 +3260,26 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     func handleCopy() {
         let pasteboard = NSPasteboard.general
-        pasteboard.clearContents() // 清除剪贴板现有内容
-        pasteboard.writeObjects(publicVar.selectedUrls() as [NSPasteboardWriting]) // 将文件URL添加到剪贴板
+        // 清除剪贴板现有内容
+        // Clear existing pasteboard content
+        pasteboard.clearContents()
+        // 将文件URL添加到剪贴板
+        // Add file URLs to pasteboard
+        pasteboard.writeObjects(publicVar.selectedUrls() as [NSPasteboardWriting])
     }
     
     func handleCopyToDownload() {
         if publicVar.selectedUrls().isEmpty {return}
         
         // 备份剪贴板内容
+        // Backup pasteboard content
         let backupItems = backupPasteboard()
         
         handleCopy()
         handlePaste(targetURL: FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first)
         
         // 还原剪贴板内容
+        // Restore pasteboard content
         restorePasteboard(items: backupItems)
     }
     
@@ -3020,10 +3298,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         guard let destinationURL = destinationURL else { return }
         
         // 检查待复制的文件/文件夹列表
+        // Check list of files/folders to copy
         for item in items {
             guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { continue }
             
             // 检查是否包含目标目录自身或者它的父目录
+            // Check if includes destination directory itself or its parent directory
             if fileURL == destinationURL || destinationURL.path.hasPrefix(fileURL.path) {
                 showAlert(message: NSLocalizedString("cannot-copy-to-self", comment: "不能将文件/文件夹复制到自身或其子目录中。"))
                 return
@@ -3031,6 +3311,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
 
         // 检查来源是否有同名文件
+        // Check if source has files with same name
         var ifAutoRenameWhenDifferentSource = false
         var fileNames = Set<String>()
         var hasDuplicates = false
@@ -3045,12 +3326,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         // 如果有同名文件,弹窗询问是否继续
+        // If there are files with same name, show dialog asking whether to continue
         if hasDuplicates {
             let alert = NSAlert()
             alert.messageText = NSLocalizedString("has-same-name-files", comment: "发现同名文件")
             alert.informativeText = NSLocalizedString("has-same-name-files-info", comment: "来源文件中包含同名文件，是否自动重命名？")
             alert.alertStyle = .warning
-            alert.icon = NSImage(named: NSImage.infoName)// 设置系统提示图标
+            // 设置系统提示图标
+            // Set system notification icon
+            alert.icon = NSImage(named: NSImage.infoName)
             alert.addButton(withTitle: NSLocalizedString("Auto Rename", comment: "自动重命名"))
             alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
             
@@ -3068,6 +3352,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
 
         // 记录操作到日志
+        // Record operation to log
         var sourceFiles = items.compactMap { item -> String? in
             guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { return nil }
             return fileURL.lastPathComponent
@@ -3083,7 +3368,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let operationLog = "[Paste] \(sourceFilesStr) -> \(destinationURL.lastPathComponent)"
         globalVar.operationLogs.append(operationLog)
         
-        //播放提示音
+        // 播放提示音
+        // Play notification sound
         var changeCount = 0
         defer {
             if changeCount > 0 {
@@ -3092,6 +3378,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         // 针对递归模式处理
+        // Handle recursive mode
         var currentFolderChangeCount = 0
         defer {
             if publicVar.isRecursiveMode {
@@ -3121,6 +3408,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             
             // 如果是在同一目录复制粘贴，则修改名称
+            // If copying/pasting in same directory, modify name
             var isInSameFolder = fileURL.deletingLastPathComponent() == destinationURL
             if isInSameFolder {
                 destURL = getUniqueDestinationURL(for: destURL, isInPlace: true)
@@ -3236,18 +3524,21 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if publicVar.selectedUrls().isEmpty {return}
         
         // 备份剪贴板内容
+        // Backup pasteboard content
         let backupItems = backupPasteboard()
         
         handleCopy()
         handleMove(targetURL: FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first)
         
         // 还原剪贴板内容
+        // Restore pasteboard content
         restorePasteboard(items: backupItems)
     }
 
     func handleMove(targetURL: URL? = nil, pasteboard: NSPasteboard = NSPasteboard.general) {
         
-        //按住Option则为复制
+        // 按住Option则为复制
+        // Hold Option to copy
         if isOptionKeyPressed() && !isCommandKeyPressed() {
             handlePaste(targetURL: targetURL, pasteboard: pasteboard)
             return
@@ -3267,10 +3558,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         guard let destinationURL = destinationURL else { return }
         
         // 检查待移动的文件/文件夹列表
+        // Check list of files/folders to move
         for item in items {
             guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { continue }
             
             // 检查是否包含目标目录自身或者它的父目录
+            // Check if includes destination directory itself or its parent directory
             if fileURL == destinationURL || destinationURL.path.hasPrefix(fileURL.path) {
                 showAlert(message: NSLocalizedString("cannot-move-to-self", comment: "不能将文件/文件夹移动到自身或其子目录中。"))
                 return
@@ -3278,6 +3571,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
 
         // 检查来源是否有同名文件
+        // Check if source has files with same name
         var ifAutoRenameWhenDifferentSource = false
         var fileNames = Set<String>()
         var hasDuplicates = false
@@ -3292,12 +3586,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         // 如果有同名文件,弹窗询问是否继续
+        // If there are files with same name, show dialog asking whether to continue
         if hasDuplicates {
             let alert = NSAlert()
             alert.messageText = NSLocalizedString("has-same-name-files", comment: "发现同名文件")
             alert.informativeText = NSLocalizedString("has-same-name-files-info", comment: "来源文件中包含同名文件，是否自动重命名？")
             alert.alertStyle = .warning
-            alert.icon = NSImage(named: NSImage.infoName)// 设置系统提示图标
+            // 设置系统提示图标
+            // Set system notification icon
+            alert.icon = NSImage(named: NSImage.infoName)
             alert.addButton(withTitle: NSLocalizedString("Auto Rename", comment: "自动重命名"))
             alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
             
@@ -3315,6 +3612,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         // 记录操作到日志
+        // Record operation to log
         var sourceFiles = items.compactMap { item -> String? in
             guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { return nil }
             return fileURL.lastPathComponent
@@ -3330,7 +3628,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let operationLog = "[Move] \(sourceFilesStr) -> \(destinationURL.lastPathComponent)"
         globalVar.operationLogs.append(operationLog)
         
-        //播放提示音
+        // 播放提示音
+        // Play notification sound
         var changeCount = 0
         defer {
             if changeCount > 0 {
@@ -3339,6 +3638,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         // 针对递归模式处理
+        // Handle recursive mode
         var currentFolderChangeCount = 0
         defer {
             if publicVar.isRecursiveMode {
@@ -3364,6 +3664,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             var destURL = destinationURL.appendingPathComponent(fileURL.lastPathComponent)
             
             // 如果是在同一目录移动，则不作动作
+            // If moving in same directory, do nothing
             var isInSameFolder = fileURL.deletingLastPathComponent() == destinationURL
             if isInSameFolder {
                 continue
@@ -3561,7 +3862,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             alert.informativeText = NSLocalizedString("do-you-want-replace(paste)", comment: "你要用正在粘贴的文件替换它吗？")
         }
         alert.alertStyle = .warning
-        alert.icon = NSImage(named: NSImage.infoName)// 设置系统提示图标
+        // 设置系统提示图标
+        // Set system notification icon
+        alert.icon = NSImage(named: NSImage.infoName)
         alert.addButton(withTitle: NSLocalizedString("Replace", comment: "替换"))
         alert.addButton(withTitle: NSLocalizedString("Auto Rename", comment: "自动重命名"))
         if !isSingle {
@@ -3570,6 +3873,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
         
         // 添加复选框
+        // Add checkbox
         let applyToAllCheckbox = NSButton(checkboxWithTitle: NSLocalizedString("Apply to all", comment: "应用到全部"), target: nil, action: nil)
         if !isSingle {
             alert.accessoryView = applyToAllCheckbox
@@ -3597,9 +3901,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         alert.messageText = NSLocalizedString("New Folder", comment: "新建文件夹")
         alert.informativeText = NSLocalizedString("input-new-folder-name", comment: "请输入文件夹名称：")
         alert.alertStyle = .informational
-        alert.icon = NSImage(named: NSImage.infoName)// 设置系统通知图标
+        // 设置系统通知图标
+        // Set system notification icon
+        alert.icon = NSImage(named: NSImage.infoName)
         
         // 添加一个文本输入框
+        // Add a text input field
         let inputTextField = NSTextField(frame: NSRect(x: 0, y: 0, width: 200, height: 24))
         if let textFieldCell = inputTextField.cell as? NSTextFieldCell {
             textFieldCell.usesSingleLineMode = true
@@ -3634,19 +3941,24 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 let newFolderURL = destinationURL.appendingPathComponent(folderName)
                 
                 // 检查是否存在同名文件
+                // Check if file with same name exists
                 if FileManager.default.fileExists(atPath: newFolderURL.path) {
                     showAlert(message: NSLocalizedString("renaming-conflict", comment: "该名称的文件已存在，请选择其他名称。"))
                 }else{
                     // 执行新建操作
+                    // Execute create operation
                     do {
                         // 文件更改计数
+                        // File change count
                         publicVar.fileChangedCount += 1
                         
                         try FileManager.default.createDirectory(at: newFolderURL, withIntermediateDirectories: true, attributes: nil)
                         log("新建文件夹成功: \(newFolderURL.path)")
+                        // Create folder succeeded
                         return (true,newFolderURL)
                     } catch {
                         log("新建文件夹失败: \(error)")
+                        // Create folder failed
                     }
                 }
             }
@@ -3659,9 +3971,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         alert.messageText = NSLocalizedString("New Text File", comment: "新建文本文件")
         alert.informativeText = NSLocalizedString("input-new-textfile-name", comment: "请输入文件名称：")
         alert.alertStyle = .informational
-        alert.icon = NSImage(named: NSImage.infoName)// 设置系统通知图标
+        // 设置系统通知图标
+        // Set system notification icon
+        alert.icon = NSImage(named: NSImage.infoName)
         
         // 添加一个文本输入框
+        // Add a text input field
         let inputTextField = NSTextField(frame: NSRect(x: 0, y: 0, width: 200, height: 24))
         if let textFieldCell = inputTextField.cell as? NSTextFieldCell {
             textFieldCell.usesSingleLineMode = true
@@ -3686,6 +4001,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             
             if !fileName.isEmpty {
                 // 如果用户没有输入扩展名，则加.txt后缀
+                // If user didn't enter extension, add .txt suffix
                 if !fileName.contains(".") {
                     fileName += ".txt"
                 }
@@ -3701,15 +4017,19 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 let newFileURL = destinationURL.appendingPathComponent(fileName)
                 
                 // 检查是否存在同名文件
+                // Check if file with same name exists
                 if FileManager.default.fileExists(atPath: newFileURL.path) {
                     showAlert(message: NSLocalizedString("renaming-conflict", comment: "该名称的文件已存在，请选择其他名称。"))
                 }else{
                     // 执行新建操作
+                    // Execute create operation
                     do {
                         // 创建空文本文件
+                        // Create empty text file
                         try "".write(to: newFileURL, atomically: true, encoding: .utf8)
                         
                         // 文件更改计数
+                        // File change count
                         publicVar.fileChangedCount += 1
                         
                         log("新建文本文件成功: \(newFileURL.path)")
@@ -3724,14 +4044,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     // 系统主题变化时会触发此方法
+    // This method is triggered when system theme changes
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "effectiveAppearance" {
             let theme=NSApp.effectiveAppearance.name
             if theme == .darkAqua {
                 // 暗模式下的颜色
+                // Color in dark mode
                 collectionView.layer?.backgroundColor = hexToNSColor(hex: COLOR_COLLECTIONVIEW_BG_DARK).cgColor
             } else {
                 // 光模式下的颜色
+                // Color in light mode
                 collectionView.layer?.backgroundColor = hexToNSColor(hex: COLOR_COLLECTIONVIEW_BG_LIGHT).cgColor
             }
             if(lastTheme != theme){
@@ -3838,7 +4161,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     override func viewDidLayout() {
         super.viewDidLayout()
         
-        //调整搜索框位置
+        // 调整搜索框位置
+        // Adjust search box position
         if let searchOverlay = searchOverlay,
            let containerView = searchOverlay.containerView {
             searchOverlay.frame = view.bounds
@@ -3856,11 +4180,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         rightView.frame.size.width = newWidth
 
         // 更新右侧视图的大小，左侧视图保持不变
+        // Update right view size, keep left view unchanged
         rightView.frame = CGRect(x: leftView.frame.width + dividerThickness, y: 0, width: newWidth, height: splitView.bounds.height)
         leftView.frame = CGRect(x: 0, y: 0, width: leftView.frame.width, height: splitView.bounds.height)
     }
     func splitViewDidResizeSubviews(_ notification: Notification) {
         // 取消之前的定时器
+        // Cancel previous timer
         resizeTimer?.invalidate()
         
         if publicVar.isInLargeView {
@@ -3871,7 +4197,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         fileDB.lock()
         let fileCount=fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count
         fileDB.unlock()
-        //注：此处最好使用定时器，因为程序首次启动时会调用6次！
+        // 注：此处最好使用定时器，因为程序首次启动时会调用6次！
+        // Note: Better to use timer here, as it will be called 6 times on first launch!
         if fileCount ?? 0 > -1 && !hasManualToggleSidebar && notification.name != .AVAssetDurationDidChange {
             resizeTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) { [weak self] _ in
                 self?.splitViewSizeChanged()
@@ -3884,25 +4211,29 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     func recalcIfHasChangedSize(){
         if windowSizeChangedTimesWhenInLarge > 0 {
-            splitViewDidResizeSubviews(Notification(name: .AVAssetDurationDidChange)) // 表示立即执行
+            // 表示立即执行
+            // Indicates immediate execution
+            splitViewDidResizeSubviews(Notification(name: .AVAssetDurationDidChange))
             windowSizeChangedTimesWhenInLarge = 0
         }
     }
     
-    //var _temp_count_sizeChanged: Int = 0
+    // var _temp_count_sizeChanged: Int = 0
     @objc func splitViewSizeChanged() {
 
         // 获取当前宽度
+        // Get current width
         let currentWidth = collectionView.bounds.width
         
         // 检查宽度是否发生变化
+        // Check if width has changed
         if currentWidth == previousSplitViewWidth {
             return
         }
         previousSplitViewWidth = currentWidth
         
-        //_temp_count_sizeChanged+=1
-        //print("计算布局"+String(_temp_count_sizeChanged))
+        // _temp_count_sizeChanged+=1
+        // print("计算布局"+String(_temp_count_sizeChanged))
         
 //        DispatchQueue.main.async { [weak self] in
 //            guard let self = self else { return }
@@ -3914,7 +4245,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         changeWaterfallLayoutNumberOfColumns()
         
-        //startTime = DispatchTime.now()
+        // startTime = DispatchTime.now()
         recalcLayout(curFolder)
 //        if(true){
 //            let curTime = DispatchTime.now()
@@ -3922,16 +4253,19 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //            let timeInterval = Double(nanoTime) / 1_000_000_000
 //            log("完整计算一次布局耗时: \(timeInterval) seconds")
 //        }
-        //collectionView.collectionViewLayout=LeftAlignedCollectionViewFlowLayout()
+        // collectionView.collectionViewLayout=LeftAlignedCollectionViewFlowLayout()
         collectionView.collectionViewLayout?.invalidateLayout()
         view.window?.layoutIfNeeded()
-        //collectionView.collectionViewLayout=LeftAlignedCollectionViewFlowLayout()
+        // collectionView.collectionViewLayout=LeftAlignedCollectionViewFlowLayout()
         
-        //以下是处理左侧目录树，防止在宽度为0时切换目录，再拉宽时，某些条目显示...
-        //注：似乎改变了实现方式（直接从数据源获取而不是可见view），就不用此处调用了，这里调用计算量大会导致卡顿
-        //outlineViewManager.adjustColumnWidth()
+        // 以下是处理左侧目录树，防止在宽度为0时切换目录，再拉宽时，某些条目显示...
+        // 注：似乎改变了实现方式（直接从数据源获取而不是可见view），就不用此处调用了，这里调用计算量大会导致卡顿
+        // Below is handling for left directory tree, prevent items from displaying incorrectly when switching directories at width 0 then widening
+        // Note: Implementation seems changed (getting directly from data source instead of visible view), no need to call here, calling here causes lag due to heavy computation
+        // outlineViewManager.adjustColumnWidth()
         
-        //解决改变窗口大小，由于不彻底重载，导致的缩放不正常（有时，原因未知）
+        // 解决改变窗口大小，由于不彻底重载，导致的缩放不正常（有时，原因未知）
+        // Fix abnormal scaling when window size changes due to incomplete reload (sometimes, reason unknown)
         if true {
             let visibleIndexPaths=collectionView.indexPathsForVisibleItems()
             for indexPath in visibleIndexPaths{
@@ -3941,7 +4275,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         }
         
-        //刷新工具栏
+        // 刷新工具栏
+        // Refresh toolbar
         if let windowController = view.window?.windowController as? WindowController {
             windowController.updateToolbar()
         }
@@ -3992,9 +4327,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     func recalcLayout(_ targetFolder: String){
         recalcLayoutTimes+=1
-        //log("recalcLayout:"+String(recalcLayoutTimes))
+        // log("recalcLayout:"+String(recalcLayoutTimes))
         
-        //var WIDTH_THRESHOLD=6.0/2000
+        // var WIDTH_THRESHOLD=6.0/2000
         var WIDTH_THRESHOLD=6.4/1920*512/Double(publicVar.profile.thumbSize)
         
         if publicVar.profile.layoutType == .grid {
@@ -4020,7 +4355,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let count = fileDB.db[SortKeyDir(targetFolder)]!.files.count
         let fileCount = fileDB.db[SortKeyDir(targetFolder)]!.fileCount
         let layoutCalcPos = fileDB.db[SortKeyDir(targetFolder)]!.layoutCalcPos
-        //let startKey = fileDB.db[targetFolder]!.files.elementSafe(atOffset: layoutCalcPos).0
+        // let startKey = fileDB.db[targetFolder]!.files.elementSafe(atOffset: layoutCalcPos).0
         if layoutCalcPos>0 {
             if let thumbSize=fileDB.db[SortKeyDir(targetFolder)]!.files.elementSafe(atOffset: layoutCalcPos-1)?.1.thumbSize {
                 lastSingleHeight = thumbSize.height - (2*publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailFilenamePadding)
@@ -4032,18 +4367,20 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 guard var originalSize=fileDB.db[SortKeyDir(targetFolder)]!.files[key]!.originalSize else{break}
                 if fileDB.db[SortKeyDir(targetFolder)]!.files[key]!.canBeCalcued != true {break}
 
-                //if publicVar.profile.layoutType == .grid { originalSize=DEFAULT_SIZE }
+                // if publicVar.profile.layoutType == .grid { originalSize=DEFAULT_SIZE }
                 sum+=(originalSize.width/originalSize.height)
                 singleIds.append(key)
                 if sum>=actualThreshold || i==fileDB.db[SortKeyDir(targetFolder)]!.files.count-1 {
                     sum=max(sum,actualThreshold)
                     var singleHeight = floor((totalWidth - 2 * (publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailCellPadding) * Double(singleIds.count))/sum)
-                    //if publicVar.profile.layoutType == .grid && lastSingleHeight != nil { singleHeight=lastSingleHeight! } //防止最后一行不一样大小
+                    // 防止最后一行不一样大小
+                    // Prevent last row from having different size
+                    // if publicVar.profile.layoutType == .grid && lastSingleHeight != nil { singleHeight=lastSingleHeight! }
                     lastSingleHeight=singleHeight
                     for singleId in singleIds{
                         var originalSizeSingle=fileDB.db[SortKeyDir(targetFolder)]!.files[singleId]!.originalSize!
                         
-                        //if publicVar.profile.layoutType == .grid { originalSizeSingle=DEFAULT_SIZE }
+                        // if publicVar.profile.layoutType == .grid { originalSizeSingle=DEFAULT_SIZE }
                         
                         var singleWidth = floor(originalSizeSingle.width/originalSizeSingle.height*singleHeight)
                         
@@ -4150,7 +4487,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         var path=path
         var isInExternal=false
         
-        //注：由于此函数获取的是volumeIsInternal属性为false的真外部卷，对于第二块硬盘、分区会没有，因此不再使用
+        // 注：由于此函数获取的是volumeIsInternal属性为false的真外部卷，对于第二块硬盘、分区会没有，因此不再使用
+        // Note: This function retrieves true external volumes where volumeIsInternal is false, which won't include second hard drives or partitions, so it's no longer used.
 //        let externalVolumes=VolumeManager.shared.getExternalVolumes()
 //        for exUrl in externalVolumes {
 //            if path.hasPrefix(exUrl.absoluteString) {
@@ -4175,12 +4513,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         targetPaths.removeLast()
         log("Locate:",targetPaths)
         
-        //额外插入一层用来定位
+        // 额外插入一层用来定位
+        // Insert an additional layer for positioning
         if treeRootFolder == "root" && !isInExternal {
             targetPaths.insert(ROOT_NAME, at: 0)
         }
         
-        //标签
+        // 标签
+        // Tags
         if path.contains("VirtualTagFolder") {
             targetPaths = ["Tag " + URL(string: path)!.lastPathComponent]
         }
@@ -4296,18 +4636,22 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         }
         
-        //停止自动滚动
+        // 停止自动滚动
+        // Stop auto-scroll
         if needStopAutoScroll {
             stopAutoScroll()
         }
         
-        //停止自动播放
+        // 停止自动播放
+        // Stop auto-play
         stopAutoPlay()
         
-        //关闭搜索窗口
-        //closeSearchOverlay()
+        // 关闭搜索窗口
+        // Close search window
+        // closeSearchOverlay()
         
-        //清空快速搜索
+        // 清空快速搜索
+        // Clear quick search
         if quickSearchState {
             coreAreaView.hideInfo(force: true)
         }
@@ -4316,7 +4660,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
         stopWatchingDirectory()
         collectionView.deselectAll(nil)
-        //publicVar.selectedUrls=[URL]()
+        // publicVar.selectedUrls=[URL]()
         
         var direction=rawdirection
         var secondDirection: GestureDirection = .zero
@@ -4325,13 +4669,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if rawdirection == .up_left {direction = .up; secondDirection = .down_left}
         if rawdirection == .up_right {direction = .up; secondDirection = .down_right}
         
-        //初始为空则返回
+        // 初始为空则返回
+        // Return if initially empty
         fileDB.lock()
         if fileDB.curFolder=="" && direction != .zero {
             fileDB.unlock()
             return
         }
-        //记录供定位的上次目录
+        // 记录供定位的上次目录
+        // Record previous directory for positioning
         if stackDeep == 0,
            direction == .up || direction == .down || direction == .back {
             publicVar.folderStepForLocate.insert((fileDB.curFolder,direction), at: 0)
@@ -4343,7 +4689,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         startTime = DispatchTime.now()
         
-        //返回上一次目录
+        // 返回上一次目录
+        // Return to previous directory
         if direction == .down || direction == .back {
             if publicVar.folderStepStack.count == 0 {return}
             if publicVar.folderStepStack[0] == "" {return}
@@ -4356,14 +4703,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }else if direction != .forward && stackDeep == 0 {
             publicVar.folderStepForwardStack.removeAll()
         }
-        //前进
+        // 前进
+        // Forward
         if direction == .forward {
             if publicVar.folderStepForwardStack.count == 0 {return}
             if publicVar.folderStepForwardStack[0] == "" {return}
             switchDirByDirection(direction: .zero, dest: publicVar.folderStepForwardStack.removeFirst(), stackDeep: stackDeep+1)
             return
         }
-        //跳转父级目录
+        // 跳转父级目录
+        // Jump to parent directory
         if direction == .up {
             fileDB.lock()
             let newFolderPath=URL(string: fileDB.curFolder)!.deletingLastPathComponent().absoluteString
@@ -4384,22 +4733,25 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         var startFolder=lastFolder
         if direction == .zero && dest != "" { startFolder = dest }
         if !(direction == .zero && lastFolder == startFolder) {
-            //重置递归模式
+            // 重置递归模式
+            // Reset recursive mode
             if !globalVar.keepFilterStateWhenSwitchFolder{
                 publicVar.isRecursiveMode = false
             }
-            //重置搜索过滤
+            // 重置搜索过滤
+            // Reset search filter
             if !globalVar.keepFilterStateWhenSwitchFolder{
                 publicVar.isFilenameFilterOn = false
             }
-            //重置自动播放可见视频
+            // 重置自动播放可见视频
+            // Reset auto-play visible video
             publicVar.autoPlayVisibleVideo = false
         }
         
         treeTraversal(folderURL: URL(string: startFolder)!, round: searchFolderRound, initURL: URL(string: startFolder)!, direction: direction,
                           sameLevel: secondDirection == .down, skip: skip, dryRun: dryRun)
 
-        //let a=1
+        // let a=1
         fileDB.lock()
         var curIndex=fileDB.db.index(forKey: SortKeyDir(startFolder))!
         if direction != .zero {
@@ -4426,15 +4778,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         let nextFolder = fileDB.db[curIndex].0.path
         let fileCount = fileDB.db[curIndex].1.files.count
-        //log(fileDB.db[curIndex].1.files.count)
+        // log(fileDB.db[curIndex].1.files.count)
         fileDB.unlock()
-        //testTmpFolder=fileDB.db[curIndex].0
+        // testTmpFolder=fileDB.db[curIndex].0
         
         if(true){
             let curTime = DispatchTime.now()
             let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
             let timeInterval = Double(nanoTime) / 1_000_000_000
             log("完成文件列表耗时: \(timeInterval) seconds")
+            // Time taken to complete file list
         }
         
         if nextFolder != lastFolder {
@@ -4536,21 +4889,25 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func treeTraversal(folderURL: URL, round: Int, initURL: URL, direction: GestureDirection, sameLevel: Bool = false, skip: Bool = false, dryRun: Bool = false) {
-        //guard let root = root else { return }
-        //let aaa=folderURL.absoluteString
+        // guard let root = root else { return }
+        // let aaa=folderURL.absoluteString
         
-        //找到了则停止
+        // 找到了则停止
+        // Stop if found
         if round != searchFolderRound {return}
-        //重复的则停止
+        // 重复的则停止
+        // Stop if duplicate
         fileDB.lock()
         if fileDB.db[SortKeyDir(folderURL.absoluteString)]?.ver == fileDB.ver {
             fileDB.unlock()
             return
         }
         fileDB.unlock()
-        //找后继时如果不是父目录还小于它则停止
+        // 找后继时如果不是父目录还小于它则停止
+        // Stop when finding successor if not parent directory and less than it
         if direction == .right && SortKeyDir(folderURL.absoluteString) < SortKeyDir(initURL.absoluteString) && !initURL.absoluteString.contains(folderURL.absoluteString) {return}
-        //找前驱时如果大于它则停止
+        // 找前驱时如果大于它则停止
+        // Stop when finding predecessor if greater than it
         if direction == .left && SortKeyDir(folderURL.absoluteString) > SortKeyDir(initURL.absoluteString) {return}
         
         
@@ -4584,7 +4941,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }catch{}
         }
         
-        //搜索过滤
+        // 搜索过滤
+        // Search filter
         let searchText = searchField?.stringValue ?? search_searchText
         if publicVar.isFilenameFilterOn && searchText != "" {
             contents = contents.filter { url in
@@ -4595,7 +4953,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         }
         
-        //过滤隐藏文件
+        // 过滤隐藏文件
+        // Filter hidden files
         contents = contents.filter { url in
 
             // 获取隐藏属性
@@ -4616,17 +4975,21 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             return !isHidden || publicVar.isShowHiddenFile
         }
         
-        //过滤出目录列表
+        // 过滤出目录列表
+        // Filter out directory list
         var subFolders = contents.filter { url in
             guard let isDirectoryResourceValue = try? url.resourceValues(forKeys: [.isDirectoryKey]), let isDirectory = isDirectoryResourceValue.isDirectory else {
                 return false
             }
             return isDirectory
         }
-        if folderURL == initURL && sameLevel { subFolders.removeAll() } //如果找平级则无视子目录
+        // 如果找平级则无视子目录
+        // If finding same level, ignore subdirectories
+        if folderURL == initURL && sameLevel { subFolders.removeAll() }
         subFolders.sort { $0.lastPathComponent.lowercased().localizedStandardCompare($1.lastPathComponent.lowercased()) == .orderedAscending }
         
-        //过滤出需处理文件列表
+        // 过滤出需处理文件列表
+        // Filter out files to process
         var filesUrlInFolder = [URL]()
         var videoCount=0
         var imageCount=0
@@ -4652,7 +5015,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         }
         
-        //Exif排序时间警告
+        // Exif排序时间警告
+        // Exif sort time warning
         if publicVar.profile.sortType == .exifDateA || publicVar.profile.sortType == .exifDateZ
             || publicVar.profile.sortType == .exifPixelA || publicVar.profile.sortType == .exifPixelZ {
             
@@ -4664,7 +5028,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         }
         
-        //好像没必要排序
+        // 好像没必要排序
+        // Seems no need to sort
         var filesInFolder = filesUrlInFolder.map{$0.absoluteString}
         let fileCount=filesInFolder.count
         for folder in subFolders {
@@ -4672,14 +5037,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             
         }
         
-        //标记当前节点
+        // 标记当前节点
+        // Mark current node
         fileDB.lock()
         if fileDB.db[SortKeyDir(folderURL.absoluteString)] == nil {
             fileDB.db[SortKeyDir(folderURL.absoluteString)] = DirModel(path: folderURL.absoluteString, ver: fileDB.ver)
         }
         fileDB.db[SortKeyDir(folderURL.absoluteString)]!.ver = fileDB.ver
         if !skip {
-            fileDB.db[SortKeyDir(folderURL.absoluteString)]?.isFiltered = publicVar.isFilenameFilterOn //文件过滤
+            // 文件过滤
+            // File filtering
+            fileDB.db[SortKeyDir(folderURL.absoluteString)]?.isFiltered = publicVar.isFilenameFilterOn
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.folderCount=subFolders.count
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.fileCount=fileCount
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.imageCount=imageCount
@@ -4693,7 +5061,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         fileDB.db[SortKeyDir(folderURL.absoluteString)]!.isRecursiveMode=publicVar.isRecursiveMode
         fileDB.unlock()
         
-        //往前则后序遍历
+        // 往前则后序遍历
+        // Forward traversal uses post-order traversal
         if direction == .left {
             for subFolder in subFolders.reversed(){
                 treeTraversal(folderURL: subFolder, round: round, initURL: initURL, direction: direction)
@@ -4703,7 +5072,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         }
         
-        //有图片且满足条件则停止之后搜索
+        // 有图片且满足条件则停止之后搜索
+        // Stop searching if images found and conditions met
         if searchCount > 0 {
             if direction == .left && SortKeyDir(folderURL.absoluteString) < SortKeyDir(initURL.absoluteString) {
                 searchFolderRound += 1
@@ -4717,18 +5087,19 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         
-        //排序传递性断言
+        // 排序传递性断言
+        // Sort transitivity assertion
         //            var testList=[SortKey]()
         //            for filePath in filesInFolder{
         //                let fileSortKey:SortKey
-        //                //fileSortKey=SortKeyDir(filePath)
+        //                // fileSortKey=SortKeyDir(filePath)
         //                if filePath.hasSuffix("_FolderMark") {
         //                    fileSortKey=SortKeyDir(String(filePath.dropLast("_FolderMark".count)),isDir: true)
         //                }else{
         //                    fileSortKey=SortKeyDir(filePath)
         //                }
         //                testList.append(fileSortKey)
-        //                //log(filePath)
+        //                // log(filePath)
         //            }
         //            testList.sort()
         //            for (i, _) in testList.enumerated() {
@@ -4738,11 +5109,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //            }
         
         
-        //处理当前节点，注意检查skip，否则向上时会清空
+        // 处理当前节点，注意检查skip，否则向上时会清空
+        // Process current node, note check skip, otherwise will clear when going up
         fileDB.lock()
         if !skip && (initURL != folderURL || direction == .zero) {
             let folderpath = folderURL.absoluteString
-            //log(filesInFolder.count)
+            // log(filesInFolder.count)
             for (i,filePath) in filesInFolder.enumerated(){
                 var fileSortKey:SortKeyFile
                 let isDir:Bool
@@ -4753,14 +5125,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     fileSortKey=SortKeyFile(filePath, isInSameDir: isInSameDir, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
                     isDir=false
                 }
-                //读取文件大小日期
+                // 读取文件大小日期
+                // Read file size and dates
                 var fileSize: Int?
                 var modDate: Date?
                 var createDate: Date?
                 var addDate: Date?
                 var doNotActualRead=false
                 do{
-                    //文件在前i个，目录在后面
+                    // 文件在前i个，目录在后面
+                    // Files in first i items, directories after
                     if i < fileCount {
                         let resourceValues = try filesUrlInFolder[i].resourceValues(forKeys: Set(properties))
                         if let tmp = resourceValues.fileSize {
@@ -4785,7 +5159,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                            downloadingStatus != .current {
                             doNotActualRead=true
                         }
-                    }else{//目录
+                    // 目录
+                    // Directory
+                    }else{
                         let resourceValues = try subFolders[i-fileCount].resourceValues(forKeys: Set(properties))
                         if let tmp = resourceValues.fileSize {
                             fileSize=tmp
@@ -4803,7 +5179,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             addDate=tmp
                             fileSortKey.addDate=tmp
                         }
-                        //由于文件夹下内容没下载全，downloadingStatus好像也会为current，因此只要是icloud文件夹，就不生成缩略图
+                        // 由于文件夹下内容没下载全，downloadingStatus好像也会为current，因此只要是icloud文件夹，就不生成缩略图
+                        // Since folder content not fully downloaded, downloadingStatus might also be current, so if it's an iCloud folder, don't generate thumbnails
                         if let isUbiquitousItem = resourceValues.isUbiquitousItem,
                            isUbiquitousItem
                            {
@@ -4813,20 +5190,22 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }catch{
                     log("Error reading properties.")
                 }
-                //log("i:",i,"path:",fileSortKey.path.removingPercentEncoding)
+                // log("i:",i,"path:",fileSortKey.path.removingPercentEncoding)
                 let newFileModel=FileModel(path: fileSortKey.path, ver: fileDB.db[SortKeyDir(folderpath)]!.ver, isDir: isDir, fileSize: fileSize, createDate: createDate, modDate: modDate, addDate: addDate, doNotActualRead: doNotActualRead)
-                //log(fileSortKey.path)
+                // log(fileSortKey.path)
                 if let file = fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] {
                     if file.path == fileSortKey.path {
                         file.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
                         file.isDir=isDir
                         file.doNotActualRead=doNotActualRead
-                        //检查文件或文件夹是否有变化(文件夹fileSize为nil)
+                        // 检查文件或文件夹是否有变化(文件夹fileSize为nil)
+                        // Check if file or folder has changed (folder fileSize is nil)
                         if fileSize != file.fileSize || modDate != file.modDate {
                             fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
                         }
                     }else{
-                        //大小写变化，需要删除再插入
+                        // 大小写变化，需要删除再插入
+                        // Case change, need to delete then insert
                         fileDB.db[SortKeyDir(folderpath)]!.files.removeValue(forKey: fileSortKey)
                         fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
                     }
@@ -4835,7 +5214,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
             }
             for ele in fileDB.db[SortKeyDir(folderpath)]!.files{
-                //log(ele.0.path.removingPercentEncoding)
+                // log(ele.0.path.removingPercentEncoding)
                 if ele.1.ver != fileDB.db[SortKeyDir(folderpath)]!.ver {
                     ele.1.image=nil
                     ele.1.folderImages=[]
@@ -4876,7 +5255,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         fileDB.unlock()
         
-        //往后则先序遍历
+        // 往后则先序遍历
+        // Backward traversal uses pre-order traversal
         if direction == .right {
             for subFolder in subFolders{
                 treeTraversal(folderURL: subFolder, round: round, initURL: initURL, direction: direction)
@@ -4890,11 +5270,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func switchFolder(path: String) {
-        //startTime = DispatchTime.now()
+        // startTime = DispatchTime.now()
         
-        //getFileListOfFolder(folderpath: path)
+        // getFileListOfFolder(folderpath: path)
         
-        //清空任务池
+        // 清空任务池
+        // Clear task pool
         readInfoTaskPoolLock.lock()
         readInfoTaskPool.removeAll()
         readInfoTaskPoolLock.unlock()
@@ -4903,7 +5284,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         loadImageTaskPool.setMostPriority(queueName: path)
         loadImageTaskPool.lock.unlock()
         
-        //是捕获界面，还是将从finder打开替换为目录中打开
+        // 是捕获界面，还是将从finder打开替换为目录中打开
+        // Capture interface, or replace opening from finder with opening in directory
         if publicVar.openFromFinderPath == "" {
             if let snapshot = captureSnapshot(of: coreAreaView){
                 coreAreaView.addSubview(snapshot)
@@ -4922,7 +5304,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }else{
             
             let filename=publicVar.openFromFinderPath
-            //log(filename)
+            // log(filename)
             fileDB.lock()
             if let index=fileDB.db[SortKeyDir(path)]?.files.index(forKey: SortKeyFile(filename, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)),
                let offset=fileDB.db[SortKeyDir(path)]?.files.offset(of: index),
@@ -4932,8 +5314,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                let fileCount=fileDB.db[SortKeyDir(path)]?.fileCount
             {
                 fileDB.unlock()
-                //log(offset-(totalCount-fileCount))
-                currLargeImagePos = offset//-(totalCount-fileCount)
+                // log(offset-(totalCount-fileCount))
+                currLargeImagePos = offset// -(totalCount-fileCount)
                 initLargeImagePos = -1
                 publicVar.openFromFinderPath = ""
                 file.imageInfo=getImageInfo(url: url, needMetadata: true)
@@ -4965,7 +5347,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             publicVar.isNeedChangeLayoutType = false
         }
         
-        //清空collectionView
+        // 清空collectionView
+        // Clear collectionView
         fileDB.lock()
         let lastCurFolder=fileDB.curFolder
         fileDB.curFolder = path
@@ -4975,13 +5358,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         fileDB.db[SortKeyDir(path)]?.lastLayoutCalcPosUsed=0
         fileDB.unlock()
         
-        //如果是切换目录或者文件数量过多，则清空后再insertItems，否则仅reloadData(保持位置)
+        // 如果是切换目录或者文件数量过多，则清空后再insertItems，否则仅reloadData(保持位置)
+        // If switching directory or too many files, clear then insertItems, otherwise only reloadData (maintain position)
         fileDB.lock()
         let needClearThenInsert = lastCurFolder != path || fileNum > RESET_VIEW_FILE_NUM_THRESHOLD || fileDB.db[SortKeyDir(path)]?.keepScrollPos == false
         fileDB.unlock()
         if needClearThenInsert {
-            //必须按顺序执行以下两句，否则频繁切换目录时会出现异常
-            collectionView.reloadData() //重载清空
+            // 必须按顺序执行以下两句，否则频繁切换目录时会出现异常
+            // Must execute the following two statements in order, otherwise exceptions will occur when frequently switching directories
+            // 重载清空
+            // Reload to clear
+            collectionView.reloadData()
             collectionView.numberOfItems(inSection:0)
             
             fileDB.lock()
@@ -4989,7 +5376,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             fileDB.unlock()
         }
         
-        //界面快照渐隐动画
+        // 界面快照渐隐动画
+        // Interface snapshot fade-out animation
 //        NSAnimationContext.runAnimationGroup({ context in
 //            context.duration = 0.6
 //            snapshot?.animator().alphaValue = 0
@@ -5016,7 +5404,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             readInfoTaskPoolLock.unlock()
             publicVar.isInStageOneProgress = false
             
-            //对于空文件夹，播放渐变动画（因为没有分派任务，所以在任务里的渐变调用不到）
+            // 对于空文件夹，播放渐变动画（因为没有分派任务，所以在任务里的渐变调用不到）
+            // For empty folders, play fade animation (because no tasks are dispatched, fade in tasks won't be called)
             if keys.isEmpty {
                 
                 collectionView.reloadData()
@@ -5041,7 +5430,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
             }
             
-            //对于非空文件夹，延迟播放渐变动画（主要是针对网络驱动器时，可能连第一个对象获取信息都非常耗时，需要在此处也计时）
+            // 对于非空文件夹，延迟播放渐变动画（主要是针对网络驱动器时，可能连第一个对象获取信息都非常耗时，需要在此处也计时）
+            // For non-empty folders, delay fade animation (mainly for network drives, getting info for even the first object can be very time-consuming, need timing here too)
             DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 guard let self = self else { return }
                 Thread.sleep(forTimeInterval: 0.5)
@@ -5074,7 +5464,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             
                             let snapshot=snapshotQueue.first!
                             snapshotQueue.removeFirst()
-                            //publicVar.isInLargeView=false
+                            // publicVar.isInLargeView=false
                             NSAnimationContext.runAnimationGroup({ context in
                                 context.duration = 0.2
                                 snapshot?.animator().alphaValue = 0
@@ -5103,7 +5493,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     func startBackgroundTaskThread(){
         log("开始startBackgroundTaskThread")
 
-        //读取信息线程
+        // 读取信息线程
+        // Read info thread
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
             let operationQueue = OperationQueue()
@@ -5117,7 +5508,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 if readInfoTaskPool.count != 0 {
                     let firstTask = readInfoTaskPool.removeFirst()
                     readInfoTaskPoolLock.unlock()
-                    //(dir,key,i,doNotActualRead)
+                    // (dir,key,i,doNotActualRead)
                     fileDB.lock()
                     let dir=firstTask.0
                     let dirModel=firstTask.1
@@ -5132,7 +5523,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     if i == -1 {continue}
                     if ver != dirModel.ver {continue}
                     
-                    //外置卷等待到队列全部执行完毕再分配(单线程)
+                    // 外置卷等待到队列全部执行完毕再分配(单线程)
+                    // External volume waits for queue to fully execute before allocating (single-threaded)
 //                    if VolumeManager.shared.isExternalVolume(key.path) {
 //                        operationQueue.waitUntilAllOperationsAreFinished()
 //                    }
@@ -5142,7 +5534,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         operationQueue.maxConcurrentOperationCount = globalVar.thumbThreadNum > 2 ? 2 : 1
                     }
                     
-                    //最后一个等待到队列全部执行完毕再分配
+                    // 最后一个等待到队列全部执行完毕再分配
+                    // Last one waits for queue to fully execute before allocating
                     if(i == count-1){
                         operationQueue.waitUntilAllOperationsAreFinished()
                     }
@@ -5158,7 +5551,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         fileDB.unlock() 
                         
                         if ver != dirModel.ver {return}
-                        if dir != curFolder {return} // 需要跳过，否则会等上一个目录完全执行完毕后才开始；不过这样就没法预载入其它目录了，待重构任务队列实现
+                        // 需要跳过，否则会等上一个目录完全执行完毕后才开始；不过这样就没法预载入其它目录了，待重构任务队列实现
+                        // Need to skip, otherwise will wait for previous directory to fully complete before starting; but this prevents preloading other directories, pending task queue refactoring
+                        if dir != curFolder {return}
                         
                         publicVar.isInStageTwoProgress = true
                         defer {
@@ -5168,8 +5563,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         var isGetImageSizeFail = false
                         
                         if originalSize == nil {
-                            //获取图像大小
-                            if doNotActualRead { //|| VolumeManager.shared.isExternalVolume(key.path){
+                            // 获取图像大小
+                            // Get image size
+                            if doNotActualRead { // || VolumeManager.shared.isExternalVolume(key.path){
                                 originalSize = DEFAULT_SIZE
                                 isGetImageSizeFail = true
                             }else{
@@ -5183,7 +5579,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         }
                         
                         if originalSize != nil {
-                            //注意：可能上面的下一轮执行完毕后才执行后面的代码
+                            // 注意：可能上面的下一轮执行完毕后才执行后面的代码
+                            // Note: Code below may execute after next round above completes
                             DispatchQueue.main.async { [weak self] in
                                 guard let self = self else { return }
                                 
@@ -5199,14 +5596,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 
                                 if ver != dirModel.ver {return}
                                 
-                                //80~0.07s, 50~0.05s, 20~0.04s
+                                // 80~0.07s, 50~0.05s, 20~0.04s
                                 if(false || i % 20 == 8 || i == count-1 || publicVar.timer.intervalSafe(name: "recalcLayoutWhenReadInfo", second: 0.1)){
                                     recalcLayout(dir)
-                                    //collectionView.reloadData()
+                                    // collectionView.reloadData()
                                 }
                                 
                                 if(dir == curFolder && keepScrollPos && i == count-1){
-                                    //publicVar.timer.intervalSafe(name: "recalcLayoutReloadData", second: 0.02+Double(i)*0.0001)
+                                    // publicVar.timer.intervalSafe(name: "recalcLayoutReloadData", second: 0.02+Double(i)*0.0001)
                                     collectionView.reloadData()
                                     collectionView.numberOfItems(inSection:0)
                                 }
@@ -5224,7 +5621,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 }
                                 
                                 //                            if nowLayoutCalcPos-lastLayoutCalcPosUsed > 100 {
-                                //                                nowLayoutCalcPos=lastLayoutCalcPosUsed+100 //避免一次显示太多导致载入缓存目录时不能瞬间显示，但这样似乎更慢了
+                                // 避免一次显示太多导致载入缓存目录时不能瞬间显示，但这样似乎更慢了
+                                // Avoid displaying too many at once causing cached directory to not display instantly, but this seems slower
+                                //                                nowLayoutCalcPos=lastLayoutCalcPosUsed+100
                                 //                                fileDB.lock()
                                 //                                fileDB.db[SortKeyDir(dir)]!.layoutCalcPos=nowLayoutCalcPos
                                 //                                fileDB.unlock()
@@ -5251,13 +5650,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                                 fileDB.unlock()
                                             }
                                         }
-                                        //collectionView.reloadData()
-                                        //collectionView.numberOfItems(inSection:0)
-                                        //此时开始渐变动画？
+                                        // collectionView.reloadData()
+                                        // collectionView.numberOfItems(inSection:0)
+                                        // 此时开始渐变动画？
+                                        // Start fade animation now?
+                                        // Start fade animation now?
                                         
                                     }
                                     for x in lastLayoutCalcPosUsed...nowLayoutCalcPos-1{
-                                        //TODO: 大量读取文件时造成系统内存不足
+                                        // TODO: 大量读取文件时造成系统内存不足
                                         let memUseLimit = globalVar.memUseLimit
                                         if x > memUseLimit {
                                             break
@@ -5290,7 +5691,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
             }
         }
-        //缩略图线程
+        // 缩略图线程
+        // Thumbnail thread
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
             let operationQueue = OperationQueue()
@@ -5305,7 +5707,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     loadImageTaskPool.lock.lock()
                     if let firstTask = loadImageTaskPool.pop() {
                         loadImageTaskPool.lock.unlock()
-                        //(dir,key,i,doNotActualRead)
+                        // (dir,key,i,doNotActualRead)
                         fileDB.lock()
                         let dir=firstTask.0
                         let dirModel=firstTask.1
@@ -5320,7 +5722,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         
                         if i == -1 {return}
                         if ver != dirModel.ver {return}
-                        if dir != curFolder {return} // 暂时跳过，以降低网络驱动器单线程的载入延迟
+                        // 暂时跳过，以降低网络驱动器单线程的载入延迟
+                        // Temporarily skip to reduce loading delay for network drive single-threaded loading
+                        if dir != curFolder {return}
                         
                         publicVar.isInStageThreeProgress = true
                         defer {
@@ -5358,7 +5762,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         let count = dirModel.files.count
                         let isMemClearedToAvoidRemainingTask=dirModel.isMemClearedToAvoidRemainingTask
                         fileDB.unlock()
-                        //loadImageTaskPool.lock.unlock()//此处解锁是因为防止8个线程与主线程排队争fileDB.lock
+                        // 此处解锁是因为防止8个线程与主线程排队争fileDB.lock
+                        // Unlock here to prevent 8 threads from contending with main thread for fileDB.lock
+                        // loadImageTaskPool.lock.unlock()
                         if isMemClearedToAvoidRemainingTask && !otherTaskInfo.isFromScroll {return}
                         
 //                        if(true){
@@ -5368,7 +5774,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //                            log("read接任务耗时: \(timeInterval) seconds ",dir)
 //                        }
                         
-                        //完全载入计时
+                        // 完全载入计时
+                        // Full load timing
                         if(i == count-1){
                             let curTime = DispatchTime.now()
                             let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
@@ -5376,8 +5783,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             log("图像的缩略完全载入耗时: \(timeInterval) seconds")
                             log("-----------------------------------------------------------")
                         }
-                        //此时开始渐变动画
-                        if dir == curFolder {//防止其它队列末尾任务造成提前渐变
+                        // 此时开始渐变动画
+                        // Start fade animation now
+                        // 防止其它队列末尾任务造成提前渐变
+                        // Prevent premature fade from other queue tail tasks
+                        if dir == curFolder {
                             DispatchQueue.main.async { [weak self] in
                                 guard let self = self else { return }
                                 
@@ -5402,7 +5812,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         log("到隐藏快照原因1耗时: \(timeInterval) seconds")
                                         log("-----------------------------------------------------------")
                                         
-                                        //向上或者后退时定位文件夹
+                                        // 向上或者后退时定位文件夹
+                                        // Locate folder when going up or back
                                         if let (lastFolder,direction) = publicVar.folderStepForLocate.first {
                                             
                                             if let lastURL = URL(string: lastFolder),
@@ -5435,7 +5846,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     while snapshotQueue.count > 0{
                                         let snapshot=snapshotQueue.first!
                                         snapshotQueue.removeFirst()
-                                        //publicVar.isInLargeView=false
+                                        // publicVar.isInLargeView=false
                                         NSAnimationContext.runAnimationGroup({ context in
                                             context.duration = 0.2
                                             snapshot?.animator().alphaValue = 0
@@ -5452,10 +5863,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             }
                         }
                         
-                        //因为优先级调度未能预先计算到目标大小时，设置标识
+                        // 因为优先级调度未能预先计算到目标大小时，设置标识
+                        // Set flag when priority scheduling fails to pre-calculate target size
                         var noThumbSizeDueToSchedule = false
                         if thumbSize == nil && otherTaskInfo.isPriorityScheduled {
-                            //originalSize = getImageSize(url: URL(string: key.path)!)
+                            // originalSize = getImageSize(url: URL(string: key.path)!)
                             thumbSize = NSSize(width: 256, height: 256)
                             noThumbSizeDueToSchedule = true
                         }
@@ -5475,16 +5887,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 let rect = AVMakeRect(aspectRatio: size, insideRect: CGRect(origin: CGPoint(x: 0, y: 0), size: revisedSize))
                                 revisedSize = NSSize(width: round(rect.size.width), height: round(rect.size.height))
                             }
-                            //log(max(revisedSize.width,revisedSize.height),level: .debug)
+                            // log(max(revisedSize.width,revisedSize.height),level: .debug)
                             
                             var imageExist=false
                             loadImageTaskPool.lock.lock()
                             fileDB.lock()
                             if let thumbImage = file.image {
                                 imageExist=true
-                                //print(revisedSize,thumbImage.size)
+                                // print(revisedSize,thumbImage.size)
                                 
-                                if (publicVar.isGenHdThumb && !noThumbSizeDueToSchedule) && file.type == .image { //&& publicVar.layoutType != .grid
+                                if (publicVar.isGenHdThumb && !noThumbSizeDueToSchedule) && file.type == .image { // && publicVar.layoutType != .grid
                                     if thumbImage.size.width != revisedSize.width {
                                         imageExist=false
                                     }
@@ -5496,18 +5908,24 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //                                    }
 //                                }
                                 if ["gif", "svg", "ai"].contains(file.ext.lowercased()){
-                                    imageExist=true //由于无法正常生成指定大小的缩略图
+                                    // 由于无法正常生成指定大小的缩略图
+                                    // Cannot generate thumbnail of specified size normally
+                                    imageExist=true
                                 }
                                 if globalVar.HandledRawExtensions.contains(file.ext.lowercased()){
-                                    //imageExist=true //RAW优先使用内嵌缩略图
-                                    //由于现在实现了缩放内嵌缩略图，因此不再使用此逻辑
+                                    // imageExist=true // RAW优先使用内嵌缩略图
+                                    // RAW prioritizes embedded thumbnails
+                                    // 由于现在实现了缩放内嵌缩略图，因此不再使用此逻辑
+                                    // Since scaling embedded thumbnails is now implemented, this logic is no longer used
                                 }
                             }
                             fileDB.unlock()
                             loadImageTaskPool.lock.unlock()
                             if imageExist == false {
-                                //开始缩略图步骤
-                                //let fileVer=file.ver//获取缩略图开始之前版本 （注：已经用dirModel的方法）
+                                // 开始缩略图步骤
+                                // 获取缩略图开始之前版本 （注：已经用dirModel的方法）
+                                // Get version before thumbnail starts (Note: dirModel method already used)
+                                // let fileVer=file.ver
                                 let url=URL(string: key.path)!
                                 var image: NSImage? = nil
                                 var getThumbFailed = false
@@ -5516,10 +5934,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     getThumbFailed = true
                                 }else{
                                     if !publicVar.isGenHdThumb || noThumbSizeDueToSchedule { // publicVar.layoutType == .grid
-                                        //image = getImageThumb(url: url, refSize: originalSize)
+                                        // image = getImageThumb(url: url, refSize: originalSize)
                                         image = ThumbImageProcessor.getImageCache(url: url, refSize: originalSize, isPreferInternalThumb: publicVar.isPreferInternalThumb, ver: ver)
                                     }else{
-                                        //image = getImageThumb(url: url, size: revisedSize)
+                                        // image = getImageThumb(url: url, size: revisedSize)
                                         image = ThumbImageProcessor.getImageCache(url: url, size: revisedSize, ver: ver)
                                     }
                                     if image == nil {
@@ -5528,7 +5946,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     }
                                 }
                                 
-                                //目录则请求3个缩略图
+                                // 目录则请求3个缩略图
+                                // For directories, request 3 thumbnails
                                 var folderImages = [NSImage]()
 //                                if url.hasDirectoryPath {
 //                                    let urls = findImageURLs(in: url, maxDepth: 3, maxImages: 3)
@@ -5542,7 +5961,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //                                }
                                 
                                 if image != nil {
-                                    //注意：可能上面的下一轮执行完毕后才执行后面的代码
+                                    // 注意：可能上面的下一轮执行完毕后才执行后面的代码
+                                    // Note: Code below may execute after next round above completes
                                     DispatchQueue.main.async { [weak self] in
                                         guard let self = self else { return }
                                         
@@ -5557,13 +5977,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         file.getThumbFailed=getThumbFailed
                                         file.folderImages=folderImages
                                         fileDB.unlock()
-                                        //此处必须分开加锁解锁，因为下面这句调用底层会重入锁
+                                        // 此处必须分开加锁解锁，因为下面这句调用底层会重入锁
+                                        // Must lock/unlock separately here, as call below will re-enter lock
                                         if dir == curFolder {
                                             let indexPath = IndexPath(item: i, section: 0)
                                             if let item = collectionView.item(at: indexPath) as? CustomCollectionViewItem{
                                                 fileDB.lock()
                                                 item.configureWithImage(file,playAnimation:true)
-                                                //log(i)
+                                                // log(i)
                                                 if i == 0 {
                                                     let curTime = DispatchTime.now()
                                                     let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
@@ -5593,9 +6014,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 Thread.sleep(forTimeInterval: 2)
                 
                 let memUse = reportTotalMemoryUsage()
-                //let memPhyUse = reportPhyMemoryUsage()
+                // let memPhyUse = reportPhyMemoryUsage()
                 
-                //log("Memory usage: "+String(memUse), level: .warn)
+                // log("Memory usage: "+String(memUse), level: .warn)
                 
                 if LRUqueue.count >= 1 {
                     guard let lastLRUItem = LRUqueue.last else {continue}
@@ -5616,23 +6037,28 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     var ifCantDetectMemUse = false
                     if #available(macOS 15, *) {
                         // TODO: 有时在macos 15上观察到，图片占用的内存变成了与WindowServer的共享内存，此时无法直接获取大小
+                        // TODO: Sometimes observed on macOS 15 that image memory becomes shared memory with WindowServer, making it impossible to directly get size
                         ifCantDetectMemUse = totalCount > memUseLimit * 2
                     }
                     
                     var debug = false
 #if DEBUG
-                    debug = true //用来在debug环境复现问题
+                    // 用来在debug环境复现问题
+                    // Used to reproduce issues in debug environment
+                    debug = true
 #endif
                     
                     if (overTime > 600 && LRUqueue.count >= 2) || (Int(memUse) > memUseLimit) || (debug && LRUqueue.count >= 2) {
                         log("Memory free:", level: .warn)
                         log(lastLRUItem.0.removingPercentEncoding, level: .warn)
-                        //由于先置目录再请求缩略图，所以此处可保证安全
+                        // 由于先置目录再请求缩略图，所以此处可保证安全
+                        // Safe here because directory is set before requesting thumbnails
                         
                         if(lastLRUItem.0 != fileDB.curFolder){
-                            //不是当前目录
+                            // 不是当前目录
+                            // Not current directory
                             fileDB.lock()
-                            //TODO: Why这里可能为null？
+                            // TODO: Why这里可能为null？
                             if let dirModel = fileDB.db[SortKeyDir(lastLRUItem.0)] {
                                 dirModel.isMemClearedToAvoidRemainingTask=true
                                 for fileModel in dirModel.files {
@@ -5648,7 +6074,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             LRUqueue.removeLast()
                             fileDB.unlock()
                         }else{
-                            //是当前目录
+                            // 是当前目录
+                            // Is current directory
                             var indexPaths: Set<IndexPath> = []
                             var isInLargeView = false
                             var curImagePos = -1
@@ -5660,12 +6087,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     curImagePos = currLargeImagePos
                                 }
                                 indexPaths = collectionView.indexPathsForVisibleItems()
-                                //进一步过滤
+                                // 进一步过滤
+                                // Further filtering
                                 let visibleRectRaw = mainScrollView.contentView.visibleRect
                                 let scrollPos = visibleRectRaw.origin
                                 let scrollWidth = visibleRectRaw.width
                                 let scrollHeight = visibleRectRaw.height
-                                let visibleRect = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight*2)) //注意这里乘了2
+                                // 注意这里乘了2
+                                // Note: multiplied by 2 here
+                                let visibleRect = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight*2))
                                 indexPaths = indexPaths.filter { [weak self] indexPath in
                                     guard let self = self else { return true }
                                     let itemFrame = collectionView.layoutAttributesForItem(at: indexPath)?.frame ?? .zero
@@ -5690,6 +6120,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     dirModel.isMemClearedToAvoidRemainingTask=true
                                     for fileModel in dirModel.files {
                                         // 如果不在任一范围内,才清除缩略图
+                                        // Only clear thumbnail if not in any range
                                         if (fileModel.1.id < indexMin || fileModel.1.id > indexMax) &&
                                             (fileModel.1.id < indexMinOfLarge || fileModel.1.id > indexMaxOfLarge) {
                                             fileModel.1.image=nil
@@ -5727,9 +6158,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         fileDB.lock()
         var index: Int?
         if LRUqueue.count > 0 {
-            //之前队首的最后访问时间记录为当前时间
+            // 之前队首的最后访问时间记录为当前时间
+            // Record previous head's last access time as current time
             LRUqueue[0].1=DispatchTime.now()
-            //查找队列中是否有path
+            // 查找队列中是否有path
+            // Search for path in queue
             for (i,(lruPath,_,_)) in LRUqueue.enumerated() {
                 if lruPath == path {
                     index=i
@@ -5795,7 +6228,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
     func toggleAutoPlayVisibleVideo() {
         publicVar.autoPlayVisibleVideo.toggle()
-        //UserDefaults.standard.set(publicVar.autoPlayVisibleVideo, forKey: "autoPlayVisibleVideo")
+        // UserDefaults.standard.set(publicVar.autoPlayVisibleVideo, forKey: "autoPlayVisibleVideo")
         debounceSetLoadThumbPriority(interval: 0.1, ifNeedVisable: true)
         var showText = NSLocalizedString("Cancel Auto Play Visible Video", comment: "取消自动播放可见视频")
         if publicVar.autoPlayVisibleVideo {
@@ -5810,6 +6243,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     @objc func scrollViewDidScroll(_ notification: Notification) {
         guard let scrollView = notification.object as? NSScrollView else { return }
         // 确保是针对我们感兴趣的ScrollView（如果有多个ScrollView）
+        // Ensure it's the ScrollView we're interested in (if there are multiple ScrollViews)
         if scrollView == collectionView.enclosingScrollView {
             debounceSetLoadThumbPriority(interval: 0.1, ifNeedVisable: true)
         }
@@ -5818,6 +6252,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     @objc func scrollViewScrollEnd(_ notification: Notification) {
         guard let scrollView = notification.object as? NSScrollView else { return }
         // 确保是针对我们感兴趣的ScrollView（如果有多个ScrollView）
+        // Ensure it's the ScrollView we're interested in (if there are multiple ScrollViews)
         if scrollView == collectionView.enclosingScrollView {
             debounceSetLoadThumbPriority(interval: 0.1, ifNeedVisable: true)
         }
@@ -5851,13 +6286,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let scrollPos = visibleRectRaw.origin
             let scrollWidth = visibleRectRaw.width
             let scrollHeight = visibleRectRaw.height
-            let visibleRectExtended = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight*2)) //注意这里乘了2
+            // 注意这里乘了2
+            // Note: multiplied by 2 here
+            let visibleRectExtended = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight*2))
             indexPaths = indexPaths.filter { indexPath in
                 let itemFrame = collectionView.layoutAttributesForItem(at: indexPath)?.frame ?? .zero
                 return itemFrame.intersects(visibleRectExtended)
             }
-
-            //播放视频
+            
+            // 播放视频
+            // Play video
             let visibleItems = collectionView.indexPathsForVisibleItems()
             let visibleRect = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight))
             for indexPath in visibleItems {
@@ -5885,16 +6323,18 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             
             let originalMin=itemSorted.first!
             let originalMax=itemSorted.last!
-
-            //预加载范围
+            
+            // 预加载范围
+            // Preload range
             var preloadRangePre = PRELOAD_THUMB_RANGE_PRE
             var preloadRangeNext = PRELOAD_THUMB_RANGE_NEXT
             if ifNeedVisable {
                 preloadRangePre = max(PRELOAD_THUMB_RANGE_PRE, itemSorted.count)
                 preloadRangeNext = max(PRELOAD_THUMB_RANGE_NEXT, itemSorted.count*2)
             }
-
-            //序号最大最小值
+            
+            // 序号最大最小值
+            // Index min and max values
             let itemIndexMin=max(itemSorted.first! - preloadRangePre, 0)
             let itemIndexMax=itemSorted.last! + preloadRangeNext
             
@@ -5965,36 +6405,49 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         view.window?.makeFirstResponder(collectionView)
         
-        //继续自动滚动
+        // 继续自动滚动
+        // Continue auto-scroll
         isAutoScrollPaused = false
         
-        //停止自动播放
+        // 停止自动播放
+        // Stop auto-play
         stopAutoPlay()
         
-        //停止播放视频
+        // 停止播放视频
+        // Stop playing video
         largeImageView.stopVideo()
         
-        //隐藏首次使用提示
+        // 隐藏首次使用提示
+        // Hide first-time use hint
         coreAreaView.hideInfo()
         globalVar.isFirstTimeUse = false
         UserDefaults.standard.set(false, forKey: "isFirstTimeUse")
         
-        //复原旋转
+        // 复原旋转
+        // Restore rotation
         largeImageView.file.rotate=0
         
-        //取消OCR
+        // 取消OCR
+        // Cancel OCR
         largeImageView.unSetOcr()
         
-        //需要在reloadData前取消选择，否则不会调用相关函数
+        // 需要在reloadData前取消选择，否则不会调用相关函数
+        // Need to deselect before reloadData, otherwise related functions won't be called
         collectionView.deselectAll(nil)
         
-        //隐藏动画
-        if globalVar.portableMode {//便携模式下不使用动画，因为反倒有两次变化
+        // 隐藏动画
+        // Hide animation
+        // 便携模式下不使用动画，因为反倒有两次变化
+        // Portable mode doesn't use animation, as it would cause two changes
+        if globalVar.portableMode {
             largeImageView.alphaValue = 0
             largeImageBgEffectView.alphaValue = 0
             self.largeImageView.isHidden=true
             self.largeImageBgEffectView.isHidden=true
-            self.largeImageBgEffectView.blendingMode = .withinWindow //从文件打开时初始模式不同
+            // 从文件打开时初始模式不同
+            // Initial mode differs when opening from file
+            self.largeImageBgEffectView.blendingMode = .withinWindow
+            // Initial mode differs when opening from file
             self.publicVar.isInLargeViewAfterAnimate=false
         }else{
             NSAnimationContext.runAnimationGroup({ context in
@@ -6004,35 +6457,41 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }, completionHandler: {
                 self.largeImageView.isHidden=true
                 self.largeImageBgEffectView.isHidden=true
-                self.largeImageBgEffectView.blendingMode = .withinWindow //从文件打开时初始模式不同
+                // 从文件打开时初始模式不同
+                // Initial mode differs when opening from file
+                self.largeImageBgEffectView.blendingMode = .withinWindow
                 self.publicVar.isInLargeViewAfterAnimate=false
             })
         }
-        publicVar.isLeftMouseDown = false //防止某些情况下此状态未重置，导致再打开大图时直接会滚动缩放
+        // 防止某些情况下此状态未重置，导致再打开大图时直接会滚动缩放
+        // Prevent this state from not being reset in some cases, causing immediate scroll/zoom when reopening large image
+        publicVar.isLeftMouseDown = false
         publicVar.isRightMouseDown = false
         largeImageView.longPressZoomTimer?.invalidate()
         largeImageView.longPressZoomTimer = nil
         
-        //注意，由于被选中的外观取决于这个状态，因此要先置状态再选择
-        //另外，修改此值会触发重布局
+        // 注意，由于被选中的外观取决于这个状态，因此要先置状态再选择
+        // Note: Since selected appearance depends on this state, set state before selecting
+        // 另外，修改此值会触发重布局
+        // Also, modifying this value will trigger re-layout
         publicVar.isInLargeView=false
-        //view.window?.layoutIfNeeded() 修改时已经调用
+        // view.window?.layoutIfNeeded() 修改时已经调用
 
             
 //        let visibleRect = mainScrollView.contentView.visibleRect
 //        let itemFrame = collectionView.layoutAttributesForItem(at: IndexPath(item: currLargeImagePos, section: 0))?.frame ?? .zero
 //        
-//        //判断缩略图是否全部可见
+//        // 判断缩略图是否全部可见
 //        if visibleRect.contains(itemFrame) == false {
-//            //奇怪问题：用finder从manys末尾打开一个关闭，再用finder打开它的前一个再关闭（后一个不行），列表会为空，需要鼠标滚轮滚动几下才能显示
-//            //reloadData可避免，不管是在滚动前、后，都可以
+//            // 奇怪问题：用finder从manys末尾打开一个关闭，再用finder打开它的前一个再关闭（后一个不行），列表会为空，需要鼠标滚轮滚动几下才能显示
+//            // reloadData可避免，不管是在滚动前、后，都可以
 //            collectionView.reloadData()
 //            
-//            //在后面再统一滚动，考虑到即使图没变，但是窗口大小改变导致被选中对象不在视野
-//            //collectionView.scrollToItems(at: [IndexPath(item: currLargeImagePos, section: 0)], scrollPosition: .nearestHorizontalEdge)
+//            // 在后面再统一滚动，考虑到即使图没变，但是窗口大小改变导致被选中对象不在视野
+//            // collectionView.scrollToItems(at: [IndexPath(item: currLargeImagePos, section: 0)], scrollPosition: .nearestHorizontalEdge)
 //            
-//            //collectionView.reloadData()
-//            //setVisableItemPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0))
+//            // collectionView.reloadData()
+//            // setVisableItemPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0))
 //            
 //        }
 
@@ -6040,16 +6499,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //        DispatchQueue.main.async { [weak self] in
 //            guard let self = self else { return }
 //
-//            //滚动到选中项目
+//            // 滚动到选中项目
 //            collectionView.scrollToItems(at: [IndexPath(item: currLargeImagePos, section: 0)], scrollPosition: .nearestHorizontalEdge)
 //            setVisableItemPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0))
 //
-//            //选中新项目
+//            // 选中新项目
 //            let indexPath=IndexPath(item: currLargeImagePos, section: 0)
-//            //此处加if是因为前面说的从finder二次打开时，如果滚动到目标位置后collectionView显示是空的（目标位置附近对象未被创建），此时对象不存在不能调用选中函数
+//            // 此处加if是因为前面说的从finder二次打开时，如果滚动到目标位置后collectionView显示是空的（目标位置附近对象未被创建），此时对象不存在不能调用选中函数
 //            if let _ = collectionView.item(at: indexPath) as? CustomCollectionViewItem{
 //                collectionView.selectItems(at: [indexPath], scrollPosition: [])
-//                //collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
+//                // collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
 //            }
             
         
@@ -6097,7 +6556,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if let item = collectionView.item(at: indexPath) as? CustomCollectionViewItem{
             let url=URL(string: item.file.path)!
             
-            //取消OCR
+            // 取消OCR
+            // Cancel OCR
             largeImageView.unSetOcr()
             
             if(url.hasDirectoryPath){
@@ -6109,10 +6569,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }else{
                 if largeImageView.isHidden {
                     
-                    //暂停自动滚动
+                    // 暂停自动滚动
+                    // Pause auto-scroll
                     isAutoScrollPaused = true
                     
-                    //显示首次使用提示
+                    // 显示首次使用提示
+                    // Show first-time use hint
                     if globalVar.isFirstTimeUse{
                         coreAreaView.showInfo(NSLocalizedString("first-time-use-prompt", comment: "首次使用提示..."), timeOut: .infinity, cannotBeCleard: false)
                     }
@@ -6125,7 +6587,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     lastUseHDR=false
                     lastLargeImageRotate=0
                     
-                    //为了使可见范围自动播放的视频停止
+                    // 为了使可见范围自动播放的视频停止
                     setLoadThumbPriority(ifNeedVisable: true)
 
                     changeLargeImage(justChangeLargeImageViewFile: globalVar.portableMode)
@@ -6133,8 +6595,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     largeImageBgEffectView.isHidden=false
                     publicVar.isInLargeView=true
                     
-                    if globalVar.portableMode || //便携模式下不使用动画，因为反倒有两次变化
-                        (globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(item.file.ext)) { //视频模式会有闪烁
+                    // 便携模式下不使用动画，因为反倒有两次变化
+                    // Portable mode doesn't use animation, as it would cause two changes
+                    // 视频模式会有闪烁
+                    // Video mode will have flicker
+                    if globalVar.portableMode ||
+                        (globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(item.file.ext)) {
                         largeImageView.alphaValue = 1
                         largeImageBgEffectView.alphaValue = 1
                         publicVar.isInLargeViewAfterAnimate=true
@@ -6148,9 +6614,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         })
                     }
                     
-                    //setWindowTitleOfLargeImage(file: item.file)
+                    // setWindowTitleOfLargeImage(file: item.file)
                     
-                    //选中打开的项目
+                    // 选中打开的项目
+                    // Select opened item
                     collectionView.deselectAll(nil)
                     let indexPath=IndexPath(item: currLargeImagePos, section: 0)
                     collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
@@ -6162,8 +6629,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func handleScrollWheel(_ event: NSEvent) {
-        //log("触控板:",event.scrollingDeltaY,event.scrollingDeltaX)
-        //log("滚轮的:",event.deltaY)
+        // log("触控板:",event.scrollingDeltaY,event.scrollingDeltaX)
+        // log("滚轮的:",event.deltaY)
         
         // 仅在大图模式下响应
         if largeImageView.isHidden {return}
@@ -6183,10 +6650,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     largeImageView.imageView.frame.origin.y -= event.deltaY * 10
                 }
                 // 限制图片不能完全移出视野范围
+                // Limit image from being completely moved out of view
                 let imageFrame = largeImageView.imageView.frame
                 let viewFrame = largeImageView.frame
                 
                 // 检查是否完全超出视野
+                // Check if completely out of view
                 if imageFrame.maxX < 0 {
                     largeImageView.imageView.frame.origin.x = -imageFrame.width
                 }
@@ -6241,8 +6710,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             deltaY=sign*pow(absv,1.0/1.4)/3
         }else{
             // 通常是滚轮事件
+            // Usually wheel event
             deltaY=event.deltaY
             // 没有使用LineMouse时
+            // When not using LineMouse
             if abs(deltaY) < 1.5 {
                 deltaY = 1.5 * deltaY / abs(deltaY)
             }
@@ -6258,9 +6729,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
         if cumulativeScroll > 0 {
             // 向上滚动
+            // Scroll up
             previousLargeImage()
         } else if cumulativeScroll < 0 {
             // 向下滚动
+            // Scroll down
             nextLargeImage()
         }
         cumulativeScroll=0
@@ -6280,7 +6753,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let fileCount = fileDB.db[SortKeyDir(curFolder)]!.fileCount
         var nextLargeImagePos=currLargeImagePos
         var ifFoundNextImage=false
-        if direction == -1 { //向前
+        // 向前
+        // Forward
+        if direction == -1 {
             while nextLargeImagePos >= 0 {
                 nextLargeImagePos-=1
                 if let file = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
@@ -6289,7 +6764,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     break
                 }
             }
-        }else if direction == 1 { //向后
+        // 向后
+        // Backward
+        }else if direction == 1 {
             while nextLargeImagePos < totalCount-1 {
                 nextLargeImagePos+=1
                 if let file = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
@@ -6298,7 +6775,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     break
                 }
             }
-        }else if direction == -2 { //第一张
+        // 第一张
+        // First image
+        }else if direction == -2 {
             nextLargeImagePos = -1
             while nextLargeImagePos < totalCount-1 {
                 nextLargeImagePos+=1
@@ -6308,7 +6787,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     break
                 }
             }
-        }else if direction == 2 { //最后一张
+        // 最后一张
+        // Last image
+        }else if direction == 2 {
             nextLargeImagePos = totalCount
             while nextLargeImagePos >= 0 {
                 nextLargeImagePos-=1
@@ -6323,7 +6804,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         fileDB.unlock()
         
         if ifFoundNextImage {
-            //复原之前图片的旋转
+            // 复原之前图片的旋转
             largeImageView.file.rotate=0
             
             currLargeImagePos=nextLargeImagePos
@@ -6333,7 +6814,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             lastUseHDR=false
             lastLargeImageRotate=0
             
-            //取消OCR
+            // 取消OCR
+            // Cancel OCR
             largeImageView.unSetOcr()
             
             if globalVar.portableMode {
@@ -6345,7 +6827,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 changeLargeImage(firstShowThumb: firstShowThumb)
             }
             
-            //选中新的项目
+            // 选中新的项目
+            // Select new item
             collectionView.deselectAll(nil)
             if currLargeImagePos < collectionView.numberOfItems(inSection: 0) {
                 let indexPath=IndexPath(item: currLargeImagePos, section: 0)
@@ -6381,10 +6864,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     func setWindowTitleOfLargeImage(file: FileModel){
         let url=URL(string:file.path)!
         var fullTitle=url.lastPathComponent
-        //fullTitle += " | " + readableFileSize(file.fileSize ?? 0)
+        // fullTitle += " | " + readableFileSize(file.fileSize ?? 0)
         if file.originalSize != nil {
             if file.originalSize!.width != 0 {
-                //fullTitle += " | " + String(format: "%.0f", file.originalSize!.width) + " × " + String(format: "%.0f", file.originalSize!.height)
+                // fullTitle += " | " + String(format: "%.0f", file.originalSize!.width) + " × " + String(format: "%.0f", file.originalSize!.height)
             }
         }
         
@@ -6395,7 +6878,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let rangeCount = globalVar.useInternalPlayer ? imageCount+videoCount : imageCount
         if rangeCount != 0 {
             if let file = fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)] {
-                //fullTitle += " | " + String(format: "(%d/%d)",idInImage+1,imageCount)
+                // fullTitle += " | " + String(format: "(%d/%d)",idInImage+1,imageCount)
                 let idInRange = globalVar.useInternalPlayer ? file.idInImageAndVideo : file.idInImage
                 fullTitle += " " + String(format: "(%d/%d)",idInRange+1,rangeCount)
                 publicVar.lastLargeImageIdInImage=idInRange
@@ -6406,7 +6889,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let shortTitle = (file.path as NSString).lastPathComponent.removingPercentEncoding!
         view.window?.title = shortTitle
         publicVar.toolbarTitle = fullTitle
-        //publicVar.toolbarTitle = shortTitle
+        // publicVar.toolbarTitle = shortTitle
         if let windowController = view.window?.windowController as? WindowController {
             windowController.updateToolbarSync()
         }
@@ -6430,11 +6913,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         largeImageBgEffectView.alphaValue = 1
         
         
-        //setWindowTitleOfLargeImage(file: item.file)
+        // setWindowTitleOfLargeImage(file: item.file)
     }
     
     func preloadLargeImage(){
-        //if !publicVar.isInLargeView {return} //由于第一次打开的顺序问题，此处不能作判断
+        // 由于第一次打开的顺序问题，此处不能作判断
+        // Due to order issue on first open, cannot make judgment here
+        // if !publicVar.isInLargeView {return}
         if publicVar.openFromFinderPath != "" {return}
         if currLargeImagePos == -1 {
             return
@@ -6475,7 +6960,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         var fileQueue = [(FileModel, Double)]()
 
-        do{ // 后面的图像
+        // 后面的图像
+        // Images after current
+        do{
             fileDB.lock()
             var nextLargeImagePos=currLargeImagePos
             var loadCount=0
@@ -6484,7 +6971,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 if let file=fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1 {
                     if file.type == .image || (file.type == .video && globalVar.useInternalPlayer) {
                         loadCount += 1
-                        if loadCount > preloadNumNext { break } // 预载入数量
+                        // 预载入数量
+                        // Preload count
+                        if loadCount > preloadNumNext { break }
                     }
                     if file.type == .image {
                         fileQueue.append((file, Double(loadCount)-0.5))
@@ -6494,7 +6983,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             fileDB.unlock()
         }
         
-        do{ // 前面的图像
+        // 前面的图像
+        // Images before current
+        do{
             fileDB.lock()
             var nextLargeImagePos=currLargeImagePos
             var loadCount=0
@@ -6503,7 +6994,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 if let file=fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1 {
                     if file.type == .image || (file.type == .video && globalVar.useInternalPlayer) {
                         loadCount += 1
-                        if loadCount > preloadNumPrevious { break } // 预载入数量
+                        // 预载入数量
+                        // Preload count
+                        if loadCount > preloadNumPrevious { break }
                     }
                     if file.type == .image {
                         fileQueue.append((file, Double(loadCount)))
@@ -6513,7 +7006,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             fileDB.unlock()
         }
         
-        do{ // 当前图像
+        // 当前图像
+        // Current image
+        do{
             fileDB.lock()
             if let file=fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: currLargeImagePos)?.1,
                file.type == .image{
@@ -6523,6 +7018,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         // 排序后预载入
+        // Preload after sorting
         fileDB.lock()
         fileQueue.sort { $0.1 > $1.1 }
         for (file,priority) in fileQueue {
@@ -6538,13 +7034,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let url=URL(string:file.path)!
         let scale = NSScreen.main?.backingScaleFactor ?? 1
         let maxBounds=largeImageView.bounds
-        //print(maxBounds)
+        // print(maxBounds)
         
         var largeSize: NSSize
         var originalSize: NSSize? = file.originalSize
         
-        //当文件被修改，列表重新读取但大小还没来得及获取时可能为空，此时需要获取一下
-        //或者由于外置卷，使用的默认大小 || VolumeManager.shared.isExternalVolume(url)
+        // 当文件被修改，列表重新读取但大小还没来得及获取时可能为空，此时需要获取一下
+        // When file is modified, list is re-read but size may not be obtained yet, need to get it
+        // 或者由于外置卷，使用的默认大小 || VolumeManager.shared.isExternalVolume(url)
+        // Or due to external volume, use default size || VolumeManager.shared.isExternalVolume(url)
         if originalSize == nil {
             let imageInfo = getImageInfo(url: url, needMetadata: true)
             originalSize = imageInfo?.size
@@ -6561,39 +7059,43 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         if let originalSize=originalSize{
             
-            //判断HDR
+            // 判断HDR
+            // Determine HDR
             var isHDR = (file.imageInfo?.isHDR ?? false) && publicVar.isEnableHDR
             if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) && publicVar.isRawUseEmbeddedThumb {
                 isHDR = false
             }
             
-            //计算宽高
+            // 计算宽高
+            // Calculate width and height
             if originalSize.height/originalSize.width*maxBounds.width > maxBounds.height {
                 largeSize=NSSize(width: originalSize.width/originalSize.height*maxBounds.height, height: maxBounds.height)
             }else{
                 largeSize=NSSize(width: maxBounds.width, height: originalSize.height/originalSize.width*maxBounds.width)
             }
             
-            //当原图实际大小小于视图大小时，按实际大小显示
+            // 当原图实际大小小于视图大小时，按实际大小显示
+            // When original image actual size is smaller than view size, display at actual size
             if !publicVar.isLargeImageFitWindow && originalSize.width<largeSize.width*scale {
                 largeSize=NSSize(width: originalSize.width/scale, height: originalSize.height/scale)
             }
             
-            //整数缩放
+            // 整数缩放
             largeSize = NSSize(width: round(largeSize.width), height: round(largeSize.height))
             
-            //不进行过大缩放，内存炸了
+            // 不进行过大缩放，内存炸了
             var doNotGenResized=false
             if largeSize.width*scale>=originalSize.width && largeSize.height*scale>=originalSize.height {
                 doNotGenResized=true
             }
             
-            //如果RAW使用Exif内嵌缩略图，则不使用原图（进行缩放）
+            // 如果RAW使用Exif内嵌缩略图，则不使用原图（进行缩放）
+            // If RAW uses Exif embedded thumbnail, do not use original image (for scaling)
             if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) && publicVar.isRawUseEmbeddedThumb {
                 doNotGenResized=false
             }
             
-            //使用原图的格式
+            // 使用原图的格式
             if ["gif", "svg", "ai"].contains(url.pathExtension.lowercased()){
                 doNotGenResized=true
             }
@@ -6616,7 +7118,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             file.imageInfo=getImageInfo(url: url, needMetadata: true)
             file.originalSize=file.imageInfo?.size
             if !justChangeLargeImageViewFile {
-                file.image = getImageThumb(url: url, refSize: file.originalSize) // 获取缩略图（以加快响应）
+                // 获取缩略图（以加快响应）
+                // Get thumbnail (to speed up response)
+                file.image = getImageThumb(url: url, refSize: file.originalSize)
             }
             if file.originalSize == nil {
                 file.originalSize = DEFAULT_SIZE
@@ -6645,11 +7149,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             setLoadThumbPriority(indexPath: IndexPath(item: pos, section: 0), ifNeedVisable: false)
             if !globalVar.portableMode {
                 // 预载入附近图像（包括本张），此处对于便携模式计算似乎有一像素小数偏差，待完善
+                // Preload nearby images (including current), calculation for portable mode seems to have one-pixel decimal deviation, to be improved
                 preloadLargeImage()
             }
         }
         
-        //旋转锁定
+        // 旋转锁定
+        // Rotation lock
         if publicVar.isRotationLocked {
             file.rotate = publicVar.rotationLock
         }
@@ -6679,8 +7185,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         var imageInfo: ImageInfo? = file.imageInfo
         var rotate = file.rotate
 
-        //当文件被修改，列表重新读取但大小还没来得及获取时可能为空，此时需要获取一下
-        //或者由于外置卷，使用的默认大小 || VolumeManager.shared.isExternalVolume(url)
+        // 当文件被修改，列表重新读取但大小还没来得及获取时可能为空，此时需要获取一下
+        // 或者由于外置卷，使用的默认大小 || VolumeManager.shared.isExternalVolume(url)
         if originalSize == nil {
             imageInfo = getImageInfo(url: url, needMetadata: true)
             originalSize = imageInfo?.size
@@ -6694,74 +7200,89 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         }
         
-        //窗口标题
+        // 窗口标题
+        // Window title
         setWindowTitleOfLargeImage(file: file)
         
-        //判断黑色背景
+        // 判断黑色背景
+        // Determine black background
         largeImageView.determineBlackBg()
         
         if var originalSize=originalSize{
             
-            //判断HDR
+            // 判断HDR
+            // Determine HDR
             var isHDR = (file.imageInfo?.isHDR ?? false) && publicVar.isEnableHDR
             if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) && publicVar.isRawUseEmbeddedThumb {
                 isHDR = false
             }
             
-            //判断旋转
+            // 判断旋转
+            // Determine rotation
             if rotate%2 == 1 {
                 originalSize=NSSize(width: originalSize.height, height: originalSize.width)
             }
             
-            //由于首次打开图像时maxBounds可能为窗口大小，因此要按比例缩放到合适
+            // 由于首次打开图像时maxBounds可能为窗口大小，因此要按比例缩放到合适
+            // When first opening image, maxBounds may be window size, so scale proportionally to fit
             if originalSize.height/originalSize.width*maxBounds.width > maxBounds.height {
                 largeSize=NSSize(width: originalSize.width/originalSize.height*maxBounds.height, height: maxBounds.height)
             }else{
                 largeSize=NSSize(width: maxBounds.width, height: originalSize.height/originalSize.width*maxBounds.width)
             }
             
-            //当原图实际大小小于视图大小时，按实际大小显示
+            // 当原图实际大小小于视图大小时，按实际大小显示
+            // When original image actual size is smaller than view size, display at actual size
             if !publicVar.isLargeImageFitWindow && originalSize.width<largeSize.width*scale && !triggeredByLongPress {
                 largeSize=NSSize(width: originalSize.width/scale, height: originalSize.height/scale)
             }
             
-            //缩放锁定
+            // 缩放锁定
+            // Zoom lock
             if !isByZoom && publicVar.isZoomLocked,
                let ratio = publicVar.zoomLock {
                 largeSize=NSSize(width: originalSize.width/scale*ratio, height: originalSize.height/scale*ratio)
             }
             
-            if resetSize { //resetSize则在此处调整frame，否则在largeImageView中调整
+            // resetSize则在此处调整frame，否则在largeImageView中调整
+            // If resetSize, adjust frame here, otherwise adjust in largeImageView
+            if resetSize {
                 let rectView=largeImageView.frame
                 let rectImage=NSRect(origin: CGPoint(x: (rectView.width-largeSize.width)/2, y: (rectView.height-largeSize.height)/2), size: largeSize)
                 largeImageView.imageView.frame=rectImage
             }
             
-            //整数缩放
+            // 整数缩放
+            // Integer scaling
             largeSize = NSSize(width: round(largeSize.width), height: round(largeSize.height))
             
-            //不进行过大缩放，内存炸了
+            // 不进行过大缩放，内存炸了
+            // Do not perform excessive scaling, memory will explode
             var doNotGenResized=false
             if largeSize.width*scale>=originalSize.width && largeSize.height*scale>=originalSize.height {
                 doNotGenResized=true
             }
             
-            //但如果是旋转，还是缩放占用更小
+            // 但如果是旋转，还是缩放占用更小
+            // But if rotated, scaling still takes up less space
             if rotate != 0 {
                 doNotGenResized=false
             }
 
-            //如果RAW使用Exif内嵌缩略图，则不使用原图（进行缩放）
+            // 如果RAW使用Exif内嵌缩略图，则不使用原图（进行缩放）
+            // If RAW uses Exif embedded thumbnail, do not use original image (for scaling)
             if globalVar.HandledRawExtensions.contains(url.pathExtension.lowercased()) && publicVar.isRawUseEmbeddedThumb {
                 doNotGenResized=false
             }
             
-            //使用原图的格式
+            // 使用原图的格式
+            // Use original image format
             if ["gif", "svg", "ai"].contains(url.pathExtension.lowercased()){
                 doNotGenResized=true
             }
             
-            //如果上次生成Resize失败
+            // 如果上次生成Resize失败
+            // If last Resize failed
             if lastResizeFailed {
                 lastDoNotGenResized=true
                 doNotGenResized=true
@@ -6770,32 +7291,37 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             log("ori:",originalSize.width,originalSize.height)
             log("dest:",largeSize.width,largeSize.height)
             
-            //若上次已经用了原图，这次还用原图，则不重新载入
+            // 若上次已经用了原图，这次还用原图，则不重新载入
+            // If original image was used last time and is still used this time, do not reload
             if lastDoNotGenResized && doNotGenResized && lastLargeImageRotate == rotate && lastUseHDR == isHDR {
                 if file.type == .image {
                     return
                 }
             }
             
-            //若上次已经是HDR，这次还是，则不重新载入
-            //if lastUseHDR && isHDR && lastLargeImageRotate == rotate {return}
+            // 若上次已经是HDR，这次还是，则不重新载入
+            // If last time was HDR and this time is still HDR, do not reload
+            // if lastUseHDR && isHDR && lastLargeImageRotate == rotate {return}
 
             lastDoNotGenResized=doNotGenResized
             lastResizeFailed = false
             lastUseHDR=isHDR
             lastLargeImageRotate=rotate
             
-            //检查是否有大图缓存
+            // 检查是否有大图缓存
+            // Check for large image cache
             var preGetImageCache = file.type == .image ? LargeImageProcessor.isImageCachedAndGet(url: url, size: largeSize, rotate: rotate, ver: file.ver, isHDR: isHDR, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb) : nil
             if forceRefresh {preGetImageCache = nil}
             let isImageCached = preGetImageCache != nil
             
-            //先显示小图
+            // 先显示小图
+            // First show thumbnail
             if firstShowThumb && !isImageCached {
                 largeImageView.imageView.image=file.image?.rotated(by: CGFloat(-90*rotate))
             }
             
-            //有大图缓存则直接载入
+            // 有大图缓存则直接载入
+            // If large image is cached, load directly
             if isImageCached {
                 log("命中缓存:",url.absoluteString.removingPercentEncoding!)
                 largeImageView.imageView.image=preGetImageCache
@@ -6803,7 +7329,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 log("即时载入:",url.absoluteString.removingPercentEncoding!)
             }
             
-            //显示窗口
+            // 显示窗口
+            // Show window
             if let windowController = self.view.window?.windowController,
                let window = windowController.window,
                !window.isVisible {
@@ -6811,19 +7338,23 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
             globalVar.useCreateWindowShowDelay = false
             
-            //加载Exif
+            // 加载Exif
+            // Load Exif
             if publicVar.isShowExif && resetSize {
                 let exifData = convertExifData(file: file)
                 largeImageView.updateTextItems(formatExifData(exifData ?? [:], isVideo: globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()), needWarp: true))
             }
             
-            //用来对比异步任务是否过期
+            // 用来对比异步任务是否过期
+            // Used to compare if async task is expired
             largeImageView.file.largeSize = largeSize
             
-            //取消之前的加载大图任务
+            // 取消之前的加载大图任务
+            // Cancel previous large image load task
             largeImageLoadTask?.cancel()
 
-            //判断是否是视频
+            // 判断是否是视频
+            // Check if is video
             if file.type == .image {
 
                 largeImageView.stopVideo()
@@ -6846,7 +7377,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         return
                     }
                     
-                    //按实际目标分辨率绘制效果较差，观察到1080P屏幕双倍插值后绘制与直接使用原图效果才类似，因此即使scale==1，此处size也不除以2
+                    // 按实际目标分辨率绘制效果较差，观察到1080P屏幕双倍插值后绘制与直接使用原图效果才类似，因此即使scale==1，此处size也不除以2
+                    // Rendering at actual target resolution has poor quality, observed that double interpolation on 1080P screen renders similar to using original image directly, so even if scale==1, size here is not divided by 2
                     var largeImage: NSImage?
                     if resetSize && !forceRefresh {
                         largeImage=LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb)
@@ -6854,7 +7386,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         if isHDR {
                             largeImage = getHDRImage(url: url, size: doNotGenResized ? nil : largeSize, rotate: rotate)
                         }else if doNotGenResized {
-                            //先判断是否是动画并处理
+                            // 先判断是否是动画并处理
+                            // First check if animated and handle
                             if let animateImage = getAnimateImage(url: url, rotate: rotate) {
                                 largeImage = animateImage
                             } else {
@@ -6884,7 +7417,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             if rotate != largeImageView.file.rotate {return}
                             if largeImageView.file.largeSize != nil && largeSize != largeImageView.file.largeSize {return}
                             largeImageView.imageView.image=largeImage
-                            //log("replaced")
+                            // log("replaced")
                         }
                         
                         if publicVar.isLaunchFromFile_changeLargeImage {
@@ -6898,11 +7431,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 }
                 // 保存新的任务
+                // Save new task
                 largeImageLoadTask = task
                 
                 // 是否阻塞执行新的任务
+                // Whether to block execution of new task
                 if publicVar.isLaunchFromFile_changeLargeImage {
                     // 直接执行任务（当前已在主线程），避免死锁
+                    // Execute task directly (currently on main thread) to avoid deadlock
                     task!.perform()
                     publicVar.isLaunchFromFile_changeLargeImage = false
                 } else {
@@ -6918,11 +7454,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
 
     func startWatchingDirectory(atPath path: String) {
-        if path.contains("Cryptomator") { // TODO: 有大量write事件且造成go-nfsv4进程繁忙
+        // TODO: 有大量write事件且造成go-nfsv4进程繁忙
+        // TODO: Has many write events and causes go-nfsv4 process to be busy
+        if path.contains("Cryptomator") {
             return
         }
         
-        if publicVar.isRecursiveMode { // 递归模式不监听
+        // 递归模式不监听
+        // Recursive mode doesn't listen
+        if publicVar.isRecursiveMode {
             return
         }
         
@@ -6938,10 +7478,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             guard let self = self else { return }
             
             // 打印事件类型
+            // Print event type
             let event = watchDispatchSource!.data
-            //logFileSystemEvent(event)
+            // logFileSystemEvent(event)
             
             // 计划刷新
+            // Schedule refresh
             readInfoTaskPoolLock.lock()
             let isReadInfoFinish = (readInfoTaskPool.count == 0)
             readInfoTaskPoolLock.unlock()
@@ -6950,12 +7492,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             loadImageTaskPool.lock.unlock()
             let isInProgress = (publicVar.isInStageOneProgress || publicVar.isInStageTwoProgress || publicVar.isInStageThreeProgress
                                 || !isReadInfoFinish || !isLoadThumbFinish)
-            //log(publicVar.isInStageOneProgress,publicVar.isInStageTwoProgress,publicVar.isInStageThreeProgress,!isReadInfoFinish,!isLoadThumbFinish,level: .debug)
+            // log(publicVar.isInStageOneProgress,publicVar.isInStageTwoProgress,publicVar.isInStageThreeProgress,!isReadInfoFinish,!isLoadThumbFinish,level: .debug)
             if VolumeManager.shared.isExternalVolume(path) && isInProgress && publicVar.fileChangedCount == 0 {
                 // samba的smb读取时会改变atime，产生write和attrib事件
-                //log("ExternalVol FileSystemEvent DoNot Refresh.",level: .debug)
+                // Samba SMB reading will change atime, generating write and attrib events
+                // log("ExternalVol FileSystemEvent DoNot Refresh.",level: .debug)
             }else{
-                //log("FileSystemEvent Refreshd",level: .debug)
+                // log("FileSystemEvent Refreshd",level: .debug)
                 scheduledRefresh()
             }
             
@@ -7010,7 +7553,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     override func rightMouseDown(with event: NSEvent) {
-        //publicVar.isRightMouseDown = true
+        // publicVar.isRightMouseDown = true
         if !largeImageView.isHidden {return}
         
         initialMouseLocation = event.locationInWindow
@@ -7033,6 +7576,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let dy = currentLocation.y - startLocation.y
 
         // 使用阈值以避免轻微的移动造成的方向改变
+        // Use threshold to avoid direction changes from slight movements
         let threshold: CGFloat = 4.0
 
         let newDirection: GestureDirection?
@@ -7060,7 +7604,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
 
     override func rightMouseUp(with event: NSEvent) {
-        //publicVar.isRightMouseDown = false
+        // publicVar.isRightMouseDown = false
         if !largeImageView.isHidden {return}
         
         gestureTriggeredSwitch = false
@@ -7068,7 +7612,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         directionHistory.removeAll()
 //        drawingView?.containerView.isHidden=true
         
-        if gestureTriggeredSwitch { //由于捕获屏幕渐变切换的方式，此时后半段不要播放动画
+        // 由于捕获屏幕渐变切换的方式，此时后半段不要播放动画
+        // Due to screen capture fade transition method, don't play animation in latter half
+        if gestureTriggeredSwitch {
             drawingView?.containerView.alphaValue = 0
             drawingView?.containerView.isHidden = true
         }else{
@@ -7109,6 +7655,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             handleSingleDirectionGesture(directionHistory.first!, doAction: doAction)
         } else if directionHistory.count == 2 {
             // 可以在这里扩展更复杂的手势分析
+            // Can extend more complex gesture analysis here
             handleMultiDirectionGesture(directionHistory, doAction: doAction)
         } else {
             drawingView?.statusLabel.stringValue=""
@@ -7140,7 +7687,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
     func handleMultiDirectionGesture(_ directions: [GestureDirection], doAction: Bool) {
         if directions.count == 2 {
-            //log("Detected two-direction gesture: \(directions[0]) then \(directions[1])")
+            // log("Detected two-direction gesture: \(directions[0]) then \(directions[1])")
             handleTwoDirectionsGesture(directions[0],directions[1], doAction: doAction)
         }
     }
@@ -7148,19 +7695,19 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     func handleSingleDirectionGesture(_ direction: GestureDirection, doAction: Bool) {
         switch direction {
         case .right:
-            //log("Gesture: ➡️")
+            // log("Gesture: ➡️")
             if doAction {switchDirByDirection(direction: .right, stackDeep: 0);gestureTriggeredSwitch=true}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("next-folder", comment: "下一个目录")}
         case .left:
-            //log("Gesture: ⬅️")
+            // log("Gesture: ⬅️")
             if doAction {switchDirByDirection(direction: .left, stackDeep: 0);gestureTriggeredSwitch=true}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("previous-folder", comment: "上一个目录")}
         case .up:
-            //log("Gesture: ⬆️")
+            // log("Gesture: ⬆️")
             if doAction {switchDirByDirection(direction: .up, stackDeep: 0);gestureTriggeredSwitch=true}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("parent-folder", comment: "上级目录")}
         case .down:
-            //log("Gesture: ⬇️")
+            // log("Gesture: ⬇️")
             if doAction {switchDirByDirection(direction: .down, stackDeep: 0);gestureTriggeredSwitch=true}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("back-folder", comment: "返回历史目录")}
         default:
@@ -7171,25 +7718,25 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     func handleTwoDirectionsGesture(_ first: GestureDirection, _ second: GestureDirection, doAction: Bool) {
         switch (first, second) {
         case (.up, .right):
-            //log("Gesture: ⬆️ ➡️")
-            //if doAction {switchDirByDirection(direction: .up_right, stackDeep: 0);gestureTriggeredSwitch=true}
-            //else{drawingView?.statusLabel.stringValue=NSLocalizedString("next-sibling-of-parent", comment: "上级的平级下一个目录")}
+            // log("Gesture: ⬆️ ➡️")
+            // if doAction {switchDirByDirection(direction: .up_right, stackDeep: 0);gestureTriggeredSwitch=true}
+            // else{drawingView?.statusLabel.stringValue=NSLocalizedString("next-sibling-of-parent", comment: "上级的平级下一个目录")}
             if doAction {switchDirByDirection(direction: .down_right, stackDeep: 0);gestureTriggeredSwitch=true}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("next-sibling", comment: "平级的下一个目录")}
         case (.up, .left):
-            //log("Gesture: ⬆️ ⬅️")
-            //if doAction {switchDirByDirection(direction: .up_left, stackDeep: 0);gestureTriggeredSwitch=true}
-            //else{drawingView?.statusLabel.stringValue=NSLocalizedString("previous-sibling-of-parent", comment: "上级的平级上一个目录")}
+            // log("Gesture: ⬆️ ⬅️")
+            // if doAction {switchDirByDirection(direction: .up_left, stackDeep: 0);gestureTriggeredSwitch=true}
+            // else{drawingView?.statusLabel.stringValue=NSLocalizedString("previous-sibling-of-parent", comment: "上级的平级上一个目录")}
             if doAction {switchDirByDirection(direction: .down_left, stackDeep: 0);gestureTriggeredSwitch=true}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("previous-sibling", comment: "平级的上一个目录")}
         case (.down, .right):
-            //log("Gesture: ⬇️ ➡️")
+            // log("Gesture: ⬇️ ➡️")
 //            if doAction {switchDirByDirection(direction: .down_right, stackDeep: 0);gestureTriggeredSwitch=true}
 //            else{drawingView?.statusLabel.stringValue=NSLocalizedString("next-sibling", comment: "平级的下一个目录")}
             if doAction {self.view.window?.performClose(nil)}
             else{drawingView?.statusLabel.stringValue=NSLocalizedString("Close Tab", comment: "关闭标签页")}
 //        case (.down, .left):
-//            //log("Gesture: ⬇️ ⬅️")
+//            // log("Gesture: ⬇️ ⬅️")
 //            if doAction {switchDirByDirection(direction: .down_left, stackDeep: 0);gestureTriggeredSwitch=true}
 //            else{drawingView?.statusLabel.stringValue=NSLocalizedString("previous-sibling", comment: "平级的上一个目录")}
         default:
@@ -7302,11 +7849,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if urls[0].hasDirectoryPath {
                 folderPath=""+urls[0].absoluteString
                 if viewController.publicVar.isInLargeView {
-                    //由于图像关闭有动画，导致大图时瞬间关闭再打开大图会有bug，因此暂时只对目录关闭大图
+                    // 由于图像关闭有动画，导致大图时瞬间关闭再打开大图会有bug，因此暂时只对目录关闭大图
+                    // Due to image close animation, instantly closing and reopening large image when in large view causes bug, so temporarily only close large image for directories
                     viewController.closeLargeImage(0)
                 }
             }else{
-                if !globalVar.HandledImageAndRawExtensions.contains(urls[0].pathExtension.lowercased()) {return} //限制文件类型
+                // 限制文件类型
+                // Limit file types
+                if !globalVar.HandledImageAndRawExtensions.contains(urls[0].pathExtension.lowercased()) {return}
                 folderPath=""+urls[0].deletingLastPathComponent().absoluteString
                 path=""+urls[0].absoluteString
                 viewController.publicVar.openFromFinderPath=path
@@ -7475,10 +8025,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
     func configLayoutStyle(newStyle: CustomProfile ,doNotRefresh: Bool = false){
         // 窗口标题相关
+        // Window title related
         publicVar.profile.setValue(forKey: "isWindowTitleUseFullPath", value: newStyle.getValue(forKey: "isWindowTitleUseFullPath"))
         publicVar.profile.setValue(forKey: "isWindowTitleShowStatistics", value: newStyle.getValue(forKey: "isWindowTitleShowStatistics"))
         
         // 通用布局
+        // General layout
         publicVar.profile.setValue(forKey: "isShowThumbnailBadge", value: newStyle.getValue(forKey: "isShowThumbnailBadge"))
         publicVar.profile.setValue(forKey: "isShowThumbnailTag", value: newStyle.getValue(forKey: "isShowThumbnailTag"))
         publicVar.profile.isShowThumbnailFilename = newStyle.isShowThumbnailFilename
@@ -7486,9 +8038,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.profile._thumbnailCellPadding = newStyle._thumbnailCellPadding
         
         // 网格视图
+        // Grid view
         publicVar.profile.ThumbnailBorderRadiusInGrid = newStyle.ThumbnailBorderRadiusInGrid
         
         // 非网格视图
+        // Non-grid view
         publicVar.profile.ThumbnailBorderRadius = newStyle.ThumbnailBorderRadius
         publicVar.profile._thumbnailBorderThickness = newStyle._thumbnailBorderThickness
         publicVar.profile.ThumbnailLineSpaceAdjust = newStyle.ThumbnailLineSpaceAdjust
@@ -7509,10 +8063,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 
                 let newStyle = CustomProfile()
                 // 窗口标题相关
+                // Window title related
                 newStyle.setValue(forKey: "isWindowTitleUseFullPath", value: String(isUseFullPath))
                 newStyle.setValue(forKey: "isWindowTitleShowStatistics", value: String(isShowStatistics))
                 
                 // 通用布局
+                // General layout
                 newStyle.setValue(forKey: "isShowThumbnailBadge", value: String(isShowBadge))
                 newStyle.setValue(forKey: "isShowThumbnailTag", value: String(isShowTag))
                 newStyle.isShowThumbnailFilename = isShowFilename
@@ -7520,9 +8076,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 newStyle._thumbnailCellPadding = cellPadding
                 
                 // 网格视图
+                // Grid view
                 newStyle.ThumbnailBorderRadiusInGrid = borderRadiusInGrid
                 
                 // 非网格视图
+                // Non-grid view
                 newStyle.ThumbnailBorderRadius = borderRadius
                 newStyle._thumbnailBorderThickness = borderThickness
                 newStyle.ThumbnailLineSpaceAdjust = lineSpaceAdjust
@@ -7534,7 +8092,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     
-    //以下是切换自定义配置
+    // 以下是切换自定义配置
+    // Below is switching custom configuration
     func setCustomProfileTo(_ styleName: String){
         coreAreaView.showInfo(String(format: NSLocalizedString("save-to-custom-profile", comment: "保存到自定义配置"), styleName), timeOut: 1)
         publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_"+styleName)
@@ -7544,7 +8103,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         coreAreaView.showInfo(String(format: NSLocalizedString("switch-to-custom-profile", comment: "切换至自定义配置"), styleName), timeOut: 1)
         let newStyle = CustomProfile.loadFromUserDefaults(withKey: "CustomStyle_v2_"+styleName)
         
-        //布局类型
+        // 布局类型
+        // Layout type
         if newStyle.layoutType != publicVar.profile.layoutType {
             if newStyle.layoutType == .justified {
                 switchToJustifiedView(doNotRefresh: true)
@@ -7556,19 +8116,23 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 //
             }
         }
-        //边栏
+        // 边栏
+        // Sidebar
         if newStyle.isDirTreeHidden != publicVar.profile.isDirTreeHidden {
             toggleSidebar()
         }
-        //排序
+        // 排序
+        // Sort
         if newStyle.sortType != publicVar.profile.sortType || newStyle.isSortFolderFirst != publicVar.profile.isSortFolderFirst || newStyle.isSortUseFullPath != publicVar.profile.isSortUseFullPath || newStyle.sortType == .random {
             changeSortType(sortType: newStyle.sortType, isSortFolderFirst: newStyle.isSortFolderFirst, isSortUseFullPath: newStyle.isSortUseFullPath, doNotRefresh: true)
         }
-        //缩略图大小
+        // 缩略图大小
+        // Thumbnail size
         if newStyle.thumbSize != publicVar.profile.thumbSize {
             changeThumbSize(thumbSize: newStyle.thumbSize, doNotRefresh: true)
         }
-        //样式
+        // 样式
+        // Style
         configLayoutStyle(newStyle: newStyle, doNotRefresh: true)
         
         refreshCollectionView(dryRun: true, needLoadThumbPriority: true)
@@ -7593,12 +8157,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         alert.accessoryView = inputTextField
         
         // 确保输入框成为第一响应者
+        // Ensure input field becomes first responder
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             alert.window.makeFirstResponder(inputTextField)
         }
         
         // 使用 beginSheetModal 替代 runModal
+        // Use beginSheetModal instead of runModal
         if let window = view.window {
             let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
             publicVar.isKeyEventEnabled=false
@@ -7608,6 +8174,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 if response == .alertFirstButtonReturn {
                     var path = inputTextField.stringValue
                     // 如果被''或者""包裹则去掉
+                    // Remove if wrapped by '' or ""
                     if path.hasPrefix("'") && path.hasSuffix("'") {
                         path = String(path.dropFirst().dropLast())
                     }
@@ -7615,30 +8182,37 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         path = String(path.dropFirst().dropLast())
                     }
                     // 解码URL编码
+                    // Decode URL encoding
                     guard var path = path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding else {
                         coreAreaView.showInfo(NSLocalizedString("Invalid current path", comment: "当前路径无效"), timeOut: 2, cannotBeCleard: false)
                         return
                     }
                     
-                    //替换连续双斜杠
+                    // 替换连续双斜杠
+                    // Replace consecutive double slashes
                     while path.contains("//") {
                         path = path.replacingOccurrences(of: "//", with: "/")
                     }
 
                     // 检查路径是否为空
+                    // Check if path is empty
                     if path.isEmpty {
                         return
                     }
                     
                     // 获取当前目录作为基准路径
+                    // Get current directory as base path
                     fileDB.lock()
-                    var curFolder = fileDB.curFolder // 如果以/结尾，则去掉
+                    // 如果以/结尾，则去掉
+                    // If ends with /, remove it
+                    var curFolder = fileDB.curFolder
                     if curFolder.hasSuffix("/") {
                         curFolder = String(curFolder.dropLast())
                     }
                     fileDB.unlock()
                     
                     // 处理路径
+                    // Process path
                     var fullPath = path
                     
                     guard let curUrl = URL(string: curFolder) else {
@@ -7647,6 +8221,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                     
                     // 处理相对路径
+                    // Process relative path
                     if !path.hasPrefix("/") {
                         if let resolvedPath = resolveRelativePath(basePath: curUrl.path, relativePath: path) {
                             fullPath = resolvedPath
@@ -7657,6 +8232,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                     
                     // 检查路径是否存在
+                    // Check if path exists
                     let fileManager = FileManager.default
                     var isDirectory: ObjCBool = false
                     if !fileManager.fileExists(atPath: fullPath, isDirectory: &isDirectory) {
@@ -7665,9 +8241,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                     
                     // 转换为 file:// URL 格式
+                    // Convert to file:// URL format
                     var destPath = getFileStylePath(fullPath)
                     
                     // 检查是否是目录
+                    // Check if is directory
                     if !isDirectory.boolValue {
                         if let appDelegate=NSApplication.shared.delegate as? AppDelegate {
                             appDelegate.openImageInMainWindow(getFileStylePath(destPath))
@@ -7690,7 +8268,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     class SearchOverlayView: NSView {
-        //weak var searchField: NSSearchField?
+        // weak var searchField: NSSearchField?
         weak var containerView: NSView?
         weak var viewController: ViewController?
         
@@ -7709,6 +8287,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if searchOverlay == nil {
 
             // 创建半透明背景，使用自定义 SearchOverlayView
+            // Create semi-transparent background using custom SearchOverlayView
             let overlay = SearchOverlayView(frame: view.bounds)
             overlay.wantsLayer = true
             overlay.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.0).cgColor
@@ -7723,14 +8302,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let filterButtonFont = NSFont.systemFont(ofSize: 12.6)
             let filterButtonWidth = 25 + filterButtonTitle.size(withAttributes: [.font: filterButtonFont]).width.rounded()
             // 用于整体调整宽度
+            // Used for overall width adjustment
             var withAdjust = caseSensitiveCheckboxWidth + regexCheckboxWidth + filterButtonWidth
             withAdjust += publicVar.isRecursiveMode ? fullPathCheckboxWidth : 0
             withAdjust += -50
             
             // 创建搜索框容器视图 - 增加高度以容纳两行
+            // Create search box container view - increase height to accommodate two rows
             let containerView = NSView(frame: NSRect(x: 0, y: 0, width: 210+withAdjust, height: 66))
             
             // 创建搜索框 - 放在上面一行
+            // Create search box - place on top row
             searchField = NSSearchField(frame: NSRect(x: 5, y: 31, width: 200+withAdjust, height: 30))
             searchField?.placeholderString = NSLocalizedString("Search...", comment: "搜索...")
             searchField?.stringValue = search_searchText
@@ -7740,21 +8322,25 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             searchField?.focusRingType = .none
             
             // 创建区分大小写复选框 - 放在下面一行
+            // Create case sensitive checkbox - place on bottom row
             let caseSensitiveCheckbox = NSButton(checkboxWithTitle: caseSensitiveCheckboxTitle, target: self, action: #selector(caseSensitiveCheckboxChanged(_:)))
             caseSensitiveCheckbox.frame = NSRect(x: 5, y: 6, width: caseSensitiveCheckboxWidth, height: 20)
             caseSensitiveCheckbox.state = search_isCaseSensitive ? .on : .off
             
             // 创建正则表达式复选框 - 放在下面一行
+            // Create regex checkbox - place on bottom row
             let regexCheckbox = NSButton(checkboxWithTitle: regexCheckboxTitle, target: self, action: #selector(regexCheckboxChanged(_:)))
             regexCheckbox.frame = NSRect(x: 5 + caseSensitiveCheckboxWidth + 5, y: 6, width: regexCheckboxWidth, height: 20)
             regexCheckbox.state = search_useRegex ? .on : .off
             
             // 创建使用完整路径复选框 - 放在正则表达式复选框后面
+            // Create use full path checkbox - place after regex checkbox
             let fullPathCheckbox = NSButton(checkboxWithTitle: fullPathCheckboxTitle, target: self, action: #selector(fullPathCheckboxChanged(_:)))
             fullPathCheckbox.frame = NSRect(x: 5 + caseSensitiveCheckboxWidth + 5 + regexCheckboxWidth + 5, y: 6, width: fullPathCheckboxWidth, height: 20)
             fullPathCheckbox.state = search_isUseFullPath ? .on : .off
             
             // 创建向前搜索按钮 - 放在下面一行
+            // Create previous search button - place on bottom row
             let prevButton = NSButton(frame: NSRect(x: 147+withAdjust, y: 3, width: 30, height: 25))
             prevButton.bezelStyle = .regularSquare
             prevButton.image = NSImage(systemSymbolName: "chevron.left", accessibilityDescription: nil)
@@ -7762,6 +8348,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             prevButton.action = #selector(prevButtonClicked(_:))
             
             // 创建向后搜索按钮 - 放在下面一行
+            // Create next search button - place on bottom row
             let nextButton = NSButton(frame: NSRect(x: 177+withAdjust, y: 3, width: 30, height: 25))
             nextButton.bezelStyle = .regularSquare
             nextButton.image = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: nil)
@@ -7769,6 +8356,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             nextButton.action = #selector(nextButtonClicked(_:))
 
             // 创建执行过滤按钮 - 放在正则表达式复选框后面
+            // Create apply filter button - place after regex checkbox
             let filterButtonX = prevButton.frame.origin.x - filterButtonWidth
             let filterButton = NSButton(frame: NSRect(x: filterButtonX, y: 3, width: filterButtonWidth, height: 25))
             filterButton.title = filterButtonTitle
@@ -7778,7 +8366,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             filterButton.action = #selector(filterButtonClicked(_:))
 
             // 创建问号按钮 - 放在过滤按钮左边
-            let helpButtonX = filterButtonX - 25 // 5是按钮间距
+            // Create help button - place to the left of filter button
+            // 5是按钮间距
+            // 5 is button spacing
+            let helpButtonX = filterButtonX - 25
             let helpButton = NSButton(frame: NSRect(x: helpButtonX, y: 4, width: 24, height: 24))
             helpButton.bezelStyle = .circular
             helpButton.title = "?"
@@ -7787,6 +8378,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             helpButton.action = #selector(helpButtonClicked(_:))
             
             // 添加所有控件到容器视图
+            // Add all controls to container view
             containerView.addSubview(searchField!)
             containerView.addSubview(regexCheckbox)
             containerView.addSubview(caseSensitiveCheckbox)
@@ -7799,13 +8391,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             containerView.addSubview(nextButton)
             
             // 设置容器视图位置
+            // Set container view position
             containerView.frame.origin.x = view.bounds.width - containerView.frame.width - 30
             containerView.frame.origin.y = view.bounds.height - containerView.frame.height - 20
-            //另外注意在viewDidLayout()中实时调整位置
+            // 另外注意在viewDidLayout()中实时调整位置
+            // Also note: adjust position in real-time in viewDidLayout()
             
             overlay.addSubview(containerView)
             
             // 设置引用
+            // Set references
             overlay.containerView = containerView
             overlay.viewController = self
             searchOverlay = overlay
@@ -7816,6 +8411,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         if let containerView = searchOverlay?.containerView {
             // 设置样式
+            // Set style
             containerView.wantsLayer = true
             containerView.layer?.cornerRadius = 8
             containerView.layer?.masksToBounds = false
@@ -7833,7 +8429,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         publicVar.isKeyEventEnabled = false
         publicVar.isInSearchState = true
-        //searchOverlay?.isHidden = false
+        // searchOverlay?.isHidden = false
         searchField?.becomeFirstResponder()
     }
 
@@ -7874,23 +8470,27 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
     private func performSearch(searchText: String, isEnterKey: Bool, isReverse: Bool = false, forceUseRegex: Bool = false, firstMatch: Bool = false) -> Bool {
         // 如果搜索文本为空，不执行搜索
+        // If search text is empty, don't perform search
         if searchText.isEmpty {
             return true
         }
         
         // 获取当前选中的索引
+        // Get currently selected index
         let currentSelectedIndex = collectionView.selectionIndexPaths.first?.item ?? -1
         
         fileDB.lock()
         let files = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files ?? [:]
         
         // 检查当前选中项是否符合搜索条件
+        // Check if currently selected item matches search condition
         if !firstMatch,
            let currentIndex = collectionView.selectionIndexPaths.first?.item,
            let currentFileName = getFileNameForSearch(path: files.element(atOffset: currentIndex).1.path),
            isSearchMatch(fileName: currentFileName, searchText: searchText, forceUseRegex: forceUseRegex) {
             if isEnterKey {
                 // 查找下一个或上一个匹配项
+                // Find next or previous match
                 var foundIndex: Int?
                 if isReverse {
                     for (index, file) in files.enumerated().reversed() {
@@ -7903,6 +8503,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                     
                     // 如果到头了，则跳转到末尾，直到当前项之后（从而实现循环跳转）
+                    // If reached beginning, jump to end until after current item (to achieve circular navigation)
                     if foundIndex == nil {
                         for (index, file) in files.enumerated().reversed() {
                             if let fileName = getFileNameForSearch(path: file.1.path) {
@@ -7924,6 +8525,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                     
                     // 如果到底了，则跳转到开头，直到当前项之前（从而实现循环跳转）
+                    // If reached end, jump to beginning until before current item (to achieve circular navigation)
                     if foundIndex == nil {
                         for (index, file) in files.enumerated() {
                             if let fileName = getFileNameForSearch(path: file.1.path) {
@@ -7939,6 +8541,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 fileDB.unlock()
                 
                 // 如果找到匹配项，选中并滚动到该项
+                // If match found, select and scroll to that item
                 if let index = foundIndex {
                     if index >= 0 && index < collectionView.numberOfItems(inSection: 0) {
                         let indexPath = IndexPath(item: index, section: 0)
@@ -7960,10 +8563,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }
         } else {
             // 当前选中项不符合搜索条件，取消所有选择
+            // Currently selected item doesn't match search condition, deselect all
             collectionView.deselectAll(nil)
         }
         
         // 从头开始查找第一个匹配项
+        // Search from beginning for first match
         var foundIndex: Int?
         for (index, file) in files.enumerated() {
             if let fileName = getFileNameForSearch(path: file.1.path) {
@@ -7976,6 +8581,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         fileDB.unlock()
         
         // 如果找到匹配项，选中并滚动到该项
+        // If match found, select and scroll to that item
         if let index = foundIndex {
             if index >= 0 && index < collectionView.numberOfItems(inSection: 0) {
                 let indexPath = IndexPath(item: index, section: 0)
@@ -7996,6 +8602,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     private func isSearchMatch(fileName _fileName: String, searchText _searchText: String, forceUseRegex: Bool) -> Bool {
         if search_useRegex || forceUseRegex {
             // 使用正则表达式进行匹配
+            // Use regular expression for matching
             do {
                 let fileName = _fileName
                 let searchText = _searchText
@@ -8005,10 +8612,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 return regex.firstMatch(in: fileName, options: [], range: range) != nil
             } catch {
                 // 如果正则表达式无效，返回false
+                // If regular expression is invalid, return false
                 return false
             }
         } else {
             // 使用普通文本匹配
+            // Use plain text matching
             var fileName = _fileName
             var searchText = _searchText
             if !search_isCaseSensitive {
@@ -8030,16 +8639,20 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         let searchText = sender.stringValue
         
         // 标记并移除 ASCII 值为 3 的字符 (Shift+小键盘Enter)
+        // Mark and remove character with ASCII value 3 (Shift+numpad Enter)
         var containsSpecialCharacter = false
         let filteredText = searchText.filter { character in
             if character.asciiValue == 3 {
                 containsSpecialCharacter = true
-                return false // 过滤掉该字符
+                // 过滤掉该字符
+                // Filter out this character
+                return false
             }
             return true
         }
         
         // 如果存在特殊字符，则执行向上搜索
+        // If special character exists, perform reverse search
         if containsSpecialCharacter {
             sender.stringValue = filteredText
             search_searchText = filteredText
@@ -8064,6 +8677,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     // 选项状态
+    // Option state
     private var search_searchText: String = ""
     private var search_useRegex: Bool = false
     private var search_isCaseSensitive: Bool = false
@@ -8072,6 +8686,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     @objc private func regexCheckboxChanged(_ sender: NSButton) {
         search_useRegex = (sender.state == .on)
         // 当切换正则表达式选项时，重新执行搜索
+        // When toggling regex option, re-execute search
         let searchText = searchField?.stringValue ?? ""
         _ = performSearch(searchText: searchText, isEnterKey: false)
     }
@@ -8079,6 +8694,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     @objc private func caseSensitiveCheckboxChanged(_ sender: NSButton) {
         search_isCaseSensitive = (sender.state == .on)
         // 当切换区分大小写选项时，重新执行搜索
+        // When toggling case sensitive option, re-execute search
         let searchText = searchField?.stringValue ?? ""
         _ = performSearch(searchText: searchText, isEnterKey: false)
     }
@@ -8109,11 +8725,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.isFilenameFilterOn = searchText == "" ? false : true
         refreshCollectionView(needLoadThumbPriority: true)
     }
-
+    
     // 添加新的响应方法
+    // Add new response method
     @objc private func fullPathCheckboxChanged(_ sender: NSButton) {
         search_isUseFullPath = (sender.state == .on)
         // 当切换使用完整路径选项时，重新执行搜索
+        // When toggling use full path option, re-execute search
         let searchText = searchField?.stringValue ?? ""
         _ = performSearch(searchText: searchText, isEnterKey: false)
     }
@@ -8124,9 +8742,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     private func quickSearch(_ character: String) {
         // 清除之前的计时器
+        // Clear previous timer
         quickSearchTimer?.invalidate()
         
         // 添加新字符到搜索文本
+        // Add new character to search text
         if character == "backspace" {
             quickSearchText = String(quickSearchText.dropLast())
         }else{
@@ -8134,6 +8754,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         // 执行搜索
+        // Execute search
         if quickSearchText != "" {
             if !performSearch(searchText: "^"+quickSearchText, isEnterKey: false, forceUseRegex: true, firstMatch: true) {
                 _ = performSearch(searchText: quickSearchText, isEnterKey: false, forceUseRegex: false, firstMatch: true)
@@ -8146,6 +8767,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         // 设置新的计时器,n秒后清空搜索文本
+        // Set new timer, clear search text after n seconds
         quickSearchState = true
         quickSearchTimer = Timer.scheduledTimer(withTimeInterval: 1.8, repeats: false) { [weak self] _ in
             self?.quickSearchText = ""

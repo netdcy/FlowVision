@@ -25,7 +25,9 @@ class CustomSplitView: NSSplitView {
     }
     
     override func otherMouseDown(with event: NSEvent) {
-        if event.buttonNumber == 2 { // 检查是否按下了鼠标中键
+        // 检查是否按下了鼠标中键
+        // Check if middle mouse button is pressed
+        if event.buttonNumber == 2 {
             middleMouseInitialLocation = event.locationInWindow
         } else {
             super.otherMouseDown(with: event)

@@ -57,10 +57,12 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         radioFullscreenForVideo.state = (!globalVar.blackBgAlwaysForVideo && globalVar.blackBgInFullScreenForVideo) ? .on : .off
 
         // 设置 OutlineView
+        // Set up OutlineView
         excludeListView.dataSource = self
         excludeListView.delegate = self
 
         // 根据refViewForExcludeListView的x、y设置excludeListView的x、y
+        // Set excludeListView x, y based on refViewForExcludeListView x, y
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             let refFrameInWindow = refViewForExcludeListView.convert(refViewForExcludeListView.bounds, to: nil)
@@ -69,6 +71,7 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         }
         
         // 设置增减图标
+        // Set add/remove icons
         if let plusImage = NSImage(systemSymbolName: "plus", accessibilityDescription: "Add Item") {
             excludeListEditControl.setImage(plusImage, forSegment: 0)
         }
@@ -77,6 +80,7 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         }
         
         // 已在AppDelegate中加载数据
+        // Data already loaded in AppDelegate
         excludeListView.reloadData()
     }
     
@@ -168,7 +172,9 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
     
     @IBAction func segmentedControlValueChanged(_ sender: NSSegmentedControl) {
         switch sender.selectedSegment {
-        case 0: // 增加
+        case 0: 
+            // 增加
+            // Add
             let openPanel = NSOpenPanel()
             openPanel.canChooseDirectories = true
             openPanel.canChooseFiles = false
@@ -184,7 +190,9 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
                     UserDefaults.standard.set(globalVar.thumbnailExcludeList, forKey: "thumbnailExcludeList")
                 }
             }
-        case 1: // 删除
+        case 1: 
+            // 删除
+            // Delete
             let selectedRow = excludeListView.selectedRow
             if selectedRow >= 0 && selectedRow < globalVar.thumbnailExcludeList.count {
                 globalVar.thumbnailExcludeList.remove(at: selectedRow)
