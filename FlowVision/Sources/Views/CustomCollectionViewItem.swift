@@ -207,6 +207,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             tags.insert(stars, at: 0)
         }
         
+        if !TAGGING_FEATURE_ENABLED {
+            tags.removeAll()
+        }
+        
         imageTag.stringValue = tags.joined(separator: "\n")
         
         if imageTag.stringValue != "" && isShowThumbnailTag {
