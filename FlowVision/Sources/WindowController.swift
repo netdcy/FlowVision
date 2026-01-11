@@ -319,7 +319,7 @@ extension WindowController: NSToolbarDelegate {
         }
         
         if #available(macOS 26.0, *) {
-            
+            identifiers.append(.space)
         }else{
             identifiers.append(NSToolbarItem.Identifier("CustomSeparator"))
         }
