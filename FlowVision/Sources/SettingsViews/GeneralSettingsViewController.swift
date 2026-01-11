@@ -19,6 +19,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
     
     @IBOutlet weak var terminateAfterLastWindowClosedCheckbox: NSButton!
     @IBOutlet weak var autoHideToolbarCheckbox: NSButton!
+    @IBOutlet weak var autoHideCursorWhenFullscreenCheckbox: NSButton!
     @IBOutlet weak var languagePopUpButton: NSPopUpButton!
 
     @IBOutlet weak var radioHomeFolder: NSButton!
@@ -38,6 +39,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
         
         terminateAfterLastWindowClosedCheckbox.state = globalVar.terminateAfterLastWindowClosed ? .on : .off
         autoHideToolbarCheckbox.state = globalVar.autoHideToolbar ? .on : .off
+        autoHideCursorWhenFullscreenCheckbox.state = globalVar.autoHideCursorWhenFullscreen ? .on : .off
         
         // 初始化 NSPopUpButton 的选项
         // Initialize NSPopUpButton options
@@ -141,6 +143,11 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
     
     @IBAction func autoHideToolbarToggled(_ sender: NSButton) {
         UserDefaults.standard.set(sender.state, forKey: "autoHideToolbar")
+    }
+
+    @IBAction func autoHideCursorWhenFullscreenToggled(_ sender: NSButton) {
+        globalVar.autoHideCursorWhenFullscreen = (sender.state == .on)
+        UserDefaults.standard.set(globalVar.autoHideCursorWhenFullscreen, forKey: "autoHideCursorWhenFullscreen")
     }
     
     @IBAction func openSystemPreferences(_ sender: Any) {

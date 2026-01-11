@@ -122,6 +122,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let autoHideToolbar = UserDefaults.standard.value(forKey: "autoHideToolbar") as? Bool {
             globalVar.autoHideToolbar = autoHideToolbar
         }
+        if let autoHideCursorWhenFullscreen = UserDefaults.standard.value(forKey: "autoHideCursorWhenFullscreen") as? Bool {
+            globalVar.autoHideCursorWhenFullscreen = autoHideCursorWhenFullscreen
+        }
         if let randomFolderThumb = UserDefaults.standard.value(forKey: "randomFolderThumb") as? Bool {
             globalVar.randomFolderThumb = randomFolderThumb
         }

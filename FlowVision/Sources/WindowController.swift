@@ -267,13 +267,15 @@ class WindowController: NSWindowController, NSWindowDelegate {
     // Schedule delayed cursor hiding (in full screen mode, hide cursor 1 second after mouse stops moving)
     func scheduleCursorHide() {
         cancelCursorHideTimer()
-        cursorHideTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [weak self] _ in
-            guard let self = self else { return }
-            guard let window = self.window else { return }
-            // 只在全屏模式下隐藏光标
-            // Only hide cursor in full screen mode
-            if window.styleMask.contains(.fullScreen) {
-                NSCursor.hide()
+        if globalVar.autoHideCursorWhenFullscreen {
+            cursorHideTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [weak self] _ in
+                guard let self = self else { return }
+                guard let window = self.window else { return }
+                if window.styleMask.contains(.fullScreen),
+                   NSApp.keyWindow === window,
+                   window.frame.contains(NSEvent.mouseLocation) {
+                    NSCursor.hide()
+                }
             }
         }
     }

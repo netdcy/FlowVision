@@ -65,6 +65,7 @@ class GlobalVar{
     var scrollSensitivity: Double = 5.0
     var terminateAfterLastWindowClosed = true
     var autoHideToolbar = false
+    var autoHideCursorWhenFullscreen = false
     var doNotUseFFmpeg = false
     var memUseLimit: Int = 4000
     var thumbThreadNum: Int = 8
