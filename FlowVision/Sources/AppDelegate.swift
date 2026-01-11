@@ -659,6 +659,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
     
     func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        // 如果焦点在标准文本控件上，启用复制菜单
+        // If focus is on standard text controls, enable copy menu
+        if menuItem.action == #selector(editCopy(_:)) {
+            if let firstResponder = NSApp.keyWindow?.firstResponder,
+               firstResponder is NSTextView || firstResponder is NSTextField {
+                return true
+            }
+        }
         guard let mainViewController=getMainViewController() else{
             // 如果没有窗口，则只有新建标签页为有效，其它皆为无效
             // If no window, only new tab is valid, all others are invalid
@@ -859,7 +867,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
     
     @IBAction func editCopy(_ sender: NSMenuItem){
+        // 如果焦点在标准文本控件上，使用系统默认的复制行为
+        // If focus is on standard text controls, use system default copy behavior
+        if let firstResponder = NSApp.keyWindow?.firstResponder {
+            if firstResponder is NSTextView || firstResponder is NSTextField {
+                firstResponder.tryToPerform(#selector(NSText.copy(_:)), with: nil)
+                return
+            }
+        }
+
         guard let mainViewController=getMainViewController() else{return}
+
         if mainViewController.publicVar.isInLargeView {
             mainViewController.largeImageView.actCopy()
         }else{
