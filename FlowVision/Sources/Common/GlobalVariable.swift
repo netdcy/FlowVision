@@ -25,6 +25,8 @@ let ROOT_NAME = getSystemVolumeName() ?? "Macintosh HD"
 let COLOR_COLLECTIONVIEW_BG_LIGHT = "#FFFFFF"
 let COLOR_COLLECTIONVIEW_BG_DARK = "#2D2D2D"
 
+let TAGGING_FEATURE_ENABLED = true
+
 class GlobalVar{
     var myFavoritesArray = ["/"]
     var WINDOW_LIMIT=16
