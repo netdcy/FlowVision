@@ -45,7 +45,7 @@ class TaggingSystem {
             print("保存标签数据失败: \(error)")
         }
         let executionTime = CFAbsoluteTimeGetCurrent() - startTime
-        log("saveToFile() 执行时间: \(String(format: "%.4f", executionTime))秒", level: .debug)
+        log("saveToFile() execution time: \(String(format: "%.4f", executionTime)) seconds", level: .debug)
     }
     
     // 从JSON文件加载数据
@@ -54,7 +54,7 @@ class TaggingSystem {
         let startTime = CFAbsoluteTimeGetCurrent()
         guard FileManager.default.fileExists(atPath: dataFileURL.path) else { 
             let executionTime = CFAbsoluteTimeGetCurrent() - startTime
-            log("loadFromFile() 执行时间: \(String(format: "%.4f", executionTime))秒, 文件不存在", level: .debug)
+            log("loadFromFile() execution time: \(String(format: "%.4f", executionTime)) seconds, file does not exist", level: .debug)
             return 
         }
         
@@ -71,7 +71,7 @@ class TaggingSystem {
             print("加载标签数据失败: \(error)")
         }
         let executionTime = CFAbsoluteTimeGetCurrent() - startTime
-        log("loadFromFile() 执行时间: \(String(format: "%.4f", executionTime))秒", level: .debug)
+        log("loadFromFile() execution time: \(String(format: "%.4f", executionTime)) seconds", level: .debug)
     }
     
     // 添加标签
@@ -103,7 +103,7 @@ class TaggingSystem {
         // Save changes
         saveToFile()
         let executionTime = CFAbsoluteTimeGetCurrent() - startTime
-        log("add(tag:urls:) 执行时间: \(String(format: "%.4f", executionTime))秒, 处理文件数量: \(urls.count)", level: .debug)
+        log("add(tag:urls:) execution time: \(String(format: "%.4f", executionTime)) seconds, number of files processed: \(urls.count)", level: .debug)
     }
     
     // 移除标签
@@ -135,7 +135,7 @@ class TaggingSystem {
         // Save changes
         saveToFile()
         let executionTime = CFAbsoluteTimeGetCurrent() - startTime
-        log("remove(tag:urls:) 执行时间: \(String(format: "%.4f", executionTime))秒, 处理文件数量: \(urls.count)", level: .debug)
+        log("remove(tag:urls:) execution time: \(String(format: "%.4f", executionTime)) seconds, number of files processed: \(urls.count)", level: .debug)
     }
     
     // 获取某标签的文件列表
@@ -160,12 +160,12 @@ class TaggingSystem {
         for url in urls {
             if !isTagged(tag: tag, url: url) {
                 let executionTime = CFAbsoluteTimeGetCurrent() - startTime
-                log("isAllTagged(tag:urls:) 执行时间: \(String(format: "%.4f", executionTime))秒, 检查文件数量: \(urls.count), 结果: false", level: .debug)
+                log("isAllTagged(tag:urls:) execution time: \(String(format: "%.4f", executionTime)) seconds, number of files checked: \(urls.count), result: false", level: .debug)
                 return false
             }
         }
         let executionTime = CFAbsoluteTimeGetCurrent() - startTime
-        log("isAllTagged(tag:urls:) 执行时间: \(String(format: "%.4f", executionTime))秒, 检查文件数量: \(urls.count), 结果: true", level: .debug)
+        log("isAllTagged(tag:urls:) execution time: \(String(format: "%.4f", executionTime)) seconds, number of files checked: \(urls.count), result: true", level: .debug)
         return true
     }
 

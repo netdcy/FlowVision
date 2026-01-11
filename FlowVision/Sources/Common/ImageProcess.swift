@@ -376,7 +376,7 @@ func createCGImageSource(from nsImage: NSImage) -> CGImageSource? {
     // 尝试将NSImage转换为CGImage
     // Try to convert NSImage to CGImage
     guard let cgImage = nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
-        log("无法从NSImage创建CGImage")
+        log("Failed to create CGImage from NSImage")
         // Unable to create CGImage from NSImage
         return nil
     }
@@ -385,7 +385,7 @@ func createCGImageSource(from nsImage: NSImage) -> CGImageSource? {
     // Create Bitmap Representation of CGImage
     let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
     guard let data = bitmapRep.representation(using: .png, properties: [:]) else {
-        log("无法从Bitmap Representation获取数据")
+        log("Failed to get data from Bitmap Representation")
         // Unable to get data from Bitmap Representation
         return nil
     }

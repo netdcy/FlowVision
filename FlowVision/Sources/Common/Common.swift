@@ -728,15 +728,15 @@ func requestAppleEventsPermission() -> Bool {
         let result = script.executeAndReturnError(&error)
         
         if let error = error {
-            log("请求自动化权限失败: \(error)")
+            log("Failed to request automation permission: \(error)")
             // Request automation permission failed
         } else {
-            log("请求自动化权限成功: \(result.stringValue ?? "")")
+            log("Successfully requested automation permission: \(result.stringValue ?? "")")
             // Request automation permission succeeded
             return true
         }
     } else {
-        log("无法创建AppleScript实例")
+        log("Unable to create AppleScript instance")
         // Unable to create AppleScript instance
     }
     

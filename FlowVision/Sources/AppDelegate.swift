@@ -62,7 +62,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     
     func applicationWillFinishLaunching(_ aNotification: Notification) {
 
-        log("开始applicationWillFinishLaunching")
+        log("Start applicationWillFinishLaunching")
         // Start applicationWillFinishLaunching
         
         func generateRoundedArray() -> [Int] {
@@ -205,13 +205,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         // Initialize tagging system
         TaggingSystem.initialize()
 
-        log("结束applicationWillFinishLaunching")
+        log("End applicationWillFinishLaunching")
         // End applicationWillFinishLaunching
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
 
-        log("开始applicationDidFinishLaunching")
+        log("Start applicationDidFinishLaunching")
         // Start applicationDidFinishLaunching
         
         if windowControllers.count == 0 {
@@ -223,7 +223,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
 //            FFmpegKitWrapper.shared.loadFFmpegKitIfNeeded()
 //        }
         
-        log("结束applicationDidFinishLaunching")
+        log("End applicationDidFinishLaunching")
         // End applicationDidFinishLaunching
     }
 
@@ -244,7 +244,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
 //    }
     
     func createNewWindow(_ path: String? = nil) -> WindowController? {
-        log("开始createNewWindow")
+        log("Start createNewWindow")
         // Start createNewWindow
         if isWindowNumMax() {
             showAlert(message: NSLocalizedString("window-num-max", comment: "窗口数量超过限制"))
