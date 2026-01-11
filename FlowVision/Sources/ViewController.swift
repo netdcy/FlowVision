@@ -6883,10 +6883,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         }
                         
                         if publicVar.isLaunchFromFile_changeLargeImage {
+                            // 任务在主线程执行，可以直接更新 UI
                             doReplace()
                         } else {
-                            DispatchQueue.main.async { [weak self] in
-                                guard let self = self else { return }
+                            DispatchQueue.main.async {
                                 doReplace()
                             }
                         }
@@ -6897,7 +6897,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 
                 // 是否阻塞执行新的任务
                 if publicVar.isLaunchFromFile_changeLargeImage {
-                    DispatchQueue.global(qos: .userInitiated).sync(execute: task!)
+                    // 直接执行任务（当前已在主线程），避免死锁
+                    task!.perform()
                     publicVar.isLaunchFromFile_changeLargeImage = false
                 } else {
                     DispatchQueue.global(qos: .userInitiated).async(execute: task!)
