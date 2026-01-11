@@ -226,6 +226,7 @@ extension ViewController {
         }
 
         // 对已展开的项进行操作
+        // Operate on the expanded items
         for item in expandedItems {
             treeViewData.expand(node: item, isLookSub: true)
         }

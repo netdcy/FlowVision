@@ -126,16 +126,20 @@ extension ViewController {
             if !expandLast {targetPaths.removeLast()}
             
             // 用于记录应当展开的项
+            // Used to record the items that should be expanded
             var itemsToExpand = Set<AnyHashable>()
             
             // 找到应该展开的项
+            // Find the items that should be expanded
             findItemsToExpand(outlineView: outlineView, targetPaths: targetPaths, currentPath: [], currentItem: nil, itemsToExpand: &itemsToExpand)
             
             // 展开找到的项，并折叠不在路径上的项
+            // Expand the found items and collapse the items that are not on the path
             adjustExpansion(outlineView: outlineView, parentItem: nil, itemsToExpand: itemsToExpand, doCollapse: doCollapse)
             
             if !expandLast {targetPaths.append(last)}
             // 选择最后一项
+            // Select the last item
             selectFinalItem(outlineView: outlineView, targetPaths: targetPaths)
         }
     }

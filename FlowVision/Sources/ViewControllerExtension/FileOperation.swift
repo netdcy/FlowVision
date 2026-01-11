@@ -227,6 +227,7 @@ extension ViewController {
 //    }
     
     // 备份剪贴板内容的函数
+    // Function to backup pasteboard content
     func backupPasteboard() -> [[String: Data]] {
         let pasteboard = NSPasteboard.general
         var backupItems = [[String: Data]]()

@@ -337,6 +337,7 @@ extension ViewController {
         
         if ifFoundNextImage {
             // 复原之前图片的旋转
+            // Restore the rotation of the previous image
             largeImageView.file.rotate=0
             
             currLargeImagePos=nextLargeImagePos
@@ -613,9 +614,11 @@ extension ViewController {
             }
             
             // 整数缩放
+            // Integer scaling
             largeSize = NSSize(width: round(largeSize.width), height: round(largeSize.height))
             
             // 不进行过大缩放，内存炸了
+            // Do not perform excessive scaling, memory will explode
             var doNotGenResized=false
             if largeSize.width*scale>=originalSize.width && largeSize.height*scale>=originalSize.height {
                 doNotGenResized=true
@@ -628,6 +631,7 @@ extension ViewController {
             }
             
             // 使用原图的格式
+            // The format of using original image
             if ["gif", "svg", "ai"].contains(url.pathExtension.lowercased()){
                 doNotGenResized=true
             }
@@ -954,6 +958,7 @@ extension ViewController {
                         
                         if publicVar.isLaunchFromFile_changeLargeImage {
                             // 任务在主线程执行，可以直接更新 UI
+                            // The task is executed on the main thread, so we can directly update the UI
                             doReplace()
                         } else {
                             DispatchQueue.main.async {

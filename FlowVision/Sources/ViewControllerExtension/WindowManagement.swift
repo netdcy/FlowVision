@@ -231,6 +231,7 @@ extension ViewController {
             let visibleFrame = screen.visibleFrame
             
             // 计算窗口的边框尺寸
+            // Calculate window border size
             let windowFrame = window.frame
             let contentRect = window.contentRect(forFrameRect: windowFrame)
             let titleBarHeight = windowFrame.height - contentRect.height
@@ -303,17 +304,20 @@ extension ViewController {
             }
             
             // 计算新的窗口尺寸，包括标题栏
+            // Calculate new window size, including title bar
             let newWindowSize = NSSize(width: newContentSize.width, height: newContentSize.height + titleBarHeight)
             
             let newOrigin: NSPoint
             
             if isToCenter {
                 // 计算新的窗口位置，使其居中
+                // Calculate new window position to center it
                 let newX = visibleFrame.origin.x + round((visibleFrame.width - newWindowSize.width) / 2)
                 let newY = visibleFrame.origin.y + round((visibleFrame.height - newWindowSize.height) / 2)
                 newOrigin = NSPoint(x: newX, y: newY)
             } else {
                 // 保持窗口的中心位置不变
+                // Keep window center position unchanged
                 let oldCenter = NSPoint(x: windowFrame.midX, y: windowFrame.midY)
                 let newX = oldCenter.x - round(newWindowSize.width / 2)
                 let newY = oldCenter.y - round(newWindowSize.height / 2)
@@ -383,17 +387,20 @@ extension ViewController {
             }
             
             // 计算新的窗口尺寸，包括标题栏
+            // Calculate new window size, including title bar
             let newWindowSize = NSSize(width: newContentSize.width, height: newContentSize.height + titleBarHeight)
             
             let newOrigin: NSPoint
             
             if isToCenter {
                 // 计算新的窗口位置，使其居中
+                // Calculate new window position to center it
                 let newX = visibleFrame.origin.x + round((visibleFrame.width - newWindowSize.width) / 2)
                 let newY = visibleFrame.origin.y + round((visibleFrame.height - newWindowSize.height) / 2)
                 newOrigin = NSPoint(x: newX, y: newY)
             } else {
                 // 保持窗口的中心位置不变
+                // Keep window center position unchanged
                 let oldCenter = NSPoint(x: windowFrame.midX, y: windowFrame.midY)
                 let newX = oldCenter.x - round(newWindowSize.width / 2)
                 let newY = oldCenter.y - round(newWindowSize.height / 2)
