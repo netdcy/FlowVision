@@ -258,7 +258,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             }else{ //如果打开文件
                 openFolder=getFileStyleFolderPath(path)
                 if globalVar.portableMode,
-                   let originalSize=getImageInfo(url: URL(string: getFileStylePath(path))!)?.size{
+                   let originalSize=getImageInfo(url: URL(string: getFileStylePath(path))!, needMetadata: false)?.size{
                     globalVar.startSpeedUpImageSizeCache=originalSize
                 }
             }

@@ -4932,7 +4932,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 currLargeImagePos = offset//-(totalCount-fileCount)
                 initLargeImagePos = -1
                 publicVar.openFromFinderPath = ""
-                file.imageInfo=getImageInfo(url: url)
+                file.imageInfo=getImageInfo(url: url, needMetadata: true)
                 file.originalSize=file.imageInfo?.size
                 if file.originalSize == nil {
                     file.originalSize = DEFAULT_SIZE
@@ -5169,7 +5169,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 originalSize = DEFAULT_SIZE
                                 isGetImageSizeFail = true
                             }else{
-                                imageInfo = getImageInfo(url: URL(string: key.path)!)
+                                imageInfo = getImageInfo(url: URL(string: key.path)!, needMetadata: true)
                                 originalSize = imageInfo?.size
                                 if originalSize == nil {
                                     originalSize = DEFAULT_SIZE
@@ -6541,7 +6541,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //当文件被修改，列表重新读取但大小还没来得及获取时可能为空，此时需要获取一下
         //或者由于外置卷，使用的默认大小 || VolumeManager.shared.isExternalVolume(url)
         if originalSize == nil {
-            let imageInfo = getImageInfo(url: url)
+            let imageInfo = getImageInfo(url: url, needMetadata: true)
             originalSize = imageInfo?.size
             file.imageInfo = imageInfo
             file.originalSize = originalSize
@@ -6608,7 +6608,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if publicVar.openFromFinderPath != "" {
             let url = URL(string: publicVar.openFromFinderPath)!
             file=FileModel(path: publicVar.openFromFinderPath, ver: 0)
-            file.imageInfo=getImageInfo(url: url)
+            file.imageInfo=getImageInfo(url: url, needMetadata: true)
             file.originalSize=file.imageInfo?.size
             if !justChangeLargeImageViewFile {
                 file.image = getImageThumb(url: url, refSize: file.originalSize) // 获取缩略图（以加快响应）
@@ -6657,7 +6657,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         if forceRefresh {
             getFileInfo(file: file)
-            file.imageInfo = getImageInfo(url: url)
+            file.imageInfo = getImageInfo(url: url, needMetadata: true)
             file.originalSize=file.imageInfo?.size
         }
         
@@ -6677,7 +6677,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //当文件被修改，列表重新读取但大小还没来得及获取时可能为空，此时需要获取一下
         //或者由于外置卷，使用的默认大小 || VolumeManager.shared.isExternalVolume(url)
         if originalSize == nil {
-            imageInfo = getImageInfo(url: url)
+            imageInfo = getImageInfo(url: url, needMetadata: true)
             originalSize = imageInfo?.size
             file.imageInfo = imageInfo
             file.originalSize = originalSize

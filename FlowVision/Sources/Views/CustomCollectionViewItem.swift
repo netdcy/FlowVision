@@ -185,12 +185,16 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     
     func tagChanged(){
         let isShowThumbnailTag = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailTag") == "true"
-        let tags = TaggingSystem.getFileTags(url: URL(string: file.path)!)
-        if tags.count > 0 {
-            imageTag.stringValue = tags.joined(separator: "\n")
-        }else{
-            imageTag.stringValue=""
+        
+        var tags = TaggingSystem.getFileTags(url: URL(string: file.path)!)
+        
+        if let rating = file.imageInfo?.rating {
+            let stars = String(repeating: "⭐️", count: rating)
+            tags.append(stars)
         }
+        
+        imageTag.stringValue = tags.joined(separator: "\n")
+        
         if imageTag.stringValue != "" && isShowThumbnailTag {
             imageTag.sizeToFit() // 先调整文字大小
             imageTag.frame.origin.x = imageViewObj.frame.origin.x + 5

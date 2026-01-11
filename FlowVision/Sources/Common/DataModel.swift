@@ -150,7 +150,7 @@ class SortKey: Comparable {
         if !sortKey.isDir{
             let ext = ext(sortKey)
             if globalVar.HandledImageAndRawExtensions.contains(ext) {
-                let imageInfo = getImageInfo(url: URL(string: sortKey.path)!)
+                let imageInfo = getImageInfo(url: URL(string: sortKey.path)!, needMetadata: false)
                 let exifData = imageInfo?.properties?[kCGImagePropertyExifDictionary as String] as? [String: Any]
                 let tiffData = imageInfo?.properties?[kCGImagePropertyTIFFDictionary as String] as? [String: Any]
                 //拍摄时间

@@ -1295,7 +1295,7 @@ func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
     return nil
 }
 
-func getImageInfo(url: URL, needMetadata: Bool = false) -> ImageInfo? {
+func getImageInfo(url: URL, needMetadata: Bool) -> ImageInfo? {
     //let defaultSize = DEFAULT_SIZE
     if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
         if globalVar.HandledNotNativeSupportedVideoExtensions.contains(url.pathExtension.lowercased()){
@@ -1354,13 +1354,13 @@ func getImageInfo(url: URL, needMetadata: Bool = false) -> ImageInfo? {
         if needMetadata {
             let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil)
             imageInfo.metadata = metadata
-//            let prefix = "xmp"
-//            let key = "Rating"
-//            if let metadata = metadata,
-//               let tag = CGImageMetadataCopyTagWithPath(metadata, nil, "\(prefix):\(key)" as CFString),
-//               let value = CGImageMetadataTagCopyValue(tag) as? String {
-//                imageInfo.rating = Int(value)
-//            }
+            let prefix = "xmp"
+            let key = "Rating"
+            if let metadata = metadata,
+               let tag = CGImageMetadataCopyTagWithPath(metadata, nil, "\(prefix):\(key)" as CFString),
+               let value = CGImageMetadataTagCopyValue(tag) as? String {
+                imageInfo.rating = Int(value)
+            }
         }
         
         return imageInfo
