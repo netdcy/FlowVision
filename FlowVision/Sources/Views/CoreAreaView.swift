@@ -84,4 +84,26 @@ class CoreAreaView: NSView {
         }
         return false
     }
+    
+    override func otherMouseDown(with event: NSEvent) {
+        if event.buttonNumber == 3 { //back
+            if let viewController = getViewController(self) {
+                if viewController.publicVar.isInLargeView{
+                    viewController.previousLargeImage()
+                }else{
+                    viewController.historyBack()
+                }
+            }
+        } else if event.buttonNumber == 4 { //forward
+            if let viewController = getViewController(self) {
+                if viewController.publicVar.isInLargeView{
+                    viewController.nextLargeImage()
+                }else{
+                    viewController.historyForward()
+                }
+            }
+        } else {
+            super.otherMouseDown(with: event)
+        }
+    }
 }
