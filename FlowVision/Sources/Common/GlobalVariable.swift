@@ -23,7 +23,7 @@ let ROOT_NAME = getSystemVolumeName() ?? "Macintosh HD"
 let COLOR_COLLECTIONVIEW_BG_LIGHT = "#FFFFFF"
 let COLOR_COLLECTIONVIEW_BG_DARK = "#2D2D2D"
 
-let TAGGING_FEATURE_ENABLED = true
+let TAGGING_FEATURE_ENABLED = false
 
 class GlobalVar{
     var myFavoritesArray = ["/"]
