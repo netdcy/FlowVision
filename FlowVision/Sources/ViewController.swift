@@ -390,6 +390,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         //初始化大图
         if globalVar.isLaunchFromFile {
+            largeImageBgEffectView.blendingMode = .behindWindow
             largeImageView.isHidden=false
             largeImageBgEffectView.isHidden=false
             largeImageView.alphaValue = 1
@@ -400,6 +401,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             largeImageBgEffectView.isHidden=true
             largeImageView.alphaValue = 0
             largeImageBgEffectView.alphaValue = 0
+            largeImageBgEffectView.blendingMode = .withinWindow
             publicVar.isInLargeView=false
         }
         
@@ -5977,11 +5979,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         //需要在reloadData前取消选择，否则不会调用相关函数
         collectionView.deselectAll(nil)
         
+        //隐藏动画
         if globalVar.portableMode {//便携模式下不使用动画，因为反倒有两次变化
             largeImageView.alphaValue = 0
             largeImageBgEffectView.alphaValue = 0
             self.largeImageView.isHidden=true
             self.largeImageBgEffectView.isHidden=true
+            self.largeImageBgEffectView.blendingMode = .withinWindow //从文件打开时初始模式不同
             self.publicVar.isInLargeViewAfterAnimate=false
         }else{
             NSAnimationContext.runAnimationGroup({ context in
@@ -5991,6 +5995,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             }, completionHandler: {
                 self.largeImageView.isHidden=true
                 self.largeImageBgEffectView.isHidden=true
+                self.largeImageBgEffectView.blendingMode = .withinWindow //从文件打开时初始模式不同
                 self.publicVar.isInLargeViewAfterAnimate=false
             })
         }
