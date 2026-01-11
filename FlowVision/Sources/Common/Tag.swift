@@ -27,6 +27,7 @@ class TaggingSystem {
     
     // 保存数据到JSON文件
     private static func saveToFile() {
+        let startTime = CFAbsoluteTimeGetCurrent()
         do {
             // 将Map转换为可序列化的格式
             var serializableData: [String: [String]] = [:]
@@ -39,11 +40,18 @@ class TaggingSystem {
         } catch {
             print("保存标签数据失败: \(error)")
         }
+        let executionTime = CFAbsoluteTimeGetCurrent() - startTime
+        log("saveToFile() 执行时间: \(String(format: "%.4f", executionTime))秒", level: .debug)
     }
     
     // 从JSON文件加载数据
     private static func loadFromFile() {
-        guard FileManager.default.fileExists(atPath: dataFileURL.path) else { return }
+        let startTime = CFAbsoluteTimeGetCurrent()
+        guard FileManager.default.fileExists(atPath: dataFileURL.path) else { 
+            let executionTime = CFAbsoluteTimeGetCurrent() - startTime
+            log("loadFromFile() 执行时间: \(String(format: "%.4f", executionTime))秒, 文件不存在", level: .debug)
+            return 
+        }
         
         do {
             let jsonData = try Data(contentsOf: dataFileURL)
@@ -57,42 +65,58 @@ class TaggingSystem {
         } catch {
             print("加载标签数据失败: \(error)")
         }
+        let executionTime = CFAbsoluteTimeGetCurrent() - startTime
+        log("loadFromFile() 执行时间: \(String(format: "%.4f", executionTime))秒", level: .debug)
     }
     
     // 添加标签
-    static func add(tag:String? = nil, url: URL, needSave:Bool = true){
+    static func add(tag:String? = nil, url: URL){
         let tag = tag ?? defaultTag
         if db[tag] == nil {
             db[tag] = Set<URL>()
         }
         db[tag]?.insert(url)
-        if needSave {
-            saveToFile() // 保存更改
-        }
+        saveToFile() // 保存更改
     }
     static func add(tag:String? = nil, urls: [URL]){
-        for url in urls {
-            add(tag: tag, url: url, needSave: false)
+        let startTime = CFAbsoluteTimeGetCurrent()
+        let tag = tag ?? defaultTag
+        
+        // 批量插入优化：一次性创建Set并合并
+        if db[tag] == nil {
+            db[tag] = Set<URL>()
         }
+        db[tag]?.formUnion(Set(urls)) // 使用formUnion进行批量合并
+        
         saveToFile() // 保存更改
+        let executionTime = CFAbsoluteTimeGetCurrent() - startTime
+        log("add(tag:urls:) 执行时间: \(String(format: "%.4f", executionTime))秒, 处理文件数量: \(urls.count)", level: .debug)
     }
     
     // 移除标签
-    static func remove(tag:String? = nil, url: URL, needSave:Bool = true){
+    static func remove(tag:String? = nil, url: URL){
         let tag = tag ?? defaultTag
         db[tag]?.remove(url)
         if db[tag]?.isEmpty == true {
             db.removeValue(forKey: tag)
         }
-        if needSave {
-            saveToFile() // 保存更改
-        }
+        saveToFile() // 保存更改
     }
     static func remove(tag:String? = nil, urls: [URL]){
-        for url in urls {
-            remove(tag: tag, url: url, needSave: false)
+        let startTime = CFAbsoluteTimeGetCurrent()
+        let tag = tag ?? defaultTag
+        
+        // 批量移除优化：使用subtracting进行批量移除
+        if let existingSet = db[tag] {
+            db[tag] = existingSet.subtracting(Set(urls))
+            if db[tag]?.isEmpty == true {
+                db.removeValue(forKey: tag)
+            }
         }
+        
         saveToFile() // 保存更改
+        let executionTime = CFAbsoluteTimeGetCurrent() - startTime
+        log("remove(tag:urls:) 执行时间: \(String(format: "%.4f", executionTime))秒, 处理文件数量: \(urls.count)", level: .debug)
     }
     
     // 获取某标签的文件列表
@@ -109,12 +133,17 @@ class TaggingSystem {
 
     // 判断是否所有文件被某标签标记
     static func isAllTagged(tag:String? = nil, urls: [URL]) -> Bool{
+        let startTime = CFAbsoluteTimeGetCurrent()
         let tag = tag ?? defaultTag
         for url in urls {
             if !isTagged(tag: tag, url: url) {
+                let executionTime = CFAbsoluteTimeGetCurrent() - startTime
+                log("isAllTagged(tag:urls:) 执行时间: \(String(format: "%.4f", executionTime))秒, 检查文件数量: \(urls.count), 结果: false", level: .debug)
                 return false
             }
         }
+        let executionTime = CFAbsoluteTimeGetCurrent() - startTime
+        log("isAllTagged(tag:urls:) 执行时间: \(String(format: "%.4f", executionTime))秒, 检查文件数量: \(urls.count), 结果: true", level: .debug)
         return true
     }
 

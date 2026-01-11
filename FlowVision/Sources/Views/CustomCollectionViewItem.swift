@@ -183,14 +183,14 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         return itemFrame.intersects(visibleRectExtended)
     }
     
-    func tagChanged(){
+    func refreshTagLabel(){
         let isShowThumbnailTag = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailTag") == "true"
         
         var tags = TaggingSystem.getFileTags(url: URL(string: file.path)!)
         
         if let rating = file.imageInfo?.rating {
             let stars = String(repeating: "⭐️", count: rating)
-            tags.append(stars)
+            tags.insert(stars, at: 0)
         }
         
         imageTag.stringValue = tags.joined(separator: "\n")
@@ -231,7 +231,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
 
         // 左上角标签
-        tagChanged()
+        refreshTagLabel()
 
         // 右上角标签
         let isShowThumbnailBadge = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailBadge") == "true"

@@ -3513,7 +3513,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if let collectionView = collectionView {
                 for item in collectionView.visibleItems() {
                     if let item = item as? CustomCollectionViewItem {
-                        item.tagChanged()
+                        item.refreshTagLabel()
                     }
                 }
             }
