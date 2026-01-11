@@ -47,6 +47,14 @@ class GlobalVar{
     weak var useInternalPlayerCheckbox: NSButton?
     
     //“设置”中的变量
+    var scrollSensitivityRatio: Double {
+        // 将滑块值 1.0-9.0 映射到乘数
+        // 5.0 对应 1.0（原始速度）
+        // 1.0 对应 0.25（慢 4 倍）
+        // 9.0 对应 4.0（快 4 倍）
+        return pow(2.0, (scrollSensitivity - 5.0) / 2.0)
+    }
+    var scrollSensitivity: Double = 5.0
     var terminateAfterLastWindowClosed = true
     var autoHideToolbar = false
     var doNotUseFFmpeg = false

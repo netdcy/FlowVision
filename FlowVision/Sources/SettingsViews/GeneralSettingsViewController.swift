@@ -14,6 +14,8 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
     let toolbarItemIcon = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "")!
 
     override var nibName: NSNib.Name? { "GeneralSettingsViewController" }
+
+    @IBOutlet weak var scrollSensitivitySlider: NSSlider!
     
     @IBOutlet weak var terminateAfterLastWindowClosedCheckbox: NSButton!
     @IBOutlet weak var autoHideToolbarCheckbox: NSButton!
@@ -29,6 +31,9 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
         super.viewDidLoad()
         
         //self.preferredContentSize = NSSize(width: 600, height: 400)
+        
+        // 初始化 scrollSensitivitySlider 和标签
+        scrollSensitivitySlider.doubleValue = globalVar.scrollSensitivity
         
         terminateAfterLastWindowClosedCheckbox.state = globalVar.terminateAfterLastWindowClosed ? .on : .off
         autoHideToolbarCheckbox.state = globalVar.autoHideToolbar ? .on : .off
@@ -221,5 +226,11 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
             labelHomeFolder.stringValue = globalVar.homeFolder.removingPercentEncoding!.replacingOccurrences(of: "file://", with: "")
             UserDefaults.standard.set(globalVar.homeFolder, forKey: "homeFolder")
         }
+    }
+    
+    @IBAction func scrollSensitivitySliderChanged(_ sender: NSSlider) {
+        let newValue = sender.doubleValue
+        globalVar.scrollSensitivity = newValue
+        UserDefaults.standard.set(newValue, forKey: "scrollSensitivity")
     }
 }

@@ -769,6 +769,102 @@
         }
       }
     },
+    "Uce-9P-gQt.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Scroll Sensitivity:\"; ObjectID = \"Uce-9P-gQt\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حساسية التمرير:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildlaufempfindlichkeit:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Scroll Sensitivity:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilidad de desplazamiento:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilité du défilement :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilità di Scorrimento"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スクロール感度"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스크롤 감도:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scroll Gevoeligheid:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilidade de Rolagem"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilidade de Deslocamento:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чувствительность прокрутки:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rullningskänslighet:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "滚动灵敏度："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "滾動靈敏度:"
+          }
+        }
+      }
+    },
     "Z13-dJ-JBv.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"\\\"Files and Folders\\\" permission is required to open directories and files.\\n\\\"Automation\\\" permission is required to retain original location information when deleting to the Trash (without this permission, the \\\"Put Back\\\" feature in the Trash will not work).\"; ObjectID = \"Z13-dJ-JBv\";",
       "extractionState" : "extracted_with_value",

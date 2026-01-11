@@ -1384,7 +1384,7 @@ class LargeImageView: NSView {
                 }
             }
 
-            let zoomFactor: CGFloat = 1.1
+            let zoomFactor: CGFloat = 1.0 + (0.1 * globalVar.scrollSensitivityRatio)
             let locationInView = self.convert(event.locationInWindow, from: nil)
             let locationInImageView = imageView.convert(locationInView, from: self)
             

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23504" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24412" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24412"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -14,6 +14,7 @@
                 <outlet property="languagePopUpButton" destination="3Ab-aZ-SDF" id="kvI-eJ-6ZO"/>
                 <outlet property="radioHomeFolder" destination="Eeu-lU-58j" id="Ogg-qa-Rjo"/>
                 <outlet property="radioLastFolder" destination="iSw-Jo-JME" id="Tyo-xe-0kn"/>
+                <outlet property="scrollSensitivitySlider" destination="ZfP-7k-XS3" id="9UE-K5-aWi"/>
                 <outlet property="terminateAfterLastWindowClosedCheckbox" destination="eIh-jy-wRw" id="KSJ-M6-Apr"/>
                 <outlet property="view" destination="c22-O7-iKe" id="ZQe-UH-LCX"/>
             </connections>
@@ -21,10 +22,10 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView translatesAutoresizingMaskIntoConstraints="NO" id="c22-O7-iKe">
-            <rect key="frame" x="0.0" y="0.0" width="510" height="504"/>
+            <rect key="frame" x="0.0" y="0.0" width="510" height="575"/>
             <subviews>
                 <gridView xPlacement="center" yPlacement="center" rowAlignment="none" rowSpacing="8" columnSpacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="lkV-Y2-eOl">
-                    <rect key="frame" x="30" y="28" width="450" height="456"/>
+                    <rect key="frame" x="30" y="61" width="450" height="494"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="450" id="5HG-su-XZq"/>
                     </constraints>
@@ -33,6 +34,7 @@
                         <gridRow id="6s8-bz-Bj9"/>
                         <gridRow id="uLO-pI-Rng"/>
                         <gridRow id="DqQ-B1-rBX"/>
+                        <gridRow id="Vy2-8K-Af4"/>
                         <gridRow id="qRQ-wQ-p0q"/>
                         <gridRow id="1jQ-pG-rHu"/>
                         <gridRow id="V0Z-tx-5vQ"/>
@@ -51,7 +53,7 @@
                     <gridCells>
                         <gridCell row="fKO-X7-QnW" column="GGj-JC-w4E" id="cJ1-eu-dcJ">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pP4-VT-r7d">
-                                <rect key="frame" x="39" y="438" width="68" height="16"/>
+                                <rect key="frame" x="39" y="476" width="68" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Language:" id="s9c-vd-E8g">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -61,7 +63,7 @@
                         </gridCell>
                         <gridCell row="fKO-X7-QnW" column="cs9-fm-l2F" id="8St-Yi-onW">
                             <popUpButton key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3Ab-aZ-SDF">
-                                <rect key="frame" x="112" y="432" width="68" height="25"/>
+                                <rect key="frame" x="112" y="470" width="68" height="25"/>
                                 <popUpButtonCell key="cell" type="push" title="Auto" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="hGF-9Y-ejC" id="H3d-6S-qhu">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="message"/>
@@ -79,7 +81,7 @@
                         <gridCell row="6s8-bz-Bj9" column="GGj-JC-w4E" id="cms-bj-WuF"/>
                         <gridCell row="6s8-bz-Bj9" column="cs9-fm-l2F" id="Xl9-c7-tBk">
                             <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="ROF-P1-6ml">
-                                <rect key="frame" x="113" y="414" width="265" height="14"/>
+                                <rect key="frame" x="113" y="452" width="265" height="14"/>
                                 <textFieldCell key="cell" selectable="YES" title="Restart the application for changes to take effect." id="qe3-7u-Trn">
                                     <font key="font" metaFont="message" size="11"/>
                                     <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
@@ -89,7 +91,7 @@
                         </gridCell>
                         <gridCell row="uLO-pI-Rng" column="GGj-JC-w4E" id="iQf-kM-Ntg">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="36e-fs-Acz">
-                                <rect key="frame" x="54" y="390" width="53" height="16"/>
+                                <rect key="frame" x="54" y="428" width="53" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Toolbar:" id="QHt-c1-9Ji">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -99,7 +101,7 @@
                         </gridCell>
                         <gridCell row="uLO-pI-Rng" column="cs9-fm-l2F" id="tkz-9O-t5b">
                             <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8Z4-Ey-mOg">
-                                <rect key="frame" x="113" y="389" width="135" height="18"/>
+                                <rect key="frame" x="113" y="427" width="135" height="18"/>
                                 <buttonCell key="cell" type="check" title="Auto Hide Toolbar" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="EBi-bb-P2R">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -112,7 +114,7 @@
                         <gridCell row="DqQ-B1-rBX" column="GGj-JC-w4E" id="4WE-5t-jZf"/>
                         <gridCell row="DqQ-B1-rBX" column="cs9-fm-l2F" id="9Bf-2Q-si2">
                             <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="GrH-Fc-hHA">
-                                <rect key="frame" x="113" y="354" width="332" height="28"/>
+                                <rect key="frame" x="113" y="392" width="332" height="28"/>
                                 <textFieldCell key="cell" selectable="YES" id="QqU-Xz-7dB">
                                     <font key="font" metaFont="message" size="11"/>
                                     <string key="title">When this option is enabled, the multi-tab bar cannot be used.
@@ -121,6 +123,33 @@ Restart the application for changes to take effect.</string>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                        </gridCell>
+                        <gridCell row="Vy2-8K-Af4" column="GGj-JC-w4E" id="Qbv-Ui-nQZ">
+                            <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BZR-tk-X4Y">
+                                <rect key="frame" x="-1" y="361" width="108" height="16"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Scroll Sensitivity:" id="Uce-9P-gQt">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </gridCell>
+                        <gridCell row="Vy2-8K-Af4" column="cs9-fm-l2F" id="m6p-4i-sfW">
+                            <customView key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="JiD-4X-Vul">
+                                <rect key="frame" x="115" y="354" width="100" height="30"/>
+                                <subviews>
+                                    <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZfP-7k-XS3">
+                                        <rect key="frame" x="-2" y="0.0" width="160" height="28"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                        <sliderCell key="cell" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="5" tickMarkPosition="above" numberOfTickMarks="9" allowsTickMarkValuesOnly="YES" sliderType="linear" id="qNp-91-alT">
+                                            <font key="font" metaFont="cellTitle"/>
+                                        </sliderCell>
+                                        <connections>
+                                            <action selector="scrollSensitivitySliderChanged:" target="-2" id="pAw-zc-ud7"/>
+                                        </connections>
+                                    </slider>
+                                </subviews>
+                            </customView>
                         </gridCell>
                         <gridCell row="qRQ-wQ-p0q" column="GGj-JC-w4E" id="d9c-ug-roI">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Vt6-jC-8Jo">
@@ -298,7 +327,7 @@ Restart the application for changes to take effect.</string>
                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="lkV-Y2-eOl" secondAttribute="bottom" priority="750" constant="20" id="bsa-Ju-YOT"/>
                 <constraint firstItem="lkV-Y2-eOl" firstAttribute="centerX" secondItem="c22-O7-iKe" secondAttribute="centerX" id="rdL-1S-HXy"/>
             </constraints>
-            <point key="canvasLocation" x="113" y="415"/>
+            <point key="canvasLocation" x="113" y="446.5"/>
         </customView>
     </objects>
 </document>

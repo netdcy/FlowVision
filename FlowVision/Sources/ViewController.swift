@@ -6243,6 +6243,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 deltaY = 1.5 * deltaY / abs(deltaY)
             }
         }
+        deltaY *= globalVar.scrollSensitivityRatio
         cumulativeScroll += deltaY
         
         if abs(cumulativeScroll)<1.4 {return}
