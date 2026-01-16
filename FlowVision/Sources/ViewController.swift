@@ -611,10 +611,22 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             largeImageView.imageView.preferredImageDynamicRange = (publicVar.isEnableHDR) ? .high : .standard
         }
         
-        mainScrollView.scrollerStyle = .legacy
-        outlineScrollView.scrollerStyle = .legacy
+        // Read the custom start directory from preferences, otherwise default to home directory
+        let userDefaults = UserDefaults.standard
+        var startPath = userDefaults.string(forKey: "startDirectoryPath")
+
+        if startPath == nil || startPath!.isEmpty {
+            startPath = NSHomeDirectory()
+        } else {
+            // Ensure the saved path is a valid directory
+            var isDir: ObjCBool = false
+            if !FileManager.default.fileExists(atPath: startPath!, isDirectory: &isDir) || !isDir.boolValue {
+                startPath = NSHomeDirectory() // Fallback to home if saved path is invalid
+            }
+        }
         
-        treeViewData.initData(path: treeRootFolder)
+        // Initialize the tree with the determined path
+        treeViewData.initData(path: startPath!)
         outlineView.reloadData()
         DispatchQueue.main.async {
             self.outlineViewManager.adjustColumnWidth()
@@ -986,22 +998,44 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     @objc func outlineViewDoubleClicked(_ sender: AnyObject) {
-        // 获取当前选中的行
         let row = outlineView.clickedRow
-
-        // 确保点击的是有效行
-        if row == -1 {
+        guard row != -1, let item = outlineView.item(atRow: row) as? TreeNode else {
             return
         }
 
-        // 获取行对应的条目
-        if let item = outlineView.item(atRow: row) {
-            if outlineView.isItemExpanded(item) {
-                outlineView.collapseItem(item)
-            } else {
-                outlineView.expandItem(item)
-            }
+        guard let url = URL(string: item.fullPath) else { return }
+        
+        // Handle special cases like virtual tags
+        if url.scheme != "file" {
+            // This is not a filesystem path, just do the default selection action
+            outlineViewManager.itemSelected(item)
+            return
         }
+        
+        let path = url.path
+        
+        var isDir: ObjCBool = false
+        if FileManager.default.fileExists(atPath: path, isDirectory: &isDir), isDir.boolValue {
+            changeTreeRoot(to: path)
+        }
+    }
+
+    func changeTreeRoot(to newRootPath: String) {
+        // Persist the new root path
+        UserDefaults.standard.set(newRootPath, forKey: "startDirectoryPath")
+
+        // Re-initialize the tree data model with the new path
+        treeViewData.initData(path: newRootPath)
+        outlineView.reloadData()
+        
+        // Use a dispatch queue to allow the reload to complete before adjusting width
+        DispatchQueue.main.async {
+            self.outlineViewManager.adjustColumnWidth()
+        }
+
+        // Also switch the main view to this new root directory
+        let destUrl = URL(fileURLWithPath: newRootPath).absoluteString
+        switchDirByDirection(direction: .zero, dest: destUrl, doCollapse: false, expandLast: false, skip: false, stackDeep: 0)
     }
     
     override func viewDidLayout() {
