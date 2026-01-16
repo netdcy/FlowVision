@@ -736,6 +736,18 @@ class TreeViewModel {
             let oldChildren=node.children
             node.children=[]
             
+            // Add ".." entry to navigate up
+            if folderURL.path != "/" && folderURL.path != "root" {
+                let parentURL = folderURL.deletingLastPathComponent()
+                // Ensure we don't add ".." if the parent is the same as the current node
+                // (can happen with trailing slashes)
+                if parentURL.standardizedFileURL != folderURL.standardizedFileURL {
+                    let parentNode = TreeNode(name: "..", fullPath: parentURL.absoluteString)
+                    parentNode.hasChild = true // So it's always expandable
+                    node.children?.append(parentNode)
+                }
+            }
+            
             for subFolder in subFolders {
                 var name = subFolder.lastPathComponent
                 var fullPath = subFolder.absoluteString
