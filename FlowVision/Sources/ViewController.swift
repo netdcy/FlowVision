@@ -1003,6 +1003,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             return
         }
 
+        if item.name == ".." {
+            if let url = URL(string: item.fullPath) {
+                changeTreeRoot(to: url.path)
+            }
+            return
+        }
+
         guard let url = URL(string: item.fullPath) else { return }
         
         // Handle special cases like virtual tags
