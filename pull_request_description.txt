@@ -1,0 +1,14 @@
+Title: feat: Implement persistent, focused root directory for sidebar with '..' navigation
+
+Description:
+This Pull Request introduces a new feature to enhance sidebar management, providing more granular control over directory viewing and improving user navigation.
+
+Key Changes:
+
+-   Custom Root Directory: Double-clicking a folder in the sidebar now sets it as the new "root" of the tree view. The sidebar will then display only the contents of that folder and its subfolders, hiding the rest of the higher hierarchy.
+-   Upward Navigation (`..`): If the current root directory is not the filesystem's root, a special ".." entry is added at the beginning of the list of children for the current root folder. Double-clicking ".." will navigate up one level in the directory hierarchy.
+-   Persistence on Launch: The selected root directory is saved in the application's preferences. Upon subsequent launches, the application will automatically start from this directory, maintaining the user's preferred sidebar configuration.
+
+Motivation:
+
+These changes significantly improve usability for users working with deep repositories or folder structures, allowing them to focus the directory tree on a relevant part of the filesystem and easily restore that context on each launch.

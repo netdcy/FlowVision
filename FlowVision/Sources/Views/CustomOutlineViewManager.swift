@@ -38,6 +38,9 @@ extension CustomOutlineViewManager: NSOutlineViewDataSource {
         guard let treeNode = item as? TreeNode else {
             return false
         }
+        if treeNode.name == ".." {
+            return false
+        }
         if (treeNode.children?.count ?? 0) > 0 {
             return true
         }
@@ -97,16 +100,19 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
     
     func itemSelected(_ item: TreeNode) {
         if ifActWhenSelected {
-            // log("Selected item: \(item.name)")
-            // fileDB.lock()
-            // let lastFolderPath = fileDB.curFolder
-            // fileDB.curFolder = item.fullPath
-            // log(fileDB.curFolder)
-            // fileDB.unlock()
-            // getViewController(self)!.publicVar.folderStepStack.insert(lastFolderPath, at: 0)
-            getViewController(outlineView!)?.switchDirByDirection(direction: .zero, dest: item.fullPath, doCollapse: false, expandLast: false, skip: false, stackDeep: 0)
+            if item.name == ".." {
+                // Do nothing on single click
+            } else {
+                // log("Selected item: \(item.name)")
+                // fileDB.lock()
+                // let lastFolderPath = fileDB.curFolder
+                // fileDB.curFolder = item.fullPath
+                // log(fileDB.curFolder)
+                // fileDB.unlock()
+                // getViewController(self)!.publicVar.folderStepStack.insert(lastFolderPath, at: 0)
+                getViewController(outlineView!)?.switchDirByDirection(direction: .zero, dest: item.fullPath, doCollapse: false, expandLast: false, skip: false, stackDeep: 0)
+            }
         }
-        
     }
     func outlineView(_ outlineView: NSOutlineView, rowViewForItem item: Any) -> NSTableRowView? {
         return CustomTableRowView()
