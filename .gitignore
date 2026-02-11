@@ -1,3 +1,5 @@
 xcuserdata/
 build/
 .DS_Store
+project.pbxproj
+*.storyboard
