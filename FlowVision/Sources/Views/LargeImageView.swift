@@ -212,48 +212,30 @@ class LargeImageView: NSView {
         let arrowBackgroundColor = NSColor.black.withAlphaComponent(0.2)
         let arrowBorderColor = NSColor.black.withAlphaComponent(0.3)
         let arrowTintColor = NSColor.black.withAlphaComponent(0.5)
-        let arrowSize = NSSize(width: 60, height: 60)
-        let arrowIconSize = NSSize(width: 32, height: 32)
-        let cornerRadius: CGFloat = 30
-        let borderWidth: CGFloat = 1
         
-        // 创建左侧箭头视图
-        // Create left arrow view
-        leftArrowImageView = NSImageView(frame: NSRect(x: 0, y: 0, width: arrowSize.width, height: arrowSize.height))
+        // 创建左侧箭头视图（尺寸由 updateArrowViewPositions 动态计算）
+        // Create left arrow view (size calculated dynamically by updateArrowViewPositions)
+        leftArrowImageView = NSImageView(frame: .zero)
         leftArrowImageView?.wantsLayer = true
         leftArrowImageView?.layer?.backgroundColor = arrowBackgroundColor.cgColor
-        leftArrowImageView?.layer?.cornerRadius = cornerRadius
-        leftArrowImageView?.layer?.borderWidth = borderWidth
         leftArrowImageView?.layer?.borderColor = arrowBorderColor.cgColor
+        leftArrowImageView?.imageScaling = .scaleNone
+        leftArrowImageView?.imageAlignment = .alignCenter
+        leftArrowImageView?.contentTintColor = arrowTintColor
         leftArrowImageView?.alphaValue = 0
         leftArrowImageView?.isHidden = true
         
-        // 设置左侧箭头图标
-        // Set left arrow icon
-        if let leftArrowImage = NSImage(systemSymbolName: "chevron.left", accessibilityDescription: "Previous") {
-            leftArrowImage.size = arrowIconSize
-            leftArrowImageView?.image = leftArrowImage
-            leftArrowImageView?.contentTintColor = arrowTintColor
-        }
-        
-        // 创建右侧箭头视图
-        // Create right arrow view
-        rightArrowImageView = NSImageView(frame: NSRect(x: 0, y: 0, width: arrowSize.width, height: arrowSize.height))
+        // 创建右侧箭头视图（尺寸由 updateArrowViewPositions 动态计算）
+        // Create right arrow view (size calculated dynamically by updateArrowViewPositions)
+        rightArrowImageView = NSImageView(frame: .zero)
         rightArrowImageView?.wantsLayer = true
         rightArrowImageView?.layer?.backgroundColor = arrowBackgroundColor.cgColor
-        rightArrowImageView?.layer?.cornerRadius = cornerRadius
-        rightArrowImageView?.layer?.borderWidth = borderWidth
         rightArrowImageView?.layer?.borderColor = arrowBorderColor.cgColor
+        rightArrowImageView?.imageScaling = .scaleNone
+        rightArrowImageView?.imageAlignment = .alignCenter
+        rightArrowImageView?.contentTintColor = arrowTintColor
         rightArrowImageView?.alphaValue = 0
         rightArrowImageView?.isHidden = true
-        
-        // 设置右侧箭头图标
-        // Set right arrow icon
-        if let rightArrowImage = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: "Next") {
-            rightArrowImage.size = arrowIconSize
-            rightArrowImageView?.image = rightArrowImage
-            rightArrowImageView?.contentTintColor = arrowTintColor
-        }
         
         // 添加视图到视图，确保在最上层
         // Add views to view, ensure they are on top
@@ -266,26 +248,48 @@ class LargeImageView: NSView {
     }
     
     private func updateArrowViewPositions() {
-        let buttonSize: CGFloat = 60
-        let margin: CGFloat = 30
+        // 基于视图短边按比例缩放，参考值900点（标准MacBook窗口高度）
+        // Scale proportionally based on view's shorter side, reference: 900pt (standard MacBook window height)
+        let referenceShortSide: CGFloat = 900
+        let shortSide = min(bounds.width, bounds.height)
+        let scaleFactor = max(shortSide / referenceShortSide, 0.75)
         
-        // 左侧箭头位置
-        // Left arrow position
+        let buttonSize = round(60 * scaleFactor)
+        let margin = round(30 * scaleFactor)
+        let cornerRadius = buttonSize / 2
+        let borderWidth: CGFloat = max(1, round(scaleFactor))
+        // 使用 SymbolConfiguration 控制 SF Symbol 实际渲染尺寸
+        // Use SymbolConfiguration to control SF Symbol rendering size
+        let symbolPointSize = round(20 * scaleFactor)
+        let symbolConfig = NSImage.SymbolConfiguration(pointSize: symbolPointSize, weight: .regular)
+        
+        // 左侧箭头位置与尺寸
+        // Left arrow position and size
         leftArrowImageView?.frame = NSRect(
             x: margin,
             y: (bounds.height - buttonSize) / 2,
             width: buttonSize,
             height: buttonSize
         )
+        leftArrowImageView?.layer?.cornerRadius = cornerRadius
+        leftArrowImageView?.layer?.borderWidth = borderWidth
+        if let leftImage = NSImage(systemSymbolName: "chevron.left", accessibilityDescription: "Previous")?.withSymbolConfiguration(symbolConfig) {
+            leftArrowImageView?.image = leftImage
+        }
         
-        // 右侧箭头位置
-        // Right arrow position
+        // 右侧箭头位置与尺寸
+        // Right arrow position and size
         rightArrowImageView?.frame = NSRect(
             x: bounds.width - margin - buttonSize,
             y: (bounds.height - buttonSize) / 2,
             width: buttonSize,
             height: buttonSize
         )
+        rightArrowImageView?.layer?.cornerRadius = cornerRadius
+        rightArrowImageView?.layer?.borderWidth = borderWidth
+        if let rightImage = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: "Next")?.withSymbolConfiguration(symbolConfig) {
+            rightArrowImageView?.image = rightImage
+        }
     }
     
     private func showArrowView(_ imageView: NSImageView?, animated: Bool = true) {
@@ -328,13 +332,17 @@ class LargeImageView: NSView {
         let viewWidth = self.bounds.width
         // 先按百分比计算
         // Calculate by percentage first
-        var leftThreshold: CGFloat = viewWidth * 0.15
-        var rightThreshold: CGFloat = viewWidth * 0.85
+        var leftThreshold: CGFloat = viewWidth * 0.12
+        var rightThreshold: CGFloat = viewWidth * 0.88
         
-        // 限制最小最大阈值
-        // Limit min/max thresholds
-        leftThreshold = min(max(leftThreshold, 100), 200)
-        rightThreshold = max(min(rightThreshold, viewWidth - 100), viewWidth - 200)
+        // 限制最小最大阈值（按比例缩放，参考宽度1440点）
+        // Limit min/max thresholds (proportionally scaled, reference width: 1440pt)
+        let referenceWidth: CGFloat = 1440
+        let widthScale = max(viewWidth / referenceWidth, 0.75)
+        let minThreshold = round(100 * widthScale)
+        let maxThreshold = round(200 * widthScale)
+        leftThreshold = min(max(leftThreshold, minThreshold), maxThreshold)
+        rightThreshold = max(min(rightThreshold, viewWidth - minThreshold), viewWidth - maxThreshold)
         
         // 检查是否在左侧区域
         // Check if in left area
