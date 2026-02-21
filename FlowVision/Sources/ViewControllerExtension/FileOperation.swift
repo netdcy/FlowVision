@@ -410,6 +410,15 @@ extension ViewController {
         var shouldSkipAll = false
         var shouldAutoRenameAll = false
         
+        // 记录成功粘贴的目标路径，用于刷新后选中
+        // Record successfully pasted destination paths for selection after refresh
+        var successfulDestURLs: [String] = []
+        defer {
+            if !successfulDestURLs.isEmpty {
+                publicVar.filesForLocateAfterChange = successfulDestURLs
+            }
+        }
+        
         let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
         publicVar.isKeyEventEnabled = false
         for item in items {
@@ -437,6 +446,7 @@ extension ViewController {
                         }
                         try FileManager.default.removeItem(at: destURL)
                         try FileManager.default.copyItem(at: fileURL, to: destURL)
+                        successfulDestURLs.append(destURL.absoluteString)
                     } catch {
                         log("Failed to paste \(fileURL): \(error)")
                     }
@@ -451,6 +461,7 @@ extension ViewController {
                             publicVar.fileChangedCount += 1
                         }
                         try FileManager.default.copyItem(at: fileURL, to: destURL)
+                        successfulDestURLs.append(destURL.absoluteString)
                     } catch {
                         log("Failed to paste \(fileURL): \(error)")
                     }
@@ -466,6 +477,7 @@ extension ViewController {
                             }
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
+                            successfulDestURLs.append(destURL.absoluteString)
                         } catch {
                             log("Failed to paste \(fileURL): \(error)")
                         }
@@ -479,6 +491,7 @@ extension ViewController {
                             }
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
+                            successfulDestURLs.append(destURL.absoluteString)
                         } catch {
                             log("Failed to paste \(fileURL): \(error)")
                         }
@@ -491,6 +504,7 @@ extension ViewController {
                                 publicVar.fileChangedCount += 1
                             }
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
+                            successfulDestURLs.append(destURL.absoluteString)
                         } catch {
                             log("Failed to paste \(fileURL): \(error)")
                         }
@@ -504,6 +518,7 @@ extension ViewController {
                                 publicVar.fileChangedCount += 1
                             }
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
+                            successfulDestURLs.append(destURL.absoluteString)
                         } catch {
                             log("Failed to paste \(fileURL): \(error)")
                         }
@@ -525,6 +540,7 @@ extension ViewController {
                         publicVar.fileChangedCount += 1
                     }
                     try FileManager.default.copyItem(at: fileURL, to: destURL)
+                    successfulDestURLs.append(destURL.absoluteString)
                 } catch {
                     log("Failed to paste \(fileURL): \(error)")
                 }
@@ -670,6 +686,15 @@ extension ViewController {
         var shouldSkipAll = false
         var shouldAutoRenameAll = false
         
+        // 记录成功移动的目标路径，用于刷新后选中
+        // Record successfully moved destination paths for selection after refresh
+        var successfulDestURLs: [String] = []
+        defer {
+            if !successfulDestURLs.isEmpty {
+                publicVar.filesForLocateAfterChange = successfulDestURLs
+            }
+        }
+        
         let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
         publicVar.isKeyEventEnabled = false
         for item in items {
@@ -697,6 +722,7 @@ extension ViewController {
                         }
                         try FileManager.default.removeItem(at: destURL)
                         try FileManager.default.moveItem(at: fileURL, to: destURL)
+                        successfulDestURLs.append(destURL.absoluteString)
                     } catch {
                         log("Failed to move \(fileURL): \(error)")
                     }
@@ -711,6 +737,7 @@ extension ViewController {
                             publicVar.fileChangedCount += 1
                         }
                         try FileManager.default.moveItem(at: fileURL, to: destURL)
+                        successfulDestURLs.append(destURL.absoluteString)
                     } catch {
                         log("Failed to move \(fileURL): \(error)")
                     }
@@ -726,6 +753,7 @@ extension ViewController {
                             }
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
+                            successfulDestURLs.append(destURL.absoluteString)
                         } catch {
                             log("Failed to move \(fileURL): \(error)")
                         }
@@ -739,6 +767,7 @@ extension ViewController {
                             }
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
+                            successfulDestURLs.append(destURL.absoluteString)
                         } catch {
                             log("Failed to move \(fileURL): \(error)")
                         }
@@ -751,6 +780,7 @@ extension ViewController {
                                 publicVar.fileChangedCount += 1
                             }
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
+                            successfulDestURLs.append(destURL.absoluteString)
                         } catch {
                             log("Failed to move \(fileURL): \(error)")
                         }
@@ -764,6 +794,7 @@ extension ViewController {
                                 publicVar.fileChangedCount += 1
                             }
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
+                            successfulDestURLs.append(destURL.absoluteString)
                         } catch {
                             log("Failed to move \(fileURL): \(error)")
                         }
@@ -785,6 +816,7 @@ extension ViewController {
                         publicVar.fileChangedCount += 1
                     }
                     try FileManager.default.moveItem(at: fileURL, to: destURL)
+                    successfulDestURLs.append(destURL.absoluteString)
                 } catch {
                     log("Failed to move \(fileURL): \(error)")
                 }

@@ -168,6 +168,7 @@ class PublicVar{
     }
     var folderStepForwardStack = [String]()
     var folderStepForLocate = [(String,RightMouseGestureDirection)]()
+    var filesForLocateAfterChange = [String]()
     var isLeftMouseDown: Bool = false
     var isRightMouseDown: Bool = false
     var isInInitStage: Bool = true
@@ -1548,6 +1549,38 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                                 }else{
                                                     fileDB.unlock()
                                                 }
+                                            }
+                                        }
+                                        
+                                        // 粘贴或移动后选中变更的文件
+                                        // Select changed files after paste or move
+                                        if !publicVar.filesForLocateAfterChange.isEmpty {
+                                            let targetPaths = publicVar.filesForLocateAfterChange
+                                            publicVar.filesForLocateAfterChange.removeAll()
+                                            
+                                            let targetPathSet = Set(targetPaths.map { $0.hasSuffix("/") ? String($0.dropLast()) : $0 })
+                                            var indexPaths: [IndexPath] = []
+                                            fileDB.lock()
+                                            if let files = fileDB.db[SortKeyDir(curFolder)]?.files {
+                                                for (offset, element) in files.enumerated() {
+                                                    let filePath = element.0.path
+                                                    let normalizedPath = filePath.hasSuffix("/") ? String(filePath.dropLast()) : filePath
+                                                    if targetPathSet.contains(normalizedPath) {
+                                                        indexPaths.append(IndexPath(item: offset, section: 0))
+                                                    }
+                                                }
+                                            }
+                                            fileDB.unlock()
+                                            
+                                            if !indexPaths.isEmpty {
+                                                let indexPathSet = Set(indexPaths)
+                                                collectionView.deselectAll(nil)
+                                                collectionView.scrollToItems(at: [indexPaths[0]], scrollPosition: .nearestHorizontalEdge)
+                                                collectionView.reloadData()
+                                                collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: indexPathSet)
+                                                collectionView.selectItems(at: indexPathSet, scrollPosition: [])
+                                                collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: indexPathSet)
+                                                setLoadThumbPriority(ifNeedVisable: true)
                                             }
                                         }
                                     }
