@@ -205,6 +205,11 @@ extension ViewController {
         }
     }
 
+    func toggleLockMirror(){
+        publicVar.isMirrorLocked.toggle()
+        UserDefaults.standard.set(publicVar.isMirrorLocked, forKey: "isMirrorLocked")
+    }
+
     func toggleRawUseEmbeddedThumb(){
         publicVar.isRawUseEmbeddedThumb.toggle()
         UserDefaults.standard.set(publicVar.isRawUseEmbeddedThumb, forKey: "isRawUseEmbeddedThumb")

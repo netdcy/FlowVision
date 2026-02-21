@@ -1375,6 +1375,10 @@ extension WindowController: NSToolbarDelegate {
             let lockZoom = menu.addItem(withTitle: NSLocalizedString("Lock Zoom", comment: "锁定缩放"), action: #selector(toggleLockZoom), keyEquivalent: "")
             lockZoom.keyEquivalentModifierMask = []
             lockZoom.state = viewController.publicVar.isZoomLocked ? .on : .off
+
+            let lockMirror = menu.addItem(withTitle: NSLocalizedString("Lock Mirror", comment: "锁定镜像"), action: #selector(toggleLockMirror), keyEquivalent: "")
+            lockMirror.keyEquivalentModifierMask = []
+            lockMirror.state = viewController.publicVar.isMirrorLocked ? .on : .off
             
             menu.addItem(NSMenuItem.separator())
             
@@ -1504,6 +1508,11 @@ extension WindowController: NSToolbarDelegate {
     @objc func toggleLockZoom(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.toggleLockZoom()
+    }
+
+    @objc func toggleLockMirror(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleLockMirror()
     }
 
     @objc func showCustomZoomRatioDialog(_ sender: NSMenuItem){

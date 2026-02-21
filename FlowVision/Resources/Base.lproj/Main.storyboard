@@ -703,6 +703,12 @@ Gw
                                                 <action selector="toggleLockZoom:" target="Voe-Tx-rLC" id="pl0-jg-XRg"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Lock Mirror" id="k1x-0c-asG">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="toggleLockMirror:" target="Voe-Tx-rLC" id="xfX-DC-UrW"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="YV6-Oq-8KP"/>
                                         <menuItem title="Activate Pan Scrolling After Zoom" id="kyz-IP-P6r">
                                             <modifierMask key="keyEquivalentModifierMask"/>
@@ -932,6 +938,7 @@ Gw
                         <outlet property="historyMenu" destination="wPC-H1-Utm" id="3Ye-Kf-Sul"/>
                         <outlet property="justifiedViewMenuItem" destination="rIE-So-qGu" id="P7V-7k-tCV"/>
                         <outlet property="lightModeMenuItem" destination="iPW-fb-GmX" id="wHy-XH-C2B"/>
+                        <outlet property="lockMirrorMenuItem" destination="k1x-0c-asG" id="pTy-hk-hAG"/>
                         <outlet property="lockRotationMenuItem" destination="VCB-ff-DEq" id="dAs-PX-MYM"/>
                         <outlet property="lockZoomMenuItem" destination="rTb-Na-yZj" id="joH-tT-6ZK"/>
                         <outlet property="maximizeWindowMenuItem" destination="HOx-iw-zko" id="ygq-Rk-ujP"/>

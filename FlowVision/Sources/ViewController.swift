@@ -151,6 +151,7 @@ class PublicVar{
     var rotationLock = 0
     var isZoomLocked = false
     var zoomLock: Double? = nil
+    var isMirrorLocked = false
     var isPanWhenZoomed = false
     var customZoomRatio: Double = 1.0
     var customZoomStep: Double = 0.1
@@ -552,6 +553,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         if let isZoomLocked = UserDefaults.standard.value(forKey: "isZoomLocked") as? Bool {
             publicVar.isZoomLocked = isZoomLocked
+        }
+        if let isMirrorLocked = UserDefaults.standard.value(forKey: "isMirrorLocked") as? Bool {
+            publicVar.isMirrorLocked = isMirrorLocked
         }
         if let isPanWhenZoomed = UserDefaults.standard.value(forKey: "isPanWhenZoomed") as? Bool {
             publicVar.isPanWhenZoomed = isPanWhenZoomed

@@ -70,7 +70,9 @@ extension ViewController {
         
         // 复原镜像
         // Restore mirror
-        largeImageView.imageView.isMirroredH=false
+        if !publicVar.isMirrorLocked {
+            largeImageView.imageView.isMirroredH=false
+        }
         
         // 取消OCR
         // Cancel OCR
@@ -346,7 +348,9 @@ extension ViewController {
             
             // 复原镜像
             // Restore mirror
-            largeImageView.imageView.isMirroredH=false
+            if !publicVar.isMirrorLocked {
+                largeImageView.imageView.isMirroredH=false
+            }
             
             currLargeImagePos=nextLargeImagePos
 

@@ -38,6 +38,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     @IBOutlet weak var reopenClosedTabsMenuItem: NSMenuItem!
     @IBOutlet weak var lockRotationMenuItem: NSMenuItem!
     @IBOutlet weak var lockZoomMenuItem: NSMenuItem!
+    @IBOutlet weak var lockMirrorMenuItem: NSMenuItem!
     @IBOutlet weak var activatePanScrollMenuItem: NSMenuItem!
     @IBOutlet weak var activatePanScrollReadmeMenuItem: NSMenuItem!
     @IBOutlet weak var toggleRawUseEmbeddedThumbMenuItem: NSMenuItem!
@@ -659,11 +660,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
 
             lockRotationMenuItem.state = mainViewController.publicVar.isRotationLocked ? .on : .off
             lockZoomMenuItem.state = mainViewController.publicVar.isZoomLocked ? .on : .off
+            lockMirrorMenuItem.state = mainViewController.publicVar.isMirrorLocked ? .on : .off
             activatePanScrollMenuItem.state = mainViewController.publicVar.isPanWhenZoomed ? .on : .off
             toggleRawUseEmbeddedThumbMenuItem.state = mainViewController.publicVar.isRawUseEmbeddedThumb ? .on : .off
 
             lockRotationMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
             lockZoomMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
+            lockMirrorMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
             activatePanScrollMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
             activatePanScrollReadmeMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
             toggleRawUseEmbeddedThumbMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
@@ -1013,6 +1016,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     
     @IBAction func toggleLockZoom(_ sender: NSMenuItem){
         getMainViewController()?.toggleLockZoom()
+    }
+
+    @IBAction func toggleLockMirror(_ sender: NSMenuItem){
+        getMainViewController()?.toggleLockMirror()
     }
 
     @IBAction func toggleActivatePanScroll(_ sender: NSMenuItem){

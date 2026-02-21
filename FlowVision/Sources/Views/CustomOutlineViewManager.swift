@@ -178,12 +178,11 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
                     // Update maximum width
                     // 再留一点边距
                     // Leave a bit more margin
-                    maxWidth = max(maxWidth, size.width + indentation + 30)
+                    maxWidth = max(maxWidth, size.width + indentation + 35)
                 }
             }
             
             column.width = maxWidth
-            print(NSFont.systemFontSize)
         }
         
         adjustColumnWidthWorkItem = workItem
@@ -218,7 +217,7 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
                 let sourceName = sourceUrl.lastPathComponent
                 let confirmed = showConfirmation(
                     title: NSLocalizedString("Move Items", comment: "移动项目"),
-                    message: String(format: NSLocalizedString("Are you sure you want to move \"%@\" to \"%@\"?", comment: "确定要移动 \"%@\" 到 \"%@\"?"), sourceName, targetUrl.lastPathComponent)
+                    message: String(format: NSLocalizedString("Are you sure you want to move xxx to xxx?", comment: "确定要移动 xxx 到 xxx?"), sourceName, targetUrl.lastPathComponent)
                 )
                 if !confirmed {
                     return false
