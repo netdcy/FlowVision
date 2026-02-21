@@ -250,6 +250,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
 //        return true
 //    }
     
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        if !flag {
+            // 当没有可见窗口时（例如关闭了所有窗口后点击Dock图标），创建新窗口
+            // When no visible windows (e.g. clicking Dock icon after closing all windows), create a new window
+            _ = createNewWindow()
+        }
+        return true
+    }
+    
     func createNewWindow(_ path: String? = nil) -> WindowController? {
         log("Start createNewWindow")
         // Start createNewWindow
