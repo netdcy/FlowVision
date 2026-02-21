@@ -1,0 +1,12 @@
+// LocalDev.xcconfig.template
+//
+// Copy this file to LocalDev.xcconfig to enable local developer settings.
+// LocalDev.xcconfig is gitignored and won't be committed.
+//
+// To use: cp LocalDev.xcconfig.template LocalDev.xcconfig
+//
+// Adding LOCAL_DEV enables developer-specific code paths guarded by:
+//   #if LOCAL_DEV           (both Debug & Release)
+//   #if DEBUG && LOCAL_DEV  (Debug only)
+
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) LOCAL_DEV

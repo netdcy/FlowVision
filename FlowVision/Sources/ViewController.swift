@@ -315,18 +315,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     var searchFolderRound=0
     
-#if DEBUG
+#if DEBUG && LOCAL_DEV
     var rootFolder="file://\(homeDirectory)/Repository/XcodeProj/%5BTestData%5D/ImageViewerPlus/"
     var treeRootFolder="file://\(homeDirectory)/Repository/XcodeProj/%5BTestData%5D/ImageViewerPlus/"
-    
-//    var rootFolder="file:///"
-//    var treeRootFolder="root"
-    
     let isDeveloper=false
 #else
     var rootFolder="file:///"
     var treeRootFolder="root"
-    
     let isDeveloper=false
 #endif
     

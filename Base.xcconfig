@@ -1,0 +1,7 @@
+// Base.xcconfig
+//
+// Shared base configuration for all build configurations (Debug & Release).
+// Optionally includes LocalDev.xcconfig for developer-specific settings.
+// LocalDev.xcconfig is gitignored and won't affect other collaborators.
+
+#include? "LocalDev.xcconfig"

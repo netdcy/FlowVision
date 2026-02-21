@@ -174,6 +174,7 @@
 		F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEffectView.swift; sourceTree = "<group>"; };
 		F7E65E342C09C7F100ACC4C0 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		F7F600452E1E094900ED8536 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
+		E00E13C3056A4910B242187C /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -293,6 +294,7 @@
 		F7A075472BA1D716009C47A6 = {
 			isa = PBXGroup;
 			children = (
+				E00E13C3056A4910B242187C /* Base.xcconfig */,
 				F7A075522BA1D716009C47A6 /* FlowVision */,
 				F754F3C62C10393700A25D12 /* Frameworks */,
 				F7A075512BA1D716009C47A6 /* Products */,
@@ -523,6 +525,7 @@
 /* Begin XCBuildConfiguration section */
 		F7A0755D2BA1D717009C47A6 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E00E13C3056A4910B242187C /* Base.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -587,6 +590,7 @@
 		};
 		F7A0755E2BA1D717009C47A6 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E00E13C3056A4910B242187C /* Base.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
