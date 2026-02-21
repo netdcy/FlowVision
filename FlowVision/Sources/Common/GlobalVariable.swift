@@ -80,6 +80,7 @@ class GlobalVar{
     var blackBgInFullScreenForVideo = false
     var blackBgAlways = false
     var blackBgAlwaysForVideo = true
+    var thumbnailOfFolderUseStacking = true
     var thumbnailExcludeList: [String] = []
     var usePinyinSearch = false
     var usePinyinInitialSearch = false

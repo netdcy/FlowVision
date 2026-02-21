@@ -14,6 +14,7 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
     override var nibName: NSNib.Name? { "CustomSettingsViewController" }
 
     @IBOutlet weak var randomFolderThumbCheckbox: NSButton!
+    @IBOutlet weak var thumbnailOfFolderUseStackingCheckbox: NSButton!
     @IBOutlet weak var loopBrowsingCheckbox: NSButton!
     @IBOutlet weak var clickEdgeToSwitchImageCheckbox: NSButton!
     @IBOutlet weak var scrollMouseWheelToZoomCheckbox: NSButton!
@@ -37,6 +38,7 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         super.viewDidLoad()
         
         randomFolderThumbCheckbox.state = globalVar.randomFolderThumb ? .on : .off
+        thumbnailOfFolderUseStackingCheckbox.state = globalVar.thumbnailOfFolderUseStacking ? .on : .off
         loopBrowsingCheckbox.state = globalVar.loopBrowsing ? .on : .off
         clickEdgeToSwitchImageCheckbox.state = globalVar.clickEdgeToSwitchImage ? .on : .off
         scrollMouseWheelToZoomCheckbox.state = globalVar.scrollMouseWheelToZoom ? .on : .off
@@ -85,6 +87,11 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
     @IBAction func randomFolderThumbToggled(_ sender: NSButton) {
         globalVar.randomFolderThumb = (sender.state == .on)
         UserDefaults.standard.set(globalVar.randomFolderThumb, forKey: "randomFolderThumb")
+    }
+    
+    @IBAction func thumbnailOfFolderUseStackingToggled(_ sender: NSButton) {
+        globalVar.thumbnailOfFolderUseStacking = (sender.state == .on)
+        UserDefaults.standard.set(globalVar.thumbnailOfFolderUseStacking, forKey: "thumbnailOfFolderUseStacking")
     }
     
     @IBAction func loopBrowsingToggled(_ sender: NSButton) {

@@ -126,6 +126,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let randomFolderThumb = UserDefaults.standard.value(forKey: "randomFolderThumb") as? Bool {
             globalVar.randomFolderThumb = randomFolderThumb
         }
+        if let thumbnailOfFolderUseStacking = UserDefaults.standard.value(forKey: "thumbnailOfFolderUseStacking") as? Bool {
+            globalVar.thumbnailOfFolderUseStacking = thumbnailOfFolderUseStacking
+        }
         if let loopBrowsing = UserDefaults.standard.value(forKey: "loopBrowsing") as? Bool {
             globalVar.loopBrowsing = loopBrowsing
         }

@@ -196,75 +196,177 @@ func getFileInfo(file: FileModel) {
     }
 }
 
-func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, timeout: TimeInterval = 1.0) -> [URL] {
+func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, preferDifferentDirs: Bool = false, timeout: TimeInterval = 1.0) -> [URL] {
     let fileManager = FileManager.default
     let validExtensions = globalVar.HandledFolderThumbExtensions
-    var imageUrls: [URL] = []
     // 包含目录及其深度
     // Contains directory and its depth
     var directoriesToVisit: [(URL, Int)] = [(directoryURL, 0)]
 
     let startTime = Date()
 
-    while !directoriesToVisit.isEmpty {
-        // 广度优先搜索
-        // Breadth-first search
-        let (currentDirectory, currentDepth) = directoriesToVisit.removeFirst()
+    if preferDifferentDirs {
+        // 优先不同目录模式：
+        // 第一阶段：BFS收集，每个含图片的目录最多收集maxImages张，收集满maxImages个目录后停止
+        // 第二阶段：从收集到的目录中轮询选取
+        // Prefer different dirs mode:
+        // Phase 1: BFS collect, each directory keeps at most maxImages images, stop after maxImages directories
+        // Phase 2: Round-robin select from collected directories
+        var imagesByDir: [[URL]] = []
 
-        // 检查是否在排除列表中
-        // Check if in exclude list
-        if globalVar.thumbnailExcludeList.contains(currentDirectory.path) {
-            continue
-        }
-        
-        // 检查是否超时
-        // Check if timed out
-        if Date().timeIntervalSince(startTime) > timeout {
-            log("Operation timed out")
-            break
-        }
+        while !directoriesToVisit.isEmpty {
+            // 广度优先搜索
+            // Breadth-first search
+            let (currentDirectory, currentDepth) = directoriesToVisit.removeFirst()
 
-        do {
-            var contents = try fileManager.contentsOfDirectory(at: currentDirectory, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsHiddenFiles])
-            
-            // 打乱目录内容顺序
-            // Shuffle directory contents order
-            if globalVar.randomFolderThumb {
-                contents.shuffle()
+            // 检查是否在排除列表中
+            // Check if in exclude list
+            if globalVar.thumbnailExcludeList.contains(currentDirectory.path) {
+                continue
             }
-            
-            for fileURL in contents {
-                let resourceValues = try fileURL.resourceValues(forKeys: [.isDirectoryKey])
-                
-                if resourceValues.isDirectory ?? false {
-                    // 仅在深度限制内将子目录及其深度放入栈/队列中
-                    // Only put subdirectories and their depth into stack/queue within depth limit
-                    if currentDepth + 1 < maxDepth {
-                        directoriesToVisit.append((fileURL, currentDepth + 1))
-                    }
-                } else {
-                    // 检查文件扩展名是否为可生成缩略图的格式
-                    // Check if file extension is a format that can generate thumbnails
-                    if validExtensions.contains(fileURL.pathExtension.lowercased()) {
-                        imageUrls.append(fileURL)
-                        
-                        // 检查是否已经找到足够多的图片
-                        // Check if enough images have been found
-                        if imageUrls.count >= maxImages {
-                            return imageUrls
+
+            // 检查是否超时
+            // Check if timed out
+            if Date().timeIntervalSince(startTime) > timeout {
+                break
+            }
+
+            do {
+                var contents = try fileManager.contentsOfDirectory(at: currentDirectory, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsHiddenFiles])
+
+                // 打乱目录内容顺序
+                // Shuffle directory contents order
+                if globalVar.randomFolderThumb {
+                    contents.shuffle()
+                }
+
+                var dirImages: [URL] = []
+
+                for fileURL in contents {
+                    let resourceValues = try fileURL.resourceValues(forKeys: [.isDirectoryKey])
+
+                    if resourceValues.isDirectory ?? false {
+                        // 仅在深度限制内将子目录及其深度放入栈/队列中
+                        // Only put subdirectories and their depth into stack/queue within depth limit
+                        if currentDepth + 1 < maxDepth {
+                            directoriesToVisit.append((fileURL, currentDepth + 1))
+                        }
+                    } else {
+                        // 每个目录最多收集maxImages张，达到后跳过图片但继续遍历以发现子目录
+                        // Collect at most maxImages per directory, skip images after that but continue to discover subdirectories
+                        if dirImages.count >= maxImages { continue }
+                        if validExtensions.contains(fileURL.pathExtension.lowercased()) {
+                            dirImages.append(fileURL)
                         }
                     }
                 }
-            }
-        } catch {
-            log("Error accessing contents of directory \(currentDirectory): \(error)")
-        }
-    }
 
-    return imageUrls
+                if !dirImages.isEmpty {
+                    imagesByDir.append(dirImages)
+                }
+
+                // 收集满maxImages个含图片的目录后停止扫描
+                // Stop scanning after collecting maxImages directories that contain images
+                if imagesByDir.count >= maxImages {
+                    break
+                }
+            } catch {
+                log("Error accessing contents of directory \(currentDirectory): \(error)")
+            }
+        }
+
+        // 轮询选取：依次从每个目录取一张图片，循环直到数量足够或所有目录耗尽
+        // Round-robin selection: take one image from each directory in turn, loop until enough or all exhausted
+        var result: [URL] = []
+        var indices = Array(repeating: 0, count: imagesByDir.count)
+
+        while result.count < maxImages {
+            var addedAny = false
+            for i in 0..<imagesByDir.count {
+                if result.count >= maxImages { break }
+                if indices[i] < imagesByDir[i].count {
+                    result.append(imagesByDir[i][indices[i]])
+                    indices[i] += 1
+                    addedAny = true
+                }
+            }
+            // 所有目录的图片都已耗尽
+            // All directories' images have been exhausted
+            if !addedAny { break }
+        }
+
+        return result
+    } else {
+        // 原始模式：按BFS顺序逐个收集
+        // Original mode: collect in BFS order
+        var imageUrls: [URL] = []
+
+        while !directoriesToVisit.isEmpty {
+            // 广度优先搜索
+            // Breadth-first search
+            let (currentDirectory, currentDepth) = directoriesToVisit.removeFirst()
+
+            // 检查是否在排除列表中
+            // Check if in exclude list
+            if globalVar.thumbnailExcludeList.contains(currentDirectory.path) {
+                continue
+            }
+
+            // 检查是否超时
+            // Check if timed out
+            if Date().timeIntervalSince(startTime) > timeout {
+                break
+            }
+
+            do {
+                var contents = try fileManager.contentsOfDirectory(at: currentDirectory, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsHiddenFiles])
+
+                // 打乱目录内容顺序
+                // Shuffle directory contents order
+                if globalVar.randomFolderThumb {
+                    contents.shuffle()
+                }
+
+                for fileURL in contents {
+                    let resourceValues = try fileURL.resourceValues(forKeys: [.isDirectoryKey])
+
+                    if resourceValues.isDirectory ?? false {
+                        // 仅在深度限制内将子目录及其深度放入栈/队列中
+                        // Only put subdirectories and their depth into stack/queue within depth limit
+                        if currentDepth + 1 < maxDepth {
+                            directoriesToVisit.append((fileURL, currentDepth + 1))
+                        }
+                    } else {
+                        // 检查文件扩展名是否为可生成缩略图的格式
+                        // Check if file extension is a format that can generate thumbnails
+                        if validExtensions.contains(fileURL.pathExtension.lowercased()) {
+                            imageUrls.append(fileURL)
+
+                            // 检查是否已经找到足够多的图片
+                            // Check if enough images have been found
+                            if imageUrls.count >= maxImages {
+                                return imageUrls
+                            }
+                        }
+                    }
+                }
+            } catch {
+                log("Error accessing contents of directory \(currentDirectory): \(error)")
+            }
+        }
+
+        return imageUrls
+    }
 }
 
-func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Bool], scale: CGFloat, rotationAngles: [CGFloat], borderWidth: CGFloat, borderColor: NSColor, shadowOffset: CGSize, shadowBlurRadius: CGFloat, shadowColor: NSColor, cornerRadius: CGFloat) -> NSImage? {
+func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Bool]) -> NSImage? {
+    // 定义通用参数
+    // Define common parameters
+    let borderColor: NSColor = NSColor(white: 1.0, alpha: 1.0)
+    let shadowColor: NSColor = NSColor(white: 0.3, alpha: 1.0)
+    let shadowOffset: CGSize = CGSize(width: 5.0, height: -5.0)
+    let shadowBlurRadius: CGFloat = 10.0
+    
     // 创建一个新的空白图像，用作最终的合成图像
     // Create a new blank image as the final composite image
     let resolution=512.0
@@ -287,58 +389,192 @@ func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Boo
     // Get graphics context
     let context = NSGraphicsContext.current!.cgContext
 
-    // 遍历图像数组，应用变换并绘制到背景上
-    // Iterate through image array, apply transformations and draw onto background
-    for (index, image) in images.enumerated() {
-        context.saveGState()
+    if globalVar.thumbnailOfFolderUseStacking {
+        // 叠放模式：遍历图像数组，应用旋转变换并叠放绘制到背景上
+        // Stacking mode: iterate through image array, apply rotation and draw stacked onto background
         
-        // 设置阴影
-        // Set shadow
-        context.setShadow(offset: shadowOffset, blur: shadowBlurRadius, color: shadowColor.cgColor)
-
-        // 计算缩放和旋转后的中心位置
-        // Calculate center position after scaling and rotation
-        let centerX = size.width / 2
-        let centerY = size.height / 2
-        context.translateBy(x: centerX, y: centerY)
-        context.rotate(by: rotationAngles[index] * CGFloat.pi / 180)
-        context.translateBy(x: -centerX, y: -centerY)
-
-        // 计算等比缩放因子
-        // Calculate proportional scaling factor
-        let totalScale = min(resolution / image.size.width, resolution / image.size.height) * scale
+        let cornerRadius: CGFloat = 4.0
+        let borderWidth: CGFloat = 3.0
         
-        // 应用缩放
-        // Apply scaling
-        let newSize = NSSize(width: image.size.width * totalScale, height: image.size.height * totalScale)
-        let imageRect = NSRect(x: centerX - newSize.width / 2, y: centerY - newSize.height / 2, width: newSize.width, height: newSize.height)
-
-        // 绘制不透明背景(针对透明png图像)
-        // Draw opaque background (for transparent PNG images)
-        let opaqueBackgroundPath = NSBezierPath(rect: imageRect)
-        hexToNSColor(hex: "#CECECE").setFill()
-        opaqueBackgroundPath.fill()
+        let scale: CGFloat = 0.68
+        let rotationAngles: [CGFloat] = [15.0, -15.0, 0]
         
-        // 绘制图像
-        // Draw image
-        image.draw(in: imageRect)
-        
-        // 取消阴影
-        // Remove shadow
-        context.setShadow(offset: CGSize(width: 0, height: 0), blur: 0)
+        for (index, image) in images.enumerated() {
+            context.saveGState()
+            
+            // 设置阴影
+            // Set shadow
+            context.setShadow(offset: shadowOffset, blur: shadowBlurRadius, color: shadowColor.cgColor)
 
-        // 添加边框
-        // Add border
-        if isVideos[index] {
-            hexToNSColor(hex: "#3E3E3E").setStroke()
-        }else{
-            borderColor.setStroke()
+            // 计算缩放和旋转后的中心位置
+            // Calculate center position after scaling and rotation
+            let centerX = size.width / 2
+            let centerY = size.height / 2
+            context.translateBy(x: centerX, y: centerY)
+            context.rotate(by: rotationAngles[index] * CGFloat.pi / 180)
+            context.translateBy(x: -centerX, y: -centerY)
+
+            // 计算等比缩放因子
+            // Calculate proportional scaling factor
+            let totalScale = min(resolution / image.size.width, resolution / image.size.height) * scale
+            
+            // 应用缩放
+            // Apply scaling
+            let newSize = NSSize(width: image.size.width * totalScale, height: image.size.height * totalScale)
+            let imageRect = NSRect(x: centerX - newSize.width / 2, y: centerY - newSize.height / 2, width: newSize.width, height: newSize.height)
+
+            // 绘制不透明背景(针对透明png图像)
+            // Draw opaque background (for transparent PNG images)
+            let opaqueBackgroundPath = NSBezierPath(rect: imageRect)
+            hexToNSColor(hex: "#CECECE").setFill()
+            opaqueBackgroundPath.fill()
+            
+            // 绘制图像
+            // Draw image
+            image.draw(in: imageRect)
+            
+            // 取消阴影
+            // Remove shadow
+            context.setShadow(offset: CGSize(width: 0, height: 0), blur: 0)
+
+            // 添加边框
+            // Add border
+            if isVideos[index] {
+                hexToNSColor(hex: "#3E3E3E").setStroke()
+            }else{
+                borderColor.setStroke()
+            }
+            let borderPath = NSBezierPath(roundedRect: imageRect, xRadius: cornerRadius, yRadius: cornerRadius)
+            borderPath.lineWidth = borderWidth
+            borderPath.stroke()
+
+            context.restoreGState()
         }
-        let borderPath = NSBezierPath(roundedRect: imageRect, xRadius: cornerRadius, yRadius: cornerRadius)
-        borderPath.lineWidth = borderWidth
-        borderPath.stroke()
-
-        context.restoreGState()
+    } else {
+        // 平铺模式：根据图像数量并排排列，照片裁切为正方形，略微旋转模拟自然摆放
+        // Tiling mode: arrange images in grid, crop to square, slight rotation for natural look
+        
+        let cornerRadius: CGFloat = 0.0
+        let borderWidth: CGFloat = 3.5
+        
+        let gap: CGFloat = resolution * 0.025
+        // 每张照片随机略微旋转角度（度），模拟自然摆放效果
+        // Random slight rotation angles (degrees) for each photo, simulating natural placement
+        let tileRotations: [CGFloat] = images.indices.map { _ in
+            let magnitude = CGFloat.random(in: 2.0...4.0)
+            let sign: CGFloat = Bool.random() ? 1 : -1
+            return magnitude * sign
+        }
+        
+        // 计算正方形单元格大小和中心位置
+        // Calculate square cell size and center positions
+        var cellSize: CGFloat = 0
+        var cellCenters: [CGPoint] = []
+        
+        switch images.count {
+        case 1:
+            // 单张图像：居中，适当大小
+            // Single image: centered, moderate size
+            cellSize = resolution * 0.62
+            cellCenters.append(CGPoint(x: resolution / 2, y: resolution / 2))
+        case 2:
+            // 两张正方形图像：水平并排
+            // Two square images: side by side horizontally
+            let gridSize = resolution * 0.84
+            cellSize = (gridSize - gap) / 2
+            let gridOrigin = (resolution - gridSize) / 2
+            cellCenters.append(CGPoint(x: gridOrigin + cellSize / 2, y: resolution / 2.05))
+            cellCenters.append(CGPoint(x: gridOrigin + cellSize + gap + cellSize / 2, y: resolution / 2.05))
+        case 3:
+            // 三张图像：第一行两个，第二行一个居中
+            // Three images: two on top row, one centered on bottom row
+            let gridSize = resolution * 0.82
+            cellSize = (gridSize - gap) / 2
+            let gridOrigin = (resolution - gridSize) / 2
+            // 第一行（上方）
+            // First row (top)
+            let topY = gridOrigin + cellSize + gap + cellSize / 2
+            cellCenters.append(CGPoint(x: gridOrigin + cellSize / 2, y: topY))
+            cellCenters.append(CGPoint(x: gridOrigin + cellSize + gap + cellSize / 2, y: topY))
+            // 第二行（下方，居中）
+            // Second row (bottom, centered)
+            let bottomY = gridOrigin + cellSize / 2
+            cellCenters.append(CGPoint(x: resolution / 2, y: bottomY))
+        case 4:
+            // 四张图像：两行两列
+            // Four images: 2x2 grid
+            let gridSize = resolution * 0.80
+            cellSize = (gridSize - gap) / 2
+            let gridOrigin = (resolution - gridSize) / 2
+            let topY = gridOrigin + cellSize + gap + cellSize / 2
+            let bottomY = gridOrigin + cellSize / 2
+            let leftX = gridOrigin + cellSize / 2
+            let rightX = gridOrigin + cellSize + gap + cellSize / 2
+            cellCenters.append(CGPoint(x: leftX, y: topY))
+            cellCenters.append(CGPoint(x: rightX, y: topY))
+            cellCenters.append(CGPoint(x: leftX, y: bottomY))
+            cellCenters.append(CGPoint(x: rightX, y: bottomY))
+        default:
+            break
+        }
+        
+        for (index, image) in images.enumerated() {
+            guard index < cellCenters.count else { break }
+            let center = cellCenters[index]
+            let angle = tileRotations[index % tileRotations.count]
+            
+            context.saveGState()
+            
+            // 应用略微旋转，模拟照片自然摆放
+            // Apply slight rotation, simulating natural photo placement
+            context.translateBy(x: center.x, y: center.y)
+            context.rotate(by: angle * CGFloat.pi / 180)
+            context.translateBy(x: -center.x, y: -center.y)
+            
+            // 正方形绘制区域
+            // Square drawing area
+            let imageRect = NSRect(x: center.x - cellSize / 2, y: center.y - cellSize / 2, width: cellSize, height: cellSize)
+            
+            // 设置阴影
+            // Set shadow
+            context.setShadow(offset: shadowOffset, blur: shadowBlurRadius, color: shadowColor.cgColor)
+            
+            // 绘制不透明背景(针对透明png图像)，同时产生阴影
+            // Draw opaque background (for transparent PNG images), also produces shadow
+            let opaqueBackgroundPath = NSBezierPath(rect: imageRect)
+            hexToNSColor(hex: "#CECECE").setFill()
+            opaqueBackgroundPath.fill()
+            
+            // 取消阴影，避免图像绘制重复产生阴影
+            // Remove shadow to avoid duplicate shadow from image drawing
+            context.setShadow(offset: CGSize(width: 0, height: 0), blur: 0)
+            
+            // 裁切为正方形并绘制图像（居中裁切，cover模式）
+            // Clip to square and draw image (center crop, cover mode)
+            context.saveGState()
+            let clipPath = NSBezierPath(rect: imageRect)
+            clipPath.addClip()
+            
+            let scaleToFill = max(cellSize / image.size.width, cellSize / image.size.height)
+            let drawWidth = image.size.width * scaleToFill
+            let drawHeight = image.size.height * scaleToFill
+            let drawRect = NSRect(x: center.x - drawWidth / 2, y: center.y - drawHeight / 2, width: drawWidth, height: drawHeight)
+            image.draw(in: drawRect)
+            context.restoreGState()
+            
+            // 添加边框
+            // Add border
+            if isVideos[index] {
+                hexToNSColor(hex: "#3E3E3E").setStroke()
+            } else {
+                borderColor.setStroke()
+            }
+            let borderPath = NSBezierPath(roundedRect: imageRect, xRadius: cornerRadius, yRadius: cornerRadius)
+            borderPath.lineWidth = borderWidth
+            borderPath.stroke()
+            
+            context.restoreGState()
+        }
     }
 
     resultImage.unlockFocus()
@@ -499,7 +735,8 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         var urls = [URL]()
         let folderSearchDepth = VolumeManager.shared.isExternalVolume(url) ? globalVar.folderSearchDepth_External : globalVar.folderSearchDepth
         if folderSearchDepth > 0 {
-            urls = findImageURLs(in: url, maxDepth: folderSearchDepth, maxImages: 3)
+            let maxImages = globalVar.thumbnailOfFolderUseStacking ? 3 : 4
+            urls = findImageURLs(in: url, maxDepth: folderSearchDepth, maxImages: maxImages, preferDifferentDirs: !globalVar.thumbnailOfFolderUseStacking)
         }
         
         if urls.count>0 {
@@ -516,7 +753,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
                 isVideos.append(globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()))
             }
             if imgs.count>0 {
-                let finalImg=createCompositeImage(background: NSImage(named: NSImage.folderName)!, images: imgs, isVideos: isVideos, scale: 0.68, rotationAngles: [15.0, -15.0, 0], borderWidth: 3.0, borderColor: NSColor(white: 1.0, alpha: 1.0), shadowOffset: CGSize(width: 5.0, height: -5.0), shadowBlurRadius: 10.0, shadowColor: NSColor(white: 0.3, alpha: 1.0), cornerRadius: 4.0)
+                let finalImg=createCompositeImage(background: NSImage(named: NSImage.folderName)!, images: imgs, isVideos: isVideos)
                 return finalImg
             }
         }
