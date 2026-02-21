@@ -169,6 +169,7 @@ class PublicVar{
     var folderStepForwardStack = [String]()
     var folderStepForLocate = [(String,RightMouseGestureDirection)]()
     var filesForLocateAfterChange = [String]()
+    var isInFileOperation = false
     var isLeftMouseDown: Bool = false
     var isRightMouseDown: Bool = false
     var isInInitStage: Bool = true
@@ -2211,7 +2212,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             let isInProgress = (publicVar.isInStageOneProgress || publicVar.isInStageTwoProgress || publicVar.isInStageThreeProgress
                                 || !isReadInfoFinish || !isLoadThumbFinish)
             // log(publicVar.isInStageOneProgress,publicVar.isInStageTwoProgress,publicVar.isInStageThreeProgress,!isReadInfoFinish,!isLoadThumbFinish,level: .debug)
-            if VolumeManager.shared.isExternalVolume(path) && isInProgress && publicVar.fileChangedCount == 0 {
+            if publicVar.isInFileOperation {
+                // 文件操作（粘贴/移动）进行中，忽略文件系统事件，操作完成后会主动刷新
+                // File operation (paste/move) in progress, ignore FS events, will refresh after operation completes
+            }else if VolumeManager.shared.isExternalVolume(path) && isInProgress && publicVar.fileChangedCount == 0 {
                 // samba的smb读取时会改变atime，产生write和attrib事件
                 // Samba SMB reading will change atime, generating write and attrib events
                 // log("ExternalVol FileSystemEvent DoNot Refresh.",level: .debug)

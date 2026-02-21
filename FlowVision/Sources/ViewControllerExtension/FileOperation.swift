@@ -390,18 +390,21 @@ extension ViewController {
             }
         }
         
-        // 针对递归模式处理
-        // Handle recursive mode
+        // 在文件操作期间抑制文件系统监控触发的刷新，操作完成后主动刷新
+        // Suppress FS watcher refreshes during file operations, refresh explicitly after completion
         var currentFolderChangeCount = 0
+        publicVar.isInFileOperation = true
         defer {
-            if publicVar.isRecursiveMode {
-                if currentFolderChangeCount > 0 {
+            publicVar.isInFileOperation = false
+            if currentFolderChangeCount > 0 {
+                var ifRefresh = true
+                if publicVar.isRecursiveMode {
                     fileDB.lock()
-                    let ifRefresh = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD
+                    ifRefresh = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD
                     fileDB.unlock()
-                    if ifRefresh {
-                        scheduledRefresh()
-                    }
+                }
+                if ifRefresh {
+                    scheduledRefresh()
                 }
             }
         }
@@ -666,18 +669,21 @@ extension ViewController {
             }
         }
         
-        // 针对递归模式处理
-        // Handle recursive mode
+        // 在文件操作期间抑制文件系统监控触发的刷新，操作完成后主动刷新
+        // Suppress FS watcher refreshes during file operations, refresh explicitly after completion
         var currentFolderChangeCount = 0
+        publicVar.isInFileOperation = true
         defer {
-            if publicVar.isRecursiveMode {
-                if currentFolderChangeCount > 0 {
+            publicVar.isInFileOperation = false
+            if currentFolderChangeCount > 0 {
+                var ifRefresh = true
+                if publicVar.isRecursiveMode {
                     fileDB.lock()
-                    let ifRefresh = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD
+                    ifRefresh = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD
                     fileDB.unlock()
-                    if ifRefresh {
-                        scheduledRefresh()
-                    }
+                }
+                if ifRefresh {
+                    scheduledRefresh()
                 }
             }
         }
