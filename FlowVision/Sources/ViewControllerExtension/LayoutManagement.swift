@@ -236,5 +236,6 @@ extension ViewController {
         fileDB.unlock()
         outlineView.reloadData()
         treeReLocate(path: curFolder, doCollapse: false, expandLast: false)
+        outlineViewManager.adjustColumnWidth()
     }
 }

@@ -12,6 +12,8 @@ class CustomOutlineViewManager: NSObject {
     var ifActWhenSelected = true
     weak var outlineView: NSOutlineView?
     
+    private var adjustColumnWidthWorkItem: DispatchWorkItem?
+    
     init(fileDB: DatabaseModel, treeViewData: TreeViewModel, outlineView: NSOutlineView) {
         self.fileDB = fileDB
         self.treeViewData = treeViewData
@@ -142,9 +144,13 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
     }
     
     func adjustColumnWidth() {
-        guard let outlineView = outlineView else { return }
+        // 防抖：短时间内多次调用时，只执行最后一次
+        // Debounce: when called frequently in a short time, only execute the last one
+        adjustColumnWidthWorkItem?.cancel()
         
-        DispatchQueue.main.async {
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self = self, let outlineView = self.outlineView else { return }
+            
             // 指定你需要调整的列的索引
             // Specify the index of the column you need to adjust
             let columnIndex = 0
@@ -160,7 +166,7 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
                     // 计算这个单元格内容的宽度
                     // Calculate width of this cell content
                     let content = item.name
-                    let attributes = [NSAttributedString.Key.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]
+                    let attributes = [NSAttributedString.Key.font: NSFont.systemFont(ofSize: 13)]
                     let size = (content as NSString).size(withAttributes: attributes)
                     
                     // 获取当前行的层级，并计算缩进
@@ -177,7 +183,11 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
             }
             
             column.width = maxWidth
+            print(NSFont.systemFontSize)
         }
+        
+        adjustColumnWidthWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: workItem)
     }
     
     func outlineView(_ outlineView: NSOutlineView, validateDrop info: NSDraggingInfo, proposedItem item: Any?, proposedChildIndex index: Int) -> NSDragOperation {
