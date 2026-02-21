@@ -780,7 +780,9 @@ extension ViewController {
             // 检查按键是否是 "F" 键
             // Check if key is "F"
             if characters == "f" && noModifierKey && !isFnPressed {
-                if !publicVar.isInLargeView{
+                if publicVar.isInLargeView{
+                    largeImageView.actMirrorH()
+                }else{
                     toggleSidebar()
                     return nil
                 }

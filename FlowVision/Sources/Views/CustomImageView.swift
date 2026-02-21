@@ -192,5 +192,24 @@ class CustomThumbImageView: BorderedImageView {
 }
 
 class CustomLargeImageView: IntegerImageView {
+    var isMirroredH: Bool = false
     
+    override var image: NSImage? {
+        get { return super.image }
+        set {
+            if isMirroredH, let img = newValue {
+                super.image = img.flippedHorizontally()
+            } else {
+                super.image = newValue
+            }
+        }
+    }
+    
+    // 对当前显示的图像执行翻转（翻转的翻转=还原，无需保存原图）
+    // Flip the currently displayed image (flip of flip = restore, no need to save original)
+    func updateMirror() {
+        if let img = super.image {
+            super.image = img.flippedHorizontally()
+        }
+    }
 }

@@ -11,28 +11,90 @@ import SDWebImageWebPCoder
 
 extension NSImage {
     func rotated(by degrees: CGFloat) -> NSImage {
-        if degrees == 0 {return self}
-        let sinDegrees = abs(sin(degrees * CGFloat.pi / 180.0))
-        let cosDegrees = abs(cos(degrees * CGFloat.pi / 180.0))
-        let newSize = CGSize(width: size.height * sinDegrees + size.width * cosDegrees,
-                             height: size.width * sinDegrees + size.height * cosDegrees)
-
-        let imageBounds = NSRect(x: (newSize.width - size.width) / 2,
-                                 y: (newSize.height - size.height) / 2,
-                                 width: size.width, height: size.height)
-
-        let otherTransform = NSAffineTransform()
-        otherTransform.translateX(by: newSize.width / 2, yBy: newSize.height / 2)
-        otherTransform.rotate(byDegrees: degrees)
-        otherTransform.translateX(by: -newSize.width / 2, yBy: -newSize.height / 2)
-
-        let rotatedImage = NSImage(size: newSize)
-        rotatedImage.lockFocus()
-        otherTransform.concat()
-        draw(in: imageBounds, from: CGRect.zero, operation: NSCompositingOperation.copy, fraction: 1.0)
-        rotatedImage.unlockFocus()
-
-        return rotatedImage
+        if degrees == 0 { return self }
+        
+        // 使用CGImage像素级旋转，生成一次性位图，可被GPU缓存为纹理
+        // Use CGImage pixel-level rotation, generates a one-time bitmap cacheable as GPU texture
+        guard let cgImage = self.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+            return self
+        }
+        
+        let radians = degrees * CGFloat.pi / 180.0
+        let sinVal = abs(sin(radians))
+        let cosVal = abs(cos(radians))
+        
+        let origWidth = CGFloat(cgImage.width)
+        let origHeight = CGFloat(cgImage.height)
+        
+        // 旋转后的像素尺寸
+        // Pixel dimensions after rotation
+        let newWidth = Int(ceil(origHeight * sinVal + origWidth * cosVal))
+        let newHeight = Int(ceil(origWidth * sinVal + origHeight * cosVal))
+        
+        let colorSpace = cgImage.colorSpace ?? CGColorSpaceCreateDeviceRGB()
+        
+        guard let context = CGContext(
+            data: nil, width: newWidth, height: newHeight,
+            bitsPerComponent: cgImage.bitsPerComponent,
+            bytesPerRow: 0, space: colorSpace,
+            bitmapInfo: cgImage.bitmapInfo.rawValue
+        ) ?? CGContext(
+            data: nil, width: newWidth, height: newHeight,
+            bitsPerComponent: 8, bytesPerRow: 0,
+            space: colorSpace,
+            bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+        ) else {
+            return self
+        }
+        
+        // 以新画布中心为原点旋转，再偏移回原图中心
+        // Rotate around center of new canvas, then offset back to original image center
+        context.translateBy(x: CGFloat(newWidth) / 2, y: CGFloat(newHeight) / 2)
+        context.rotate(by: radians)
+        context.translateBy(x: -origWidth / 2, y: -origHeight / 2)
+        context.draw(cgImage, in: CGRect(x: 0, y: 0, width: origWidth, height: origHeight))
+        
+        guard let rotatedCGImage = context.makeImage() else { return self }
+        
+        // 旋转后的点尺寸
+        // Point dimensions after rotation
+        let newPointSize = CGSize(
+            width: size.height * sinVal + size.width * cosVal,
+            height: size.width * sinVal + size.height * cosVal
+        )
+        
+        return NSImage(cgImage: rotatedCGImage, size: newPointSize)
+    }
+    func flippedHorizontally() -> NSImage {
+        // 使用CGImage像素级翻转，生成一次性位图，可被GPU缓存为纹理
+        // Use CGImage pixel-level flip, generates a one-time bitmap cacheable as GPU texture
+        guard let cgImage = self.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+            return self
+        }
+        let width = cgImage.width
+        let height = cgImage.height
+        let colorSpace = cgImage.colorSpace ?? CGColorSpaceCreateDeviceRGB()
+        
+        guard let context = CGContext(
+            data: nil, width: width, height: height,
+            bitsPerComponent: cgImage.bitsPerComponent,
+            bytesPerRow: 0, space: colorSpace,
+            bitmapInfo: cgImage.bitmapInfo.rawValue
+        ) ?? CGContext(
+            data: nil, width: width, height: height,
+            bitsPerComponent: 8, bytesPerRow: 0,
+            space: colorSpace,
+            bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+        ) else {
+            return self
+        }
+        
+        context.translateBy(x: CGFloat(width), y: 0)
+        context.scaleBy(x: -1, y: 1)
+        context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+        
+        guard let flippedCGImage = context.makeImage() else { return self }
+        return NSImage(cgImage: flippedCGImage, size: self.size)
     }
     func grayScale() -> NSImage? {
         guard let tiffData = self.tiffRepresentation,

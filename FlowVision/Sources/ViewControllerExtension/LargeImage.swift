@@ -68,6 +68,10 @@ extension ViewController {
         // Restore rotation
         largeImageView.file.rotate=0
         
+        // 复原镜像
+        // Restore mirror
+        largeImageView.imageView.isMirroredH=false
+        
         // 取消OCR
         // Cancel OCR
         largeImageView.unSetOcr()
@@ -339,6 +343,10 @@ extension ViewController {
             // 复原之前图片的旋转
             // Restore the rotation of the previous image
             largeImageView.file.rotate=0
+            
+            // 复原镜像
+            // Restore mirror
+            largeImageView.imageView.isMirroredH=false
             
             currLargeImagePos=nextLargeImagePos
 

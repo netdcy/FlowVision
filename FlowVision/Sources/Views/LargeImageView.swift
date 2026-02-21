@@ -1568,6 +1568,14 @@ class LargeImageView: NSView {
             
             let actionItemRotateL = menu.addItem(withTitle: NSLocalizedString("Rotate Counterclockwise", comment: "逆时针旋转"), action: #selector(actRotateL), keyEquivalent: "q")
             actionItemRotateL.keyEquivalentModifierMask = []
+
+            if file.type == .image {
+                // 镜像图像
+                // Mirror image
+                let actionItemMirrorH = menu.addItem(withTitle: NSLocalizedString("Mirror Flip", comment: "镜像翻转"), action: #selector(actMirrorH), keyEquivalent: "f")
+                actionItemMirrorH.keyEquivalentModifierMask = []
+                actionItemMirrorH.state = imageView.isMirroredH ? .on : .off
+            }
             
             menu.addItem(NSMenuItem.separator())
             
@@ -1875,6 +1883,26 @@ class LargeImageView: NSView {
 
     
     @objc func actRotateR() {
+        // 镜像时视觉旋转方向相反
+        // Visual rotation direction is reversed when mirrored
+        if imageView.isMirroredH {
+            doRotateL()
+        } else {
+            doRotateR()
+        }
+    }
+    
+    @objc func actRotateL() {
+        // 镜像时视觉旋转方向相反
+        // Visual rotation direction is reversed when mirrored
+        if imageView.isMirroredH {
+            doRotateR()
+        } else {
+            doRotateL()
+        }
+    }
+    
+    func doRotateR() {
         file.rotate = (file.rotate+1)%4
         getViewController(self)?.publicVar.rotationLock = file.rotate
         if file.type == .video {
@@ -1894,7 +1922,7 @@ class LargeImageView: NSView {
         }
     }
     
-    @objc func actRotateL() {
+    func doRotateL() {
         file.rotate = (file.rotate+3)%4
         getViewController(self)?.publicVar.rotationLock = file.rotate
         if file.type == .video {
@@ -1912,6 +1940,12 @@ class LargeImageView: NSView {
             // Sync canvas position after rotation
             syncEditingCanvasFrame()
         }
+    }
+    
+    @objc func actMirrorH() {
+        if file.type == .video {return}
+        imageView.isMirroredH.toggle()
+        imageView.updateMirror()
     }
     
     @objc func actClose() {
