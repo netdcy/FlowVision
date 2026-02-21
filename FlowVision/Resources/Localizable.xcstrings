@@ -96,572 +96,572 @@
         }
       }
     },
-    "A-B Play" : {
-      "comment" : "（视频）A-B播放",
+    "A-B Loop" : {
+      "comment" : "（视频）A-B循环",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تشغيل A-B"
+            "value" : "A-B تكرار"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B Wiederholung"
+            "value" : "A-B-Schleife"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B Play"
+            "value" : "A-B Loop"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reproducción A-B"
+            "value" : "Bucle A-B"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lecture A-B"
+            "value" : "Boucle A-B"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B Riproduzione"
+            "value" : "Loop A-B"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B再生"
+            "value" : "A-Bループ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B 플레이"
+            "value" : "A-B 루프"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B Afspelen"
+            "value" : "A-B Lus"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reprodução A-B"
+            "value" : "Loop A-B"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B Reproduzir"
+            "value" : "Loop A-B"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B Воспроизведение"
+            "value" : "Повтор А-Б"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B Spela"
+            "value" : "A-B Loop"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B播放"
+            "value" : "A-B循环"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B播放"
+            "value" : "A-B 循环"
           }
         }
       }
     },
-    "A-B Play Active" : {
-      "comment" : "（视频）A-B播放启用",
+    "A-B Loop Active" : {
+      "comment" : "（视频）A-B循环启用",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تشغيل A-B"
+            "value" : "دورة A-B نشطة"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B-Wiedergabe aktivieren"
+            "value" : "A-B Schleife aktiv"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B Play Active"
+            "value" : "A-B Loop Active"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Habilitar reproducción de A-B"
+            "value" : "Bucle A-B activo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Activation de la lecture A-B"
+            "value" : "Boucle A-B activée"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abilita riproduzione A-B"
+            "value" : "Ciclo A-B attivo"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B再生有効"
+            "value" : "A-Bループ有効"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B 재생 활성화"
+            "value" : "A-B 루프 활성화"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B weergave ingeschakeld"
+            "value" : "A-B Loop Actief"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B reprodução ativada"
+            "value" : "Loop A-B Ativo"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B replication ativada"
+            "value" : "Loop A-B Ativo"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Включение A-B воспроизведения"
+            "value" : "Активен цикл A-B"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B-spelare aktiverad"
+            "value" : "A-B Loop aktiv"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B播放启用"
+            "value" : "A-B循环启用"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B播映啟用"
+            "value" : "A-B循環啟用"
           }
         }
       }
     },
-    "A-B Play: A" : {
-      "comment" : "（视频）A-B播放：A",
+    "A-B Loop Cancel" : {
+      "comment" : "（视频）A-B循环取消",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تشغيل A-B: A"
+            "value" : "إلغاء A-B لوب"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B-Wiedergabe: A"
+            "value" : "A-B Schleife abbrechen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B Play: A"
+            "value" : "A-B Loop Cancel"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reproducción A-B: A"
+            "value" : "Cancelar bucle A-B"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lecture A-B : A"
+            "value" : "Annuler boucle A-B"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Riproduzione A-B: A"
+            "value" : "Annulla Ciclo A-B"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B再生：A"
+            "value" : "A-Bループキャンセル"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B 재생: A"
+            "value" : "A-B 루프 취소"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B afspelen: A"
+            "value" : "A-B-lus annuleren"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reprodução A-B: A"
+            "value" : "Cancelar Loop A-B"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reprodução A-B: A"
+            "value" : "Cancelar Loop A-B"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B воспроизведение: A"
+            "value" : "Отменить A-B петлю"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B-spelning: A"
+            "value" : "A-B Loop Avbryt"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B播放：A"
+            "value" : "A-B循环取消"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B 播放：A"
+            "value" : "A-B循環取消"
           }
         }
       }
     },
-    "A-B Play: A Greater than B" : {
-      "comment" : "（视频）A-B播放：A点大于B点",
+    "A-B Loop: A" : {
+      "comment" : "（视频）A-B循环：A",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تشغيل A-B: النقطة A أكبر من النقطة B"
+            "value" : "حلقة A-B: A"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B-Wiedergabe: Punkt A ist größer als Punkt B"
+            "value" : "A-B-Schleife: A"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B Play: A Greater than B"
+            "value" : "A-B Loop: A"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reproducción A-B: El punto A es mayor que el punto B"
+            "value" : "Bucle A-B: A"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lecture A-B : le point A est supérieur au point B"
+            "value" : "Boucle A-B : A"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Riproduzione A-B: il punto A è maggiore del punto B"
+            "value" : "Loop A-B: A"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B再生：A点がB点より大きい"
+            "value" : "A-B ループ: A"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B 재생: A점이 B점보다 큽니다"
+            "value" : "A-B 루프: A"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B afspelen: punt A is groter dan punt B"
+            "value" : "A-B lus: A"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B reprodução: Ponto A maior que ponto B"
+            "value" : "Loop A-B: A"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reprodução A-B: Ponto A maior que ponto B"
+            "value" : "Loop A-B: A"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B воспроизведение: Точка A больше точки B"
+            "value" : "A-B зациклить: A"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B-uppspelning: Punkt A är större än punkt B"
+            "value" : "A-B Loopa: A"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B播放：A点大于B点"
+            "value" : "A-B循环：A"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B播放：A点大於B点"
+            "value" : "A-B循環：A"
           }
         }
       }
     },
-    "A-B Play: B" : {
-      "comment" : "（视频）A-B播放：B",
+    "A-B Loop: A Greater than B" : {
+      "comment" : "（视频）A-B循环：A点大于B点",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تشغيل A-B: ب"
+            "value" : "حلقه A-B: A أكبر من B"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B-Wiedergabe: B"
+            "value" : "A-B-Schleife: A größer als B"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B Play: B"
+            "value" : "A-B Loop: A Greater than B"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B reproducción: B"
+            "value" : "Bucle A-B: A mayor que B"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lecture A-B : B"
+            "value" : "Boucle A-B : A supérieur à B"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Riproduzione A-B: B"
+            "value" : "Loop A-B: A maggiore di B"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B再生：B"
+            "value" : "A-Bループ：AがBより大きい"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B 재생: B"
+            "value" : "A-B 반복: A가 B보다 큼"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B afspelen: B"
+            "value" : "A-B lus: A groter dan B"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reprodução A-B: B"
+            "value" : "Loop A-B: A maior que B"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reprodução A-B: B"
+            "value" : "Loop A-B: A Maior que B"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B воспроизведение: B"
+            "value" : "A-B петля: A больше B"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B-uppspelning: B"
+            "value" : "A-B Loop: A större än B"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B播放：B"
+            "value" : "A-B循环：A点大于B点"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A-B播放：B"
+            "value" : "A-B 循環: A 大於 B"
           }
         }
       }
     },
-    "AB Play Cancel" : {
-      "comment" : "（视频）AB播放取消",
+    "A-B Loop: B" : {
+      "comment" : "（视频）A-B循环：B",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "إلغاء تشغيل AB"
+            "value" : "تكرار A-B: B"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AB-Wiedergabe abbrechen"
+            "value" : "A-B Schleife: B"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AB Play Cancel"
+            "value" : "A-B Loop: B"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cancelación de reproducción AB"
+            "value" : "Bucle A-B: B"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Annuler la lecture AB"
+            "value" : "Boucle A-B : B"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Annulla riproduzione AB"
+            "value" : "Loop A-B: B"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AB再生キャンセル"
+            "value" : "A-Bループ：B"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AB 재생 취소"
+            "value" : "A-B 루프: B"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AB-afspelen geannuleerd"
+            "value" : "A-B Lus: B"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reprodução AB Cancelada"
+            "value" : "Loop A-B: B"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cancelamento de reprodução AB"
+            "value" : "Loop A-B: B"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AB воспроизведение отменено"
+            "value" : "A-B Цикл: B"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AB-spelning avbruten"
+            "value" : "A-B slinga: B"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AB播放取消"
+            "value" : "A-B循环：B"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AB播放取消"
+            "value" : "A-B 循環：B"
           }
         }
       }
@@ -13633,101 +13633,6 @@
         }
       }
     },
-    "Open with External Player" : {
-      "comment" : "使用外部播放器打开",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "فتح بمشغل خارجي"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mit externem Player öffnen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open with External Player"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir con reproductor externo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvrir avec un lecteur externe"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apri con lettore esterno"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "外部プレーヤーで開く"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "외부 플레이어로 열기"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Openen met externe speler"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir com player externo"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir com leitor externo"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Открыть во внешнем проигрывателе"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Öppna med extern spelare"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用外部播放器打开"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用外部播放器開啟"
-          }
-        }
-      }
-    },
     "Open in Finder" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -14104,6 +14009,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在終端中開啟"
+          }
+        }
+      }
+    },
+    "Open with External Player" : {
+      "comment" : "使用外部播放器打开",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فتح بمشغل خارجي"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit externem Player öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open with External Player"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir con reproductor externo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir avec un lecteur externe"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri con lettore esterno"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外部プレーヤーで開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "외부 플레이어로 열기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Openen met externe speler"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir com player externo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir com leitor externo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть во внешнем проигрывателе"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öppna med extern spelare"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用外部播放器打开"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用外部播放器開啟"
           }
         }
       }
@@ -17405,6 +17405,291 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "搜尋..."
+          }
+        }
+      }
+    },
+    "Sequential Playback" : {
+      "comment" : "（视频）顺序播放",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تشغيل تتابعي"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sequentielle Wiedergabe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sequential Playback"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducción secuencial"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture Séquentielle"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riproduzione Sequenziale"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "連続再生"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "순차 재생"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achtereenvolgend afspelen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reprodução Sequencial"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reprodução Sequencial"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последовательное воспроизведение"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sekventiell uppspelning"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顺序播放"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "順序播放"
+          }
+        }
+      }
+    },
+    "Sequential Playback: Disabled" : {
+      "comment" : "（视频）顺序播放禁用",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التشغيل المتسلسل: معطل"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sequenzielle Wiedergabe: Deaktiviert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sequential Playback: Disabled"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducción secuencial: desactivada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture séquentielle : Désactivée"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riproduzione sequenziale: disabilitata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "連続再生: 無効"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "순차 재생: 사용 안 함"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sequentiële weergave: Uitgeschakeld"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reprodução Sequencial: Desativada"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reprodução Sequencial: Desativada"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последовательное воспроизведение: отключено"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sekventiell uppspelning: Inaktiverad"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顺序播放禁用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "序列播放：已禁用"
+          }
+        }
+      }
+    },
+    "Sequential Playback: Enabled" : {
+      "comment" : "（视频）顺序播放启用",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التشغيل المتسلسل: مُفعّل"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sequenzielle Wiedergabe: Aktiviert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sequential Playback: Enabled"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducción Secuencial: Habilitada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture séquentielle : Activée"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riproduzione sequenziale: Abilitata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "シーケンシャル再生: 有効"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "순차 재생: 활성화됨"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sequentiële weergave: ingeschakeld"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reprodução Sequencial: Ativada"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reprodução Sequencial: Ativada"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последовательное воспроизведение: включено"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sekventiell uppspelning: Aktiverad"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顺序播放启用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "順序播放：已啟用"
           }
         }
       }

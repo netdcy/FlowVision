@@ -80,6 +80,7 @@ class GlobalVar{
     var usePinyinSearch = false
     var usePinyinInitialSearch = false
     var videoPlayRememberPosition = false
+    var videoPlaySequentialPlay = false
     var useInternalPlayer = true {
         didSet {
             useInternalPlayerCheckbox?.state = useInternalPlayer ? .on : .off

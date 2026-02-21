@@ -29,6 +29,7 @@ class LargeImageView: NSView {
     var isVideoMetadataUpdated: Bool = false
     var abPlayPositionA: CMTime?
     var abPlayPositionB: CMTime?
+    var videoEndObserver: NSObjectProtocol?
     var lastActionTriggerdReload: String?
     var isKeyWindowWhenMouseDown: Bool = true
     
@@ -420,13 +421,13 @@ class LargeImageView: NSView {
             abPlayPositionA = queuePlayer.currentTime()
             if abPlayPositionA != nil && abPlayPositionB != nil {
                 if CMTimeGetSeconds(abPlayPositionA!) > CMTimeGetSeconds(abPlayPositionB!) {
-                    showInfo(NSLocalizedString("A-B Play: A Greater than B", comment: "（视频）A-B播放：A点大于B点"))
+                    showInfo(NSLocalizedString("A-B Loop: A Greater than B", comment: "（视频）A-B循环：A点大于B点"))
                 }else{
                     lastActionTriggerdReload = "ABPlay"
                     playVideo(reloadForAB: true)
                 }
             } else {
-                showInfo(NSLocalizedString("A-B Play: A", comment: "（视频）A-B播放：A"))
+                showInfo(NSLocalizedString("A-B Loop: A", comment: "（视频）A-B循环：A"))
             }
         }
     }
@@ -436,13 +437,13 @@ class LargeImageView: NSView {
             abPlayPositionB = queuePlayer.currentTime()
             if abPlayPositionA != nil && abPlayPositionB != nil {
                 if CMTimeGetSeconds(abPlayPositionA!) > CMTimeGetSeconds(abPlayPositionB!) {
-                    showInfo(NSLocalizedString("A-B Play: A Greater than B", comment: "（视频）A-B播放：A点大于B点"))
+                    showInfo(NSLocalizedString("A-B Loop: A Greater than B", comment: "（视频）A-B循环：A点大于B点"))
                 }else{
                     lastActionTriggerdReload = "ABPlay"
                     playVideo(reloadForAB: true)
                 }
             } else {
-                showInfo(NSLocalizedString("A-B Play: B", comment: "（视频）A-B播放：B"))
+                showInfo(NSLocalizedString("A-B Loop: B", comment: "（视频）A-B循环：B"))
             }
         }
     }
@@ -481,6 +482,10 @@ class LargeImageView: NSView {
         videoOrderId += 1
         videoView.isHidden = true
         hideUnsupportedVideoOverlay()
+        if let observer = videoEndObserver {
+            NotificationCenter.default.removeObserver(observer)
+            videoEndObserver = nil
+        }
         playerLooper?.disableLooping()
         playerLooper = nil
         queuePlayer?.removeAllItems()
@@ -525,7 +530,7 @@ class LargeImageView: NSView {
             }
             
             if reload && abPlayPositionA != nil && abPlayPositionB != nil {
-                showInfo(NSLocalizedString("AB Play Cancel", comment: "（视频）AB播放取消"))
+                showInfo(NSLocalizedString("A-B Loop Cancel", comment: "（视频）A-B循环取消"))
             }
 
             if reload || reloadForAB {
@@ -533,6 +538,10 @@ class LargeImageView: NSView {
                 restorePlayURL = currentPlayingURL
             }
             
+            if let observer = videoEndObserver {
+                NotificationCenter.default.removeObserver(observer)
+                videoEndObserver = nil
+            }
             playerLooper?.disableLooping()
             playerLooper = nil
             queuePlayer?.removeAllItems()
@@ -614,7 +623,22 @@ class LargeImageView: NSView {
                     }
                     
                     queuePlayer.insert(playerItem, after: nil)
-                    playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem, timeRange: finalTimeRange)
+                    
+                    if globalVar.videoPlaySequentialPlay && abPlayPositionA == nil && abPlayPositionB == nil {
+                        // 列表播放模式：播放完当前视频后自动切换到下一个
+                        // List play mode: automatically switch to next video after current one finishes
+                        videoEndObserver = NotificationCenter.default.addObserver(
+                            forName: .AVPlayerItemDidPlayToEndTime,
+                            object: playerItem,
+                            queue: .main
+                        ) { [weak self] _ in
+                            guard let self = self else { return }
+                            getViewController(self)?.nextLargeImage(isShowReachEndPrompt: true, firstShowThumb: true)
+                        }
+                    } else {
+                        playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem, timeRange: finalTimeRange)
+                    }
+                    
                     queuePlayer.play()
                     currentPlayingURL = url
                     
@@ -674,7 +698,7 @@ class LargeImageView: NSView {
                             snapshotQueue.removeFirst()
                         }
                         if abPlayPositionA != nil && abPlayPositionB != nil && lastActionTriggerdReload == "ABPlay" {
-                            showInfo(NSLocalizedString("A-B Play Active", comment: "（视频）A-B播放启用"))
+                            showInfo(NSLocalizedString("A-B Loop Active", comment: "（视频）A-B循环启用"))
                             lastActionTriggerdReload = nil
                         } else if lastActionTriggerdReload == "Rotate" {
                             showInfo(String(format: NSLocalizedString("Rotate %d°", comment: "（视频）旋转%d°"), file.rotate*90))
@@ -1515,7 +1539,7 @@ class LargeImageView: NSView {
                 actionItemRememberPosition.keyEquivalentModifierMask = []
                 actionItemRememberPosition.state = globalVar.videoPlayRememberPosition ? .on : .off
 
-                let actionItemABPlay = menu.addItem(withTitle: NSLocalizedString("A-B Play", comment: "（视频）A-B播放"), action: #selector(actABPlay), keyEquivalent: "l")
+                let actionItemABPlay = menu.addItem(withTitle: NSLocalizedString("A-B Loop", comment: "（视频）A-B循环"), action: #selector(actABPlay), keyEquivalent: "l")
                 actionItemABPlay.keyEquivalentModifierMask = []
                 if let positionA = abPlayPositionA?.seconds,
                        let positionB = abPlayPositionB?.seconds,
@@ -1524,6 +1548,9 @@ class LargeImageView: NSView {
                 } else {
                     actionItemABPlay.state = .off
                 }
+                
+                let actionItemSequentialPlay = menu.addItem(withTitle: NSLocalizedString("Sequential Playback", comment: "（视频）顺序播放"), action: #selector(actSequentialPlay), keyEquivalent: "")
+                actionItemSequentialPlay.state = globalVar.videoPlaySequentialPlay ? .on : .off
             }
 
             menu.addItem(NSMenuItem.separator())
@@ -1752,6 +1779,19 @@ class LargeImageView: NSView {
         }
     }
     
+    @objc func actSequentialPlay() {
+        globalVar.videoPlaySequentialPlay.toggle()
+        UserDefaults.standard.set(globalVar.videoPlaySequentialPlay, forKey: "videoPlaySequentialPlay")
+        if globalVar.videoPlaySequentialPlay {
+            showInfo(NSLocalizedString("Sequential Playback: Enabled", comment: "（视频）顺序播放启用"))
+        } else {
+            showInfo(NSLocalizedString("Sequential Playback: Disabled", comment: "（视频）顺序播放禁用"))
+        }
+        // 重新加载当前视频以应用新的播放模式
+        // Reload current video to apply new playback mode
+        playVideo(reload: true)
+    }
+    
     @objc func actQRCode() {
         if file.type == .video {return}
         if let image=file.image,
@@ -1881,6 +1921,10 @@ class LargeImageView: NSView {
     func prepareForDeinit() {
         if globalVar.videoPlayRememberPosition {
             saveCurrentPlayPosition()
+        }
+        if let observer = videoEndObserver {
+            NotificationCenter.default.removeObserver(observer)
+            videoEndObserver = nil
         }
 
         if let gesture = magnificationGesture {
