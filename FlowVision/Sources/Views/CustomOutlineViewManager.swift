@@ -200,6 +200,21 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
             if viewController.handleFilePromiseDrop(targetURL: targetUrl, pasteboard: pasteboard) {
                 return true
             }
+            
+            // 从outlineView自身拖拽时，显示确认对话框防止误操作
+            if info.draggingSource is NSOutlineView,
+               let data = pasteboard.data(forType: .fileURL),
+               let sourceUrl = URL(dataRepresentation: data, relativeTo: nil) {
+                let sourceName = sourceUrl.lastPathComponent
+                let confirmed = showConfirmation(
+                    title: NSLocalizedString("Move Items", comment: "移动项目"),
+                    message: String(format: NSLocalizedString("Are you sure you want to move \"%@\" to \"%@\"?", comment: "确定要移动 \"%@\" 到 \"%@\"?"), sourceName, targetUrl.lastPathComponent)
+                )
+                if !confirmed {
+                    return false
+                }
+            }
+            
             viewController.handleMove(targetURL: targetUrl, pasteboard: pasteboard)
             return true
         }

@@ -191,6 +191,21 @@ func isOptionKeyPressed() -> Bool {
     return false
 }
 
+func showConfirmation(title: String, message: String, confirmButtonText: String? = nil, cancelButtonText: String? = nil) -> Bool {
+    let alert = NSAlert()
+    alert.messageText = title
+    alert.informativeText = message
+    alert.alertStyle = .warning
+    alert.addButton(withTitle: confirmButtonText ?? NSLocalizedString("OK", comment: "确定"))
+    alert.addButton(withTitle: cancelButtonText ?? NSLocalizedString("Cancel", comment: "取消"))
+    alert.icon = NSImage(named: NSImage.cautionName)
+    let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
+    getMainViewController()!.publicVar.isKeyEventEnabled = false
+    let response = alert.runModal()
+    getMainViewController()!.publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
+    return response == .alertFirstButtonReturn
+}
+
 func showAlert(message: String) {
     let alert = NSAlert()
     alert.messageText = message
