@@ -574,6 +574,10 @@ extension ViewController {
 
     func handleMove(targetURL: URL? = nil, pasteboard: NSPasteboard = NSPasteboard.general) {
         
+        // 重置剪切模式，防止直接调用handleMove后isCutMode残留为true
+        // Reset cut mode to prevent isCutMode remaining true after direct handleMove calls
+        globalVar.isCutMode = false
+        
         // 按住Option则为复制
         // Hold Option to copy
         if isOptionKeyPressed() && !isCommandKeyPressed() {
@@ -676,6 +680,11 @@ extension ViewController {
             if !successfulDestURLs.isEmpty {
                 triggerFinderSound()
                 publicVar.filesForLocateAfterChange = successfulDestURLs
+                // 移动完成后清空通用剪贴板，防止再次粘贴时操作已不存在的源文件
+                // Clear general pasteboard after move to prevent pasting non-existent source files
+                if pasteboard === NSPasteboard.general {
+                    pasteboard.clearContents()
+                }
                 var ifRefresh = true
                 if publicVar.isRecursiveMode {
                     fileDB.lock()
