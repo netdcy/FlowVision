@@ -13,12 +13,12 @@ class CustomImageView: NSImageView {
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        registerForDraggedTypes([NSPasteboard.PasteboardType.fileURL])
+        registerForDraggedTypes([.fileURL] + NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) })
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        registerForDraggedTypes([NSPasteboard.PasteboardType.fileURL])
+        registerForDraggedTypes([.fileURL] + NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) })
     }
     
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
@@ -46,22 +46,17 @@ class CustomImageView: NSImageView {
                 }
             }else if isFolder{
                 getViewController(self)?.handleMove(targetURL: url, pasteboard: sender.draggingPasteboard)
-                if sender.draggingSource is CustomOutlineView {
-                    viewController.refreshTreeView()
-                }
-                if !(sender.draggingSource is CustomCollectionView) {
-                    viewController.refreshAll(needLoadThumbPriority: true)
-                }
                 return true
             }else{
                 if sender.draggingSource is CustomCollectionView {
                     return false
                 }
                 if let curFolderUrl = URL(string: viewController.fileDB.curFolder){
-                    viewController.handleMove(targetURL: curFolderUrl, pasteboard: sender.draggingPasteboard)
-                    if sender.draggingSource is CustomOutlineView {
-                        viewController.refreshTreeView()
+                    let pasteboard = sender.draggingPasteboard
+                    if viewController.handleFilePromiseDrop(targetURL: curFolderUrl, pasteboard: pasteboard) {
+                        return true
                     }
+                    viewController.handleMove(targetURL: curFolderUrl, pasteboard: pasteboard)
                     return true
                 }
             }

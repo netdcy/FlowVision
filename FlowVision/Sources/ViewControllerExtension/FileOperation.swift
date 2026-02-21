@@ -10,6 +10,53 @@ import DiskArbitration
 
 extension ViewController {
     
+    @discardableResult
+    func handleFilePromiseDrop(targetURL: URL, pasteboard: NSPasteboard) -> Bool {
+        guard let receivers = pasteboard.readObjects(forClasses: [NSFilePromiseReceiver.self], options: nil) as? [NSFilePromiseReceiver],
+              !receivers.isEmpty else {
+            return false
+        }
+        
+        let fileManager = FileManager.default
+        let tempRoot = fileManager.temporaryDirectory.appendingPathComponent("FlowVisionPromisedFiles-\(UUID().uuidString)", isDirectory: true)
+        do {
+            try fileManager.createDirectory(at: tempRoot, withIntermediateDirectories: true)
+        } catch {
+            log("Failed to create temp folder for promised files: \(error)")
+            return false
+        }
+        
+        var pendingCount = receivers.count
+        var receivedURLs: [URL] = []
+        
+        for receiver in receivers {
+            receiver.receivePromisedFiles(atDestination: tempRoot, options: [:], operationQueue: .main) { [weak self] fileURL, error in
+                if let error = error {
+                    log("Failed to receive promised file: \(error)")
+                } else {
+                    receivedURLs.append(fileURL)
+                }
+                
+                pendingCount -= 1
+                if pendingCount == 0 {
+                    defer { try? fileManager.removeItem(at: tempRoot) }
+                    
+                    guard let self = self, !receivedURLs.isEmpty else {
+                        return
+                    }
+                    
+                    let tempPasteboard = NSPasteboard(name: NSPasteboard.Name(UUID().uuidString))
+                    tempPasteboard.clearContents()
+                    tempPasteboard.writeObjects(receivedURLs as [NSURL])
+                    self.handlePaste(targetURL: targetURL, pasteboard: tempPasteboard)
+                    tempPasteboard.releaseGlobally()
+                }
+            }
+        }
+        
+        return true
+    }
+    
     func getUniqueDestinationURL(for url: URL, isInPlace: Bool = false) -> URL {
         var newURL = url
         var counter = 1

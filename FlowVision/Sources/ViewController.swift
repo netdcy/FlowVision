@@ -481,7 +481,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         outlineViewManager=CustomOutlineViewManager(fileDB: fileDB, treeViewData: treeViewData, outlineView: outlineView)
         outlineView.delegate = outlineViewManager
         outlineView.dataSource = outlineViewManager
-        outlineView.registerForDraggedTypes([.fileURL])
+        outlineView.registerForDraggedTypes([.fileURL] + NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) })
         // 本地拖动操作
         // Local drag operation
         outlineView.setDraggingSourceOperationMask([.every], forLocal: true)

@@ -10,7 +10,7 @@ class CustomEffectView: NSVisualEffectView {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        registerForDraggedTypes([.fileURL])
+        registerForDraggedTypes([.fileURL] + NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) })
     }
     
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
@@ -35,10 +35,11 @@ class CustomEffectView: NSVisualEffectView {
                     return false
                 }
                 if let curFolderUrl = URL(string: viewController.fileDB.curFolder){
-                    viewController.handleMove(targetURL: curFolderUrl, pasteboard: sender.draggingPasteboard)
-                    if sender.draggingSource is CustomOutlineView {
-                        viewController.refreshTreeView()
+                    let pasteboard = sender.draggingPasteboard
+                    if viewController.handleFilePromiseDrop(targetURL: curFolderUrl, pasteboard: pasteboard) {
+                        return true
                     }
+                    viewController.handleMove(targetURL: curFolderUrl, pasteboard: pasteboard)
                     return true
                 }
             }
