@@ -268,6 +268,9 @@ extension ViewController {
         // 将文件URL添加到剪贴板
         // Add file URLs to pasteboard
         pasteboard.writeObjects(publicVar.selectedUrls() as [NSPasteboardWriting])
+        // 复制操作重置剪切模式
+        // Copy operation resets cut mode
+        globalVar.isCutMode = false
     }
     
     func handleCopyToDownload() {
@@ -286,6 +289,14 @@ extension ViewController {
     }
     
     func handlePaste(targetURL: URL? = nil, pasteboard: NSPasteboard = NSPasteboard.general) {
+        // 如果是剪切模式，执行移动操作而非复制
+        // If in cut mode, perform move operation instead of copy
+        if globalVar.isCutMode {
+            globalVar.isCutMode = false
+            handleMove(targetURL: targetURL, pasteboard: pasteboard)
+            return
+        }
+        
         guard let items = pasteboard.pasteboardItems else { return }
         
         fileDB.lock()

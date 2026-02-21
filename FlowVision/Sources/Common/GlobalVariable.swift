@@ -39,6 +39,10 @@ class GlobalVar{
     var startSpeedUpImageSizeCache: NSSize? = nil
     var useCreateWindowShowDelay = false
     
+    // 剪切模式标志，剪切时置为true，粘贴时检查此标志决定执行移动还是复制
+    // Cut mode flag, set to true on cut, checked on paste to decide move or copy
+    var isCutMode = false
+    
     // 实时状态变量
     // Real-time state variables
     var isInMiddleMouseDrag = false

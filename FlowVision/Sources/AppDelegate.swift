@@ -660,9 +660,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
     
     func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
-        // 如果焦点在标准文本控件上，启用复制菜单
-        // If focus is on standard text controls, enable copy menu
-        if menuItem.action == #selector(editCopy(_:)) {
+        // 如果焦点在标准文本控件上，启用复制/剪切菜单
+        // If focus is on standard text controls, enable copy/cut menu
+        if menuItem.action == #selector(editCopy(_:)) || menuItem.action == #selector(editCut(_:)) {
             if let firstResponder = NSApp.keyWindow?.firstResponder,
                firstResponder is NSTextView || firstResponder is NSTextField {
                 return true
@@ -714,9 +714,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 return false
             }
         }
-        // 复制、删除
-        // Copy, delete
-        if menuItem.action == #selector(editCopy(_:)) || menuItem.action == #selector(editDelete(_:)) {
+        // 复制、剪切、删除
+        // Copy, cut, delete
+        if menuItem.action == #selector(editCopy(_:)) || menuItem.action == #selector(editCut(_:)) || menuItem.action == #selector(editDelete(_:)) {
             if mainViewController.publicVar.isKeyEventEnabled == false {
                 return false
             }
@@ -867,6 +867,40 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         getMainViewController()?.handleMove()
     }
     
+    @IBAction func editCut(_ sender: NSMenuItem){
+        // 如果焦点在标准文本控件上，使用系统默认的剪切行为
+        // If focus is on standard text controls, use system default cut behavior
+        if let firstResponder = NSApp.keyWindow?.firstResponder {
+            if firstResponder is NSTextView || firstResponder is NSTextField {
+                firstResponder.tryToPerform(#selector(NSText.cut(_:)), with: nil)
+                return
+            }
+        }
+        
+        guard let mainViewController=getMainViewController() else{return}
+        
+        // 复用复制逻辑，将文件URL复制到剪贴板
+        // Reuse copy logic, copy file URLs to pasteboard
+        if mainViewController.publicVar.isInLargeView {
+            mainViewController.largeImageView.actCopy()
+        }else{
+            // 如果焦点在OutlineView
+            // If focus is on OutlineView
+            if mainViewController.publicVar.isOutlineViewFirstResponder{
+                mainViewController.outlineView.actCopy(isByKeyboard: true)
+            }
+            // 如果焦点在CollectionView
+            // If focus is on CollectionView
+            if mainViewController.publicVar.isCollectionViewFirstResponder{
+                mainViewController.handleCopy()
+            }
+        }
+        
+        // 设置剪切模式标志，下次粘贴时将执行移动操作
+        // Set cut mode flag, next paste will perform move operation
+        globalVar.isCutMode = true
+    }
+    
     @IBAction func editCopy(_ sender: NSMenuItem){
         // 如果焦点在标准文本控件上，使用系统默认的复制行为
         // If focus is on standard text controls, use system default copy behavior
@@ -894,6 +928,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             }
         }
         
+        // 复制操作重置剪切模式
+        // Copy operation resets cut mode
+        globalVar.isCutMode = false
     }
     
     @IBAction func editPaste(_ sender: NSMenuItem){
