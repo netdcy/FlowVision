@@ -381,22 +381,17 @@ extension ViewController {
         let operationLog = "[Paste] \(sourceFilesStr) -> \(destinationURL.lastPathComponent)"
         globalVar.operationLogs.append(operationLog)
         
-        // 播放提示音
-        // Play notification sound
-        var changeCount = 0
-        defer {
-            if changeCount > 0 {
-                triggerFinderSound()
-            }
-        }
-        
         // 在文件操作期间抑制文件系统监控触发的刷新，操作完成后主动刷新
         // Suppress FS watcher refreshes during file operations, refresh explicitly after completion
-        var currentFolderChangeCount = 0
         publicVar.isInFileOperation = true
+        // 记录成功粘贴的目标路径，用于刷新后选中
+        // Record successfully pasted destination paths for selection after refresh
+        var successfulDestURLs: [String] = []
         defer {
             publicVar.isInFileOperation = false
-            if currentFolderChangeCount > 0 {
+            if !successfulDestURLs.isEmpty {
+                triggerFinderSound()
+                publicVar.filesForLocateAfterChange = successfulDestURLs
                 var ifRefresh = true
                 if publicVar.isRecursiveMode {
                     fileDB.lock()
@@ -412,15 +407,6 @@ extension ViewController {
         var shouldReplaceAll = false
         var shouldSkipAll = false
         var shouldAutoRenameAll = false
-        
-        // 记录成功粘贴的目标路径，用于刷新后选中
-        // Record successfully pasted destination paths for selection after refresh
-        var successfulDestURLs: [String] = []
-        defer {
-            if !successfulDestURLs.isEmpty {
-                publicVar.filesForLocateAfterChange = successfulDestURLs
-            }
-        }
         
         let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
         publicVar.isKeyEventEnabled = false
@@ -442,14 +428,10 @@ extension ViewController {
             if FileManager.default.fileExists(atPath: destURL.path) {
                 if shouldReplaceAll {
                     do {
-                        changeCount += 1
-                        if isInSameFolder {
-                            currentFolderChangeCount += 1
-                            publicVar.fileChangedCount += 1
-                        }
                         try FileManager.default.removeItem(at: destURL)
                         try FileManager.default.copyItem(at: fileURL, to: destURL)
                         successfulDestURLs.append(destURL.absoluteString)
+                        publicVar.fileChangedCount += 1
                     } catch {
                         log("Failed to paste \(fileURL): \(error)")
                     }
@@ -458,13 +440,9 @@ extension ViewController {
                 } else if shouldAutoRenameAll {
                     destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
                     do {
-                        changeCount += 1
-                        if isInSameFolder {
-                            currentFolderChangeCount += 1
-                            publicVar.fileChangedCount += 1
-                        }
                         try FileManager.default.copyItem(at: fileURL, to: destURL)
                         successfulDestURLs.append(destURL.absoluteString)
+                        publicVar.fileChangedCount += 1
                     } catch {
                         log("Failed to paste \(fileURL): \(error)")
                     }
@@ -473,41 +451,29 @@ extension ViewController {
                     switch userChoice {
                     case .replace:
                         do {
-                            changeCount += 1
-                            if isInSameFolder {
-                                currentFolderChangeCount += 1
-                                publicVar.fileChangedCount += 1
-                            }
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
                             successfulDestURLs.append(destURL.absoluteString)
+                            publicVar.fileChangedCount += 1
                         } catch {
                             log("Failed to paste \(fileURL): \(error)")
                         }
                     case .replaceAll:
                         shouldReplaceAll = true
                         do {
-                            changeCount += 1
-                            if isInSameFolder {
-                                currentFolderChangeCount += 1
-                                publicVar.fileChangedCount += 1
-                            }
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
                             successfulDestURLs.append(destURL.absoluteString)
+                            publicVar.fileChangedCount += 1
                         } catch {
                             log("Failed to paste \(fileURL): \(error)")
                         }
                     case .autoRename:
                         destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
                         do {
-                            changeCount += 1
-                            if isInSameFolder {
-                                currentFolderChangeCount += 1
-                                publicVar.fileChangedCount += 1
-                            }
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
                             successfulDestURLs.append(destURL.absoluteString)
+                            publicVar.fileChangedCount += 1
                         } catch {
                             log("Failed to paste \(fileURL): \(error)")
                         }
@@ -515,13 +481,9 @@ extension ViewController {
                         shouldAutoRenameAll = true
                         destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
                         do {
-                            changeCount += 1
-                            if isInSameFolder {
-                                currentFolderChangeCount += 1
-                                publicVar.fileChangedCount += 1
-                            }
                             try FileManager.default.copyItem(at: fileURL, to: destURL)
                             successfulDestURLs.append(destURL.absoluteString)
+                            publicVar.fileChangedCount += 1
                         } catch {
                             log("Failed to paste \(fileURL): \(error)")
                         }
@@ -537,13 +499,9 @@ extension ViewController {
                 }
             } else {
                 do {
-                    changeCount += 1
-                    if isInSameFolder {
-                        currentFolderChangeCount += 1
-                        publicVar.fileChangedCount += 1
-                    }
                     try FileManager.default.copyItem(at: fileURL, to: destURL)
                     successfulDestURLs.append(destURL.absoluteString)
+                    publicVar.fileChangedCount += 1
                 } catch {
                     log("Failed to paste \(fileURL): \(error)")
                 }
@@ -660,22 +618,17 @@ extension ViewController {
         let operationLog = "[Move] \(sourceFilesStr) -> \(destinationURL.lastPathComponent)"
         globalVar.operationLogs.append(operationLog)
         
-        // 播放提示音
-        // Play notification sound
-        var changeCount = 0
-        defer {
-            if changeCount > 0 {
-                triggerFinderSound()
-            }
-        }
-        
         // 在文件操作期间抑制文件系统监控触发的刷新，操作完成后主动刷新
         // Suppress FS watcher refreshes during file operations, refresh explicitly after completion
-        var currentFolderChangeCount = 0
         publicVar.isInFileOperation = true
+        // 记录成功粘贴的目标路径，用于刷新后选中
+        // Record successfully pasted destination paths for selection after refresh
+        var successfulDestURLs: [String] = []
         defer {
             publicVar.isInFileOperation = false
-            if currentFolderChangeCount > 0 {
+            if !successfulDestURLs.isEmpty {
+                triggerFinderSound()
+                publicVar.filesForLocateAfterChange = successfulDestURLs
                 var ifRefresh = true
                 if publicVar.isRecursiveMode {
                     fileDB.lock()
@@ -691,15 +644,6 @@ extension ViewController {
         var shouldReplaceAll = false
         var shouldSkipAll = false
         var shouldAutoRenameAll = false
-        
-        // 记录成功移动的目标路径，用于刷新后选中
-        // Record successfully moved destination paths for selection after refresh
-        var successfulDestURLs: [String] = []
-        defer {
-            if !successfulDestURLs.isEmpty {
-                publicVar.filesForLocateAfterChange = successfulDestURLs
-            }
-        }
         
         let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
         publicVar.isKeyEventEnabled = false
@@ -721,14 +665,10 @@ extension ViewController {
             if FileManager.default.fileExists(atPath: destURL.path) {
                 if shouldReplaceAll {
                     do {
-                        changeCount += 1
-                        if isInSameFolder {
-                            currentFolderChangeCount += 1
-                            publicVar.fileChangedCount += 1
-                        }
                         try FileManager.default.removeItem(at: destURL)
                         try FileManager.default.moveItem(at: fileURL, to: destURL)
                         successfulDestURLs.append(destURL.absoluteString)
+                        publicVar.fileChangedCount += 1
                     } catch {
                         log("Failed to move \(fileURL): \(error)")
                     }
@@ -737,13 +677,9 @@ extension ViewController {
                 } else if shouldAutoRenameAll {
                     destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
                     do {
-                        changeCount += 1
-                        if isInSameFolder {
-                            currentFolderChangeCount += 1
-                            publicVar.fileChangedCount += 1
-                        }
                         try FileManager.default.moveItem(at: fileURL, to: destURL)
                         successfulDestURLs.append(destURL.absoluteString)
+                        publicVar.fileChangedCount += 1
                     } catch {
                         log("Failed to move \(fileURL): \(error)")
                     }
@@ -752,41 +688,29 @@ extension ViewController {
                     switch userChoice {
                     case .replace:
                         do {
-                            changeCount += 1
-                            if isInSameFolder {
-                                currentFolderChangeCount += 1
-                                publicVar.fileChangedCount += 1
-                            }
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
                             successfulDestURLs.append(destURL.absoluteString)
+                            publicVar.fileChangedCount += 1
                         } catch {
                             log("Failed to move \(fileURL): \(error)")
                         }
                     case .replaceAll:
                         shouldReplaceAll = true
                         do {
-                            changeCount += 1
-                            if isInSameFolder {
-                                currentFolderChangeCount += 1
-                                publicVar.fileChangedCount += 1
-                            }
                             try FileManager.default.removeItem(at: destURL)
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
                             successfulDestURLs.append(destURL.absoluteString)
+                            publicVar.fileChangedCount += 1
                         } catch {
                             log("Failed to move \(fileURL): \(error)")
                         }
                     case .autoRename:
                         destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
                         do {
-                            changeCount += 1
-                            if isInSameFolder {
-                                currentFolderChangeCount += 1
-                                publicVar.fileChangedCount += 1
-                            }
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
                             successfulDestURLs.append(destURL.absoluteString)
+                            publicVar.fileChangedCount += 1
                         } catch {
                             log("Failed to move \(fileURL): \(error)")
                         }
@@ -794,13 +718,9 @@ extension ViewController {
                         shouldAutoRenameAll = true
                         destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
                         do {
-                            changeCount += 1
-                            if isInSameFolder {
-                                currentFolderChangeCount += 1
-                                publicVar.fileChangedCount += 1
-                            }
                             try FileManager.default.moveItem(at: fileURL, to: destURL)
                             successfulDestURLs.append(destURL.absoluteString)
+                            publicVar.fileChangedCount += 1
                         } catch {
                             log("Failed to move \(fileURL): \(error)")
                         }
@@ -816,13 +736,9 @@ extension ViewController {
                 }
             } else {
                 do {
-                    changeCount += 1
-                    if isInSameFolder {
-                        currentFolderChangeCount += 1
-                        publicVar.fileChangedCount += 1
-                    }
                     try FileManager.default.moveItem(at: fileURL, to: destURL)
                     successfulDestURLs.append(destURL.absoluteString)
+                    publicVar.fileChangedCount += 1
                 } catch {
                     log("Failed to move \(fileURL): \(error)")
                 }
