@@ -37,6 +37,7 @@ class LargeImageView: NSView {
     var exifTextView: ExifTextView!
     var ratioView: InfoView!
     var infoView: InfoView!
+    var unsupportedVideoOverlay: NSView!
     
     // MARK: - 图片编辑相关属性
     // MARK: - Image editing related properties
@@ -134,6 +135,46 @@ class LargeImageView: NSView {
         NSLayoutConstraint.activate([
             infoView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             infoView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+        ])
+        
+        // 不支持的视频格式覆盖视图
+        // Unsupported video format overlay view
+        unsupportedVideoOverlay = NSView(frame: .zero)
+        unsupportedVideoOverlay.wantsLayer = true
+        unsupportedVideoOverlay.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.6).cgColor
+        unsupportedVideoOverlay.layer?.cornerRadius = 10
+        unsupportedVideoOverlay.translatesAutoresizingMaskIntoConstraints = false
+        unsupportedVideoOverlay.isHidden = true
+        addSubview(unsupportedVideoOverlay)
+        
+        let overlayLabel = NSTextField(labelWithString: NSLocalizedString("Unsupported Video Format", comment: "不支持的视频格式"))
+        overlayLabel.textColor = .white
+        overlayLabel.alignment = .center
+        overlayLabel.font = NSFont.systemFont(ofSize: 16, weight: .regular)
+        overlayLabel.translatesAutoresizingMaskIntoConstraints = false
+        unsupportedVideoOverlay.addSubview(overlayLabel)
+        
+        let openExternalView = ClickableLabel(
+            title: NSLocalizedString("Open with External Player", comment: "使用外部播放器打开"),
+            onClick: { [weak self] in self?.actOpenWithExternalPlayer() }
+        )
+        openExternalView.translatesAutoresizingMaskIntoConstraints = false
+        unsupportedVideoOverlay.addSubview(openExternalView)
+        
+        NSLayoutConstraint.activate([
+            unsupportedVideoOverlay.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            unsupportedVideoOverlay.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            
+            overlayLabel.topAnchor.constraint(equalTo: unsupportedVideoOverlay.topAnchor, constant: 20),
+            overlayLabel.centerXAnchor.constraint(equalTo: unsupportedVideoOverlay.centerXAnchor),
+            overlayLabel.leadingAnchor.constraint(greaterThanOrEqualTo: unsupportedVideoOverlay.leadingAnchor, constant: 24),
+            overlayLabel.trailingAnchor.constraint(lessThanOrEqualTo: unsupportedVideoOverlay.trailingAnchor, constant: -24),
+            
+            openExternalView.topAnchor.constraint(equalTo: overlayLabel.bottomAnchor, constant: 16),
+            openExternalView.centerXAnchor.constraint(equalTo: unsupportedVideoOverlay.centerXAnchor),
+            openExternalView.leadingAnchor.constraint(greaterThanOrEqualTo: unsupportedVideoOverlay.leadingAnchor, constant: 24),
+            openExternalView.trailingAnchor.constraint(lessThanOrEqualTo: unsupportedVideoOverlay.trailingAnchor, constant: -24),
+            openExternalView.bottomAnchor.constraint(equalTo: unsupportedVideoOverlay.bottomAnchor, constant: -20),
         ])
         
         magnificationGesture = NSMagnificationGestureRecognizer(target: self, action: #selector(handleMagnification(_:)))
@@ -439,6 +480,7 @@ class LargeImageView: NSView {
         }
         videoOrderId += 1
         videoView.isHidden = true
+        hideUnsupportedVideoOverlay()
         playerLooper?.disableLooping()
         playerLooper = nil
         queuePlayer?.removeAllItems()
@@ -453,6 +495,8 @@ class LargeImageView: NSView {
     }
 
     func playVideo(reload: Bool = false, reloadForAB: Bool = false) {
+        hideUnsupportedVideoOverlay()
+        
         if let url = URL(string: file.path) {
             // 检查当前播放的视频是否已经是目标视频
             // Check if currently playing video is already the target video
@@ -584,7 +628,7 @@ class LargeImageView: NSView {
                     snapshotQueue.removeFirst()
                 }
                 currentPlayingURL = nil
-                showInfo(NSLocalizedString("Unsupported Video Format", comment: "不支持的视频格式"))
+                showUnsupportedVideoOverlay()
             }
         }
     }
@@ -1085,6 +1129,19 @@ class LargeImageView: NSView {
     
     func showInfo(_ info: String, timeOut: Double = 1.0) {
         infoView.showInfo(text: info, timeOut: timeOut)
+    }
+    
+    func showUnsupportedVideoOverlay() {
+        unsupportedVideoOverlay.isHidden = false
+    }
+    
+    func hideUnsupportedVideoOverlay() {
+        unsupportedVideoOverlay.isHidden = true
+    }
+    
+    @objc func actOpenWithExternalPlayer() {
+        guard let url = URL(string: file.path) else { return }
+        NSWorkspace.shared.open(url)
     }
     
     func getCurrentImageOriginalSizeInScreenScale() -> NSSize? {
@@ -1921,7 +1978,7 @@ class LargeImageView: NSView {
     }
 }
 
-
+// MARK: - ExifTextView
 class ExifTextView: NSView {
 
     var textItems: [(String, Any)] = [] {
@@ -2132,6 +2189,7 @@ class ExifTextView: NSView {
     }
 }
 
+// MARK: - InfoView
 class InfoView: NSView {
 
     private var label: NSTextField!
@@ -2245,5 +2303,79 @@ class InfoView: NSView {
     deinit {
         hideTimer?.invalidate()
         hideTimer = nil
+    }
+}
+
+// MARK: - ClickableLabel
+// 不抢焦点的可点击标签视图
+// Clickable label view that does not steal focus
+
+class ClickableLabel: NSView {
+    
+    private var label: NSTextField!
+    private var onClick: (() -> Void)?
+    private var trackingArea: NSTrackingArea?
+    private let normalColor = NSColor.white.withAlphaComponent(0.2)
+    private let hoverColor = NSColor.white.withAlphaComponent(0.35)
+    private let pressedColor = NSColor.white.withAlphaComponent(0.5)
+    
+    convenience init(title: String, onClick: (() -> Void)?) {
+        self.init(frame: .zero)
+        self.onClick = onClick
+        
+        wantsLayer = true
+        layer?.backgroundColor = normalColor.cgColor
+        layer?.cornerRadius = 6
+        
+        label = NSTextField(labelWithString: title)
+        label.textColor = .white
+        label.alignment = .center
+        label.font = NSFont.systemFont(ofSize: 13, weight: .regular)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(label)
+        
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14),
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 6),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6),
+        ])
+    }
+    
+    // 不接受第一响应者，避免抢焦点
+    // Do not accept first responder to avoid stealing focus
+    override var acceptsFirstResponder: Bool { false }
+    
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let existing = trackingArea {
+            removeTrackingArea(existing)
+        }
+        trackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil)
+        addTrackingArea(trackingArea!)
+    }
+    
+    override func mouseEntered(with event: NSEvent) {
+        layer?.backgroundColor = hoverColor.cgColor
+        //NSCursor.pointingHand.push()
+    }
+    
+    override func mouseExited(with event: NSEvent) {
+        layer?.backgroundColor = normalColor.cgColor
+        //NSCursor.pop()
+    }
+    
+    override func mouseDown(with event: NSEvent) {
+        layer?.backgroundColor = pressedColor.cgColor
+    }
+    
+    override func mouseUp(with event: NSEvent) {
+        let location = convert(event.locationInWindow, from: nil)
+        if bounds.contains(location) {
+            layer?.backgroundColor = hoverColor.cgColor
+            onClick?()
+        } else {
+            layer?.backgroundColor = normalColor.cgColor
+        }
     }
 }

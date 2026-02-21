@@ -69,13 +69,18 @@ func createLoopingComposition(url: URL) -> AVMutableComposition? {
 
 func getCommonTimeRange(url: URL) -> CMTimeRange? {
     let asset = AVAsset(url: url)
-    guard let videoTrack = asset.tracks(withMediaType: .video).first,
-          let audioTrack = asset.tracks(withMediaType: .audio).first else {
+    guard let videoTrack = asset.tracks(withMediaType: .video).first else {
         return nil
     }
 
-    // 计算音视频轨道的共同时间范围
-    // Calculate common time range of audio and video tracks
-    return CMTimeRangeGetIntersection(videoTrack.timeRange, otherRange: audioTrack.timeRange)
+    // 如果有音频轨道，计算音视频轨道的共同时间范围
+    // If audio track exists, calculate common time range of audio and video tracks
+    if let audioTrack = asset.tracks(withMediaType: .audio).first {
+        return CMTimeRangeGetIntersection(videoTrack.timeRange, otherRange: audioTrack.timeRange)
+    }
+
+    // 如果没有音频轨道，直接使用视频轨道的时间范围
+    // If no audio track, use video track's time range directly
+    return videoTrack.timeRange
 }
 

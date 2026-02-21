@@ -146,7 +146,7 @@ class PublicVar{
     var isEnableHDR = true
     var isRawUseEmbeddedThumb = false
     var autoPlayVisibleVideo = false
-    var autoPlaySelectedVideo = false
+    var autoPlaySelectedVideo = true
     var isRotationLocked = false
     var rotationLock = 0
     var isZoomLocked = false
