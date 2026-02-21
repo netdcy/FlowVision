@@ -316,6 +316,18 @@ extension ViewController {
                     return nil
                 }
             }
+
+            // 检查按键是否是 Command+Shift+"E" 键
+            // Check if key is Command+Shift+"E"
+            if characters == "e" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed && EDIT_FEATURE_ENABLED {
+                if publicVar.isInLargeView{
+                    largeImageView.enterEditMode(){ editedImage in
+                        // editedImage 是编辑完成后的图片
+                        self.largeImageView.imageView.image = editedImage
+                    }
+                }
+                return nil
+            }
             
             // 检查按键是否是 Command+⬅️➡️ 键
             // Check if key is Command+⬅️➡️
@@ -870,20 +882,6 @@ extension ViewController {
                     handleTagging()
                     return nil
                 }
-            }
-
-            // 检查按键是否是 "E" 键
-            // Check if key is "E"
-            if characters == "e" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
-                if publicVar.isInLargeView{
-                    largeImageView.enterEditMode(){ editedImage in
-                        // editedImage 是编辑完成后的图片
-                        // 你可以在这里保存或处理编辑后的图片
-                        self.largeImageView.imageView.image = editedImage
-                    }
-                    print("Enter edit mode")
-                }
-                return nil
             }
             
         }

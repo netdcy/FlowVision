@@ -755,7 +755,10 @@ class TreeViewModel {
                 node.children?.append(newNode)
                 
                 if isLookSub{
-                    if VolumeManager.shared.isExternalVolume(subFolder) && globalVar.folderSearchDepth_External == 0 {
+                    let isExt = VolumeManager.shared.isExternalVolume(subFolder)
+                    if isExt && globalVar.folderSearchDepth_External == 0 {
+                        newNode.hasChild=true
+                    }else if !isExt && globalVar.folderSearchDepth == 0 {
                         newNode.hasChild=true
                     }else{
                         do{

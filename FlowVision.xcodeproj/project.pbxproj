@@ -104,6 +104,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E00E13C3056A4910B242187C /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		F70368E72BF609F300155F36 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		F70F9FC02BAFE7B300C50CDD /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		F70F9FC22BAFE85D00C50CDD /* CustomCollectionViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewManager.swift; sourceTree = "<group>"; };
@@ -174,7 +175,6 @@
 		F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEffectView.swift; sourceTree = "<group>"; };
 		F7E65E342C09C7F100ACC4C0 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		F7F600452E1E094900ED8536 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
-		E00E13C3056A4910B242187C /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -323,14 +323,14 @@
 		F7C2DEB92C4E6BB2003DF765 /* SettingsViews */ = {
 			isa = PBXGroup;
 			children = (
-				F74636352C4F43AE0086E920 /* AdvancedSettingsViewController.swift */,
-				F74636462C4FFA340086E920 /* AdvancedSettingsViewController.xib */,
-				F7C2DEBA2C4E6BEC003DF765 /* GeneralSettingsViewController.swift */,
 				F74636422C4FF9A30086E920 /* GeneralSettingsViewController.xib */,
-				F78D1A8B2D4CF37900741908 /* CustomSettingsViewController.swift */,
+				F7C2DEBA2C4E6BEC003DF765 /* GeneralSettingsViewController.swift */,
 				F78D1A892D4CF31D00741908 /* CustomSettingsViewController.xib */,
-				F74636542C5237720086E920 /* ActionsSettingsViewController.swift */,
+				F78D1A8B2D4CF37900741908 /* CustomSettingsViewController.swift */,
 				F74636582C523EFF0086E920 /* ActionsSettingsViewController.xib */,
+				F74636542C5237720086E920 /* ActionsSettingsViewController.swift */,
+				F74636462C4FFA340086E920 /* AdvancedSettingsViewController.xib */,
+				F74636352C4F43AE0086E920 /* AdvancedSettingsViewController.swift */,
 			);
 			path = SettingsViews;
 			sourceTree = "<group>";

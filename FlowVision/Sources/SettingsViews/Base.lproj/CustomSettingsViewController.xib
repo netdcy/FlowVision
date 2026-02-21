@@ -230,9 +230,9 @@
                                         </connections>
                                     </button>
                                     <button tag="2" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="paU-fl-cXT">
-                                        <rect key="frame" x="132" y="6" width="120" height="18"/>
+                                        <rect key="frame" x="132" y="6" width="242" height="18"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                        <buttonCell key="cell" type="radio" title="Only Fullscreen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="Nbp-B1-O0u">
+                                        <buttonCell key="cell" type="radio" title="Black when Full Screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="Nbp-B1-O0u">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
@@ -320,9 +320,9 @@
                                         </connections>
                                     </button>
                                     <button tag="2" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nwk-bO-1Dx">
-                                        <rect key="frame" x="132" y="6" width="120" height="18"/>
+                                        <rect key="frame" x="132" y="6" width="242" height="18"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                        <buttonCell key="cell" type="radio" title="Only Fullscreen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="6Ac-mJ-ewA">
+                                        <buttonCell key="cell" type="radio" title="Black when Full Screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="6Ac-mJ-ewA">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
@@ -397,8 +397,8 @@
                         </gridCell>
                         <gridCell row="5fB-S2-lmx" column="cs9-fm-l2F" id="Ubq-jN-bdL">
                             <button key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="lfi-Xq-yYB">
-                                <rect key="frame" x="99" y="253" width="308" height="32"/>
-                                <buttonCell key="cell" type="check" title="Keep recursive and filter state when switching directories" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Mne-y2-Qd1">
+                                <rect key="frame" x="99" y="253" width="317" height="32"/>
+                                <buttonCell key="cell" type="check" title="Keep Recursive and Filter State when Switching Directories" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Mne-y2-Qd1">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
