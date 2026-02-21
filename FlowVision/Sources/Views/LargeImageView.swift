@@ -38,6 +38,18 @@ class LargeImageView: NSView {
     var ratioView: InfoView!
     var infoView: InfoView!
     
+    // MARK: - 图片编辑相关属性
+    // MARK: - Image editing related properties
+    var imageEditingView: ImageEditingView?
+    var isInEditMode: Bool = false
+    
+    /// 同步编辑画布的位置和大小与 imageView 保持一致
+    /// Sync editing canvas position and size with imageView
+    func syncEditingCanvasFrame() {
+        guard isInEditMode, let editingView = imageEditingView else { return }
+        editingView.setImageFrame(imageView.frame)
+    }
+    
     var file: FileModel = FileModel(path: "", ver: 0)
     private var lastDragLocation: CGPoint?
     private var hasZoomedByWheel: Bool = false
@@ -317,6 +329,10 @@ class LargeImageView: NSView {
         // 窗口变化时大图随缩放居中
         // Center large image when window size changes
         imageView.frame = CGRect(x: newX, y: newY, width: imageViewSize.width, height: imageViewSize.height)
+        
+        // 同步编辑画布位置
+        // Sync editing canvas position
+        syncEditingCanvasFrame()
         
         if file.type == .video {
             determineBlackBg()
@@ -955,6 +971,10 @@ class LargeImageView: NSView {
             imageView.frame.origin.y += (locationInImageView.y * (1 - 1/zoomFactor))
         }
         
+        // 同步编辑画布位置和大小
+        // Sync editing canvas position and size
+        syncEditingCanvasFrame()
+        
         // 重新绘制图像
         // Redraw image
         getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false, isByZoom: true)
@@ -965,6 +985,10 @@ class LargeImageView: NSView {
     func zoomFit() {
         if file.type == .image {
             getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: true, isByZoom: true)
+            
+            // 同步编辑画布位置和大小
+            // Sync editing canvas position and size
+            syncEditingCanvasFrame()
             
             calcRatio(isShowPrompt: true)
         }
@@ -983,6 +1007,10 @@ class LargeImageView: NSView {
             imageView.frame.size = zoomSize
             imageView.frame.origin.x -= (locationInImageView.x * (zoomFactorWidth - 1))
             imageView.frame.origin.y -= (locationInImageView.y * (zoomFactorHeight - 1))
+            
+            // 同步编辑画布位置和大小
+            // Sync editing canvas position and size
+            syncEditingCanvasFrame()
             
             getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: true, isByZoom: true)
             calcRatio(isShowPrompt: true)
@@ -1037,6 +1065,10 @@ class LargeImageView: NSView {
         let newOriginY = imageView.frame.origin.y - deltaHeight * (centerPoint.y / imageView.frame.height)
         
         imageView.frame = CGRect(x: newOriginX, y: newOriginY, width: newWidth, height: newHeight)
+        
+        // 同步编辑画布位置和大小
+        // Sync editing canvas position and size
+        syncEditingCanvasFrame()
         
         calcRatio(isShowPrompt: true)
     }
@@ -1094,7 +1126,8 @@ class LargeImageView: NSView {
         // Only process when edge switching is enabled and in large image mode
         guard globalVar.clickEdgeToSwitchImage,
               let viewController = getViewController(self),
-              viewController.publicVar.isInLargeView else {
+              viewController.publicVar.isInLargeView,
+              !isInEditMode else {
             return
         }
         
@@ -1293,6 +1326,10 @@ class LargeImageView: NSView {
                 if imageFrame.minY > viewFrame.height {
                     imageView.frame.origin.y = viewFrame.height
                 }
+                
+                // 同步编辑画布位置
+                // Sync editing canvas position
+                syncEditingCanvasFrame()
             } else if file.type == .video {
                 if getViewController(self)!.publicVar.isRightMouseDown {
                     seekVideoByDrag(deltaX: dx)
@@ -1503,6 +1540,10 @@ class LargeImageView: NSView {
                 imageView.frame.origin.y += (locationInImageView.y * (1 - 1/zoomFactor))
             }
             // log(imageView.frame.size,imageView.frame.origin)
+            
+            // 同步编辑画布位置和大小
+            // Sync editing canvas position and size
+            syncEditingCanvasFrame()
             
             if abs(event.deltaY) > 0 {
                 calcRatio(isShowPrompt: true)
@@ -1736,7 +1777,15 @@ class LargeImageView: NSView {
             playVideo(reloadForAB: true)
         }else{
             unSetOcr()
+            // 同步旋转编辑画布内容
+            // Sync rotate editing canvas content
+            imageEditingView?.rotateClockwise()
+            // 旋转后重新绘制图像
+            // Redraw image after rotation
             getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
+            // 旋转后同步画布位置
+            // Sync canvas position after rotation
+            syncEditingCanvasFrame()
         }
     }
     
@@ -1748,7 +1797,15 @@ class LargeImageView: NSView {
             playVideo(reloadForAB: true)
         }else{
             unSetOcr()
+            // 同步旋转编辑画布内容
+            // Sync rotate editing canvas content
+            imageEditingView?.rotateCounterclockwise()
+            // 旋转后重新绘制图像
+            // Redraw image after rotation
             getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false)
+            // 旋转后同步画布位置
+            // Sync canvas position after rotation
+            syncEditingCanvasFrame()
         }
     }
     
@@ -1778,6 +1835,89 @@ class LargeImageView: NSView {
         longPressZoomTimer = nil
         wheelZoomRegenTimer?.invalidate()
         wheelZoomRegenTimer = nil
+    }
+    
+    // MARK: - 图片编辑模式
+    // MARK: - Image Editing Mode
+    
+    /// 进入编辑模式 - 调用此函数开始编辑当前图片
+    /// Enter edit mode - Call this function to start editing the current image
+    /// - Parameter completion: 保存完成后的回调，参数为编辑后的图片
+    /// - Parameter completion: Callback after saving, parameter is the edited image
+    func enterEditMode(completion: ((NSImage) -> Void)? = nil) {
+        // 只有图片才能编辑
+        // Only images can be edited
+        guard file.type == .image else {
+            showInfo(NSLocalizedString("Only images can be edited", comment: "只有图片才能编辑"))
+            return
+        }
+        
+        // 如果已经在编辑模式，则返回
+        // If already in edit mode, return
+        guard !isInEditMode else { return }
+        
+        isInEditMode = true
+        
+        // 创建编辑视图
+        // Create editing view
+        imageEditingView = ImageEditingView(frame: self.bounds)
+        imageEditingView?.autoresizingMask = [.width, .height]
+        imageEditingView?.originalImage = imageView.image
+        
+        // 设置画布与图片对齐
+        // Set canvas aligned with image
+        imageEditingView?.setImageFrame(imageView.frame)
+        
+        // 设置保存回调
+        // Set save callback
+        imageEditingView?.onSave = { [weak self] editedImage in
+            guard let self = self else { return }
+            completion?(editedImage)
+            self.exitEditMode()
+        }
+        
+        // 设置取消回调
+        // Set cancel callback
+        imageEditingView?.onCancel = { [weak self] in
+            self?.exitEditMode()
+        }
+        
+        // 添加编辑视图
+        // Add editing view
+        if let editingView = imageEditingView {
+            addSubview(editingView, positioned: .above, relativeTo: nil)
+        }
+        
+        // 隐藏其他UI元素
+        // Hide other UI elements
+        hideArrowView(leftArrowImageView)
+        hideArrowView(rightArrowImageView)
+        
+        showInfo(NSLocalizedString("Edit Mode", comment: "编辑模式"), timeOut: 1.5)
+    }
+    
+    /// 退出编辑模式
+    /// Exit edit mode
+    func exitEditMode() {
+        guard isInEditMode else { return }
+        
+        isInEditMode = false
+        
+        // 移除编辑视图
+        // Remove editing view
+        imageEditingView?.removeFromSuperview()
+        imageEditingView = nil
+        
+        // 恢复其他UI元素
+        // Restore other UI elements
+        
+        showInfo(NSLocalizedString("Exit Edit Mode", comment: "退出编辑模式"), timeOut: 1.0)
+    }
+    
+    /// 获取当前是否处于编辑模式
+    /// Get whether currently in edit mode
+    var isEditing: Bool {
+        return isInEditMode
     }
 }
 

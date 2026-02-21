@@ -2025,12 +2025,19 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         // log("Wheel:",event.deltaY)
         
         // 仅在大图模式下响应
+        // Only respond in large view mode
         if largeImageView.isHidden {return}
         
+        // 编辑模式下不响应
+        // Do not respond in edit mode
+        if largeImageView.isInEditMode {return}
+        
         // 滚轮用作缩放时
+        // When scroll wheel is used for zooming
         if globalVar.scrollMouseWheelToZoom || isCommandKeyPressed() {return}
         
         // 滚动滚轮或者双指操作触控板来移动图像
+        // Scroll wheel or double finger operation on trackpad to move image
         if publicVar.isPanWhenZoomed && !publicVar.isLeftMouseDown && !publicVar.isRightMouseDown {
             let isTrackPad = abs(event.scrollingDeltaY)+abs(event.scrollingDeltaX) > abs(event.deltaY)
             if largeImageView.imageView.frame.height > largeImageView.frame.height || (isTrackPad && largeImageView.imageView.frame.width > largeImageView.frame.width) {
@@ -2065,6 +2072,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         // 屏蔽惯性阶段的滚动
+        // Prevent scrolling in the inertia phase
         if event.momentumPhase == .changed
             && event.timestamp - lastScrollSwitchLargeImageTime > 0.2
         {
@@ -2072,6 +2080,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         // 以下是防止按住鼠标缩放后松开，滚轮惯性滚动造成切换
+        // Prevent scrolling after releasing the mouse button and the inertia of the scroll wheel from causing switching
         if publicVar.isRightMouseDown || publicVar.isLeftMouseDown {
             _ = publicVar.timer.intervalSafe(name: "largeImageZoomForbidSwitch", second: -1)
             return
@@ -2082,6 +2091,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
         
         // 屏蔽横向滚动
+        // Prevent horizontal scrolling
         if abs(event.scrollingDeltaX) > abs(event.scrollingDeltaY) || abs(event.deltaX) > abs(event.deltaY) {
             return
         }
@@ -2089,6 +2099,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         var deltaY=0.0
         if abs(event.scrollingDeltaY)+abs(event.scrollingDeltaX) > abs(event.deltaY) {
             // 通常是触控板事件
+            // Usually trackpad event
             var sign = 1.0
             var absv = 1.0
             if abs(event.scrollingDeltaY) >= abs(event.scrollingDeltaX) {

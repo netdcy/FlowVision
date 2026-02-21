@@ -610,7 +610,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             justifiedViewMenuItem.isHidden = mainViewController.publicVar.isInLargeView
             waterfallViewModeMenuItem.isHidden = mainViewController.publicVar.isInLargeView
             gridViewMenuItem.isHidden = mainViewController.publicVar.isInLargeView
-            detailViewModeMenuItem.isHidden = mainViewController.publicVar.isInLargeView
+            //detailViewModeMenuItem.isHidden = mainViewController.publicVar.isInLargeView
             
             maximizeWindowMenuItem.keyEquivalent="1"
             maximizeWindowMenuItem.keyEquivalentModifierMask=[]

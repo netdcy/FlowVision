@@ -36,6 +36,7 @@
 		F74D555A2F0E49AB00C9AB85 /* AutoScrollPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74D55592F0E49A400C9AB85 /* AutoScrollPlay.swift */; };
 		F74D555C2F0E501200C9AB85 /* EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74D555B2F0E500C00C9AB85 /* EventHandler.swift */; };
 		F74D555E2F0E52F800C9AB85 /* ArrowKeyLocate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74D555D2F0E52EA00C9AB85 /* ArrowKeyLocate.swift */; };
+		F7663C162F222AAC0028DF35 /* ImageEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7663C152F222AAC0028DF35 /* ImageEditingView.swift */; };
 		F76E2EFE2C3B765C0031B0B4 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76E2EFD2C3B765C0031B0B4 /* Log.swift */; };
 		F77098912F0E3C6B00E7D164 /* KeyShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77098902F0E3C6200E7D164 /* KeyShortcut.swift */; };
 		F77098932F0E411500E7D164 /* FileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77098922F0E411200E7D164 /* FileSystem.swift */; };
@@ -143,6 +144,7 @@
 		F754F3CC2C10393700A25D12 /* libswscale.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libswscale.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libswscale.xcframework"; sourceTree = "<group>"; };
 		F754F3CD2C10393700A25D12 /* libavformat.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libavformat.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libavformat.xcframework"; sourceTree = "<group>"; };
 		F754F3CE2C10393700A25D12 /* libswresample.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libswresample.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libswresample.xcframework"; sourceTree = "<group>"; };
+		F7663C152F222AAC0028DF35 /* ImageEditingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditingView.swift; sourceTree = "<group>"; };
 		F76E2EFD2C3B765C0031B0B4 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		F77098902F0E3C6200E7D164 /* KeyShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyShortcut.swift; sourceTree = "<group>"; };
 		F77098922F0E411200E7D164 /* FileSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystem.swift; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 		F73865E92C37C3EA00837FE4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				F7663C152F222AAC0028DF35 /* ImageEditingView.swift */,
 				F73865DD2C37BEAC00837FE4 /* CoreAreaView.swift */,
 				F73865D22C37B97500837FE4 /* CustomCollectionView.swift */,
 				F7790ED52BA5FB6A00406D35 /* CustomCollectionViewItem.swift */,
@@ -429,6 +432,7 @@
 				F74636372C4F43AE0086E920 /* AdvancedSettingsViewController.swift in Sources */,
 				F77098912F0E3C6B00E7D164 /* KeyShortcut.swift in Sources */,
 				F7790ED72BA5FB6A00406D35 /* CustomCollectionViewItem.swift in Sources */,
+				F7663C162F222AAC0028DF35 /* ImageEditingView.swift in Sources */,
 				F74D555C2F0E501200C9AB85 /* EventHandler.swift in Sources */,
 				F74D55522F0E46D200C9AB85 /* Search.swift in Sources */,
 				F74D55542F0E47D700C9AB85 /* MemoryManagement.swift in Sources */,
