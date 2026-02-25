@@ -460,6 +460,7 @@ class FileModel {
     var rotate: Int = 0
     var imageInfo: ImageInfo?
     var getThumbFailed = false
+    var finderTags: [String] = []
 }
 
 class DirModel {

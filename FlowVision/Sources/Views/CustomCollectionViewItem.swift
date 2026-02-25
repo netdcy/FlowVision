@@ -26,6 +26,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     var folderImageViews=[CustomImageView]()
     
     var file = FileModel(path: "", ver: 0)
+    var finderTagDotsView: NSView?
     private var mouseDownLocation: NSPoint? = nil
     
     private var lastClickTime: TimeInterval = 0
@@ -234,6 +235,46 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        finderTagDotsView?.removeFromSuperview()
+        finderTagDotsView = nil
+    }
+
+    func refreshFinderTagDots() {
+        finderTagDotsView?.removeFromSuperview()
+        finderTagDotsView = nil
+
+        let tags = file.finderTags.compactMap { FinderTag.byName($0) }
+        guard !tags.isEmpty else { return }
+
+        let dotSize: CGFloat = 8
+        let spacing: CGFloat = 2
+        let totalWidth = CGFloat(tags.count) * dotSize + CGFloat(tags.count - 1) * spacing
+
+        let container = NSView()
+        container.wantsLayer = true
+        container.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(container)
+
+        NSLayoutConstraint.activate([
+            container.leadingAnchor.constraint(equalTo: imageViewObj.leadingAnchor, constant: 5),
+            container.bottomAnchor.constraint(equalTo: imageViewObj.bottomAnchor, constant: -5),
+            container.widthAnchor.constraint(equalToConstant: totalWidth),
+            container.heightAnchor.constraint(equalToConstant: dotSize),
+        ])
+
+        for (i, tag) in tags.enumerated() {
+            let dot = NSView(frame: NSRect(x: CGFloat(i) * (dotSize + spacing), y: 0, width: dotSize, height: dotSize))
+            dot.wantsLayer = true
+            dot.layer?.backgroundColor = tag.color.cgColor
+            dot.layer?.cornerRadius = dotSize / 2
+            container.addSubview(dot)
+        }
+
+        finderTagDotsView = container
+    }
+
     func configureWithImage(_ fileModel: FileModel, playAnimation: Bool = false) {
         
         stopVideo()
@@ -264,6 +305,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         // 左上角标签
         // Top-left corner label
         refreshTagLabel()
+
+        refreshFinderTagDots()
 
         // 右上角标签
         // Top-right corner label
@@ -969,8 +1012,31 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     menu.addItem(tagMenuItem)
                 }
 
+                let finderTagMenu = NSMenu()
+                let finderTagMenuItem = NSMenuItem(title: NSLocalizedString("Finder Tags", comment: "Finder标签"), action: nil, keyEquivalent: "")
+                finderTagMenuItem.submenu = finderTagMenu
+
+                let selectedURLs = getViewController(collectionView!)?.publicVar.selectedUrls() ?? []
+                let tagsPerURL = selectedURLs.map { FinderTagHelper.readTags(from: $0) }
+
+                for (i, tag) in FinderTag.all.enumerated() {
+                    let item = finderTagMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actToggleFinderTag(_:)), keyEquivalent: "\(i + 1)")
+                    item.keyEquivalentModifierMask = [.command]
+                    item.representedObject = tag.name
+
+                    if !selectedURLs.isEmpty && tagsPerURL.allSatisfy({ $0.contains(tag.name) }) {
+                        item.state = .on
+                    }
+                    item.image = tag.dotImage
+                }
+
+                finderTagMenu.addItem(NSMenuItem.separator())
+                finderTagMenu.addItem(withTitle: NSLocalizedString("Remove All Tags", comment: "移除所有标签"), action: #selector(actRemoveAllFinderTags), keyEquivalent: "")
+
+                menu.addItem(finderTagMenuItem)
+
                 menu.addItem(NSMenuItem.separator())
-                
+
                 // 创建"新建"子菜单
                 // Create "New" submenu
                 let newMenu = NSMenu()
@@ -1017,7 +1083,19 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     @objc func actTag() {
         getViewController(collectionView!)?.handleTagging()
     }
-    
+
+    @objc func actToggleFinderTag(_ sender: NSMenuItem) {
+        guard let tagName = sender.representedObject as? String else { return }
+        getViewController(collectionView!)?.handleToggleFinderTag(tagName)
+    }
+
+    @objc func actRemoveAllFinderTags() {
+        let urls = getViewController(collectionView!)?.publicVar.selectedUrls() ?? []
+        guard !urls.isEmpty else { return }
+        FinderTagHelper.removeAllTags(from: urls)
+        getViewController(collectionView!)?.refreshFinderTagsForVisibleItems()
+    }
+
     @objc func actRefresh() {
         getViewController(collectionView!)?.handleUserRefresh()
     }

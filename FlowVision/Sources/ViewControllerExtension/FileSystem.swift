@@ -115,9 +115,9 @@ extension ViewController {
         
         
         var contents=[URL]()
-        var properties: [URLResourceKey] = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey, .isUbiquitousItemKey, .ubiquitousItemDownloadingStatusKey]
+        var properties: [URLResourceKey] = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey, .isUbiquitousItemKey, .ubiquitousItemDownloadingStatusKey, .tagNamesKey]
         if VolumeManager.shared.isExternalVolume(folderURL) {
-            properties = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey]
+            properties = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey, .tagNamesKey]
         }
         var isInSameDir = !publicVar.isRecursiveMode
         if !skip {
@@ -155,7 +155,7 @@ extension ViewController {
                 return true
             }
         }
-        
+
         // 过滤隐藏文件
         // Filter hidden files
         contents = contents.filter { url in
@@ -163,19 +163,26 @@ extension ViewController {
             // 获取隐藏属性
             let resourceValues = try? url.resourceValues(forKeys: [.isHiddenKey])
             let isHidden = resourceValues?.isHidden ?? false
-            
+
             // 保留 /Volumes 目录
             if url.path == "/Volumes" {
                 return true
             }
-            
+
             // 保留 用户的 Library 目录
 //            if url.path == NSHomeDirectory() + "/Library" {
 //                return true
 //            }
-            
+
             // 过滤掉其他隐藏文件
             return !isHidden || publicVar.isShowHiddenFile
+        }
+
+        if let tagFilter = publicVar.finderTagFilter {
+            contents = contents.filter { url in
+                let tags = (try? url.resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? []
+                return tags.contains(tagFilter)
+            }
         }
         
         // 过滤出目录列表
@@ -335,6 +342,7 @@ extension ViewController {
                 var createDate: Date?
                 var addDate: Date?
                 var doNotActualRead=false
+                var finderTags: [String] = []
                 do{
                     // 文件在前i个，目录在后面
                     // Files in first i items, directories after
@@ -362,6 +370,7 @@ extension ViewController {
                            downloadingStatus != .current {
                             doNotActualRead=true
                         }
+                        finderTags = resourceValues.tagNames ?? []
                     // 目录
                     // Directory
                     }else{
@@ -389,18 +398,21 @@ extension ViewController {
                            {
                             doNotActualRead=true
                         }
+                        finderTags = resourceValues.tagNames ?? []
                     }
                 }catch{
                     log("Error reading properties.")
                 }
                 // log("i:",i,"path:",fileSortKey.path.removingPercentEncoding)
                 let newFileModel=FileModel(path: fileSortKey.path, ver: fileDB.db[SortKeyDir(folderpath)]!.ver, isDir: isDir, fileSize: fileSize, createDate: createDate, modDate: modDate, addDate: addDate, doNotActualRead: doNotActualRead)
+                newFileModel.finderTags = finderTags
                 // log(fileSortKey.path)
                 if let file = fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] {
                     if file.path == fileSortKey.path {
                         file.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
                         file.isDir=isDir
                         file.doNotActualRead=doNotActualRead
+                        file.finderTags=finderTags
                         // 检查文件或文件夹是否有变化(文件夹fileSize为nil)
                         // Check if file or folder has changed (folder fileSize is nil)
                         if fileSize != file.fileSize || modDate != file.modDate {
@@ -813,6 +825,7 @@ extension ViewController {
             // Reset search filter
             if !globalVar.keepFilterStateWhenSwitchFolder{
                 publicVar.isFilenameFilterOn = false
+                publicVar.finderTagFilter = nil
             }
             // 重置自动播放可见视频
             // Reset auto-play visible video

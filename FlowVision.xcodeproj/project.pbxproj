@@ -71,6 +71,7 @@
 		F7DECD6D2D00939300ECC099 /* CustomEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */; };
 		F7E0B31C2DBF0F55007CBD17 /* SDWebImageWebPCoder in Frameworks */ = {isa = PBXBuildFile; productRef = F7E0B31B2DBF0F55007CBD17 /* SDWebImageWebPCoder */; };
 		F7F600462E1E095400ED8536 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F600452E1E094900ED8536 /* Tag.swift */; };
+		F7F600482E1E095500ED8536 /* FinderTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F600472E1E094A00ED8536 /* FinderTag.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -175,6 +176,7 @@
 		F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEffectView.swift; sourceTree = "<group>"; };
 		F7E65E342C09C7F100ACC4C0 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		F7F600452E1E094900ED8536 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
+		F7F600472E1E094A00ED8536 /* FinderTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderTag.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,6 +201,7 @@
 				F73865E12C37C0A300837FE4 /* Enum.swift */,
 				F73865E72C37C26C00837FE4 /* FFmpegKit.swift */,
 				F73865D82C37BBCB00837FE4 /* GlobalVariable.swift */,
+				F7F600472E1E094A00ED8536 /* FinderTag.swift */,
 				F73865E32C37C11B00837FE4 /* ImageProcess.swift */,
 				F76E2EFD2C3B765C0031B0B4 /* Log.swift */,
 				F73865DA2C37BC1500837FE4 /* RefCode.swift */,
@@ -444,6 +447,7 @@
 				F77098972F0E436800E7D164 /* LargeImage.swift in Sources */,
 				F74D55582F0E493700C9AB85 /* LayoutProfileConfig.swift in Sources */,
 				F7F600462E1E095400ED8536 /* Tag.swift in Sources */,
+				F7F600482E1E095500ED8536 /* FinderTag.swift in Sources */,
 				F73865D92C37BBCB00837FE4 /* GlobalVariable.swift in Sources */,
 				F74D555A2F0E49AB00C9AB85 /* AutoScrollPlay.swift in Sources */,
 				F73865E62C37C1AA00837FE4 /* DrawingView.swift in Sources */,

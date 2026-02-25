@@ -298,7 +298,13 @@ extension ViewController {
                 }
                 return nil
             }
-            
+
+            if ["1","2","3","4","5","6","7"].contains(characters) && isOnlyCommandPressed {
+                let index = Int(characters)! - 1
+                handleToggleFinderTag(FinderTag.all[index].name)
+                return nil
+            }
+
             // 检查按键是否是 Command+Shift+"N" 键
             // Check if key is Command+Shift+"N"
             if characters == "n" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {

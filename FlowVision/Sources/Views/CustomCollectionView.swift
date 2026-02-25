@@ -126,9 +126,34 @@ class CustomCollectionView: NSCollectionView {
                                                         keyEquivalent: "")
                     
                     menu.addItem(newMenuItem)
-            
+
                     menu.addItem(NSMenuItem.separator())
-                    
+
+                    let filterMenu = NSMenu()
+                    let filterMenuItem = NSMenuItem(title: NSLocalizedString("Filter by Finder Tag", comment: "按Finder标签筛选"), action: nil, keyEquivalent: "")
+                    filterMenuItem.submenu = filterMenu
+
+                    let currentFilter = getViewController(self)?.publicVar.finderTagFilter
+
+                    for tag in FinderTag.all {
+                        let item = filterMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actFilterByFinderTag(_:)), keyEquivalent: "")
+                        item.representedObject = tag.name
+                        if currentFilter == tag.name {
+                            item.state = .on
+                        }
+                        item.image = tag.dotImage
+                    }
+
+                    filterMenu.addItem(NSMenuItem.separator())
+                    let showAllItem = filterMenu.addItem(withTitle: NSLocalizedString("Show All", comment: "显示全部"), action: #selector(actClearFinderTagFilter), keyEquivalent: "")
+                    if currentFilter == nil {
+                        showAllItem.state = .on
+                    }
+
+                    menu.addItem(filterMenuItem)
+
+                    menu.addItem(NSMenuItem.separator())
+
                     let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("Refresh", comment: "刷新"), action: #selector(actRefresh), keyEquivalent: "r")
                     actionItemRefresh.keyEquivalentModifierMask = [.command]
                     
@@ -186,5 +211,14 @@ class CustomCollectionView: NSCollectionView {
     // Add action handler method for new text file
     @objc func actNewTextFile() {
         getViewController(self)?.handleNewTextFile()
+    }
+
+    @objc func actFilterByFinderTag(_ sender: NSMenuItem) {
+        guard let tagName = sender.representedObject as? String else { return }
+        getViewController(self)?.toggleFinderTagFilter(tagName)
+    }
+
+    @objc func actClearFinderTagFilter() {
+        getViewController(self)?.toggleFinderTagFilter(nil)
     }
 }

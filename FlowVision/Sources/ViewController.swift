@@ -156,6 +156,7 @@ class PublicVar{
     var customZoomRatio: Double = 1.0
     var customZoomStep: Double = 0.1
     var currentTag:String? = nil
+    var finderTagFilter: String? = nil
 
     // 可一键切换的配置
     // Configuration that can be switched with one key

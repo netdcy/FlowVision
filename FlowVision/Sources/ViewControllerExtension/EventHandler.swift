@@ -229,6 +229,49 @@ extension ViewController {
         UserDefaults.standard.setValue(tag, forKey: "currentTag")
     }
     
+    func handleToggleFinderTag(_ tagName: String) {
+        let urls = publicVar.selectedUrls()
+        guard !urls.isEmpty else { return }
+
+        let added = FinderTagHelper.toggleTag(tagName, on: urls)
+        refreshFinderTagsForVisibleItems()
+
+        if let tag = FinderTag.byName(tagName) {
+            let action = added ? "+" : "-"
+            coreAreaView.showInfo("\(action) \(tag.name)", timeOut: 0.8, cannotBeCleard: false)
+        }
+    }
+
+    func refreshFinderTagsForVisibleItems() {
+        if let collectionView = collectionView {
+            for item in collectionView.visibleItems() {
+                if let item = item as? CustomCollectionViewItem {
+                    if let url = URL(string: item.file.path) {
+                        item.file.finderTags = FinderTagHelper.readTags(from: url)
+                    }
+                    item.refreshFinderTagDots()
+                }
+            }
+        }
+        if publicVar.isInLargeView, let url = URL(string: largeImageView.file.path) {
+            largeImageView.file.finderTags = FinderTagHelper.readTags(from: url)
+            largeImageView.refreshFinderTagDots()
+        }
+    }
+
+    func toggleFinderTagFilter(_ tagName: String?) {
+        if tagName == nil || publicVar.finderTagFilter == tagName {
+            publicVar.finderTagFilter = nil
+            coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: false)
+        } else {
+            publicVar.finderTagFilter = tagName
+            if let tagName = tagName, let tag = FinderTag.byName(tagName) {
+                coreAreaView.showInfo(NSLocalizedString("Filter", comment: "筛选") + ": \(tag.name)", timeOut: 0.8, cannotBeCleard: false)
+            }
+        }
+        refreshCollectionView(needLoadThumbPriority: true)
+    }
+
     func handleTagging(){
         
         let urls = publicVar.selectedUrls()

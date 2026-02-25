@@ -709,7 +709,8 @@ extension ViewController {
         }
         
         largeImageView.file=file
-        
+        largeImageView.refreshFinderTagDots()
+
         if justChangeLargeImageViewFile {return}
   
         let url=URL(string:file.path)!

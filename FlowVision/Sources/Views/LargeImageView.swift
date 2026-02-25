@@ -39,7 +39,8 @@ class LargeImageView: NSView {
     var ratioView: InfoView!
     var infoView: InfoView!
     var unsupportedVideoOverlay: NSView!
-    
+    var finderTagDotsView: NSView?
+
     // MARK: - 图片编辑相关属性
     // MARK: - Image editing related properties
     var imageEditingView: ImageEditingView?
@@ -183,6 +184,8 @@ class LargeImageView: NSView {
             self.addGestureRecognizer(gesture)
         }
         
+        refreshFinderTagDots()
+
         // 创建边缘切换箭头视图
         // Create edge switching arrow views
         createEdgeArrowViews()
@@ -202,7 +205,46 @@ class LargeImageView: NSView {
         exifTextView.textItems = items
         exifTextView.invalidateIntrinsicContentSize()
     }
-    
+
+    func refreshFinderTagDots() {
+        finderTagDotsView?.removeFromSuperview()
+        finderTagDotsView = nil
+
+        let tags = file.finderTags.compactMap { FinderTag.byName($0) }
+        guard !tags.isEmpty else { return }
+
+        let dotSize: CGFloat = 10
+        let spacing: CGFloat = 3
+        let padding: CGFloat = 6
+        let totalDotsWidth = CGFloat(tags.count) * dotSize + CGFloat(tags.count - 1) * spacing
+        let pillWidth = totalDotsWidth + padding * 2
+        let pillHeight = dotSize + padding * 2
+
+        let container = NSView()
+        container.wantsLayer = true
+        container.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.4).cgColor
+        container.layer?.cornerRadius = pillHeight / 2
+        container.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(container)
+
+        NSLayoutConstraint.activate([
+            container.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
+            container.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -15),
+            container.widthAnchor.constraint(equalToConstant: pillWidth),
+            container.heightAnchor.constraint(equalToConstant: pillHeight),
+        ])
+
+        for (i, tag) in tags.enumerated() {
+            let dot = NSView(frame: NSRect(x: padding + CGFloat(i) * (dotSize + spacing), y: padding, width: dotSize, height: dotSize))
+            dot.wantsLayer = true
+            dot.layer?.backgroundColor = tag.color.cgColor
+            dot.layer?.cornerRadius = dotSize / 2
+            container.addSubview(dot)
+        }
+
+        finderTagDotsView = container
+    }
+
     // MARK: - 边缘切换箭头视图
     // MARK: - Edge Switching Arrow Views
     
@@ -1562,7 +1604,30 @@ class LargeImageView: NSView {
             }
 
             menu.addItem(NSMenuItem.separator())
-            
+
+            let finderTagMenu = NSMenu()
+            let finderTagMenuItem = NSMenuItem(title: NSLocalizedString("Finder Tags", comment: "Finder标签"), action: nil, keyEquivalent: "")
+            finderTagMenuItem.submenu = finderTagMenu
+
+            let currentTags = file.finderTags
+
+            for (i, tag) in FinderTag.all.enumerated() {
+                let item = finderTagMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actToggleFinderTag(_:)), keyEquivalent: "\(i + 1)")
+                item.keyEquivalentModifierMask = [.command]
+                item.representedObject = tag.name
+                if currentTags.contains(tag.name) {
+                    item.state = .on
+                }
+                item.image = tag.dotImage
+            }
+
+            finderTagMenu.addItem(NSMenuItem.separator())
+            finderTagMenu.addItem(withTitle: NSLocalizedString("Remove All Tags", comment: "移除所有标签"), action: #selector(actRemoveAllFinderTags), keyEquivalent: "")
+
+            menu.addItem(finderTagMenuItem)
+
+            menu.addItem(NSMenuItem.separator())
+
             let actionItemRotateR = menu.addItem(withTitle: NSLocalizedString("Rotate Clockwise", comment: "顺时针旋转"), action: #selector(actRotateR), keyEquivalent: "e")
             actionItemRotateR.keyEquivalentModifierMask = []
             
@@ -1762,12 +1827,24 @@ class LargeImageView: NSView {
         getViewController(self)?.handleDelete(isShowPrompt: false)
     }
     
+    @objc func actToggleFinderTag(_ sender: NSMenuItem) {
+        guard let tagName = sender.representedObject as? String else { return }
+        getViewController(self)?.handleToggleFinderTag(tagName)
+    }
+
+    @objc func actRemoveAllFinderTags() {
+        guard let url = URL(string: file.path) else { return }
+        FinderTagHelper.removeAllTags(from: [url])
+        file.finderTags = []
+        getViewController(self)?.refreshFinderTagsForVisibleItems()
+    }
+
     @objc func actRefresh() {
         // file.rotate = 0
         LargeImageProcessor.clearCache()
         getViewController(self)?.changeLargeImage(firstShowThumb: true, resetSize: true, triggeredByLongPress: false, forceRefresh: true)
     }
-    
+
     @objc func actShowExif() {
         getViewController(self)!.publicVar.isShowExif.toggle()
         if file.type == .video,
