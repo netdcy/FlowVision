@@ -7,8 +7,6 @@ import Foundation
 import Cocoa
 import BTree
 
-var customLabels: [(String, Int?)] = []
-
 let FILE_LABEL_COLORS = NSWorkspace.shared.fileLabelColors
 let FILE_LABELS = NSWorkspace.shared.fileLabels
 
@@ -59,9 +57,11 @@ struct FinderTag {
             return FinderTag(name: labels[i], colorIndex: i)
         }
     }()
+    
+    static var customLabels: [(String, Int?)] = []
 
     static var all: [FinderTag] {
-        if customLabels.isEmpty { return [] } // systemColorLabels
+        // if customLabels.isEmpty { return systemColorLabels }
         return customLabels.map { FinderTag(name: $0.0, colorIndex: $0.1) }
     }
 

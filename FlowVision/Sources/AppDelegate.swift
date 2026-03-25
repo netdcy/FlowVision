@@ -214,11 +214,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         globalVar.myFavoritesArray = defaults.array(forKey: "globalVar.myFavoritesArray") as? [String] ?? [String]()
         
         if let savedLabels = UserDefaults.standard.array(forKey: CustomTagView.userDefaultsKey) as? [[String: Any]] {
-            customLabels = savedLabels.compactMap { dict in
+            FinderTag.customLabels = savedLabels.compactMap { dict in
                 guard let name = dict["name"] as? String else { return nil }
                 return (name, dict["colorIndex"] as? Int)
             }
+        } else {
+            FinderTag.customLabels = FinderTag.systemColorLabels.map { ($0.name, $0.colorIndex) }
         }
+        //UserDefaults.standard.removeObject(forKey: CustomTagView.userDefaultsKey)
 
         // requestAppleEventsPermission()
         

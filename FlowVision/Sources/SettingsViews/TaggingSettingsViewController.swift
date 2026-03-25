@@ -20,7 +20,6 @@ final class TaggingSettingsViewController: NSViewController, SettingsPane {
         super.viewDidLoad()
         learnMoreButton.onClick = { [weak self] in
             getAnyViewController()?.handleTagLearnMore()
-            print("fuck")
         }
     }
 
@@ -47,16 +46,11 @@ class CustomTagView: NSView {
     }
     
     private func loadTags() {
-        if customLabels.isEmpty {
-            tags = FinderTag.systemColorLabels.map { ($0.name, $0.colorIndex) }
-            applyAndSave()
-        } else {
-            tags = customLabels
-        }
+        tags = FinderTag.customLabels
     }
     
     fileprivate func applyAndSave() {
-        customLabels = tags
+        FinderTag.customLabels = tags
         let encoded: [[String: Any]] = tags.map { tag in
             var d: [String: Any] = ["name": tag.name]
             if let c = tag.colorIndex { d["colorIndex"] = c }

@@ -237,7 +237,7 @@ extension ViewController {
         refreshFinderTagsForVisibleItems(urls: urls)
 
         if let tag = FinderTag.byName(tagName) {
-            let action = added ? "+" : "-"
+            let action = added ? NSLocalizedString("Add", comment: "添加") : NSLocalizedString("Remove", comment: "移除")
             coreAreaView.showInfo("\(action) \(tag.name)", timeOut: 0.8, cannotBeCleard: false)
         }
     }
