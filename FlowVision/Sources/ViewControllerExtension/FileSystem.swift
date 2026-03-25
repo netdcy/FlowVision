@@ -282,6 +282,12 @@ extension ViewController {
             if publicVar.HandledFileExtensions.contains(file.pathExtension.lowercased()) || publicVar.isShowAllTypeFile {
                 filesUrlInFolder.append(file)
             }
+            // 不将替身文件统计为图像或视频
+            // Do not count alias files as images or videos
+            if let values = try? file.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
+               values.isAliasFile == true {
+                continue
+            }
             if publicVar.HandledImageAndRawExtensions.contains(file.pathExtension.lowercased()) {
                 imageCount+=1
             }
@@ -532,7 +538,9 @@ extension ViewController {
                 ele.1.canBeCalcued = false
                 if !ele.1.isDir{
                     ele.1.ext=URL(string: ele.1.path)!.pathExtension.lowercased()
-                    if globalVar.HandledImageAndRawExtensions.contains(ele.1.ext) {
+                    if ele.1.isAlias {
+                        ele.1.type = .other
+                    } else if globalVar.HandledImageAndRawExtensions.contains(ele.1.ext) {
                         ele.1.type = .image
                         ele.1.idInImage = idInImage
                         ele.1.idInImageAndVideo = idInImageAndVideo
