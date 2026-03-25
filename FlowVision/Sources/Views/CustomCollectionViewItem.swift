@@ -1353,7 +1353,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     
     @objc func actRename() {
         guard let urls = getViewController(collectionView!)?.publicVar.selectedUrls() else { return }
-        renameAlert(urls: urls);
+        getViewController(collectionView!)?.handleRename(urls: urls);
     }
     
     @objc func actNewFolder() {

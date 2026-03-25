@@ -1947,7 +1947,7 @@ class LargeImageView: NSView {
         NSWorkspace.shared.selectFile(file.path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!, inFileViewerRootedAtPath: folderPath)
     }
     @objc func actRename() {
-        renameAlert(urls: [URL(string: file.path)!]);
+        getViewController(self)?.handleRename(urls: [URL(string: file.path)!]);
     }
     
     @objc func actCopy() {

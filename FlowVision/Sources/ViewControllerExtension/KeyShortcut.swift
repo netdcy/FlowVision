@@ -239,7 +239,7 @@ extension ViewController {
                 // 如果焦点在CollectionView
                 // If focus is in CollectionView
                 if publicVar.isCollectionViewFirstResponder{
-                    renameAlert(urls: publicVar.selectedUrls())
+                    handleRename(urls: publicVar.selectedUrls())
                     return nil
                 }
             }
@@ -502,7 +502,7 @@ extension ViewController {
                     // 如果焦点在CollectionView
                     // If focus is in CollectionView
                     if publicVar.isCollectionViewFirstResponder{
-                        renameAlert(urls: publicVar.selectedUrls())
+                        handleRename(urls: publicVar.selectedUrls())
                         return nil
                     }
                 }else{
