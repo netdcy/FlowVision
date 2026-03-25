@@ -31,6 +31,7 @@ class LargeImageView: NSView {
     var videoEndObserver: NSObjectProtocol?
     var lastActionTriggerdReload: String?
     var isKeyWindowWhenMouseDown: Bool = true
+    var videoPreventDoubleClickOpenPauseFlag: Bool = false
     
     private var volumeObservation: NSKeyValueObservation?
     private var blackOverlayView: NSView?
@@ -1487,6 +1488,11 @@ class LargeImageView: NSView {
         longPressZoomTimer = nil
         wheelZoomRegenTimer?.invalidate()
         wheelZoomRegenTimer = nil
+
+        if videoPreventDoubleClickOpenPauseFlag {
+            videoPreventDoubleClickOpenPauseFlag = false
+            return
+        }
         
         if hasZoomedByWheel {
             getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false)
@@ -1501,8 +1507,9 @@ class LargeImageView: NSView {
         // 暂停/恢复视频
         // Pause/resume video
         if !(getViewController(self)!.publicVar.isRightMouseDown) && isKeyWindowWhenMouseDown {
-            let currentLocation = event.locationInWindow
-            pauseOrResumeVideo()
+            if file.type == .video {
+                pauseOrResumeVideo()
+            }
         }
 
         // 检测点击左侧、右侧区域来切换图像

@@ -294,8 +294,8 @@ extension ViewController {
             // 检查按键是否是 Command+[ 键
             // Check if key is Command+[
             if characters == "[" && isOnlyCommandPressed {
-                if !publicVar.isInLargeView{
-                    switchDirByDirection(direction: .back, stackDeep: 0)
+                if publicVar.isInLargeView{
+                    previousLargeImage()
                 }
                 return nil
             }
@@ -303,8 +303,8 @@ extension ViewController {
             // 检查按键是否是 Command+] 键
             // Check if key is Command+]
             if characters == "]" && isOnlyCommandPressed {
-                if !publicVar.isInLargeView{
-                    switchDirByDirection(direction: .forward, stackDeep: 0)
+                if publicVar.isInLargeView{
+                    nextLargeImage()
                 }
                 return nil
             }

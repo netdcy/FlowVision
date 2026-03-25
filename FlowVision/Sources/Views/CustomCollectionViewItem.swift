@@ -920,6 +920,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                         actOpenInNewTab()
                     }else{
                         viewController.openLargeImageFromIndexPath(selfIndexPath)
+                        viewController.largeImageView.videoPreventDoubleClickOpenPauseFlag = true
                     }
                 }else if viewController.publicVar.isInLargeView && viewController.publicVar.isInLargeViewAfterAnimate {
                     viewController.closeLargeImage([])
@@ -1395,13 +1396,23 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
     }
     
+    private func resolveAliasIfNeeded(_ url: URL) -> URL {
+        if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
+           values.isAliasFile == true, values.isSymbolicLink != true,
+           let resolved = try? URL(resolvingAliasFileAt: url) {
+            return resolved
+        }
+        return url
+    }
+    
     private func getRepresentativeUrls(for fileUrls: [URL]) -> [URL] {
         var representativeUrls: [String: URL] = [:]
         
         for fileUrl in fileUrls {
-            let fileExtension = fileUrl.pathExtension.lowercased()
+            let resolved = resolveAliasIfNeeded(fileUrl)
+            let fileExtension = resolved.pathExtension.lowercased()
             if representativeUrls[fileExtension] == nil {
-                representativeUrls[fileExtension] = fileUrl
+                representativeUrls[fileExtension] = resolved
             }
         }
         
@@ -1438,7 +1449,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         guard let appURL = sender.representedObject as? URL else { return }
         guard let fileUrls = getViewController(collectionView!)?.getSelectedURLs() else { return }
         
-        NSWorkspace.shared.open(fileUrls, withApplicationAt: appURL, configuration: NSWorkspace.OpenConfiguration(), completionHandler: { (app, error) in
+        let resolvedUrls = fileUrls.map { resolveAliasIfNeeded($0) }
+        NSWorkspace.shared.open(resolvedUrls, withApplicationAt: appURL, configuration: NSWorkspace.OpenConfiguration(), completionHandler: { (app, error) in
             if let error = error {
                 log("Error opening file: \(error.localizedDescription)")
             } else if let app = app {
