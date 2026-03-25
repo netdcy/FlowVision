@@ -111,6 +111,7 @@ class EnhancedIndex {
 
     private static var fileIndex: [String: FileMetaInfo] = [:]
     private static var tagIndex: [String: Set<String>] = [:]
+    private static var sortedPaths: [String] = []
 
     private static let indexLock = NSLock()
     private static var pendingWorkItem: DispatchWorkItem?
@@ -195,11 +196,13 @@ class EnhancedIndex {
 
             if tags.isEmpty {
                 fileIndex.removeValue(forKey: path)
+                removeSortedPath(path)
             } else {
                 fileIndex[path] = FileMetaInfo(tags: tags)
                 for tag in tags {
                     tagIndex[tag, default: Set()].insert(path)
                 }
+                insertSortedPath(path)
             }
             changed = true
         }
@@ -248,11 +251,13 @@ class EnhancedIndex {
             for path in pathsToRemove {
                 removePathFromIndices(path)
                 fileIndex.removeValue(forKey: path)
+                removeSortedPath(path)
             }
             for (path, newTags) in pathsToUpdate {
                 removePathFromIndices(path)
                 if newTags.isEmpty {
                     fileIndex.removeValue(forKey: path)
+                    removeSortedPath(path)
                 } else {
                     fileIndex[path] = FileMetaInfo(tags: newTags)
                     for tag in newTags {
@@ -265,6 +270,147 @@ class EnhancedIndex {
         }
 
         return result
+    }
+
+    // MARK: - 排序路径辅助（调用方需持有 indexLock）
+
+    private static func lowerBound(for value: String) -> Int {
+        var lo = 0, hi = sortedPaths.count
+        while lo < hi {
+            let mid = (lo + hi) / 2
+            if sortedPaths[mid] < value { lo = mid + 1 } else { hi = mid }
+        }
+        return lo
+    }
+
+    private static func insertSortedPath(_ path: String) {
+        let idx = lowerBound(for: path)
+        if idx < sortedPaths.count && sortedPaths[idx] == path { return }
+        sortedPaths.insert(path, at: idx)
+    }
+
+    private static func removeSortedPath(_ path: String) {
+        let idx = lowerBound(for: path)
+        if idx < sortedPaths.count && sortedPaths[idx] == path {
+            sortedPaths.remove(at: idx)
+        }
+    }
+
+    /// O(log n + k) prefix search over sorted paths. Caller must hold indexLock.
+    private static func indexedPaths(withPrefix prefix: String) -> [String] {
+        let start = lowerBound(for: prefix)
+        var result: [String] = []
+        for i in start..<sortedPaths.count {
+            if sortedPaths[i].hasPrefix(prefix) {
+                result.append(sortedPaths[i])
+            } else {
+                break
+            }
+        }
+        return result
+    }
+
+    // MARK: - 文件操作索引维护
+
+    /// 文件/文件夹移动或重命名后更新索引，自动处理子路径前缀替换。
+    static func handleFilesMoved(_ moves: [(oldPath: String, newPath: String)]) {
+        indexLock.lock()
+        var changed = false
+        for (oldPath, newPath) in moves {
+            let childPrefix = oldPath + "/"
+            let affectedChildren = indexedPaths(withPrefix: childPrefix)
+            var affectedPaths = affectedChildren
+            if fileIndex[oldPath] != nil { affectedPaths.insert(oldPath, at: 0) }
+
+            let destChildPrefix = newPath + "/"
+            let existingAtDest = indexedPaths(withPrefix: destChildPrefix)
+            var allExistingAtDest = existingAtDest
+            if fileIndex[newPath] != nil { allExistingAtDest.insert(newPath, at: 0) }
+            for p in allExistingAtDest {
+                removePathFromIndices(p)
+                fileIndex.removeValue(forKey: p)
+                removeSortedPath(p)
+                changed = true
+            }
+
+            for path in affectedPaths {
+                guard let info = fileIndex[path] else { continue }
+                let suffix = String(path.dropFirst(oldPath.count))
+                let newFullPath = newPath + suffix
+
+                removePathFromIndices(path)
+                fileIndex.removeValue(forKey: path)
+                removeSortedPath(path)
+
+                fileIndex[newFullPath] = info
+                for tag in info.tags {
+                    tagIndex[tag, default: Set()].insert(newFullPath)
+                }
+                insertSortedPath(newFullPath)
+                changed = true
+            }
+        }
+        indexLock.unlock()
+        if changed { scheduleSave() }
+    }
+
+    /// 文件/文件夹删除后清理索引，自动处理子路径。
+    static func handleFilesDeleted(_ paths: [String]) {
+        indexLock.lock()
+        var changed = false
+        for path in paths {
+            let childPrefix = path + "/"
+            let affectedChildren = indexedPaths(withPrefix: childPrefix)
+            var affectedPaths = affectedChildren
+            if fileIndex[path] != nil { affectedPaths.insert(path, at: 0) }
+
+            for p in affectedPaths {
+                removePathFromIndices(p)
+                fileIndex.removeValue(forKey: p)
+                removeSortedPath(p)
+                changed = true
+            }
+        }
+        indexLock.unlock()
+        if changed { scheduleSave() }
+    }
+
+    /// 文件/文件夹复制后复制索引条目，自动处理子路径。
+    static func handleFilesCopied(_ copies: [(sourcePath: String, destPath: String)]) {
+        indexLock.lock()
+        var changed = false
+        for (sourcePath, destPath) in copies {
+            let destChildPrefix = destPath + "/"
+            let existingAtDest = indexedPaths(withPrefix: destChildPrefix)
+            var allExistingAtDest = existingAtDest
+            if fileIndex[destPath] != nil { allExistingAtDest.insert(destPath, at: 0) }
+            for p in allExistingAtDest {
+                removePathFromIndices(p)
+                fileIndex.removeValue(forKey: p)
+                removeSortedPath(p)
+                changed = true
+            }
+
+            let sourceChildPrefix = sourcePath + "/"
+            let affectedChildren = indexedPaths(withPrefix: sourceChildPrefix)
+            var affectedPaths = affectedChildren
+            if fileIndex[sourcePath] != nil { affectedPaths.insert(sourcePath, at: 0) }
+
+            for path in affectedPaths {
+                guard let info = fileIndex[path] else { continue }
+                let suffix = String(path.dropFirst(sourcePath.count))
+                let newFullPath = destPath + suffix
+
+                fileIndex[newFullPath] = info
+                for tag in info.tags {
+                    tagIndex[tag, default: Set()].insert(newFullPath)
+                }
+                insertSortedPath(newFullPath)
+                changed = true
+            }
+        }
+        indexLock.unlock()
+        if changed { scheduleSave() }
     }
 
     // MARK: - 内部辅助（调用方需持有 indexLock）
@@ -341,6 +487,7 @@ class EnhancedIndex {
                     tagIndex[tag, default: Set()].insert(path)
                 }
             }
+            sortedPaths = fileIndex.keys.sorted()
             indexLock.unlock()
         } catch {
             log("EnhancedIndex load failed: \(error)", level: .error)

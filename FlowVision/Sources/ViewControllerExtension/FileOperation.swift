@@ -434,6 +434,7 @@ extension ViewController {
         // 记录成功粘贴的目标路径，用于刷新后选中
         // Record successfully pasted destination paths for selection after refresh
         var successfulDestURLs: [String] = []
+        var indexCopyPairs: [(sourcePath: String, destPath: String)] = []
         defer {
             publicVar.isInFileOperation = false
             if !successfulDestURLs.isEmpty {
@@ -449,6 +450,9 @@ extension ViewController {
                     scheduledRefresh()
                 }
             }
+            if !indexCopyPairs.isEmpty {
+                EnhancedIndex.handleFilesCopied(indexCopyPairs)
+            }
         }
         
         var shouldReplaceAll = false
@@ -459,6 +463,7 @@ extension ViewController {
         publicVar.isKeyEventEnabled = false
         for item in items {
             guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { continue }
+            let prevSuccessCount = successfulDestURLs.count
             var destURL = destinationURL.appendingPathComponent(fileURL.lastPathComponent)
 
             if ifAutoRenameWhenDifferentSource {
@@ -552,6 +557,11 @@ extension ViewController {
                 } catch {
                     log("Failed to paste \(fileURL): \(error)")
                 }
+            }
+            if successfulDestURLs.count > prevSuccessCount,
+               let destStr = successfulDestURLs.last,
+               let destPath = URL(string: destStr)?.path {
+                indexCopyPairs.append((sourcePath: fileURL.path, destPath: destPath))
             }
         }
         publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
@@ -675,6 +685,7 @@ extension ViewController {
         // 记录成功粘贴的目标路径，用于刷新后选中
         // Record successfully pasted destination paths for selection after refresh
         var successfulDestURLs: [String] = []
+        var indexMovePairs: [(oldPath: String, newPath: String)] = []
         defer {
             publicVar.isInFileOperation = false
             if !successfulDestURLs.isEmpty {
@@ -695,6 +706,9 @@ extension ViewController {
                     scheduledRefresh()
                 }
             }
+            if !indexMovePairs.isEmpty {
+                EnhancedIndex.handleFilesMoved(indexMovePairs)
+            }
         }
         
         var shouldReplaceAll = false
@@ -705,6 +719,7 @@ extension ViewController {
         publicVar.isKeyEventEnabled = false
         for item in items {
             guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { continue }
+            let prevSuccessCount = successfulDestURLs.count
             var destURL = destinationURL.appendingPathComponent(fileURL.lastPathComponent)
             
             // 如果是在同一目录移动，则不作动作
@@ -798,6 +813,11 @@ extension ViewController {
                 } catch {
                     log("Failed to move \(fileURL): \(error)")
                 }
+            }
+            if successfulDestURLs.count > prevSuccessCount,
+               let destStr = successfulDestURLs.last,
+               let destPath = URL(string: destStr)?.path {
+                indexMovePairs.append((oldPath: fileURL.path, newPath: destPath))
             }
         }
         publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
@@ -917,6 +937,8 @@ extension ViewController {
                     }
                 }
                 
+                EnhancedIndex.handleFilesDeleted(urlsToDelete.map { $0.path })
+
                 // 文件更改计数
                 // File change count
                 publicVar.fileChangedCount += 1

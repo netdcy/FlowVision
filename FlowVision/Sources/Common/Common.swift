@@ -597,6 +597,10 @@ func renameAlert(urls: [URL]) -> Bool {
                 }
             }
             
+            if allSuccess && !finalNames.isEmpty {
+                EnhancedIndex.handleFilesMoved(finalNames.map { (oldPath: $0.originalUrl.path, newPath: $0.finalUrl.path) })
+            }
+
             // 针对递归模式处理
             // Handle recursive mode
             if let viewController = getMainViewController() {
