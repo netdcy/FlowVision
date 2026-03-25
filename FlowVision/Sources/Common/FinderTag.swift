@@ -185,8 +185,10 @@ class EnhancedIndex {
             let path = url.path
             let tags = (try? url.resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? []
 
-            if let existing = fileIndex[path], existing.tags == tags {
-                continue
+            if let existing = fileIndex[path] {
+                if existing.tags == tags { continue }
+            } else {
+                if tags.isEmpty { continue }
             }
 
             removePathFromIndices(path)
@@ -316,13 +318,13 @@ class EnhancedIndex {
             log("EnhancedIndex save failed: \(error)", level: .error)
         }
         let elapsed = CFAbsoluteTimeGetCurrent() - startTime
-        log("EnhancedIndex saved (\(snapshot.count) entries) in \(String(format: "%.4f", elapsed))s", level: .debug)
+        log("EnhancedIndex saved (\(snapshot.count) entries) in \(String(format: "%.4f", elapsed))s", level: .info)
     }
 
     private static func loadFromFile() {
         let startTime = CFAbsoluteTimeGetCurrent()
         guard FileManager.default.fileExists(atPath: dataFileURL.path) else {
-            log("EnhancedIndex: data file not found, starting fresh", level: .debug)
+            log("EnhancedIndex: data file not found, starting fresh", level: .info)
             return
         }
 
@@ -344,6 +346,6 @@ class EnhancedIndex {
             log("EnhancedIndex load failed: \(error)", level: .error)
         }
         let elapsed = CFAbsoluteTimeGetCurrent() - startTime
-        log("EnhancedIndex loaded (\(fileIndex.count) entries) in \(String(format: "%.4f", elapsed))s", level: .debug)
+        log("EnhancedIndex loaded (\(fileIndex.count) entries) in \(String(format: "%.4f", elapsed))s", level: .info)
     }
 }
