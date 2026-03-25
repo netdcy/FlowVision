@@ -365,9 +365,57 @@ extension ViewController {
     func handleRating(rating: Int) {
         guard publicVar.isCollectionViewFirstResponder else { return }
         let urls: [URL] = publicVar.selectedUrls()
+        var successUrls: [URL] = []
+        publicVar.isInFileOperation = true
         for url in urls {
-            writeRating(inputURL: url, outputURL: url, rating: rating)
+            if writeRating(inputURL: url, outputURL: url, rating: rating) {
+                successUrls.append(url)
+            }
         }
+        publicVar.isInFileOperation = false
+        if !successUrls.isEmpty {
+            refreshRatingForVisibleItems(urls: successUrls, rating: rating)
+        }
+    }
+    
+    func refreshRatingForVisibleItems(urls: [URL], rating: Int) {
+        let changedPaths = Set(urls.map { $0.absoluteString })
+        
+        if let collectionView = collectionView {
+            for item in collectionView.visibleItems() {
+                if let item = item as? CustomCollectionViewItem {
+                    if changedPaths.contains(item.file.path) {
+                        if let imageInfo = item.file.imageInfo {
+                            imageInfo.rating = rating
+                            item.refreshRatingStars()
+                        }
+                    }
+                }
+            }
+        }
+        if publicVar.isInLargeView, changedPaths.contains(largeImageView.file.path) {
+            if let imageInfo = largeImageView.file.imageInfo {
+                imageInfo.rating = rating
+                largeImageView.refreshRatingStars()
+            }
+        }
+        
+        fileDB.lock()
+        let curFolder = fileDB.curFolder
+        if let dirModel = fileDB.db[SortKeyDir(curFolder)] {
+            for url in urls {
+                let filePath = url.absoluteString
+                for ele in dirModel.files {
+                    if ele.0.path == filePath {
+                        if let imageInfo = ele.1.imageInfo {
+                            imageInfo.rating = rating
+                        }
+                        break
+                    }
+                }
+            }
+        }
+        fileDB.unlock()
     }
 
     func toggleLargeImageViewShowTagsAndRating() {

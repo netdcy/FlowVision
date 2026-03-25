@@ -2119,14 +2119,14 @@ func readRating(from imageURL: URL) -> Int? {
     return nil
 }
 
-func writeRating(inputURL: URL, outputURL: URL, rating: Int) {
+func writeRating(inputURL: URL, outputURL: URL, rating: Int) -> Bool {
     // SMB 等网络盘在覆盖写入后有时会把文件标成隐藏，先记下原始状态并在写入后恢复
     let originalIsHidden = (try? inputURL.resourceValues(forKeys: [.isHiddenKey]))?.isHidden ?? false
 
-    guard let imageSource = CGImageSourceCreateWithURL(inputURL as CFURL, nil) else { return }
-    guard let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) else { return }
-    guard let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil) else { return }
-    guard let mutableMetadata = CGImageMetadataCreateMutableCopy(metadata) else { return }
+    guard let imageSource = CGImageSourceCreateWithURL(inputURL as CFURL, nil) else { return false }
+    guard let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) else { return false }
+    guard let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil) else { return false }
+    guard let mutableMetadata = CGImageMetadataCreateMutableCopy(metadata) else { return false }
     
     let namespace = "http://ns.adobe.com/xap/1.0/"
     let prefix = "xmp"
@@ -2140,20 +2140,21 @@ func writeRating(inputURL: URL, outputURL: URL, rating: Int) {
         CGImageMetadataRemoveTagWithPath(mutableMetadata, nil, "\(prefix):\(key)" as CFString)
     } else {
         let value = rating as CFNumber
-        guard CGImageMetadataSetValueWithPath(mutableMetadata, nil, "\(prefix):\(key)" as CFString, value) else { return }
+        guard CGImageMetadataSetValueWithPath(mutableMetadata, nil, "\(prefix):\(key)" as CFString, value) else { return false}
     }
     
-    guard let imageDestination = CGImageDestinationCreateWithURL(outputURL as CFURL, CGImageSourceGetType(imageSource)!, 1, nil) else { return }
+    guard let imageDestination = CGImageDestinationCreateWithURL(outputURL as CFURL, CGImageSourceGetType(imageSource)!, 1, nil) else { return false }
     
     CGImageDestinationAddImageAndMetadata(imageDestination, image, mutableMetadata, nil)
     
-    guard CGImageDestinationFinalize(imageDestination) else { return }
+    guard CGImageDestinationFinalize(imageDestination) else { return false }
 
     // 写入后恢复原来的「隐藏」属性，避免 SMB 等网络盘把文件错误标成隐藏
     var values = URLResourceValues()
     values.isHidden = originalIsHidden
     var tmpURL = outputURL
     try? tmpURL.setResourceValues(values)
+    return true
 }
 
 func distanceBetweenPoints(_ point1: NSPoint, _ point2: NSPoint) -> CGFloat {

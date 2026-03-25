@@ -137,7 +137,7 @@ extension ViewController {
                         
                         try FileManager.default.createDirectory(at: newFolderURL, withIntermediateDirectories: true, attributes: nil)
                         log("Successfully created folder: \(newFolderURL.path)")
-                        // Create folder succeeded
+                        publicVar.filesForLocateAfterChange = [newFolderURL.absoluteString]
                         return (true,newFolderURL)
                     } catch {
                         log("Failed to create folder: \(error)", level: .error)
@@ -216,6 +216,7 @@ extension ViewController {
                         publicVar.fileChangedCount += 1
                         
                         log("Successfully created text file: \(newFileURL.path)")
+                        publicVar.filesForLocateAfterChange = [newFileURL.absoluteString]
                         return (true,newFileURL)
                     } catch {
                         log("Failed to create text file: \(error)", level: .error)
@@ -239,6 +240,10 @@ extension ViewController {
             
             handleCopy()
             handleMove(targetURL: newFolderURL)
+            
+            if let newFolderURL = newFolderURL {
+                publicVar.filesForLocateAfterChange = [newFolderURL.absoluteString]
+            }
             
             // 还原剪贴板内容
             // Restore pasteboard content
@@ -441,7 +446,7 @@ extension ViewController {
                 triggerFinderSound()
                 publicVar.filesForLocateAfterChange = successfulDestURLs
                 var ifRefresh = true
-                if publicVar.isRecursiveMode {
+                if publicVar.isRecursiveMode || curFolder.hasPrefix("file:///VirtualFinderTagsFolder") {
                     fileDB.lock()
                     ifRefresh = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD
                     fileDB.unlock()
@@ -697,7 +702,7 @@ extension ViewController {
                     pasteboard.clearContents()
                 }
                 var ifRefresh = true
-                if publicVar.isRecursiveMode {
+                if publicVar.isRecursiveMode || curFolder.hasPrefix("file:///VirtualFinderTagsFolder") {
                     fileDB.lock()
                     ifRefresh = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD
                     fileDB.unlock()
@@ -830,6 +835,10 @@ extension ViewController {
         }
         guard urls.count != 0 else {return false}
         
+        fileDB.lock()
+        let curFolder = fileDB.curFolder
+        fileDB.unlock()
+        
         let ifHasPermission = requestAppleEventsPermission()
         let isShiftPressed = isShiftKeyPressed()
         
@@ -859,6 +868,13 @@ extension ViewController {
             publicVar.isKeyEventEnabled=false
             response = alert.runModal()
             publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
+        }
+
+        // 在文件操作期间抑制文件系统监控触发的刷新，操作完成后主动刷新
+        // Suppress FS watcher refreshes during file operations, refresh explicitly after completion
+        publicVar.isInFileOperation = true
+        defer {
+            publicVar.isInFileOperation = false
         }
 
         if response == .alertFirstButtonReturn {
@@ -944,15 +960,16 @@ extension ViewController {
                 // File change count
                 publicVar.fileChangedCount += 1
 
-                // 针对递归模式处理
-                // Handle recursive mode
-                if publicVar.isRecursiveMode {
+                // 手动刷新
+                // Manually refresh
+                var ifRefresh = true
+                if publicVar.isRecursiveMode || curFolder.hasPrefix("file:///VirtualFinderTagsFolder") {
                     fileDB.lock()
-                    let ifRefresh = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD
+                    ifRefresh = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD
                     fileDB.unlock()
-                    if ifRefresh {
-                        scheduledRefresh()
-                    }
+                }
+                if ifRefresh {
+                    scheduledRefresh()
                 }
                 
             } else {
@@ -1022,6 +1039,10 @@ extension ViewController {
     
     func handleRename(urls: [URL]) -> Bool {
         if urls.isEmpty { return false }
+
+        fileDB.lock()
+        let curFolder = fileDB.curFolder
+        fileDB.unlock()
         
         // 创建一个警告对话框
         // Create an alert dialog
@@ -1048,8 +1069,8 @@ extension ViewController {
         
         // 显示对话框
         // Show dialog
-        let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
-        getMainViewController()!.publicVar.isKeyEventEnabled = false
+        let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
+        publicVar.isKeyEventEnabled = false
         DispatchQueue.main.async {
             // 判断是否是文件夹
             // Check if it's a folder
@@ -1069,7 +1090,14 @@ extension ViewController {
             }
         }
         let response = alert.runModal()
-        getMainViewController()!.publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
+        publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
+
+        // 在文件操作期间抑制文件系统监控触发的刷新，操作完成后主动刷新
+        // Suppress FS watcher refreshes during file operations, refresh explicitly after completion
+        publicVar.isInFileOperation = true
+        defer {
+            publicVar.isInFileOperation = false
+        }
         
         // 根据用户的选择处理结果
         // Process result based on user's choice
@@ -1187,7 +1215,7 @@ extension ViewController {
                         do {
                             // 文件更改计数
                             // File change count
-                            getMainViewController()?.publicVar.fileChangedCount += 1
+                            publicVar.fileChangedCount += 1
                             
                             try FileManager.default.moveItem(at: item.tempUrl, to: item.finalUrl)
                             log("File renamed to \(item.finalUrl.lastPathComponent)")
@@ -1205,17 +1233,17 @@ extension ViewController {
                     EnhancedIndex.handleFilesMoved(finalNames.map { (oldPath: $0.originalUrl.path, newPath: $0.finalUrl.path) })
                 }
 
-                // 针对递归模式处理
-                // Handle recursive mode
-                if let viewController = getMainViewController() {
-                    if viewController.publicVar.isRecursiveMode {
-                        viewController.fileDB.lock()
-                        let ifRefresh = viewController.fileDB.db[SortKeyDir(viewController.fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD
-                        viewController.fileDB.unlock()
-                        if ifRefresh {
-                            viewController.scheduledRefresh()
-                        }
-                    }
+                // 手动刷新
+                // Manually refresh
+                var ifRefresh = true
+                if publicVar.isRecursiveMode || curFolder.hasPrefix("file:///VirtualFinderTagsFolder") {
+                    fileDB.lock()
+                    ifRefresh = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD
+                    fileDB.unlock()
+                    
+                }
+                if ifRefresh {
+                    scheduledRefresh()
                 }
                 
                 return allSuccess
