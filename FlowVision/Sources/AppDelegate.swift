@@ -498,12 +498,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             
             if globalVar.myFavoritesArray.count > 0 {
                 for (index, folderPath) in globalVar.myFavoritesArray.enumerated() {
+                    let displayTitle = folderPath
+                        .replacingOccurrences(of: "file://", with: "")
+                        .removingPercentEncoding!
+                        .replacingOccurrences(of: "/VirtualFinderTagsFolder", with: NSLocalizedString("Finder Tags", comment: "Finder标签"))
                     let folderMenuItem = NSMenuItem(
-                        title: folderPath.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!,
+                        title: displayTitle,
                         action: #selector(pathClick(_:)),
                         keyEquivalent: ""
                     )
                     folderMenuItem.target = self
+                    folderMenuItem.representedObject = folderPath
                     
                     // 创建子菜单
                     // Create submenu
@@ -582,7 +587,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
 
             if mainViewController.publicVar.folderStepStack.count > 0 {
                 for item in mainViewController.publicVar.folderStepStack {
-                    let menuItem = NSMenuItem(title: item.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!, action: #selector(pathClick(_:)), keyEquivalent: "")
+                    let historyDisplayTitle = item
+                        .replacingOccurrences(of: "file://", with: "")
+                        .removingPercentEncoding!
+                        .replacingOccurrences(of: "/VirtualFinderTagsFolder", with: NSLocalizedString("Finder Tags", comment: "Finder标签"))
+                    let menuItem = NSMenuItem(title: historyDisplayTitle, action: #selector(pathClick(_:)), keyEquivalent: "")
+                    menuItem.representedObject = item
                     menuItem.target = self
                     historyMenu.addItem(menuItem)
                 }
@@ -821,7 +831,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         guard let mainViewController=getMainViewController() else {return}
         log("Clicked on \(sender.title)")
 
-        guard let url=URL(string: getFileStylePath(sender.title)) else {return}
+        let rawPath = (sender.representedObject as? String) ?? sender.title
+        guard let url=URL(string: getFileStylePath(rawPath)) else {return}
         if mainViewController.publicVar.isInLargeView {
             mainViewController.closeLargeImage(0)
         }

@@ -1120,12 +1120,17 @@ extension WindowController: NSToolbarDelegate {
         
         if globalVar.myFavoritesArray.count > 0 {
             for (index, folderPath) in globalVar.myFavoritesArray.enumerated() {
+                let displayTitle = folderPath
+                    .replacingOccurrences(of: "file://", with: "")
+                    .removingPercentEncoding!
+                    .replacingOccurrences(of: "/VirtualFinderTagsFolder", with: NSLocalizedString("Finder Tags", comment: "Finder标签"))
                 let folderMenuItem = NSMenuItem(
-                    title: folderPath.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!,
+                    title: displayTitle,
                     action: #selector(pathClick(_:)),
                     keyEquivalent: ""
                 )
                 folderMenuItem.target = self
+                folderMenuItem.representedObject = folderPath
                 
                 // 创建子菜单
                 // Create submenu
@@ -1673,7 +1678,8 @@ extension WindowController: NSToolbarDelegate {
         guard let viewController = contentViewController as? ViewController else {return}
         log("Clicked on \(sender.title)")
 
-        guard let url=URL(string: getFileStylePath(sender.title)) else {return}
+        let rawPath = (sender.representedObject as? String) ?? sender.title
+        guard let url=URL(string: getFileStylePath(rawPath)) else {return}
         if viewController.publicVar.isInLargeView {
             viewController.closeLargeImage(0)
         }
