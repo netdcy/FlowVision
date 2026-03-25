@@ -11,6 +11,10 @@ class CoreAreaView: NSView {
     var infoView: InfoView!
     var cannotBeCleard: Bool = true
     
+    private var scanProgressView: NSView?
+    private var scanProgressLabel: NSTextField?
+    var onScanCancel: (() -> Void)?
+    
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         commonInit()
@@ -41,6 +45,86 @@ class CoreAreaView: NSView {
         if !self.cannotBeCleard || force {
             infoView.hide(duration: duration)
         }
+    }
+    
+    // MARK: - Scan Progress Overlay
+    
+    func showScanProgress(_ message: String) {
+        if scanProgressView == nil {
+            setupScanProgressView()
+        }
+        scanProgressLabel?.stringValue = message
+        
+        guard let overlay = scanProgressView, overlay.isHidden else { return }
+        overlay.isHidden = false
+        overlay.alphaValue = 0
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.25
+            overlay.animator().alphaValue = 1.0
+        }
+    }
+    
+    func hideScanProgress(delayed: Double = 0) {
+        guard let overlay = scanProgressView, !overlay.isHidden else { return }
+        let hide = { [weak self] in
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.3
+                overlay.animator().alphaValue = 0
+            }) {
+                overlay.isHidden = true
+                overlay.removeFromSuperview()
+                self?.scanProgressView = nil
+                self?.scanProgressLabel = nil
+            }
+        }
+        if delayed > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delayed) { hide() }
+        } else {
+            hide()
+        }
+    }
+    
+    private func setupScanProgressView() {
+        let container = NSView()
+        container.wantsLayer = true
+        container.layer?.backgroundColor = NSColor.systemBlue.withAlphaComponent(0.82).cgColor
+        container.layer?.cornerRadius = 8
+        container.translatesAutoresizingMaskIntoConstraints = false
+        
+        let label = NSTextField(labelWithString: "")
+        label.textColor = .white
+        label.font = NSFont.systemFont(ofSize: 13, weight: .medium)
+        label.lineBreakMode = .byTruncatingTail
+        label.maximumNumberOfLines = 1
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        let cancelBtn = ClickableLabel(title: NSLocalizedString("Cancel", comment: "取消")) { [weak self] in
+            self?.onScanCancel?()
+            self?.hideScanProgress()
+        }
+        cancelBtn.translatesAutoresizingMaskIntoConstraints = false
+        
+        container.addSubview(label)
+        container.addSubview(cancelBtn)
+        addSubview(container)
+        
+        NSLayoutConstraint.activate([
+            container.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
+            container.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -16),
+            container.widthAnchor.constraint(lessThanOrEqualToConstant: 360),
+            
+            label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 14),
+            label.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            
+            cancelBtn.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 12),
+            cancelBtn.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -10),
+            cancelBtn.topAnchor.constraint(equalTo: container.topAnchor, constant: 8),
+            cancelBtn.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -8),
+        ])
+        
+        container.isHidden = true
+        scanProgressView = container
+        scanProgressLabel = label
     }
     
     override func awakeFromNib() {

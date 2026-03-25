@@ -7,7 +7,7 @@ import Foundation
 import Cocoa
 import BTree
 
-var customLabels: [(String, Int?)] = [("Test", nil)]
+var customLabels: [(String, Int?)] = []
 
 let FILE_LABEL_COLORS = NSWorkspace.shared.fileLabelColors
 let FILE_LABELS = NSWorkspace.shared.fileLabels
@@ -177,6 +177,12 @@ class EnhancedIndex {
 
     // MARK: - 扫描文件夹并更新索引
 
+    static func cancelScan() {
+        scanIDLock.lock()
+        currentScanID += 1
+        scanIDLock.unlock()
+    }
+
     /// progress callback: (message, isComplete)
     static func scanFolder(_ folderURL: URL, progress: ((String, Bool) -> Void)? = nil) {
         guard ENHANCED_INDEX_ENABLED else { return }
@@ -215,6 +221,7 @@ class EnhancedIndex {
             guard !isCancelled() else { return }
             progress?("\(NSLocalizedString("Updating Index", comment: "更新索引中")): \(urls.count) ...", false)
             updateFiles(urls)
+            guard !isCancelled() else { return }
             progress?("\(NSLocalizedString("Scan Complete", comment: "扫描完成"))", true)
         }
     }

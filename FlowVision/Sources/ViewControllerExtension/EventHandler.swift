@@ -282,10 +282,16 @@ extension ViewController {
     }
 
     func handleScanEnhancedIndex(url: URL) {
+        coreAreaView.onScanCancel = {
+            EnhancedIndex.cancelScan()
+        }
         EnhancedIndex.scanFolder(url) { message, isComplete in
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
-                coreAreaView.showInfo(message, timeOut: isComplete ? 2.0 : .infinity, cannotBeCleard: false)
+                coreAreaView.showScanProgress(message)
+                if isComplete {
+                    coreAreaView.hideScanProgress(delayed: 1.5)
+                }
             }
         }
     }
