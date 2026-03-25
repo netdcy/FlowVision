@@ -9,6 +9,7 @@
         <customObject id="-2" userLabel="File's Owner" customClass="TaggingSettingsViewController" customModule="FlowVision" customModuleProvider="target">
             <connections>
                 <outlet property="customTagView" destination="d0r-LL-TNQ" id="lWO-GQ-jk9"/>
+                <outlet property="enableEnhancedIndexCheckbox" destination="EDf-Da-Tf7" id="101-qL-PEb"/>
                 <outlet property="learnMoreButton" destination="qnF-Ts-3A1" id="Ee8-af-7RP"/>
                 <outlet property="view" destination="w9t-Vi-0Is" id="NFn-zx-iPh"/>
             </connections>
@@ -98,6 +99,9 @@
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="enableEnhancedIndexToggled:" target="-2" id="LRz-Xd-TEI"/>
+                                </connections>
                             </button>
                         </gridCell>
                         <gridCell row="b7O-3o-hpH" column="X7r-A5-zjQ" id="grl-qV-M0L"/>

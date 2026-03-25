@@ -265,6 +265,8 @@ class EnhancedIndex {
     private static let indexLock = NSLock()
     private static let loadingGroup = DispatchGroup()
     private static var isLoaded = false
+    private static let initLock = NSLock()
+    private static var isInitializing = false
     private static var pendingWorkItem: DispatchWorkItem?
     private static let saveQueue = DispatchQueue(label: "com.flowvision.EnhancedIndex.save")
     private static let debounceInterval: TimeInterval = 2.0
@@ -283,11 +285,21 @@ class EnhancedIndex {
     // MARK: - 初始化
 
     static func initialize() {
-        guard ENHANCED_INDEX_ENABLED else { return }
+        guard globalVar.enhancedIndexEnabled else { return }
+        initLock.lock()
+        if isLoaded || isInitializing {
+            initLock.unlock()
+            return
+        }
+        isInitializing = true
         loadingGroup.enter()
+        initLock.unlock()
         DispatchQueue.global(qos: .userInitiated).async {
             loadFromFile()
+            initLock.lock()
             isLoaded = true
+            isInitializing = false
+            initLock.unlock()
             loadingGroup.leave()
         }
     }
@@ -307,7 +319,7 @@ class EnhancedIndex {
 
     /// progress callback: (message, isComplete)
     static func scanFolder(_ folderURL: URL, progress: ((String, Bool) -> Void)? = nil) {
-        guard ENHANCED_INDEX_ENABLED else { return }
+        guard globalVar.enhancedIndexEnabled else { return }
         waitUntilLoaded()
         scanIDLock.lock()
         currentScanID += 1
@@ -351,7 +363,7 @@ class EnhancedIndex {
     // MARK: - 批量更新文件的标签信息
 
     static func updateFiles(_ urls: [URL], isCalledByDirOpen: Bool = false, recordTime: Bool = false) {
-        guard ENHANCED_INDEX_ENABLED else { return }
+        guard globalVar.enhancedIndexEnabled else { return }
         if !isLoaded {
             if isCalledByDirOpen { return }
             waitUntilLoaded()
@@ -399,7 +411,7 @@ class EnhancedIndex {
     // MARK: - 根据标签查询文件（带验证）
 
     static func filesForTag(_ tagName: String) -> [URL] {
-        guard ENHANCED_INDEX_ENABLED else { return [] }
+        guard globalVar.enhancedIndexEnabled else { return [] }
         waitUntilLoaded()
         indexLock.lock()
         let paths = tagIndex[tagName] ?? Set()
@@ -487,7 +499,7 @@ class EnhancedIndex {
 
     /// 文件/文件夹移动或重命名后更新索引，自动处理子路径前缀替换。
     static func handleFilesMoved(_ moves: [(oldPath: String, newPath: String)]) {
-        guard ENHANCED_INDEX_ENABLED else { return }
+        guard globalVar.enhancedIndexEnabled else { return }
         waitUntilLoaded()
         indexLock.lock()
         var changed = false
@@ -531,7 +543,7 @@ class EnhancedIndex {
 
     /// 文件/文件夹删除后清理索引，自动处理子路径。
     static func handleFilesDeleted(_ paths: [String]) {
-        guard ENHANCED_INDEX_ENABLED else { return }
+        guard globalVar.enhancedIndexEnabled else { return }
         waitUntilLoaded()
         indexLock.lock()
         var changed = false
@@ -554,7 +566,7 @@ class EnhancedIndex {
 
     /// 文件/文件夹复制后复制索引条目，自动处理子路径。
     static func handleFilesCopied(_ copies: [(sourcePath: String, destPath: String)]) {
-        guard ENHANCED_INDEX_ENABLED else { return }
+        guard globalVar.enhancedIndexEnabled else { return }
         waitUntilLoaded()
         indexLock.lock()
         var changed = false
@@ -618,7 +630,7 @@ class EnhancedIndex {
     }
 
     static func flushPendingSave() {
-        guard ENHANCED_INDEX_ENABLED else { return }
+        guard globalVar.enhancedIndexEnabled else { return }
         waitUntilLoaded()
         saveQueue.sync {
             guard let item = pendingWorkItem, !item.isCancelled else { return }

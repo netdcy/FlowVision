@@ -15,11 +15,21 @@ final class TaggingSettingsViewController: NSViewController, SettingsPane {
     
     @IBOutlet weak var customTagView: CustomTagView!
     @IBOutlet weak var learnMoreButton: LearnMoreClickableLabel!
+    @IBOutlet weak var enableEnhancedIndexCheckbox: NSButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        enableEnhancedIndexCheckbox.state = globalVar.enhancedIndexEnabled ? .on : .off
         learnMoreButton.onClick = { [weak self] in
             getAnyViewController()?.handleTagLearnMore()
+        }
+    }
+
+    @IBAction func enableEnhancedIndexToggled(_ sender: NSButton) {
+        globalVar.enhancedIndexEnabled = (sender.state == .on)
+        UserDefaults.standard.set(globalVar.enhancedIndexEnabled, forKey: "enhancedIndexEnabled")
+        if globalVar.enhancedIndexEnabled {
+            EnhancedIndex.initialize()
         }
     }
 

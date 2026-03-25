@@ -211,6 +211,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let largeImageViewShowTagsAndRating = UserDefaults.standard.value(forKey: "largeImageViewShowTagsAndRating") as? Bool {
             globalVar.largeImageViewShowTagsAndRating = largeImageViewShowTagsAndRating
         }
+        if let enhancedIndexEnabled = UserDefaults.standard.value(forKey: "enhancedIndexEnabled") as? Bool {
+            globalVar.enhancedIndexEnabled = enhancedIndexEnabled
+        }
         globalVar.myFavoritesArray = defaults.array(forKey: "globalVar.myFavoritesArray") as? [String] ?? [String]()
         
         if let savedLabels = UserDefaults.standard.array(forKey: CustomTagView.userDefaultsKey) as? [[String: Any]] {

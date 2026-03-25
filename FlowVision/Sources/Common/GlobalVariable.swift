@@ -103,6 +103,7 @@ class GlobalVar{
     var keepFilterStateWhenSwitchFolder = false
     var dirTreeAutoExpand = true
     var largeImageViewShowTagsAndRating = true
+    var enhancedIndexEnabled = true
     
     // 可记忆设置变量
     // Rememberable settings variables
