@@ -425,11 +425,27 @@ extension WindowController: NSToolbarDelegate {
         switch itemIdentifier {
             
         case .windowTitle:
-            let text = (contentViewController as? ViewController)?.publicVar.toolbarTitle
-            let titleLabel = createWindowTitleLabel(string: text ?? "FlowVision")
-            titleLabel.font = NSFont.systemFont(ofSize: 13, weight: .regular)
-            titleLabel.textColor = titleFontColor
-            titleLabel.alignment = .center
+            let title = (contentViewController as? ViewController)?.publicVar.toolbarTitle ?? "FlowVision"
+            let isInLargeView = viewController.publicVar.isInLargeView
+            let showExtra = isInLargeView || viewController.publicVar.profile.getValue(forKey: "isWindowTitleShowStatistics") == "true"
+            let statisticInfo = viewController.publicVar.titleStatisticInfo
+            
+            let font = NSFont.systemFont(ofSize: 13, weight: .regular)
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+            let attributedString = NSMutableAttributedString(
+                string: title,
+                attributes: [.foregroundColor: titleFontColor, .font: font, .paragraphStyle: paragraphStyle]
+            )
+            if showExtra && !statisticInfo.isEmpty {
+                attributedString.append(NSAttributedString(
+                    string: " " + statisticInfo,
+                    attributes: [.foregroundColor: NSColor.placeholderTextColor, .font: font, .paragraphStyle: paragraphStyle]
+                ))
+            }
+            
+            let titleLabel = createWindowTitleLabel(string: "")
+            titleLabel.attributedStringValue = attributedString
             toolbarItem.view = titleLabel
             toolbarItem.minSize = NSSize(width: 200, height: titleLabel.fittingSize.height)
             toolbarItem.maxSize = NSSize(width: 10000, height: titleLabel.fittingSize.height)

@@ -443,11 +443,11 @@ extension ViewController {
         let imageCount = fileDB.db[SortKeyDir(folderPath)]?.imageCount ?? 0
         let videoCount = fileDB.db[SortKeyDir(folderPath)]?.videoCount ?? 0
         let rangeCount = globalVar.useInternalPlayer ? imageCount+videoCount : imageCount
+        var indexInfo = ""
         if rangeCount != 0 {
             if let file = fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)] {
-                // fullTitle += " | " + String(format: "(%d/%d)",idInImage+1,imageCount)
                 let idInRange = globalVar.useInternalPlayer ? file.idInImageAndVideo : file.idInImage
-                fullTitle += " " + String(format: "(%d/%d)",idInRange+1,rangeCount)
+                indexInfo = String(format: "(%d/%d)",idInRange+1,rangeCount)
                 publicVar.lastLargeImageIdInImage=idInRange
             }
         }
@@ -456,6 +456,7 @@ extension ViewController {
         let shortTitle = (file.path as NSString).lastPathComponent.removingPercentEncoding!
         view.window?.title = shortTitle
         publicVar.toolbarTitle = fullTitle
+        publicVar.titleStatisticInfo = indexInfo
         // publicVar.toolbarTitle = shortTitle
         if let windowController = view.window?.windowController as? WindowController {
             windowController.updateToolbarSync()

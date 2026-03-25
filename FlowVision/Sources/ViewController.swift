@@ -1216,10 +1216,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //        }
         
         publicVar.toolbarTitle = shortTitle
-        
-        if publicVar.profile.getValue(forKey: "isWindowTitleShowStatistics") == "true" {
-            publicVar.toolbarTitle += " " + statisticInfo
-        }
 
         publicVar.titleStatisticInfo = statisticInfo
         view.window?.title = shortTitle
