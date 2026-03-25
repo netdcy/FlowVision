@@ -608,7 +608,10 @@ class TreeViewModel {
             // Check if it's the root directory
             if folderURL.path == "/VirtualFinderTagsFolder" {
                 for tag in FinderTag.all {
-                    contents.append(URL(string: "file:///VirtualFinderTagsFolder/\(tag.name)/")!)
+                    if let encodedName = tag.name.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
+                       let tagURL = URL(string: "file:///VirtualFinderTagsFolder/\(encodedName)/") {
+                        contents.append(tagURL)
+                    }
                 }
             } else if folderURL.path != "root" {
                 contents = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: [.isDirectoryKey, .isUbiquitousItemKey, .isHiddenKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey], options: [])

@@ -122,17 +122,19 @@ extension UserDefaults {
     }
 }
 
-func getFileStylePath(_ path: String) -> String {
-    guard let url=URL(string: path.removingPercentEncoding!.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!) else{return ""}
-    var path=url.absoluteString
-    path = path.hasPrefix("file://") ? path : "file://" + path
-    return path
+func getFileSchemeAbsPath(_ path: String) -> String {
+    var pathNoScheme = path.hasPrefix("file://") ? String(path.dropFirst("file://".count)) : path
+    pathNoScheme = pathNoScheme.removingPercentEncoding!.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
+    let pathWithScheme = "file://" + pathNoScheme
+    return pathWithScheme
 }
 
-func getFileStyleFolderPath(_ path: String) -> String {
-    guard let url=URL(string: path.removingPercentEncoding!.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!) else{return ""}
+func getFileSchemeAbsParentFolderPath(_ path: String) -> String {
+    var pathNoScheme = path.hasPrefix("file://") ? String(path.dropFirst("file://".count)) : path
+    pathNoScheme = pathNoScheme.removingPercentEncoding!.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
+    let pathWithScheme = "file://" + pathNoScheme
+    guard let url=URL(string: pathWithScheme) else { return "" }
     var folderPath=url.deletingLastPathComponent().absoluteString
-    folderPath = folderPath.hasPrefix("file://") ? folderPath : "file://" + folderPath
     return folderPath
 }
 

@@ -295,13 +295,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 if !tmp.hasSuffix("/"){
                     tmp += "/"
                 }
-                openFolder=getFileStyleFolderPath(tmp+"xxx")
+                openFolder=getFileSchemeAbsParentFolderPath(tmp+"xxx")
             }else{
                 // 如果打开文件
                 // If opening file
-                openFolder=getFileStyleFolderPath(path)
+                openFolder=getFileSchemeAbsParentFolderPath(path)
                 if globalVar.portableMode,
-                   let originalSize=getImageInfo(url: URL(string: getFileStylePath(path))!, needMetadata: false)?.size{
+                   let originalSize=getImageInfo(url: URL(string: getFileSchemeAbsPath(path))!, needMetadata: false)?.size{
                     globalVar.startSpeedUpImageSizeCache=originalSize
                 }
             }
@@ -364,8 +364,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             path = FileManager.default.currentDirectoryPath
         }
         
-        var file = path.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
-        file = file.hasPrefix("file://") ? file : "file://" + file
+        var file = getFileSchemeAbsPath(path)
         if let url=URL(string: file){
             NSDocumentController.shared.noteNewRecentDocumentURL(url)
         }
@@ -435,8 +434,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     
     func openImageInTargetWindow(_ openPath: String, windowController: NSWindowController){
         guard let viewController = windowController.contentViewController as? ViewController else {return}
-        let folderPath=getFileStyleFolderPath(openPath)
-        let path=getFileStylePath(openPath)
+        let folderPath=getFileSchemeAbsParentFolderPath(openPath)
+        let path=getFileSchemeAbsPath(openPath)
         
         viewController.publicVar.openFromFinderPath=path
         viewController.OpenLargeImageFromFinder(path: path)
@@ -838,7 +837,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         log("Clicked on \(sender.title)")
 
         let rawPath = (sender.representedObject as? String) ?? sender.title
-        guard let url=URL(string: getFileStylePath(rawPath)) else {return}
+        guard let url=URL(string: getFileSchemeAbsPath(rawPath)) else {return}
         if mainViewController.publicVar.isInLargeView {
             mainViewController.closeLargeImage(0)
         }

@@ -1684,7 +1684,7 @@ extension WindowController: NSToolbarDelegate {
         log("Clicked on \(sender.title)")
 
         let rawPath = (sender.representedObject as? String) ?? sender.title
-        guard let url=URL(string: getFileStylePath(rawPath)) else {return}
+        guard let url=URL(string: getFileSchemeAbsPath(rawPath)) else {return}
         if viewController.publicVar.isInLargeView {
             viewController.closeLargeImage(0)
         }

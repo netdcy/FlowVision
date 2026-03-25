@@ -215,15 +215,15 @@ extension ViewController {
             if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
                values.isAliasFile == true, values.isSymbolicLink != true,
                let resolved = try? URL(resolvingAliasFileAt: url) {
-                let resolvedPath = getFileStylePath(resolved.path) + "/"
+                let resolvedAbsPath = resolved.absoluteString
                 if resolved.hasDirectoryPath {
-                    switchDirByDirection(direction: .zero, dest: resolvedPath, stackDeep: 0)
+                    switchDirByDirection(direction: .zero, dest: resolvedAbsPath, stackDeep: 0)
                 } else if globalVar.HandledImageAndRawExtensions.contains(resolved.pathExtension.lowercased()) ||
                     (globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(resolved.pathExtension.lowercased())) {
                     if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
                         globalVar.isLaunchFromFile = true
-                        if let windowController = appDelegate.createNewWindow(resolvedPath) {
-                            appDelegate.openImageInTargetWindow(resolvedPath, windowController: windowController)
+                        if let windowController = appDelegate.createNewWindow(resolvedAbsPath) {
+                            appDelegate.openImageInTargetWindow(resolvedAbsPath, windowController: windowController)
                         }
                     }
                 } else {

@@ -510,13 +510,13 @@ extension ViewController {
                     
                     // 转换为 file:// URL 格式
                     // Convert to file:// URL format
-                    var destPath = getFileStylePath(fullPath)
+                    var destPath = getFileSchemeAbsPath(fullPath)
                     
                     // 检查是否是目录
                     // Check if is directory
                     if !isDirectory.boolValue {
                         if let appDelegate=NSApplication.shared.delegate as? AppDelegate {
-                            appDelegate.openImageInMainWindow(getFileStylePath(destPath))
+                            appDelegate.openImageInMainWindow(getFileSchemeAbsPath(destPath))
                         }
                         return
                     }
