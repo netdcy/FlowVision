@@ -21,9 +21,62 @@ class LogViewController: NSViewController {
 
     var logMessages: [(String, LogLevel)] = []
 
+    private let logFont = NSFont.monospacedSystemFont(ofSize: 11, weight: .regular)
+    private let logBoldFont = NSFont.monospacedSystemFont(ofSize: 11, weight: .semibold)
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Additional setup if needed
+        setupTextView()
+        setupFilterBar()
+    }
+
+    private func setupTextView() {
+        logTextView.font = logFont
+        logTextView.isEditable = false
+        logTextView.isSelectable = true
+        logTextView.textContainerInset = NSSize(width: 5, height: 5)
+        logTextView.isAutomaticQuoteSubstitutionEnabled = false
+        logTextView.isAutomaticDashSubstitutionEnabled = false
+        logTextView.isAutomaticTextReplacementEnabled = false
+        logTextView.isAutomaticSpellingCorrectionEnabled = false
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 2
+        logTextView.defaultParagraphStyle = paragraphStyle
+    }
+
+    private func setupFilterBar() {
+        styleCheckBox(debugCheckBox, level: .debug)
+        styleCheckBox(infoCheckBox, level: .info)
+        styleCheckBox(warnCheckBox, level: .warn)
+        styleCheckBox(errorCheckBox, level: .error)
+
+        let clearButton = NSButton(title: "Clear", target: self, action: #selector(clearLog(_:)))
+        clearButton.bezelStyle = .rounded
+        clearButton.controlSize = .small
+        clearButton.font = NSFont.systemFont(ofSize: 11)
+        clearButton.sizeToFit()
+        clearButton.autoresizingMask = [.minXMargin, .minYMargin]
+        let cbFrame = debugCheckBox.frame
+        clearButton.frame.origin = NSPoint(
+            x: view.frame.width - clearButton.frame.width - 16,
+            y: cbFrame.origin.y + (cbFrame.height - clearButton.frame.height) / 2
+        )
+        view.addSubview(clearButton)
+
+        let separator = NSBox(frame: NSRect(x: 15, y: cbFrame.origin.y - 8, width: view.frame.width - 30, height: 1))
+        separator.boxType = .separator
+        separator.autoresizingMask = [.width, .minYMargin]
+        view.addSubview(separator)
+    }
+
+    private func styleCheckBox(_ button: NSButton, level: LogLevel) {
+        let attrs: [NSAttributedString.Key: Any] = [
+            .foregroundColor: level.color,
+            .font: NSFont.systemFont(ofSize: 12, weight: .medium)
+        ]
+        button.attributedTitle = NSAttributedString(string: button.title, attributes: attrs)
+        button.attributedAlternateTitle = NSAttributedString(string: button.title, attributes: attrs)
     }
 
     func addLogMessage(_ message: String, level: LogLevel) {
@@ -52,14 +105,83 @@ class LogViewController: NSViewController {
             filteredMessages = filteredMessages.filter { $0.1 != .error }
         }
 
-        logTextView.string = filteredMessages.map { $0.0 }.joined(separator: "\n")
-        
-        // Scroll to bottom
-        let range = NSRange(location: logTextView.string.count, length: 0)
-        logTextView.scrollRangeToVisible(range)
+        let attributedText = NSMutableAttributedString()
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 2
+
+        for (index, (message, level)) in filteredMessages.enumerated() {
+            if index > 0 {
+                attributedText.append(NSAttributedString(string: "\n"))
+            }
+            attributedText.append(styledLogMessage(message, level: level, paragraphStyle: paragraphStyle))
+        }
+
+        logTextView.textStorage?.setAttributedString(attributedText)
+
+        if let layoutManager = logTextView.layoutManager, let textContainer = logTextView.textContainer {
+            layoutManager.ensureLayout(for: textContainer)
+        }
+        logTextView.scrollToEndOfDocument(nil)
+
+        updateWindowTitle(total: logMessages.count, filtered: filteredMessages.count)
+    }
+
+    private func styledLogMessage(_ message: String, level: LogLevel, paragraphStyle: NSParagraphStyle) -> NSAttributedString {
+        let result = NSMutableAttributedString()
+        let levelTag = "[\(level.description)]"
+
+        if let tagRange = message.range(of: levelTag) {
+            let timestampPart = String(message[message.startIndex..<tagRange.lowerBound])
+            let messagePart = String(message[tagRange.upperBound...])
+
+            result.append(NSAttributedString(string: timestampPart, attributes: [
+                .font: logFont,
+                .foregroundColor: NSColor.tertiaryLabelColor,
+                .paragraphStyle: paragraphStyle
+            ]))
+            result.append(NSAttributedString(string: levelTag, attributes: [
+                .font: logBoldFont,
+                .foregroundColor: level.color,
+                .paragraphStyle: paragraphStyle
+            ]))
+            result.append(NSAttributedString(string: messagePart, attributes: [
+                .font: logFont,
+                .foregroundColor: NSColor.labelColor,
+                .paragraphStyle: paragraphStyle
+            ]))
+        } else {
+            result.append(NSAttributedString(string: message, attributes: [
+                .font: logFont,
+                .foregroundColor: level.color,
+                .paragraphStyle: paragraphStyle
+            ]))
+        }
+
+        if level == .error {
+            let fullRange = NSRange(location: 0, length: result.length)
+            result.addAttribute(.backgroundColor, value: NSColor.systemRed.withAlphaComponent(0.08), range: fullRange)
+        } else if level == .warn {
+            let fullRange = NSRange(location: 0, length: result.length)
+            result.addAttribute(.backgroundColor, value: NSColor.systemOrange.withAlphaComponent(0.05), range: fullRange)
+        }
+
+        return result
+    }
+
+    private func updateWindowTitle(total: Int, filtered: Int) {
+        if total == filtered {
+            view.window?.title = "Log (\(total))"
+        } else {
+            view.window?.title = "Log (\(filtered)/\(total))"
+        }
     }
 
     @IBAction func checkBoxChanged(_ sender: NSButton) {
+        refreshLogView()
+    }
+
+    @objc func clearLog(_ sender: Any?) {
+        logMessages.removeAll()
         refreshLogView()
     }
 }
@@ -77,6 +199,7 @@ class LogWindowController: NSWindowController, NSWindowDelegate {
     override func windowDidLoad() {
         super.windowDidLoad()
         window?.delegate = self
+        window?.minSize = NSSize(width: 480, height: 300)
     }
 
     func addLogMessage(_ message: String, level: LogLevel) {
@@ -96,6 +219,15 @@ enum LogLevel: Int {
         case .info: return "INFO"
         case .warn: return "WARN"
         case .error: return "ERROR"
+        }
+    }
+
+    var color: NSColor {
+        switch self {
+        case .debug: return .systemGray
+        case .info:  return .systemBlue
+        case .warn:  return .systemOrange
+        case .error: return .systemRed
         }
     }
 }

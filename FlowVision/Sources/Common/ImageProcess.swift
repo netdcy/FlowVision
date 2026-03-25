@@ -648,7 +648,7 @@ func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Boo
 func compressImageToThumbnail(_ image: NSImage) -> NSImage? {
 
     guard let myImageSource = createCGImageSource(from: image) else {
-        log(stderr, "Image source is NULL.");
+        log("Image source is NULL.", level: .warn);
         return nil
     }
     let thumbnailOptions = [kCGImageSourceCreateThumbnailWithTransform : kCFBooleanTrue!,
@@ -659,7 +659,7 @@ func compressImageToThumbnail(_ image: NSImage) -> NSImage? {
     ] as CFDictionary;
 
     guard let scaledImage = CGImageSourceCreateThumbnailAtIndex(myImageSource,0,thumbnailOptions)else {
-        log(stderr, "Image not created from image source.");
+        log("Image not created from image source.", level: .warn)
         return nil
     };
 
@@ -672,7 +672,7 @@ func createCGImageSource(from nsImage: NSImage) -> CGImageSource? {
     // 尝试将NSImage转换为CGImage
     // Try to convert NSImage to CGImage
     guard let cgImage = nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
-        log("Failed to create CGImage from NSImage")
+        log("Failed to create CGImage from NSImage", level: .warn)
         // Unable to create CGImage from NSImage
         return nil
     }
@@ -681,7 +681,7 @@ func createCGImageSource(from nsImage: NSImage) -> CGImageSource? {
     // Create Bitmap Representation of CGImage
     let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
     guard let data = bitmapRep.representation(using: .png, properties: [:]) else {
-        log("Failed to get data from Bitmap Representation")
+        log("Failed to get data from Bitmap Representation", level: .warn)
         // Unable to get data from Bitmap Representation
         return nil
     }
@@ -768,17 +768,17 @@ func getVideoThumbnailFFmpeg(for url: URL, at time: TimeInterval = 10) -> NSImag
                     try? FileManager.default.removeItem(at: URL(fileURLWithPath: thumbnailPath))
                     return thumbnail
                 } else {
-                    log("Failed to load thumbnail image from \(thumbnailPath)")
+                    log("Failed to load thumbnail image from \(thumbnailPath)", level: .warn)
                 }
             } else {
-                log("FFmpeg command failed with return code \(String(describing: returnCode))")
-                log(output ?? "")
+                log("FFmpeg command failed with return code \(String(describing: returnCode))", level: .warn)
+                log(output ?? "", level: .warn)
             }
         } else {
-            log("Failed to get return code")
+            log("Failed to get return code", level: .warn)
         }
     } else {
-        log("FFmpeg execution failed")
+        log("FFmpeg execution failed", level: .warn)
     }
     // return getFileTypeIcon(url: url)
     return nil
@@ -941,7 +941,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         let myOptions = [kCGImageSourceShouldCache : kCFBooleanFalse] as CFDictionary;
         
         guard let myImageSource = CGImageSourceCreateWithURL(url as NSURL, myOptions) else {
-            log(stderr, "Image source is NULL.");
+            log("Image source is NULL.", level: .warn);
             // return getFileTypeIcon(url: url)
             return nil
         }
@@ -967,7 +967,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         }
         
         guard let scaledImage = CGImageSourceCreateThumbnailAtIndex(myImageSource,0,thumbnailOptions)else {
-            log(stderr, "Thumbnail not created from image source.");
+            log("Thumbnail not created from image source.", level: .warn);
             // return getFileTypeIcon(url: url)
             return nil
         };
@@ -1006,7 +1006,7 @@ func getFullExifThumbnail(url: URL, size oriSize: NSSize? = nil, rotate: Int = 0
     let myOptions = [kCGImageSourceShouldCache : kCFBooleanFalse] as CFDictionary;
     
     guard let myImageSource = CGImageSourceCreateWithURL(url as NSURL, myOptions) else {
-        log(stderr, "Image source is NULL.");
+        log("Image source is NULL.", level: .warn);
         // return getFileTypeIcon(url: url)
         return nil
     }
@@ -1019,7 +1019,7 @@ func getFullExifThumbnail(url: URL, size oriSize: NSSize? = nil, rotate: Int = 0
     ] as CFDictionary;
     
     guard let scaledImage = CGImageSourceCreateThumbnailAtIndex(myImageSource,0,thumbnailOptions) else {
-        log(stderr, "Thumbnail not created from image source.");
+        log("Thumbnail not created from image source.", level: .warn);
         // return getFileTypeIcon(url: url)
         return nil
     };

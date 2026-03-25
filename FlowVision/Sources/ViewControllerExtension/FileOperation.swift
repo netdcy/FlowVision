@@ -22,7 +22,7 @@ extension ViewController {
         do {
             try fileManager.createDirectory(at: tempRoot, withIntermediateDirectories: true)
         } catch {
-            log("Failed to create temp folder for promised files: \(error)")
+            log("Failed to create temp folder for promised files: \(error)", level: .error)
             return false
         }
         
@@ -32,7 +32,7 @@ extension ViewController {
         for receiver in receivers {
             receiver.receivePromisedFiles(atDestination: tempRoot, options: [:], operationQueue: .main) { [weak self] fileURL, error in
                 if let error = error {
-                    log("Failed to receive promised file: \(error)")
+                    log("Failed to receive promised file: \(error)", level: .error)
                 } else {
                     receivedURLs.append(fileURL)
                 }
@@ -140,7 +140,7 @@ extension ViewController {
                         // Create folder succeeded
                         return (true,newFolderURL)
                     } catch {
-                        log("Failed to create folder: \(error)")
+                        log("Failed to create folder: \(error)", level: .error)
                         // Create folder failed
                     }
                 }
@@ -218,7 +218,7 @@ extension ViewController {
                         log("Successfully created text file: \(newFileURL.path)")
                         return (true,newFileURL)
                     } catch {
-                        log("Failed to create text file: \(error)")
+                        log("Failed to create text file: \(error)", level: .error)
                     }
                 }
             }
@@ -485,7 +485,7 @@ extension ViewController {
                         successfulDestURLs.append(destURL.absoluteString)
                         publicVar.fileChangedCount += 1
                     } catch {
-                        log("Failed to paste \(fileURL): \(error)")
+                        log("Failed to paste \(fileURL): \(error)", level: .error)
                     }
                 } else if shouldSkipAll {
                     continue
@@ -496,7 +496,7 @@ extension ViewController {
                         successfulDestURLs.append(destURL.absoluteString)
                         publicVar.fileChangedCount += 1
                     } catch {
-                        log("Failed to paste \(fileURL): \(error)")
+                        log("Failed to paste \(fileURL): \(error)", level: .error)
                     }
                 } else {
                     let userChoice = showReplaceDialog(for: destURL, isSingle: items.count == 1, isMove: false)
@@ -508,7 +508,7 @@ extension ViewController {
                             successfulDestURLs.append(destURL.absoluteString)
                             publicVar.fileChangedCount += 1
                         } catch {
-                            log("Failed to paste \(fileURL): \(error)")
+                            log("Failed to paste \(fileURL): \(error)", level: .error)
                         }
                     case .replaceAll:
                         shouldReplaceAll = true
@@ -518,7 +518,7 @@ extension ViewController {
                             successfulDestURLs.append(destURL.absoluteString)
                             publicVar.fileChangedCount += 1
                         } catch {
-                            log("Failed to paste \(fileURL): \(error)")
+                            log("Failed to paste \(fileURL): \(error)", level: .error)
                         }
                     case .autoRename:
                         destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
@@ -527,7 +527,7 @@ extension ViewController {
                             successfulDestURLs.append(destURL.absoluteString)
                             publicVar.fileChangedCount += 1
                         } catch {
-                            log("Failed to paste \(fileURL): \(error)")
+                            log("Failed to paste \(fileURL): \(error)", level: .error)
                         }
                     case .autoRenameAll:
                         shouldAutoRenameAll = true
@@ -537,7 +537,7 @@ extension ViewController {
                             successfulDestURLs.append(destURL.absoluteString)
                             publicVar.fileChangedCount += 1
                         } catch {
-                            log("Failed to paste \(fileURL): \(error)")
+                            log("Failed to paste \(fileURL): \(error)", level: .error)
                         }
                     case .skip:
                         continue
@@ -555,7 +555,7 @@ extension ViewController {
                     successfulDestURLs.append(destURL.absoluteString)
                     publicVar.fileChangedCount += 1
                 } catch {
-                    log("Failed to paste \(fileURL): \(error)")
+                    log("Failed to paste \(fileURL): \(error)", level: .error)
                 }
             }
             if successfulDestURLs.count > prevSuccessCount,
@@ -741,7 +741,7 @@ extension ViewController {
                         successfulDestURLs.append(destURL.absoluteString)
                         publicVar.fileChangedCount += 1
                     } catch {
-                        log("Failed to move \(fileURL): \(error)")
+                        log("Failed to move \(fileURL): \(error)", level: .error)
                     }
                 } else if shouldSkipAll {
                     continue
@@ -752,7 +752,7 @@ extension ViewController {
                         successfulDestURLs.append(destURL.absoluteString)
                         publicVar.fileChangedCount += 1
                     } catch {
-                        log("Failed to move \(fileURL): \(error)")
+                        log("Failed to move \(fileURL): \(error)", level: .error)
                     }
                 } else {
                     let userChoice = showReplaceDialog(for: destURL, isSingle: items.count == 1, isMove: true)
@@ -764,7 +764,7 @@ extension ViewController {
                             successfulDestURLs.append(destURL.absoluteString)
                             publicVar.fileChangedCount += 1
                         } catch {
-                            log("Failed to move \(fileURL): \(error)")
+                            log("Failed to move \(fileURL): \(error)", level: .error)
                         }
                     case .replaceAll:
                         shouldReplaceAll = true
@@ -774,7 +774,7 @@ extension ViewController {
                             successfulDestURLs.append(destURL.absoluteString)
                             publicVar.fileChangedCount += 1
                         } catch {
-                            log("Failed to move \(fileURL): \(error)")
+                            log("Failed to move \(fileURL): \(error)", level: .error)
                         }
                     case .autoRename:
                         destURL = getUniqueDestinationURL(for: destURL, isInPlace: false)
@@ -783,7 +783,7 @@ extension ViewController {
                             successfulDestURLs.append(destURL.absoluteString)
                             publicVar.fileChangedCount += 1
                         } catch {
-                            log("Failed to move \(fileURL): \(error)")
+                            log("Failed to move \(fileURL): \(error)", level: .error)
                         }
                     case .autoRenameAll:
                         shouldAutoRenameAll = true
@@ -793,7 +793,7 @@ extension ViewController {
                             successfulDestURLs.append(destURL.absoluteString)
                             publicVar.fileChangedCount += 1
                         } catch {
-                            log("Failed to move \(fileURL): \(error)")
+                            log("Failed to move \(fileURL): \(error)", level: .error)
                         }
                     case .skip:
                         continue
@@ -811,7 +811,7 @@ extension ViewController {
                     successfulDestURLs.append(destURL.absoluteString)
                     publicVar.fileChangedCount += 1
                 } catch {
-                    log("Failed to move \(fileURL): \(error)")
+                    log("Failed to move \(fileURL): \(error)", level: .error)
                 }
             }
             if successfulDestURLs.count > prevSuccessCount,
@@ -924,13 +924,13 @@ extension ViewController {
                             // AppleScript 无权限，回退到 NSWorkspace.shared.recycle
                             NSWorkspace.shared.recycle(urlsToDelete, completionHandler: { (newURLs, error) in
                                 if let error = error {
-                                    log("Failed to delete: \(error)")
+                                    log("Failed to delete: \(error)", level: .error)
                                 } else {
                                     log("File moved to trash")
                                 }
                             })
                         } else if let error = error {
-                            log("Failed to delete: \(error)")
+                            log("Failed to delete: \(error)", level: .error)
                         } else {
                             log("File moved to trash")
                         }

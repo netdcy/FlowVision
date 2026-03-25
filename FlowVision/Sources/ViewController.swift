@@ -117,7 +117,7 @@ class CustomProfile: Codable {
                 let loadedStyle = try decoder.decode(CustomProfile.self, from: savedData)
                 return loadedStyle
             } catch {
-                log("Failed to decode CustomProfile: \(error)")
+                log("Failed to decode CustomProfile: \(error)", level: .error)
             }
         }
         // 读取异常时返回默认值
@@ -1799,8 +1799,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 #endif
                     
                     if (overTime > 600 && LRUqueue.count >= 2) || (Int(memUse) > memUseLimit) || (debug && LRUqueue.count >= 2) {
-                        log("Memory free:", level: .warn)
-                        log(lastLRUItem.0.removingPercentEncoding, level: .warn)
+                        log("Memory free:", level: .info)
+                        log(lastLRUItem.0.removingPercentEncoding, level: .info)
                         // 由于先置目录再请求缩略图，所以此处可保证安全
                         // Safe here because directory is set before requesting thumbnails
                         
@@ -2200,7 +2200,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         watchFileDescriptor = open(path, O_EVTONLY)
         guard watchFileDescriptor != -1 else {
-            log("Failed to open directory, errno: \(errno)")
+            log("Failed to open directory, errno: \(errno)", level: .warn)
             return
         }
         

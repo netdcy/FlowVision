@@ -570,7 +570,7 @@ func renameAlert(urls: [URL]) -> Bool {
                     for prevTemp in tempNames {
                         try? FileManager.default.moveItem(at: prevTemp.tempUrl, to: finalNames[tempNames.count].originalUrl)
                     }
-                    log("Failed to create temp name: \(error)")
+                    log("Failed to create temp name: \(error)", level: .error)
                     allSuccess = false
                     break
                 }
@@ -588,7 +588,7 @@ func renameAlert(urls: [URL]) -> Bool {
                         try FileManager.default.moveItem(at: item.tempUrl, to: item.finalUrl)
                         log("File renamed to \(item.finalUrl.lastPathComponent)")
                     } catch {
-                        log("Failed to rename file: \(error)")
+                        log("Failed to rename file: \(error)", level: .error)
                         allSuccess = false
                         // 这里不需要回滚，因为用户可以通过临时文件找回
                         // No need to rollback here, as user can recover through temporary files
@@ -768,7 +768,7 @@ func requestAppleEventsPermission() -> Bool {
         let result = script.executeAndReturnError(&error)
         
         if let error = error {
-            log("Failed to request automation permission: \(error)")
+            log("Failed to request automation permission: \(error)", level: .warn)
             // Request automation permission failed
         } else {
             log("Successfully requested automation permission: \(result.stringValue ?? "")")
@@ -776,7 +776,7 @@ func requestAppleEventsPermission() -> Bool {
             return true
         }
     } else {
-        log("Unable to create AppleScript instance")
+        log("Unable to create AppleScript instance", level: .error)
         // Unable to create AppleScript instance
     }
     

@@ -1184,7 +1184,7 @@ Gw
                                     <rect key="frame" x="0.0" y="0.0" width="745" height="522"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textView wantsLayer="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" findStyle="bar" spellingCorrection="YES" smartInsertDelete="YES" id="Hvc-43-Pyw">
+                                        <textView wantsLayer="YES" importsGraphics="NO" richText="YES" verticallyResizable="YES" findStyle="bar" id="Hvc-43-Pyw">
                                             <rect key="frame" x="0.0" y="0.0" width="745" height="522"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1203,7 +1203,7 @@ Gw
                                 </scroller>
                             </scrollView>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5j6-wZ-TtS">
-                                <rect key="frame" x="18" y="563" width="66" height="18"/>
+                                <rect key="frame" x="20" y="563" width="66" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="Debug" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="KRw-yH-fgB">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1236,7 +1236,7 @@ Gw
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2EE-mf-d8b">
-                                <rect key="frame" x="257" y="563" width="56" height="18"/>
+                                <rect key="frame" x="253" y="563" width="56" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="Error" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="UBJ-dq-OJx">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>

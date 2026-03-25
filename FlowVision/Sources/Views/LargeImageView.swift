@@ -2071,7 +2071,7 @@ class LargeImageView: NSView {
         if #available(macOS 13.0, *) {
 
             guard let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
-                log("Failed to create CGImage from NSImage")
+                log("Failed to create CGImage from NSImage", level: .warn)
                 return
             }
             
