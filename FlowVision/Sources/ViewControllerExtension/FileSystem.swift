@@ -370,7 +370,9 @@ extension ViewController {
                            downloadingStatus != .current {
                             doNotActualRead=true
                         }
-                        finderTags = resourceValues.tagNames ?? []
+                        let tags = (try? filesUrlInFolder[i].resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? []
+                        finderTags = tags
+                        // finderTags = resourceValues.tagNames ?? []
                     // 目录
                     // Directory
                     }else{
@@ -398,7 +400,9 @@ extension ViewController {
                            {
                             doNotActualRead=true
                         }
-                        finderTags = resourceValues.tagNames ?? []
+                        let tags = (try? subFolders[i-fileCount].resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? []
+                        finderTags = tags
+                        // finderTags = resourceValues.tagNames ?? []
                     }
                 }catch{
                     log("Error reading properties.")
@@ -1101,6 +1105,52 @@ extension ViewController {
                 // Reset the timer
                 startDate = Date()
             }
+        }
+    }
+    
+    func readFinderExtendedAttributes(url: URL) {
+        
+        let filePath = url.path
+        
+        // 读取 com.apple.FinderInfo (32字节二进制)
+        let finderInfoAttr = "com.apple.FinderInfo"
+        let finderInfoSize = getxattr(filePath, finderInfoAttr, nil, 0, 0, 0)
+        if finderInfoSize > 0 {
+            var finderInfoBuf = [UInt8](repeating: 0, count: finderInfoSize)
+            let readSize = getxattr(filePath, finderInfoAttr, &finderInfoBuf, finderInfoSize, 0, 0)
+            if readSize > 0 {
+                let finderInfoData = Data(finderInfoBuf[0..<readSize])
+                print("[\(filePath)] \(finderInfoAttr): \(finderInfoData.map { String(format: "%02x", $0) }.joined(separator: " "))")
+                if readSize >= 10 {
+                    let byte9 = finderInfoBuf[9]
+                    print("    FinderInfo byte[9] (label bits): 0x\(String(format: "%02x", byte9)) (\(byte9))")
+                }
+            } else {
+                print("[\(filePath)] \(finderInfoAttr): [无法读取内容]")
+            }
+        } else {
+            print("[\(filePath)] \(finderInfoAttr): [不存在或为空]")
+        }
+        
+        // 读取 com.apple.metadata:_kMDItemUserTags (bplist格式)
+        let userTagsAttr = "com.apple.metadata:_kMDItemUserTags"
+        let userTagsSize = getxattr(filePath, userTagsAttr, nil, 0, 0, 0)
+        if userTagsSize > 0 {
+            var userTagsBuf = [UInt8](repeating: 0, count: userTagsSize)
+            let readSize = getxattr(filePath, userTagsAttr, &userTagsBuf, userTagsSize, 0, 0)
+            if readSize > 0 {
+                let userTagsData = Data(userTagsBuf[0..<readSize])
+                print("[\(filePath)] \(userTagsAttr): \(userTagsData.map { String(format: "%02x", $0) }.joined(separator: " "))")
+                if let plist = try? PropertyListSerialization.propertyList(from: userTagsData, options: [], format: nil) {
+                    print("    Parsed bplist: \(plist)")
+                } else {
+                    print("    [无法解析 bplist]")
+                }
+            } else {
+                print("[\(filePath)] \(userTagsAttr): [无法读取内容]")
+            }
+        } else {
+            print("[\(filePath)] \(userTagsAttr): [不存在或为空]")
         }
     }
 }

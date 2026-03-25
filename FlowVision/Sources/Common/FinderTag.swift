@@ -8,28 +8,56 @@ import Cocoa
 
 struct FinderTag {
     let name: String
-    let color: NSColor
+    let color: NSColor?
+    let colorIndex: Int?
+    let dotImage: NSImage?
+    
+    static let all: [FinderTag] = {
+        let customLabels = [
+            FinderTag(name: "个人", color: customLabelColor, colorIndex: nil, dotImage: customLabelDotImage)
+        ]
+        return defaultColorLabels + customLabels
+    }()
+    
+    static let customLabelColor: NSColor = NSColor.white
+    static let customLabelDotImage: NSImage = makeDotImage(for: customLabelColor)
+    
+    static let defaultColorLabels: [FinderTag] = {
+        let labels = NSWorkspace.shared.fileLabels
+        let colors = NSWorkspace.shared.fileLabelColors
+        guard labels.count >= 8, colors.count >= 8 else { return [] }
+        // 0=None, 1=Gray, 2=Green, 3=Purple, 4=Blue, 5=Yellow, 6=Red, 7=Orange
+        let order: [Int] = [6, 7, 5, 2, 4, 3, 1]  // 红橙黄绿蓝紫灰
+        return order.compactMap { i in
+            let color = colors[i]
+            return FinderTag(name: labels[i], color: color, colorIndex: i, dotImage: makeDotImage(for: color))
+        }
+    }()
 
-    static let all: [FinderTag] = [
-        FinderTag(name: "Red", color: NSColor(red: 0.94, green: 0.22, blue: 0.22, alpha: 1.0)),
-        FinderTag(name: "Orange", color: NSColor(red: 0.96, green: 0.56, blue: 0.12, alpha: 1.0)),
-        FinderTag(name: "Yellow", color: NSColor(red: 0.98, green: 0.84, blue: 0.16, alpha: 1.0)),
-        FinderTag(name: "Green", color: NSColor(red: 0.30, green: 0.78, blue: 0.30, alpha: 1.0)),
-        FinderTag(name: "Blue", color: NSColor(red: 0.22, green: 0.47, blue: 0.94, alpha: 1.0)),
-        FinderTag(name: "Purple", color: NSColor(red: 0.62, green: 0.35, blue: 0.87, alpha: 1.0)),
-        FinderTag(name: "Gray", color: NSColor(red: 0.60, green: 0.60, blue: 0.60, alpha: 1.0)),
-    ]
-
-    var dotImage: NSImage {
+    static func byName(_ name: String) -> FinderTag? {
+        all.first { $0.name == name } ?? FinderTag(name: name, color: customLabelColor, colorIndex: nil, dotImage: nil)
+    }
+    
+    static func makeDotImage(for color: NSColor) -> NSImage {
         NSImage(size: NSSize(width: 12, height: 12), flipped: false) { rect in
-            self.color.setFill()
+            color.setFill()
             NSBezierPath(ovalIn: rect.insetBy(dx: 1, dy: 1)).fill()
             return true
         }
     }
 
-    static func byName(_ name: String) -> FinderTag? {
-        all.first { $0.name == name }
+    static func makeDotImageWithBorder(for color: NSColor) -> NSImage {
+        NSImage(size: NSSize(width: 12, height: 12), flipped: false) { rect in
+            let r = rect.insetBy(dx: 1, dy: 1)
+            let path = NSBezierPath(ovalIn: r)
+            color.setFill()
+            path.fill()
+            let strokeColor: NSColor = color.usingColorSpace(.genericGray)?.whiteComponent ?? 0 > 0.9 ? .black : .white
+            strokeColor.setStroke()
+            path.lineWidth = 0.5
+            path.stroke()
+            return true
+        }
     }
 }
 

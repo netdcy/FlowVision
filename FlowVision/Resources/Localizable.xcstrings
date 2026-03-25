@@ -11591,6 +11591,15 @@
         }
       }
     },
+    "Filter" : {
+      "comment" : "筛选"
+    },
+    "Filter by Finder Tag" : {
+      "comment" : "按Finder标签筛选"
+    },
+    "Finder Tags" : {
+      "comment" : "Finder标签"
+    },
     "first-time-use-prompt" : {
       "comment" : "首次使用提示...",
       "localizations" : {
@@ -21566,6 +21575,9 @@
         }
       }
     },
+    "Remove All Tags" : {
+      "comment" : "移除所有标签"
+    },
     "Rename" : {
       "comment" : "重命名",
       "localizations" : {
@@ -23560,6 +23572,9 @@
           }
         }
       }
+    },
+    "Show All" : {
+      "comment" : "显示全部"
     },
     "Show All Types of Files" : {
       "comment" : "显示所有类型文件",

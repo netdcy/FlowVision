@@ -248,9 +248,29 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         let tags = file.finderTags.compactMap { FinderTag.byName($0) }
         guard !tags.isEmpty else { return }
 
+        let colorTags = tags.filter { $0.colorIndex != nil }
+        let textTags = tags.filter { $0.colorIndex == nil }
+        let sortedTags = colorTags + textTags
+
         let dotSize: CGFloat = 8
         let spacing: CGFloat = 2
-        let totalWidth = CGFloat(tags.count) * dotSize + CGFloat(tags.count - 1) * spacing
+        let fontSize: CGFloat = 9
+        let textPaddingH: CGFloat = 4
+        let textPaddingV: CGFloat = 2
+        let textFont = NSFont.systemFont(ofSize: fontSize)
+
+        var totalWidth: CGFloat = 0
+        for (i, tag) in sortedTags.enumerated() {
+            if i > 0 { totalWidth += spacing }
+            if tag.colorIndex != nil {
+                totalWidth += dotSize
+            } else {
+                let textWidth = (tag.name as NSString).size(withAttributes: [.font: textFont]).width
+                totalWidth += ceil(textWidth) + textPaddingH * 2
+            }
+        }
+
+        let containerHeight = dotSize + textPaddingV * 2
 
         let container = NSView()
         container.wantsLayer = true
@@ -261,15 +281,42 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             container.leadingAnchor.constraint(equalTo: imageViewObj.leadingAnchor, constant: 5),
             container.bottomAnchor.constraint(equalTo: imageViewObj.bottomAnchor, constant: -5),
             container.widthAnchor.constraint(equalToConstant: totalWidth),
-            container.heightAnchor.constraint(equalToConstant: dotSize),
+            container.heightAnchor.constraint(equalToConstant: containerHeight),
         ])
 
-        for (i, tag) in tags.enumerated() {
-            let dot = NSView(frame: NSRect(x: CGFloat(i) * (dotSize + spacing), y: 0, width: dotSize, height: dotSize))
-            dot.wantsLayer = true
-            dot.layer?.backgroundColor = tag.color.cgColor
-            dot.layer?.cornerRadius = dotSize / 2
-            container.addSubview(dot)
+        var xOffset: CGFloat = 0
+        for tag in sortedTags {
+            if tag.colorIndex != nil {
+                let dotY = (containerHeight - dotSize) / 2
+                let dot = NSView(frame: NSRect(x: xOffset, y: dotY, width: dotSize, height: dotSize))
+                dot.wantsLayer = true
+                dot.layer?.backgroundColor = tag.color?.cgColor
+                dot.layer?.cornerRadius = dotSize / 2
+                if let color = tag.color {
+                    let isLight = (color.usingColorSpace(.genericGray)?.whiteComponent ?? 0) > 0.9
+                    dot.layer?.borderColor = (isLight ? NSColor.gray : NSColor.white).cgColor
+                } else {
+                    dot.layer?.borderColor = NSColor.white.cgColor
+                }
+                dot.layer?.borderWidth = 0.5
+                container.addSubview(dot)
+                xOffset += dotSize + spacing
+            } else {
+                let textWidth = (tag.name as NSString).size(withAttributes: [.font: textFont]).width
+                let labelWidth = ceil(textWidth) + textPaddingH * 2
+                let label = NSTextField(labelWithString: tag.name)
+                label.font = textFont
+                label.textColor = .black
+                label.alignment = .center
+                label.wantsLayer = true
+                label.layer?.borderColor = NSColor.gray.cgColor
+                label.layer?.borderWidth = 1
+                label.layer?.cornerRadius = 3
+                label.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.7).cgColor
+                label.frame = NSRect(x: xOffset, y: 0, width: labelWidth, height: containerHeight)
+                container.addSubview(label)
+                xOffset += labelWidth + spacing
+            }
         }
 
         finderTagDotsView = container
