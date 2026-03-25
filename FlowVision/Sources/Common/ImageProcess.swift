@@ -785,7 +785,25 @@ func getVideoThumbnailFFmpeg(for url: URL, at time: TimeInterval = 10) -> NSImag
 }
 
 func getFileTypeIcon(url: URL) -> NSImage {
-    return NSWorkspace.shared.icon(forFile: url.absoluteString.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!)
+    // 替身文件：icon(forFile:) 依赖扩展名，无标准扩展名时会返回错误图标
+    // 需手动解析目标路径取正确类型图标，再叠加替身小箭头徽章
+    // Alias file: icon(forFile:) relies on extension; resolve to get correct type icon, then overlay alias badge
+    if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
+       values.isAliasFile == true, values.isSymbolicLink != true,
+       let resolved = try? URL(resolvingAliasFileAt: url) {
+        let targetIcon = NSWorkspace.shared.icon(forFile: resolved.path)
+        let size = targetIcon.size
+        guard let badgeIcon = NSImage(named: "AliasBadge") else {
+            return targetIcon
+        }
+        return NSImage(size: size, flipped: false) { rect in
+            targetIcon.draw(in: rect)
+            let badgeSize = NSSize(width: size.width * 0.15, height: size.height * 0.19)
+            badgeIcon.draw(in: NSRect(origin: .zero, size: badgeSize))
+            return true
+        }
+    }
+    return NSWorkspace.shared.icon(forFile: url.path)
 }
 
 func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil, isPreferInternalThumb: Bool = false) -> NSImage? {

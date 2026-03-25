@@ -210,6 +210,28 @@ extension ViewController {
             // Cancel OCR
             largeImageView.unSetOcr()
             
+            // 替身文件：解析后按目标类型分发处理
+            // Finder alias: resolve and dispatch based on target type
+            if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
+               values.isAliasFile == true, values.isSymbolicLink != true,
+               let resolved = try? URL(resolvingAliasFileAt: url) {
+                let resolvedPath = getFileStylePath(resolved.path) + "/"
+                if resolved.hasDirectoryPath {
+                    switchDirByDirection(direction: .zero, dest: resolvedPath, stackDeep: 0)
+                } else if globalVar.HandledImageAndRawExtensions.contains(resolved.pathExtension.lowercased()) ||
+                    (globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(resolved.pathExtension.lowercased())) {
+                    if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+                        globalVar.isLaunchFromFile = true
+                        if let windowController = appDelegate.createNewWindow(resolvedPath) {
+                            appDelegate.openImageInTargetWindow(resolvedPath, windowController: windowController)
+                        }
+                    }
+                } else {
+                    NSWorkspace.shared.open(resolved)
+                }
+                return
+            }
+            
             if(url.hasDirectoryPath){
                 switchDirByDirection(direction: .zero, dest: item.file.path, stackDeep: 0)
             }

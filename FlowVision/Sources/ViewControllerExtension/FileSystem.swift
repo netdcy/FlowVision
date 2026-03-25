@@ -142,9 +142,9 @@ extension ViewController {
         
         
         var contents=[URL]()
-        var properties: [URLResourceKey] = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey, .isUbiquitousItemKey, .ubiquitousItemDownloadingStatusKey, .tagNamesKey]
+        var properties: [URLResourceKey] = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey, .isUbiquitousItemKey, .ubiquitousItemDownloadingStatusKey, .tagNamesKey, .isAliasFileKey, .isSymbolicLinkKey]
         if VolumeManager.shared.isExternalVolume(folderURL) {
-            properties = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey, .tagNamesKey]
+            properties = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey, .tagNamesKey, .isAliasFileKey, .isSymbolicLinkKey]
         }
         var isInSameDir = !publicVar.isRecursiveMode
         if !skip {
@@ -223,13 +223,22 @@ extension ViewController {
             }
         }
         
-        // 过滤出目录列表
-        // Filter out directory list
+        // 过滤出目录列表（含指向目录的替身）
+        // Filter out directory list (including aliases pointing to directories)
         var subFolders = contents.filter { url in
-            guard let isDirectoryResourceValue = try? url.resourceValues(forKeys: [.isDirectoryKey]), let isDirectory = isDirectoryResourceValue.isDirectory else {
-                return false
+            if let isDirectoryResourceValue = try? url.resourceValues(forKeys: [.isDirectoryKey]),
+               isDirectoryResourceValue.isDirectory == true {
+                return true
             }
-            return isDirectory
+            // 替身文件：解析后目标为目录则算作目录
+            // Alias file: treat as directory if resolved target is a directory
+            if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
+               values.isAliasFile == true, values.isSymbolicLink != true,
+               let resolved = try? URL(resolvingAliasFileAt: url),
+               resolved.hasDirectoryPath {
+                return true
+            }
+            return false
         }
         // 如果找平级则无视子目录
         // If finding same level, ignore subdirectories
@@ -246,7 +255,16 @@ extension ViewController {
             guard let isDirectoryResourceValue = try? url.resourceValues(forKeys: [.isDirectoryKey]), let isDirectory = isDirectoryResourceValue.isDirectory else {
                 return false
             }
-            return !isDirectory
+            if isDirectory { return false }
+            // 指向目录的替身已归入目录列表，不再计入文件
+            // Aliases pointing to directories are treated as directories, exclude from file list
+            if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
+               values.isAliasFile == true, values.isSymbolicLink != true,
+               let resolved = try? URL(resolvingAliasFileAt: url),
+               resolved.hasDirectoryPath {
+                return false
+            }
+            return true
         }
         for file in fileContents {
             if publicVar.HandledFileExtensions.contains(file.pathExtension.lowercased()) || publicVar.isShowAllTypeFile {
