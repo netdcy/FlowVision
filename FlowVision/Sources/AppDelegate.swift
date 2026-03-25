@@ -182,6 +182,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let videoPlaySequentialPlay = UserDefaults.standard.value(forKey: "videoPlaySequentialPlay") as? Bool {
             globalVar.videoPlaySequentialPlay = videoPlaySequentialPlay
         }
+        if let videoVolume = UserDefaults.standard.value(forKey: "videoVolume") as? Float {
+            globalVar.videoVolume = videoVolume
+        }
         if let useInternalPlayer = UserDefaults.standard.value(forKey: "useInternalPlayer") as? Bool {
             globalVar.useInternalPlayer = useInternalPlayer
         }

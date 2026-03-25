@@ -23,7 +23,6 @@ class LargeImageView: NSView {
     var playcontrolTimer: DispatchSourceTimer?
     var videoOrderId: Int = 0
     var pausedBySeek = false
-    var lastVolumeForPauseRef: Float?
     var restorePlayPosition: CMTime?
     var restorePlayURL: URL?
     var isVideoMetadataUpdated: Bool = false
@@ -33,6 +32,7 @@ class LargeImageView: NSView {
     var lastActionTriggerdReload: String?
     var isKeyWindowWhenMouseDown: Bool = true
     
+    private var volumeObservation: NSKeyValueObservation?
     private var blackOverlayView: NSView?
     
     var exifTextView: ExifTextView!
@@ -103,12 +103,21 @@ class LargeImageView: NSView {
 
         videoView = LargeAVPlayerView(frame: self.bounds)
         queuePlayer = AVQueuePlayer()
+        queuePlayer?.volume = globalVar.videoVolume
         videoView.player = queuePlayer
         videoView.controlsStyle = .none
         videoView.showsFullScreenToggleButton = false
         videoView.videoGravity = .resizeAspect
         videoView.isHidden = true
         self.addSubview(videoView)
+        
+        volumeObservation = queuePlayer?.observe(\.volume, options: [.new, .old]) { [weak self] _, change in
+            guard let self = self,
+                  let newVal = change.newValue,
+                  let oldVal = change.oldValue,
+                  newVal != oldVal else { return }
+            self.saveVolumeChange()
+        }
 //        if #available(macOS 13.0, *) {
 //            videoView.allowsVideoFrameAnalysis = false
 //        }
@@ -1087,6 +1096,12 @@ class LargeImageView: NSView {
     func decreaseVolume() {
         adjustVolume(by: -0.1)
     }
+
+    func saveVolumeChange() {
+        guard let player = queuePlayer else { return }
+        globalVar.videoVolume = player.volume
+        UserDefaults.standard.set(globalVar.videoVolume, forKey: "videoVolume")
+    }
     
     func enableBlackBg() {
         if let effectView = getViewController(self)?.largeImageBgEffectView,
@@ -1400,54 +1415,6 @@ class LargeImageView: NSView {
         getViewController(self)!.publicVar.isLeftMouseDown = true
         
         isKeyWindowWhenMouseDown = self.window?.isKeyWindow ?? true
-
-        // 判断是否点击视频顶部区域 (macOS 26 音量条在右上角)
-        // Check if clicking video top area (macOS 26 volume bar is in top right corner)
-        let mouseLocation = self.convert(event.locationInWindow, from: nil)
-        let isVideoTopArea = file.type == .video
-            && mouseLocation.y >= self.bounds.height - 50
-            && mouseLocation.x >= self.bounds.width - 200
-        if isVideoTopArea {
-            return
-        }
-
-        // 通过音量记录来标识是否完整点击事件，而且避免点击音量条时触发暂停 (macOS 15 及以前)
-        // Use volume record to identify complete click event and avoid triggering pause when clicking volume bar
-        if !(getViewController(self)!.publicVar.isRightMouseDown),
-           file.type == .video,
-           let player = queuePlayer {
-            lastVolumeForPauseRef = player.volume
-        }
-
-        // 检测点击左侧、右侧区域来切换图像
-        // Detect clicks on left/right areas to switch images
-        if globalVar.clickEdgeToSwitchImage && !(getViewController(self)!.publicVar.isRightMouseDown) {
-            let clickLocation = self.convert(event.locationInWindow, from: nil)
-            let viewWidth = self.bounds.width
-            // 先按百分比计算
-            var leftThreshold: CGFloat = viewWidth * 0.15
-            var rightThreshold: CGFloat = viewWidth * 0.85
-            
-            // 限制最小最大阈值
-            leftThreshold = min(max(leftThreshold, 100), 200)
-            rightThreshold = max(min(rightThreshold, viewWidth - 100), viewWidth - 200)
-            
-            if clickLocation.x <= leftThreshold {
-                // 点击左侧，切换到上一张图像
-                // Click left side, switch to previous image
-                if leftArrowImageView?.isHidden == false {
-                    getViewController(self)?.previousLargeImage()
-                    return
-                }
-            } else if clickLocation.x >= rightThreshold {
-                // 点击右侧，切换到下一张图像
-                // Click right side, switch to next image
-                if rightArrowImageView?.isHidden == false {
-                    getViewController(self)?.nextLargeImage()
-                    return
-                }
-            }
-        }
         
         // 检测双击
         // Detect double click
@@ -1457,7 +1424,6 @@ class LargeImageView: NSView {
             if currentTime - lastClickTime < NSEvent.doubleClickInterval,
                distanceBetweenPoints(lastClickLocation, currentLocation) < positionThreshold {
                 getViewController(self)?.closeLargeImage(0)
-                lastVolumeForPauseRef = nil
             }
             lastClickTime = currentTime
             lastClickLocation = currentLocation
@@ -1534,11 +1500,35 @@ class LargeImageView: NSView {
         // Pause/resume video
         if !(getViewController(self)!.publicVar.isRightMouseDown) && isKeyWindowWhenMouseDown {
             let currentLocation = event.locationInWindow
-            if distanceBetweenPoints(lastClickLocation, currentLocation) < positionThreshold {
-                if file.type == .video,let player = queuePlayer,
-                   lastVolumeForPauseRef == player.volume {
-                    pauseOrResumeVideo()
-                    lastVolumeForPauseRef = nil
+            pauseOrResumeVideo()
+        }
+
+        // 检测点击左侧、右侧区域来切换图像
+        // Detect clicks on left/right areas to switch images
+        if globalVar.clickEdgeToSwitchImage && !(getViewController(self)!.publicVar.isRightMouseDown) {
+            let clickLocation = self.convert(event.locationInWindow, from: nil)
+            let viewWidth = self.bounds.width
+            // 先按百分比计算
+            var leftThreshold: CGFloat = viewWidth * 0.15
+            var rightThreshold: CGFloat = viewWidth * 0.85
+            
+            // 限制最小最大阈值
+            leftThreshold = min(max(leftThreshold, 100), 200)
+            rightThreshold = max(min(rightThreshold, viewWidth - 100), viewWidth - 200)
+            
+            if clickLocation.x <= leftThreshold {
+                // 点击左侧，切换到上一张图像
+                // Click left side, switch to previous image
+                if leftArrowImageView?.isHidden == false {
+                    getViewController(self)?.previousLargeImage()
+                    return
+                }
+            } else if clickLocation.x >= rightThreshold {
+                // 点击右侧，切换到下一张图像
+                // Click right side, switch to next image
+                if rightArrowImageView?.isHidden == false {
+                    getViewController(self)?.nextLargeImage()
+                    return
                 }
             }
         }
