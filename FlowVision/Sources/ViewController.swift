@@ -416,9 +416,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var progressBarTrack: NSView!
     var progressBarFill: NSView!
     var progressFillWidthConstraint: NSLayoutConstraint?
+    var progressFillLeadingConstraint: NSLayoutConstraint?
     var indeterminateTimer: Timer?
     var progressDelayWorkItem: DispatchWorkItem?
     var isProgressVisible = false
+    var pendingProgress: Double = 0
     
     // 搜索框
     // Search box

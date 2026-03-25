@@ -24,7 +24,9 @@ extension ViewController {
         mainScrollView.superview?.addSubview(track, positioned: .above, relativeTo: mainScrollView)
         
         let widthConstraint = fill.widthAnchor.constraint(equalToConstant: 0)
+        let leadingConstraint = fill.leadingAnchor.constraint(equalTo: track.leadingAnchor, constant: 0)
         progressFillWidthConstraint = widthConstraint
+        progressFillLeadingConstraint = leadingConstraint
         
         NSLayoutConstraint.activate([
             track.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor),
@@ -32,7 +34,7 @@ extension ViewController {
             track.topAnchor.constraint(equalTo: mainScrollView.topAnchor),
             track.heightAnchor.constraint(equalToConstant: progressBarHeight),
             
-            fill.leadingAnchor.constraint(equalTo: track.leadingAnchor),
+            leadingConstraint,
             fill.topAnchor.constraint(equalTo: track.topAnchor),
             fill.bottomAnchor.constraint(equalTo: track.bottomAnchor),
             widthConstraint,
@@ -54,48 +56,41 @@ extension ViewController {
     }
     
     /// 设置进度 (0.0 ~ 1.0)。
-    /// 首次调用时启动延迟计时，在 progressShowDelay 秒后若进度未达到 progressShowThreshold 才真正显示进度条。
-    /// 若加载足够快（延迟期内已完成或超过阈值），则跳过显示。
+    /// 首次调用时启动延迟计时，在 progressShowDelay 秒后若进度未超过 progressShowThreshold 才真正显示进度条。
     func setProgress(_ progress: Double, animated: Bool = true) {
         stopIndeterminate()
+        progressFillLeadingConstraint?.constant = 0
         
         let clamped = min(max(progress, 0), 1)
+        pendingProgress = clamped
         
         if clamped >= 1.0 {
             progressDelayWorkItem?.cancel()
             progressDelayWorkItem = nil
             if isProgressVisible {
                 showProgressBar(progress: clamped, animated: animated, autoHide: true)
+            } else {
+                resetProgressBar()
             }
             isProgressVisible = false
+            pendingProgress = 0
             return
         }
         
-        if !isProgressVisible && progressDelayWorkItem == nil {
-            let workItem = DispatchWorkItem { [weak self] in
-                guard let self = self else { return }
-                self.progressDelayWorkItem = nil
-                self.isProgressVisible = true
-                let current = self.progressFillWidthConstraint?.constant ?? 0
-                let trackWidth = self.mainScrollView.frame.width
-                let currentProgress = trackWidth > 0 ? current / trackWidth : 0
-                self.showProgressBar(progress: currentProgress, animated: true, autoHide: false)
+        if !isProgressVisible {
+            if progressDelayWorkItem == nil {
+                let workItem = DispatchWorkItem { [weak self] in
+                    guard let self = self else { return }
+                    if self.pendingProgress < self.progressShowThreshold {
+                        self.progressDelayWorkItem = nil
+                        self.isProgressVisible = true
+                        self.showProgressBar(progress: self.pendingProgress, animated: true, autoHide: false)
+                    }
+                }
+                progressDelayWorkItem = workItem
+                DispatchQueue.main.asyncAfter(deadline: .now() + progressShowDelay, execute: workItem)
             }
-            progressDelayWorkItem = workItem
-            DispatchQueue.main.asyncAfter(deadline: .now() + progressShowDelay, execute: workItem)
-        }
-        
-        let trackWidth = mainScrollView.frame.width
-        let targetWidth = trackWidth * clamped
-        progressFillWidthConstraint?.constant = targetWidth
-        if let gradient = progressBarFill.layer?.sublayers?.first as? CAGradientLayer {
-            CATransaction.begin()
-            CATransaction.setDisableActions(true)
-            gradient.frame = CGRect(x: 0, y: 0, width: targetWidth, height: progressBarHeight)
-            CATransaction.commit()
-        }
-        
-        if isProgressVisible {
+        } else {
             showProgressBar(progress: clamped, animated: animated, autoHide: false)
         }
     }
@@ -104,34 +99,56 @@ extension ViewController {
         let trackWidth = mainScrollView.frame.width
         let targetWidth = trackWidth * progress
         
-        NSAnimationContext.runAnimationGroup({ ctx in
-            ctx.duration = animated ? 0.3 : 0
-            ctx.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-            ctx.allowsImplicitAnimation = true
-            self.progressFillWidthConstraint?.animator().constant = targetWidth
-            self.progressBarTrack.animator().alphaValue = progress > 0 ? 1 : 0
-        }) { [weak self] in
-            guard let self = self else { return }
-            if let gradient = self.progressBarFill.layer?.sublayers?.first as? CAGradientLayer {
-                gradient.frame = self.progressBarFill.bounds
-            }
-            if autoHide {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
-                    guard let self = self else { return }
-                    NSAnimationContext.runAnimationGroup { ctx in
-                        ctx.duration = 0.3
-                        self.progressBarTrack.animator().alphaValue = 0
-                    } completionHandler: {
-                        self.progressFillWidthConstraint?.constant = 0
-                    }
+        if animated {
+            NSAnimationContext.runAnimationGroup({ ctx in
+                ctx.duration = 0.3
+                ctx.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                self.progressFillWidthConstraint?.animator().constant = targetWidth
+                self.progressBarTrack.animator().alphaValue = progress > 0 ? 1 : 0
+            }) { [weak self] in
+                guard let self = self else { return }
+                if let gradient = self.progressBarFill.layer?.sublayers?.first as? CAGradientLayer {
+                    gradient.frame = self.progressBarFill.bounds
+                }
+                if autoHide {
+                    self.scheduleAutoHide()
                 }
             }
+        } else {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            progressFillWidthConstraint?.constant = targetWidth
+            progressBarTrack.alphaValue = progress > 0 ? 1 : 0
+            if let gradient = progressBarFill.layer?.sublayers?.first as? CAGradientLayer {
+                gradient.frame = CGRect(x: 0, y: 0, width: targetWidth, height: progressBarHeight)
+            }
+            progressBarFill.superview?.layoutSubtreeIfNeeded()
+            CATransaction.commit()
+            if autoHide {
+                scheduleAutoHide()
+            }
         }
-        
+    }
+    
+    private func scheduleAutoHide() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
+            guard let self = self else { return }
+            NSAnimationContext.runAnimationGroup { ctx in
+                ctx.duration = 0.3
+                self.progressBarTrack.animator().alphaValue = 0
+            } completionHandler: {
+                self.resetProgressBar()
+            }
+        }
+    }
+    
+    private func resetProgressBar() {
+        progressFillWidthConstraint?.constant = 0
+        progressFillLeadingConstraint?.constant = 0
         if let gradient = progressBarFill.layer?.sublayers?.first as? CAGradientLayer {
             CATransaction.begin()
-            CATransaction.setDisableActions(!animated)
-            gradient.frame = CGRect(x: 0, y: 0, width: targetWidth, height: progressBarHeight)
+            CATransaction.setDisableActions(true)
+            gradient.frame = .zero
             CATransaction.commit()
         }
     }
@@ -142,8 +159,10 @@ extension ViewController {
         progressDelayWorkItem?.cancel()
         progressDelayWorkItem = nil
         isProgressVisible = true
+        pendingProgress = 0
         indeterminateTimer = Timer(timeInterval: .infinity, repeats: false, block: { _ in })
         
+        progressFillLeadingConstraint?.constant = 0
         progressBarTrack.alphaValue = 1
         let trackWidth = mainScrollView.frame.width
         let segmentWidth = trackWidth * 0.3
@@ -164,11 +183,7 @@ extension ViewController {
         NSAnimationContext.runAnimationGroup({ ctx in
             ctx.duration = 0.8
             ctx.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-            ctx.allowsImplicitAnimation = true
-            self.progressBarFill.animator().frame = CGRect(
-                x: forward ? maxOffset : 0, y: 0,
-                width: segmentWidth, height: self.progressBarHeight
-            )
+            self.progressFillLeadingConstraint?.animator().constant = forward ? maxOffset : 0
         }) { [weak self] in
             guard let self = self, self.indeterminateTimer != nil else { return }
             self.animateIndeterminate(forward: !forward)
@@ -186,11 +201,12 @@ extension ViewController {
         progressDelayWorkItem?.cancel()
         progressDelayWorkItem = nil
         isProgressVisible = false
+        pendingProgress = 0
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = animated ? 0.25 : 0
             progressBarTrack.animator().alphaValue = 0
         } completionHandler: { [weak self] in
-            self?.progressFillWidthConstraint?.constant = 0
+            self?.resetProgressBar()
         }
     }
 }
