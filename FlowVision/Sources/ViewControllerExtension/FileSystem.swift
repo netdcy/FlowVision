@@ -395,27 +395,31 @@ extension ViewController {
             // log(filesInFolder.count)
             for (i,filePath) in filesInFolder.enumerated(){
                 var fileSortKey:SortKeyFile
-                let isDir:Bool
+                let isDir: Bool
                 if filePath.hasSuffix("_FolderMark") {
-                    fileSortKey=SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: isInSameDir, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
-                    isDir=true
+                    fileSortKey = SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: isInSameDir, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
+                    isDir = true
                 }else{
-                    fileSortKey=SortKeyFile(filePath, isInSameDir: isInSameDir, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
-                    isDir=false
+                    fileSortKey = SortKeyFile(filePath, isInSameDir: isInSameDir, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
+                    isDir = false
                 }
                 // 读取文件大小日期
                 // Read file size and dates
+                var isAlias: Bool = false
                 var fileSize: Int?
                 var modDate: Date?
                 var createDate: Date?
                 var addDate: Date?
-                var doNotActualRead=false
+                var doNotActualRead = false
                 var finderTags: [String] = []
                 do{
                     // 文件在前i个，目录在后面
                     // Files in first i items, directories after
                     if i < fileCount {
                         let resourceValues = try filesUrlInFolder[i].resourceValues(forKeys: Set(properties))
+                        if let tmp = resourceValues.isAliasFile {
+                            isAlias=tmp
+                        }
                         if let tmp = resourceValues.fileSize {
                             fileSize=tmp
                             fileSortKey.size=tmp
@@ -445,6 +449,9 @@ extension ViewController {
                     // Directory
                     }else{
                         let resourceValues = try subFolders[i-fileCount].resourceValues(forKeys: Set(properties))
+                        if let tmp = resourceValues.isAliasFile {
+                            isAlias=tmp
+                        }
                         if let tmp = resourceValues.fileSize {
                             fileSize=tmp
                             fileSortKey.size=tmp
@@ -476,13 +483,14 @@ extension ViewController {
                     log("Error reading properties.")
                 }
                 // log("i:",i,"path:",fileSortKey.path.removingPercentEncoding)
-                let newFileModel=FileModel(path: fileSortKey.path, ver: fileDB.db[SortKeyDir(folderpath)]!.ver, isDir: isDir, fileSize: fileSize, createDate: createDate, modDate: modDate, addDate: addDate, doNotActualRead: doNotActualRead)
+                let newFileModel=FileModel(path: fileSortKey.path, ver: fileDB.db[SortKeyDir(folderpath)]!.ver, isDir: isDir, isAlias: isAlias, fileSize: fileSize, createDate: createDate, modDate: modDate, addDate: addDate, doNotActualRead: doNotActualRead)
                 newFileModel.finderTags = finderTags
                 // log(fileSortKey.path)
                 if let file = fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] {
                     if file.path == fileSortKey.path {
                         file.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
                         file.isDir=isDir
+                        file.isAlias=isAlias
                         file.doNotActualRead=doNotActualRead
                         file.finderTags=finderTags
                         // 检查文件或文件夹是否有变化(文件夹fileSize为nil)

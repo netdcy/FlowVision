@@ -27,6 +27,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     var file = FileModel(path: "", ver: 0)
     var finderTagDotsView: NSView?
     var ratingStarsView: NSView?
+    var aliasBadgeView: NSImageView?
     private var mouseDownLocation: NSPoint? = nil
     
     private var lastClickTime: TimeInterval = 0
@@ -296,6 +297,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         finderTagDotsView = nil
         ratingStarsView?.removeFromSuperview()
         ratingStarsView = nil
+        aliasBadgeView?.removeFromSuperview()
+        aliasBadgeView = nil
     }
 
     func refreshFinderTagDots() {
@@ -380,6 +383,35 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         finderTagDotsView = container
     }
 
+    func refreshAliasBadge() {
+        aliasBadgeView?.removeFromSuperview()
+        aliasBadgeView = nil
+
+        guard file.isAlias, let badgeImage = NSImage(named: "AliasBadge") else { return }
+
+        let badgeRatio = badgeImage.size.width / badgeImage.size.height
+        let scale = tagScaleFactor() * 1.8
+        let badgeHeight = round(16 * scale)
+        let badgeWidth = round(badgeHeight * badgeRatio)
+        let inset: CGFloat = round(0 * scale)
+
+        let badge = NSImageView()
+        badge.image = badgeImage
+        badge.imageScaling = .scaleProportionallyUpOrDown
+        badge.wantsLayer = true
+        badge.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(badge)
+
+        NSLayoutConstraint.activate([
+            badge.leadingAnchor.constraint(equalTo: imageViewObj.leadingAnchor, constant: inset),
+            badge.bottomAnchor.constraint(equalTo: imageViewObj.bottomAnchor, constant: -inset),
+            badge.widthAnchor.constraint(equalToConstant: badgeWidth),
+            badge.heightAnchor.constraint(equalToConstant: badgeHeight),
+        ])
+
+        aliasBadgeView = badge
+    }
+
     func configureWithImage(_ fileModel: FileModel, playAnimation: Bool = false) {
         
         stopVideo()
@@ -406,6 +438,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }else{
             imageViewObj.isFolder = false
         }
+
+        // 左下角替身徽章
+        // Bottom-left alias badge
+        refreshAliasBadge()
 
         // 左上角评级
         // Top-left rating stars
@@ -1062,7 +1098,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 if canShowParent, let url = URL(string: file.path) {
                     let parentURL = url.deletingLastPathComponent()
                     if !parentURL.path.isEmpty && parentURL.absoluteString != url.absoluteString {
-                        let actionItemShowParent = menu.addItem(withTitle: NSLocalizedString("Show in Parent Folder", comment: "在上层文件夹中显示"), action: #selector(actShowParentInNewTab), keyEquivalent: "")
+                        let actionItemShowParent = menu.addItem(withTitle: NSLocalizedString("Show in Original Folder", comment: "在原文件夹中显示"), action: #selector(actShowParentInNewTab), keyEquivalent: "")
                         if isWindowNumMax() {
                             actionItemShowParent.isEnabled = false
                         } else {

@@ -423,10 +423,11 @@ class ImageInfo {
 }
 
 class FileModel {
-    init(path: String, ver: Int, isDir: Bool = false, fileSize: Int? = nil, createDate: Date? = nil, modDate: Date? = nil, addDate: Date? = nil, doNotActualRead:Bool = false){
+    init(path: String, ver: Int, isDir: Bool = false, isAlias: Bool = false, fileSize: Int? = nil, createDate: Date? = nil, modDate: Date? = nil, addDate: Date? = nil, doNotActualRead:Bool = false){
         self.path=path
         self.ver=ver
         self.isDir=isDir
+        self.isAlias=isAlias
         self.fileSize=fileSize
         self.createDate=createDate
         self.modDate=modDate
@@ -439,6 +440,7 @@ class FileModel {
     var path: String
     var ext: String = ""
     var type: FileType = .notSet
+    var isAlias: Bool = false
     
     var originalSize: NSSize?
     var largeSize: NSSize?
