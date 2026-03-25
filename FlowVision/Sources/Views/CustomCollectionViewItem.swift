@@ -328,14 +328,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 let dotY = (containerHeight - dotSize) / 2
                 let dot = NSView(frame: NSRect(x: xOffset, y: dotY, width: dotSize, height: dotSize))
                 dot.wantsLayer = true
-                dot.layer?.backgroundColor = tag.color?.cgColor
+                dot.layer?.backgroundColor = tag.color.cgColor
                 dot.layer?.cornerRadius = dotSize / 2
-                if let color = tag.color {
-                    let isLight = (color.usingColorSpace(.genericGray)?.whiteComponent ?? 0) > 0.9
-                    dot.layer?.borderColor = (isLight ? NSColor.gray : NSColor.white).cgColor
-                } else {
-                    dot.layer?.borderColor = NSColor.white.cgColor
-                }
+                let isLight = (tag.color.usingColorSpace(.genericGray)?.whiteComponent ?? 0) > 0.9
+                dot.layer?.borderColor = (isLight ? NSColor.gray : NSColor.white).cgColor
                 dot.layer?.borderWidth = 0.5
                 container.addSubview(dot)
                 xOffset += dotSize + spacing

@@ -7,38 +7,64 @@ import Foundation
 import Cocoa
 import BTree
 
-var customLabels: [String] = []
+var customLabels: [(String, Int?)] = [("Test", nil)]
+
+let FILE_LABEL_COLORS = NSWorkspace.shared.fileLabelColors
+let FILE_LABELS = NSWorkspace.shared.fileLabels
 
 struct FinderTag {
     let name: String
-    let color: NSColor?
     let colorIndex: Int?
-    let dotImage: NSImage?
     
-    static var all: [FinderTag] {
-        let custom = customLabels.sorted { $0.localizedStandardCompare($1) == .orderedAscending }.map { name in
-            FinderTag(name: name, color: customLabelColor, colorIndex: nil, dotImage: customLabelDotImage)
+    static let defaultLabelColor: NSColor = NSColor.white
+    static let defaultDotImage: NSImage = makeDotImage(for: defaultLabelColor)
+    
+    var color: NSColor {
+        if let colorIndex = colorIndex,
+           colorIndex < FILE_LABEL_COLORS.count,
+           colorIndex != 0 {
+            return FILE_LABEL_COLORS[colorIndex]
         }
-        return defaultColorLabels + custom
+        return FinderTag.defaultLabelColor
     }
-    
-    static let customLabelColor: NSColor = NSColor.white
-    static let customLabelDotImage: NSImage = makeDotImage(for: customLabelColor)
-    
-    static let defaultColorLabels: [FinderTag] = {
-        let labels = NSWorkspace.shared.fileLabels
-        let colors = NSWorkspace.shared.fileLabelColors
-        guard labels.count >= 8, colors.count >= 8 else { return [] }
-        // 0=None, 1=Gray, 2=Green, 3=Purple, 4=Blue, 5=Yellow, 6=Red, 7=Orange
-        let order: [Int] = [6, 7, 5, 2, 4, 3, 1]  // 红橙黄绿蓝紫灰
-        return order.compactMap { i in
-            let color = colors[i]
-            return FinderTag(name: labels[i], color: color, colorIndex: i, dotImage: makeDotImage(for: color))
+
+    var dotImage: NSImage {
+        if let colorIndex = colorIndex,
+           colorIndex < FinderTag.systemDotImages.count {
+            return FinderTag.systemDotImages[colorIndex]
+        }
+        return FinderTag.defaultDotImage
+    }
+
+    static let systemDotImages: [NSImage] = {
+        return FILE_LABEL_COLORS.map { color in
+            makeDotImage(for: color)
         }
     }()
 
+    // 0=None, 1=Gray, 2=Green, 3=Purple, 4=Blue, 5=Yellow, 6=Red, 7=Orange
+    static let systemColorDisplayOrder: [Int] = [6, 7, 5, 2, 4, 3, 1] // 红橙黄绿蓝紫灰
+
+    static let systemColorLabels: [FinderTag] = {
+        let labels = FILE_LABELS
+        let colors = FILE_LABEL_COLORS
+        guard labels.count >= 8, colors.count >= 8 else { return [] }
+        
+        let order: [Int] = systemColorDisplayOrder
+        return order.compactMap { i in
+            return FinderTag(name: labels[i], colorIndex: i)
+        }
+    }()
+
+    static var all: [FinderTag] {
+        let custom = customLabels.sorted { $0.0.localizedStandardCompare($1.0) == .orderedAscending }.map { name, colorIndex in
+            FinderTag(name: name, colorIndex: colorIndex)
+        }
+        return systemColorLabels + custom
+    }
+
     static func byName(_ name: String) -> FinderTag? {
-        all.first { $0.name == name } ?? FinderTag(name: name, color: customLabelColor, colorIndex: nil, dotImage: nil)
+        all.first { $0.name == name } ?? FinderTag(name: name, colorIndex: nil)
     }
     
     static func makeDotImage(for color: NSColor) -> NSImage {
@@ -535,4 +561,134 @@ class EnhancedIndex {
             log("EnhancedIndex load failed: \(error)", level: .error)
         }
     }
+}
+
+struct FileTagAttributes {
+    var userTags: [FinderTag]
+    var finderInfoTagIndex: Int?
+    var finderInfoTagName: String? {
+        if let finderInfoTagIndex = finderInfoTagIndex,
+           finderInfoTagIndex < FILE_LABELS.count {
+            return FILE_LABELS[finderInfoTagIndex]
+        }
+        return nil
+    }
+    var finderInfoTagColor: NSColor? {
+        if let finderInfoTagIndex = finderInfoTagIndex,
+           finderInfoTagIndex < FILE_LABEL_COLORS.count {
+            return FILE_LABEL_COLORS[finderInfoTagIndex]
+        }
+        return nil
+    }
+}
+
+
+
+func readFinderExtendedAttributes(url: URL, needFinderInfo: Bool = false) -> FileTagAttributes? {
+    let filePath = url.path
+    var finderInfoTagIndex: Int? = nil
+    var userTags: [FinderTag] = []
+
+    if needFinderInfo {
+        // 读取 com.apple.FinderInfo（固定32字节），直接用栈上缓冲区，单次 syscall
+        // byte[9] 的高3位为 label color: none=00,01 grey=02,03 green=04,05
+        // purple=06,07 blue=08,09 yellow=0A,0B red=0C,0D orange=0E,0F
+        var finderInfoBuf = (
+            UInt64(0), UInt64(0), UInt64(0), UInt64(0)
+        )
+        let finderInfoReadSize = withUnsafeMutableBytes(of: &finderInfoBuf) { buf in
+            getxattr(filePath, "com.apple.FinderInfo", buf.baseAddress, 32, 0, 0)
+        }
+        if finderInfoReadSize >= 10 {
+            let byte9 = withUnsafeBytes(of: &finderInfoBuf) { $0[9] }
+            let index = Int(byte9) >> 1
+            if index > 0 {
+                finderInfoTagIndex = index
+            }
+        }
+    }
+
+    // 读取 com.apple.metadata:_kMDItemUserTags（bplist 格式）
+    // 预分配 1KB 缓冲区覆盖绝大多数情况，仅在 ERANGE 时回退到两次调用
+    // 每条记录格式为 "标签名\ncolorIndex"
+    let userTagsAttr = "com.apple.metadata:_kMDItemUserTags"
+    let bufferSize = 1024
+    var userTagsBuf = [UInt8](repeating: 0, count: bufferSize)
+    var readSize = getxattr(filePath, userTagsAttr, &userTagsBuf, bufferSize, 0, 0)
+    if readSize == -1 && errno == ERANGE {
+        let actualSize = getxattr(filePath, userTagsAttr, nil, 0, 0, 0)
+        if actualSize > 0 {
+            userTagsBuf = [UInt8](repeating: 0, count: actualSize)
+            readSize = getxattr(filePath, userTagsAttr, &userTagsBuf, actualSize, 0, 0)
+        }
+    }
+    if readSize > 0 {
+        let userTagsData = Data(userTagsBuf[0..<readSize])
+        if let plist = try? PropertyListSerialization.propertyList(from: userTagsData, options: [], format: nil),
+           let tagStrings = plist as? [String] {
+            for tagString in tagStrings {
+                let parts = tagString.split(separator: "\n", maxSplits: 1)
+                let name = String(parts[0])
+                let colorIndex: Int? = parts.count > 1 ? Int(parts[1]) : nil
+                userTags.append(FinderTag(name: name, colorIndex: colorIndex))
+            }
+        }
+    }
+
+    if finderInfoTagIndex == nil && userTags.isEmpty {
+        return nil
+    }
+
+    let result = FileTagAttributes(userTags: userTags, finderInfoTagIndex: finderInfoTagIndex)
+    return result
+}
+
+func readFinderExtendedAttributesDeprecated(url: URL) -> FileTagAttributes? {
+    let filePath = url.path
+    var finderInfoTagIndex: Int? = nil
+    var userTags: [FinderTag] = []
+
+    // 读取 com.apple.FinderInfo (32字节二进制)
+    // byte[9] 的高3位为 label color: none=00,01 grey=02,03 green=04,05
+    // purple=06,07 blue=08,09 yellow=0A,0B red=0C,0D orange=0E,0F
+    let finderInfoAttr = "com.apple.FinderInfo"
+    let finderInfoSize = getxattr(filePath, finderInfoAttr, nil, 0, 0, 0)
+    if finderInfoSize > 0 {
+        var finderInfoBuf = [UInt8](repeating: 0, count: finderInfoSize)
+        let readSize = getxattr(filePath, finderInfoAttr, &finderInfoBuf, finderInfoSize, 0, 0)
+        if readSize >= 10 {
+            let index = Int(finderInfoBuf[9]) >> 1
+            if index > 0 {
+                finderInfoTagIndex = index
+            }
+        }
+    }
+
+    // 读取 com.apple.metadata:_kMDItemUserTags (bplist格式)
+    // 每条记录格式为 "标签名\ncolorIndex"
+    let userTagsAttr = "com.apple.metadata:_kMDItemUserTags"
+    let userTagsSize = getxattr(filePath, userTagsAttr, nil, 0, 0, 0)
+    if userTagsSize > 0 {
+        var userTagsBuf = [UInt8](repeating: 0, count: userTagsSize)
+        let readSize = getxattr(filePath, userTagsAttr, &userTagsBuf, userTagsSize, 0, 0)
+        if readSize > 0 {
+            let userTagsData = Data(userTagsBuf[0..<readSize])
+            if let plist = try? PropertyListSerialization.propertyList(from: userTagsData, options: [], format: nil),
+               let tagStrings = plist as? [String] {
+                for tagString in tagStrings {
+                    let parts = tagString.split(separator: "\n", maxSplits: 1)
+                    let name = String(parts[0])
+                    let colorIndex: Int? = parts.count > 1 ? Int(parts[1]) : nil
+                    userTags.append(FinderTag(name: name, colorIndex: colorIndex))
+                }
+            }
+        }
+    }
+
+    if finderInfoTagIndex == nil && userTags.isEmpty {
+        return nil
+    }
+
+    let result = FileTagAttributes(userTags: userTags, finderInfoTagIndex: finderInfoTagIndex)
+    return result
 }
