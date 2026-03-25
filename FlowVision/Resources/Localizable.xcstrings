@@ -28950,6 +28950,7 @@
     },
     "Tag" : {
       "comment" : "标签",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -29995,6 +29996,7 @@
     },
     "Toggle Tag" : {
       "comment" : "标记/取消标记",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

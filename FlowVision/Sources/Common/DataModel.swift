@@ -740,13 +740,8 @@ class TreeViewModel {
             }
 
             if folderURL.path == "root" {
-                let tags = TaggingSystem.getAllTags().reversed()
-                for tag in tags {
-                    let tagURL = URL(string: "file:///VirtualTagFolder/\(tag)/")!
-                    subFolders.insert(tagURL, at: 0)
-                }
-                let testURL = URL(string: "file:///VirtualFinderTagsFolder/")!
-                subFolders.insert(testURL, at: 0)
+                let finderTagsURL = URL(string: "file:///VirtualFinderTagsFolder/")!
+                subFolders.insert(finderTagsURL, at: 0)
             }
 
             if globalVar.autoHideToolbar && folderURL.path == "root" {
@@ -763,9 +758,6 @@ class TreeViewModel {
                 if name == "PlaceholderForAutoHideToolbar" {
                     name = "Hidden Volume"
                     fullPath = "file:///"
-                }
-                if subFolder.absoluteString.contains("VirtualTagFolder") {
-                    name = "Tag " + name
                 }
                 if subFolder.absoluteString.contains("VirtualFinderTagsFolder") {
                     if subFolder.absoluteString == "file:///VirtualFinderTagsFolder/" {

@@ -891,17 +891,6 @@ extension ViewController {
                 }
             }
             
-            // 检查按键是否是 "B" 键
-            // Check if key is "B"
-            if characters == "b" && noModifierKey && TAGGING_FEATURE_ENABLED {
-                // 如果焦点在CollectionView
-                // If focus is in CollectionView
-                if publicVar.isCollectionViewFirstResponder{
-                    handleTagging()
-                    return nil
-                }
-            }
-            
         }
         
         // 处理弹出重命名对话框、OCR状态的复制粘贴操作

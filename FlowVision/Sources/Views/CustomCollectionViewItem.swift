@@ -210,15 +210,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     func refreshTagLabel(){
         let isShowThumbnailTag = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailTag") == "true"
         
-        var tags = TaggingSystem.getFileTags(url: URL(string: file.path)!)
+        var tags: [String] = []
         
         if let rating = file.imageInfo?.rating {
             let stars = String(repeating: "⭐️", count: rating)
             tags.insert(stars, at: 0)
-        }
-        
-        if !TAGGING_FEATURE_ENABLED {
-            tags.removeAll()
         }
         
         imageTag.stringValue = tags.joined(separator: "\n")
@@ -1057,34 +1053,6 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 menu.addItem(NSMenuItem.separator())
 
-                if TAGGING_FEATURE_ENABLED {
-                    
-                    // 创建标签子菜单
-                    // Create tags submenu
-                    let tagMenu = NSMenu()
-                    let currentTag = getViewController(collectionView!)?.publicVar.currentTag ?? TaggingSystem.defaultTag
-                    let tagMenuItem = NSMenuItem(title: NSLocalizedString("Tag", comment: "标签")+" "+currentTag, action: nil, keyEquivalent: "")
-                    tagMenuItem.submenu = tagMenu
-                    
-                    // 添加标记/取消标记选项
-                    let toggleTagItem = tagMenu.addItem(withTitle: NSLocalizedString("Toggle Tag", comment: "标记/取消标记"), action: #selector(actTag), keyEquivalent: "b")
-                    toggleTagItem.keyEquivalentModifierMask = []
-                    
-                    tagMenu.addItem(NSMenuItem.separator())
-                    
-                    // 添加不同标签选项
-                    // Add different tag options
-                    for tag in TaggingSystem.getAvailableTags() {
-                        let tagItem = tagMenu.addItem(withTitle: tag, action: #selector(actChangeTag(_:)), keyEquivalent: "")
-                        tagItem.representedObject = tag
-                        if tag == currentTag {
-                            tagItem.state = .on
-                        }
-                    }
-                    
-                    menu.addItem(tagMenuItem)
-                }
-
                 let finderTagMenu = NSMenu()
                 let finderTagMenuItem = NSMenuItem(title: NSLocalizedString("Finder Tags", comment: "Finder标签"), action: nil, keyEquivalent: "")
                 finderTagMenuItem.submenu = finderTagMenu
@@ -1151,15 +1119,6 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         // Reset mouse down location
         self.mouseDownLocation = nil
         super.rightMouseUp(with: event)
-    }
-
-    @objc func actChangeTag(_ sender: NSMenuItem) {
-        guard let tag = sender.representedObject as? String else { return }
-        getViewController(collectionView!)?.handleChangeCurrentTag(tag: tag)
-    }
-
-    @objc func actTag() {
-        getViewController(collectionView!)?.handleTagging()
     }
 
     @objc func actToggleFinderTag(_ sender: NSMenuItem) {

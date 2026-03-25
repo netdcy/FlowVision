@@ -215,7 +215,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
 
         // 初始化标签系统
         // Initialize tagging system
-        TaggingSystem.initialize()
         EnhancedIndex.initialize()
 
         log("End applicationWillFinishLaunching")

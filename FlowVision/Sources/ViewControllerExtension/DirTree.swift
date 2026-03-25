@@ -115,9 +115,6 @@ extension ViewController {
         
         // 标签
         // Tags
-        if path.contains("VirtualTagFolder") {
-            targetPaths = ["Tag " + URL(string: path)!.lastPathComponent]
-        }
         if path.contains("VirtualFinderTagsFolder") {
             if path == "file:///VirtualFinderTagsFolder/" {
                 targetPaths = [NSLocalizedString("Finder Tags", comment: "Finder标签")]

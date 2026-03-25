@@ -162,9 +162,6 @@ extension ViewController {
                         let tagName = folderURL.lastPathComponent
                         scanVirtualFiles(at: folderURL, contents: &dirURLCache, properties: properties, tagName: tagName)
                         isInSameDir = false
-                    }else if folderURL.path.contains("VirtualTagFolder") {
-                        dirURLCache = TaggingSystem.getList(tag: folderURL.lastPathComponent)
-                        isInSameDir = false
                     }else if publicVar.isRecursiveMode {
                         scanFiles(at: folderURL, contents: &dirURLCache, properties: properties)
                     }else{

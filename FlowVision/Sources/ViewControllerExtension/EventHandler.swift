@@ -224,11 +224,6 @@ extension ViewController {
         }
     }
     
-    func handleChangeCurrentTag(tag: String){
-        publicVar.currentTag = tag
-        UserDefaults.standard.setValue(tag, forKey: "currentTag")
-    }
-    
     func handleToggleFinderTag(_ tagName: String) {
         var urls: [URL] = []
         if publicVar.isCollectionViewFirstResponder {
@@ -297,31 +292,6 @@ extension ViewController {
             }
         }
         refreshCollectionView(needLoadThumbPriority: true)
-    }
-
-    func handleTagging(){
-        
-        let urls = publicVar.selectedUrls()
-        guard urls.count != 0 else {return}
-
-        if TaggingSystem.isAllTagged(tag: publicVar.currentTag, urls: urls) {
-            TaggingSystem.remove(tag: publicVar.currentTag, urls: urls)
-        }else{
-            TaggingSystem.add(tag: publicVar.currentTag, urls: urls)
-        }
-        
-        let isInTagView = false
-        if isInTagView{
-            refreshCollectionView(needLoadThumbPriority: true)
-        }else{
-            if let collectionView = collectionView {
-                for item in collectionView.visibleItems() {
-                    if let item = item as? CustomCollectionViewItem {
-                        item.refreshTagLabel()
-                    }
-                }
-            }
-        }
     }
     
     func toggleAutoPlayVisibleVideo() {
