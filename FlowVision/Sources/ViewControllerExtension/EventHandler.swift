@@ -234,7 +234,7 @@ extension ViewController {
         guard !urls.isEmpty else { return }
 
         let added = FinderTagHelper.toggleTag(tagName, on: urls)
-        refreshFinderTagsForVisibleItems()
+        refreshFinderTagsForVisibleItems(urls: urls)
 
         if let tag = FinderTag.byName(tagName) {
             let action = added ? "+" : "-"
@@ -242,21 +242,43 @@ extension ViewController {
         }
     }
 
-    func refreshFinderTagsForVisibleItems() {
+    func refreshFinderTagsForVisibleItems(urls: [URL]) {
+        let changedPaths = Set(urls.map { $0.absoluteString })
+        
+        var newTagsMap: [String: [String]] = [:]
+        for url in urls {
+            newTagsMap[url.absoluteString] = FinderTagHelper.readTags(from: url)
+        }
+        
         if let collectionView = collectionView {
             for item in collectionView.visibleItems() {
                 if let item = item as? CustomCollectionViewItem {
-                    if let url = URL(string: item.file.path) {
-                        item.file.finderTags = FinderTagHelper.readTags(from: url)
+                    if changedPaths.contains(item.file.path) {
+                        item.file.finderTags = newTagsMap[item.file.path] ?? []
+                        item.refreshFinderTagDots()
                     }
-                    item.refreshFinderTagDots()
                 }
             }
         }
-        if publicVar.isInLargeView, let url = URL(string: largeImageView.file.path) {
-            largeImageView.file.finderTags = FinderTagHelper.readTags(from: url)
+        if publicVar.isInLargeView, changedPaths.contains(largeImageView.file.path) {
+            largeImageView.file.finderTags = newTagsMap[largeImageView.file.path] ?? []
             largeImageView.refreshFinderTagDots()
         }
+        
+        fileDB.lock()
+        let curFolder = fileDB.curFolder
+        if let dirModel = fileDB.db[SortKeyDir(curFolder)] {
+            for url in urls {
+                let filePath = url.absoluteString
+                for ele in dirModel.files {
+                    if ele.0.path == filePath {
+                        ele.1.finderTags = newTagsMap[filePath] ?? []
+                        break
+                    }
+                }
+            }
+        }
+        fileDB.unlock()
     }
 
     func toggleFinderTagFilter(_ tagName: String?) {

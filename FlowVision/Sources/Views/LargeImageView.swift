@@ -1881,8 +1881,7 @@ class LargeImageView: NSView {
     @objc func actRemoveAllFinderTags() {
         guard let url = URL(string: file.path) else { return }
         FinderTagHelper.removeAllTags(from: [url])
-        file.finderTags = []
-        getViewController(self)?.refreshFinderTagsForVisibleItems()
+        getViewController(self)?.refreshFinderTagsForVisibleItems(urls: [url])
     }
 
     @objc func actRefresh() {

@@ -171,7 +171,32 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
                 let actionItemOpenInTerminal = menu.addItem(withTitle: NSLocalizedString("Open in Terminal", comment: "在终端中打开"), action: #selector(actOpenInTerminal), keyEquivalent: "")
                 
                 menu.addItem(NSMenuItem.separator())
-                
+
+                let finderTagMenu = NSMenu()
+                let finderTagMenuItem = NSMenuItem(title: NSLocalizedString("Finder Tags", comment: "Finder标签"), action: nil, keyEquivalent: "")
+                finderTagMenuItem.submenu = finderTagMenu
+
+                if let folderURL = URL(string: curRightClickedPath) {
+                    let currentTags = FinderTagHelper.readTags(from: folderURL)
+                    for tag in FinderTag.all {
+                        let item = finderTagMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actToggleFinderTag(_:)), keyEquivalent: "")
+                        item.representedObject = tag.name
+                        if currentTags.contains(tag.name) {
+                            item.state = .on
+                        }
+                        item.image = tag.dotImage
+                    }
+                }
+
+                finderTagMenu.addItem(NSMenuItem.separator())
+                finderTagMenu.addItem(withTitle: NSLocalizedString("Remove All Tags", comment: "移除所有标签"), action: #selector(actRemoveAllFinderTags), keyEquivalent: "")
+                finderTagMenu.addItem(NSMenuItem.separator())
+                finderTagMenu.addItem(withTitle: NSLocalizedString("Scan & Update Enhanced Index", comment: "扫描并更新增强索引"), action: #selector(actScanEnhancedIndex), keyEquivalent: "")
+
+                menu.addItem(finderTagMenuItem)
+
+                menu.addItem(NSMenuItem.separator())
+
                 let actionItemNewFolder = menu.addItem(withTitle: NSLocalizedString("New Folder", comment: "新建文件夹"), action: #selector(actNewFolder), keyEquivalent: "n")
                 actionItemNewFolder.keyEquivalentModifierMask = [.command,.shift]
                 
@@ -340,6 +365,29 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         task.launchPath = "/usr/bin/open"
         task.arguments = ["-a", "Terminal", url.path]
         task.launch()
+    }
+
+    @objc func actToggleFinderTag(_ sender: NSMenuItem) {
+        guard let tagName = sender.representedObject as? String,
+              let url = URL(string: curRightClickedPath) else { return }
+        FinderTagHelper.toggleTag(tagName, on: [url])
+        getViewController(self)?.refreshFinderTagsForVisibleItems(urls: [url])
+    }
+
+    @objc func actRemoveAllFinderTags() {
+        guard let url = URL(string: curRightClickedPath) else { return }
+        FinderTagHelper.removeAllTags(from: [url])
+        getViewController(self)?.refreshFinderTagsForVisibleItems(urls: [url])
+    }
+
+    @objc func actScanEnhancedIndex() {
+        guard let url = URL(string: curRightClickedPath),
+              let vc = getViewController(self) else { return }
+        EnhancedIndex.scanFolder(url) { message, isComplete in
+            DispatchQueue.main.async {
+                vc.coreAreaView.showInfo(message, timeOut: isComplete ? 2.0 : .infinity, cannotBeCleard: false)
+            }
+        }
     }
 
     @objc func actSortByType(_ sender: NSMenuItem) {

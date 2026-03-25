@@ -22528,6 +22528,12 @@
         }
       }
     },
+    "Scan & Update Enhanced Index" : {
+      "comment" : "扫描并更新增强索引"
+    },
+    "Scan complete" : {
+      "comment" : "扫描完成"
+    },
     "Scan Prompt" : {
       "comment" : "扫描提示",
       "localizations" : {
@@ -22717,6 +22723,12 @@
           }
         }
       }
+    },
+    "Scanning" : {
+      "comment" : "扫描中"
+    },
+    "Scanning..." : {
+      "comment" : "扫描中..."
     },
     "search-help" : {
       "comment" : "关于搜索的说明",
@@ -30605,6 +30617,9 @@
           }
         }
       }
+    },
+    "Updating index" : {
+      "comment" : "更新索引中"
     },
     "Use Full Path" : {
       "comment" : "使用完整路径",

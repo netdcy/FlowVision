@@ -245,6 +245,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         finderTagDotsView?.removeFromSuperview()
         finderTagDotsView = nil
 
+        let isShowThumbnailTag = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailTag") == "true"
+        if !isShowThumbnailTag { return }
+
         let tags = file.finderTags.compactMap { FinderTag.byName($0) }
         guard !tags.isEmpty else { return }
 
@@ -1089,6 +1092,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 finderTagMenu.addItem(NSMenuItem.separator())
                 finderTagMenu.addItem(withTitle: NSLocalizedString("Remove All Tags", comment: "移除所有标签"), action: #selector(actRemoveAllFinderTags), keyEquivalent: "")
 
+                if file.isDir {
+                    finderTagMenu.addItem(NSMenuItem.separator())
+                    finderTagMenu.addItem(withTitle: NSLocalizedString("Scan & Update Enhanced Index", comment: "扫描并更新增强索引"), action: #selector(actScanEnhancedIndex), keyEquivalent: "")
+                }
+
                 menu.addItem(finderTagMenuItem)
 
                 menu.addItem(NSMenuItem.separator())
@@ -1149,7 +1157,17 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         let urls = getViewController(collectionView!)?.publicVar.selectedUrls() ?? []
         guard !urls.isEmpty else { return }
         FinderTagHelper.removeAllTags(from: urls)
-        getViewController(collectionView!)?.refreshFinderTagsForVisibleItems()
+        getViewController(collectionView!)?.refreshFinderTagsForVisibleItems(urls: urls)
+    }
+
+    @objc func actScanEnhancedIndex() {
+        guard file.isDir, let url = URL(string: file.path) else { return }
+        guard let vc = getViewController(collectionView!) else { return }
+        EnhancedIndex.scanFolder(url) { message, isComplete in
+            DispatchQueue.main.async {
+                vc.coreAreaView.showInfo(message, timeOut: isComplete ? 2.0 : .infinity, cannotBeCleard: false)
+            }
+        }
     }
 
     @objc func actRefresh() {

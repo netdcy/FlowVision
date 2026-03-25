@@ -1284,7 +1284,7 @@ func triggerFinderSound() {
         
         // 创建临时文件路径
         // Create temporary file path
-        let tempFilePath = appDirectory.appendingPathComponent("tempFileForSound.txt")
+        let tempFilePath = appDirectory.appendingPathComponent("TempFileForSound.txt")
         
         // 创建临时文件
         // Create temporary file

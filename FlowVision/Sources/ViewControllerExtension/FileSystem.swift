@@ -65,20 +65,27 @@ extension ViewController {
     
     func scanVirtualFiles(at folderURL: URL, contents: inout [URL], properties: [URLResourceKey],
                           tagName: String) {
+        var spotlightPaths = Set<String>()
+
         let queryString = "kMDItemUserTags == '\(tagName)'"
-        guard let query = MDQueryCreate(kCFAllocatorDefault, queryString as CFString, nil, nil) else { return }
-        
-        // 同步执行Spotlight查询
-        // Execute Spotlight query synchronously
-        MDQueryExecute(query, CFOptionFlags(kMDQuerySynchronous.rawValue))
-        
-        let count = MDQueryGetResultCount(query)
-        for i in 0..<count {
-            if let rawPtr = MDQueryGetResultAtIndex(query, i) {
-                let item = Unmanaged<MDItem>.fromOpaque(rawPtr).takeUnretainedValue()
-                if let path = MDItemCopyAttribute(item, kMDItemPath) as? String {
-                    contents.append(URL(fileURLWithPath: path))
+        if let query = MDQueryCreate(kCFAllocatorDefault, queryString as CFString, nil, nil) {
+            MDQueryExecute(query, CFOptionFlags(kMDQuerySynchronous.rawValue))
+            let count = MDQueryGetResultCount(query)
+            for i in 0..<count {
+                if let rawPtr = MDQueryGetResultAtIndex(query, i) {
+                    let item = Unmanaged<MDItem>.fromOpaque(rawPtr).takeUnretainedValue()
+                    if let path = MDItemCopyAttribute(item, kMDItemPath) as? String {
+                        spotlightPaths.insert(path)
+                        contents.append(URL(fileURLWithPath: path))
+                    }
                 }
+            }
+        }
+
+        let enhancedResults = EnhancedIndex.filesForTag(tagName)
+        for url in enhancedResults {
+            if !spotlightPaths.contains(url.path) {
+                contents.append(url)
             }
         }
     }
@@ -189,6 +196,8 @@ extension ViewController {
             // 过滤掉其他隐藏文件
             return !isHidden || publicVar.isShowHiddenFile
         }
+
+        EnhancedIndex.updateFiles(contents)
 
         // 搜索过滤
         // Search filter

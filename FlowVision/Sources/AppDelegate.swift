@@ -212,6 +212,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         // 初始化标签系统
         // Initialize tagging system
         TaggingSystem.initialize()
+        EnhancedIndex.initialize()
 
         log("End applicationWillFinishLaunching")
         // End applicationWillFinishLaunching
@@ -236,6 +237,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
+        EnhancedIndex.flushPendingSave()
         log("App EXIT")
         log("-----------------------------------------------------------")
         // Logger.shared.clearLogFile()
