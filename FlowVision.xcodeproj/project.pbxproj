@@ -38,6 +38,7 @@
 		F74D555E2F0E52F800C9AB85 /* ArrowKeyLocate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74D555D2F0E52EA00C9AB85 /* ArrowKeyLocate.swift */; };
 		F7663C162F222AAC0028DF35 /* ImageEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7663C152F222AAC0028DF35 /* ImageEditingView.swift */; };
 		F76E2EFE2C3B765C0031B0B4 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76E2EFD2C3B765C0031B0B4 /* Log.swift */; };
+		F76F6A632F4FE58800D798DC /* TempVariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76F6A622F4FE58000D798DC /* TempVariable.swift */; };
 		F77098912F0E3C6B00E7D164 /* KeyShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77098902F0E3C6200E7D164 /* KeyShortcut.swift */; };
 		F77098932F0E411500E7D164 /* FileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77098922F0E411200E7D164 /* FileSystem.swift */; };
 		F77098952F0E427800E7D164 /* FileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77098942F0E427700E7D164 /* FileOperation.swift */; };
@@ -148,6 +149,7 @@
 		F754F3CE2C10393700A25D12 /* libswresample.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libswresample.xcframework; path = "../ffmpeg-kit-build/bundle-apple-xcframework-macos/libswresample.xcframework"; sourceTree = "<group>"; };
 		F7663C152F222AAC0028DF35 /* ImageEditingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditingView.swift; sourceTree = "<group>"; };
 		F76E2EFD2C3B765C0031B0B4 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		F76F6A622F4FE58000D798DC /* TempVariable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempVariable.swift; sourceTree = "<group>"; };
 		F77098902F0E3C6200E7D164 /* KeyShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyShortcut.swift; sourceTree = "<group>"; };
 		F77098922F0E411200E7D164 /* FileSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystem.swift; sourceTree = "<group>"; };
 		F77098942F0E427700E7D164 /* FileOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOperation.swift; sourceTree = "<group>"; };
@@ -196,11 +198,12 @@
 		F73865DC2C37BD7F00837FE4 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				F76F6A622F4FE58000D798DC /* TempVariable.swift */,
+				F73865D82C37BBCB00837FE4 /* GlobalVariable.swift */,
 				F70F9FC02BAFE7B300C50CDD /* Common.swift */,
 				F73865DF2C37C06C00837FE4 /* DataModel.swift */,
 				F73865E12C37C0A300837FE4 /* Enum.swift */,
 				F73865E72C37C26C00837FE4 /* FFmpegKit.swift */,
-				F73865D82C37BBCB00837FE4 /* GlobalVariable.swift */,
 				F7F600472E1E094A00ED8536 /* FinderTag.swift */,
 				F73865E32C37C11B00837FE4 /* ImageProcess.swift */,
 				F76E2EFD2C3B765C0031B0B4 /* Log.swift */,
@@ -449,6 +452,7 @@
 				F7F600462E1E095400ED8536 /* Tag.swift in Sources */,
 				F7F600482E1E095500ED8536 /* FinderTag.swift in Sources */,
 				F73865D92C37BBCB00837FE4 /* GlobalVariable.swift in Sources */,
+				F76F6A632F4FE58800D798DC /* TempVariable.swift in Sources */,
 				F74D555A2F0E49AB00C9AB85 /* AutoScrollPlay.swift in Sources */,
 				F73865E62C37C1AA00837FE4 /* DrawingView.swift in Sources */,
 				F77098932F0E411500E7D164 /* FileSystem.swift in Sources */,
