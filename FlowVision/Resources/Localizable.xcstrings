@@ -6366,6 +6366,10 @@
         }
       }
     },
+    "Demo" : {
+      "comment" : "Demo",
+      "shouldTranslate" : false
+    },
     "Disable Automatic Play" : {
       "comment" : "停止自动播放",
       "localizations" : {
