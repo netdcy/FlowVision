@@ -3516,6 +3516,101 @@
         }
       }
     },
+    "Border Thickness" : {
+      "comment" : "边框厚度",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سُمك الحدود"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Randstärke"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Border Thickness"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grosor del borde"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Épaisseur de la bordure"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spessore bordo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "枠線の太さ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "테두리 두께"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Randdikte"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espessura da Borda"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espessura da Borda"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Толщина границы"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kanttjocklek"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "边框厚度"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邊框厚度"
+          }
+        }
+      }
+    },
     "Cancel" : {
       "comment" : "取消",
       "localizations" : {
@@ -4082,6 +4177,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "區分大小寫"
+          }
+        }
+      }
+    },
+    "Cell Padding" : {
+      "comment" : "单元格外边距",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تباعد الخلية"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zellenabstand"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cell Padding"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Relleno de celda"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marge intérieure des cellules"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Padding celle"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セルの余白"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "셀 여백"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Celopvulling"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preenchimento da Célula"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preenchimento da Célula"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отступ ячейки"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cellutfyllnad"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单元格外边距"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "儲存格填充"
           }
         }
       }
@@ -5127,6 +5317,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "複製到「下載」資料夾"
+          }
+        }
+      }
+    },
+    "Corner Radius" : {
+      "comment" : "圆角半径",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نصف قطر الزاوية"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eckenradius"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corner Radius"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Radio de esquina"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rayon d'angle"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raggio angolare"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コーナー半径"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모서리 반경"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoekradius"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raio do Canto"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raio do Canto"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Радиус скругления"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hörnradie"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "圆角半径"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "圓角半徑"
           }
         }
       }
@@ -11686,6 +11971,101 @@
         }
       }
     },
+    "Filename Font Size" : {
+      "comment" : "文件名字体大小",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حجم خط اسم الملف"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schriftgröße des Dateinamens"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filename Font Size"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño de fuente del nombre de archivo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille de la police du nom de fichier"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dimensione carattere nome file"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイル名フォントサイズ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파일 이름 글꼴 크기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestandnaam lettergrootte"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamanho da Fonte do Nome do Arquivo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamanho da Fonte do Nome do Ficheiro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер шрифта имени файла"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filnamn teckenstorlek"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件名字体大小"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件名字體大小"
+          }
+        }
+      }
+    },
     "Filter" : {
       "comment" : "筛选",
       "localizations" : {
@@ -14726,6 +15106,101 @@
         }
       }
     },
+    "Line Space Adjustment" : {
+      "comment" : "行间距调整",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ضبط تباعد الأسطر"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeilenabstandsanpassung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Line Space Adjustment"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajuste de Espacio entre Líneas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustement de l'espacement des lignes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regolazione dello spazio tra le righe"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行間スペース調整"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "줄 간격 조정"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aanpassing van regelafstand"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajuste de Espaçamento de Linha"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajuste do Espaçamento entre Linhas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Регулировка межстрочного интервала"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Radavståndsjustering"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行间距调整"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行距調整"
+          }
+        }
+      }
+    },
     "Loading..." : {
       "comment" : "加载中...",
       "localizations" : {
@@ -17287,6 +17762,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "無評分"
+          }
+        }
+      }
+    },
+    "Non-Grid View" : {
+      "comment" : "非网格视图",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عرض غير شبكي"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht-Rasteransicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non-Grid View"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vista no cuadriculada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vue non-grille"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visualizzazione non a griglia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非グリッドビュー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비격자 보기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niet-Rasterweergave"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visualização Não-Grade"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vista Não-Grade"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Негридовый вид"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icke-rutnätsvy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非网格视图"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非網格視圖"
           }
         }
       }
@@ -25841,43 +26411,132 @@
         }
       }
     },
-    "Show Finder Tags and Rating" : {
-      "comment" : "显示Finder标签和评级",
+    "Show Filename" : {
+      "comment" : "显示文件名",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "إظهار علامات Finder والتصنيف"
+            "value" : "إظهار اسم الملف"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finder-Tags und Bewertung anzeigen"
+            "value" : "Dateiname anzeigen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Show Finder Tags and Rating"
+            "value" : "Show Filename"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostrar etiquetas de Finder y calificación"
+            "value" : "Mostrar nombre de archivo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afficher les étiquettes Finder et la note"
+            "value" : "Afficher le nom du fichier"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostra tag Finder e valutazione"
+            "value" : "Mostra nome file"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイル名を表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파일 이름 표시"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestandsnaam weergeven"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar nome do arquivo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar Nome do Ficheiro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать имя файла"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa filnamn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示文件名"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示檔案名"
+          }
+        }
+      }
+    },
+    "Show Finder Tags and Ratings" : {
+      "comment" : "显示Finder标签和评级",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار علامات Finder والتقييمات"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder-Tags und Bewertungen anzeigen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar etiquetas y calificaciones de Finder"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher les tags et évaluations du Finder"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra tag e valutazioni del Finder"
           }
         },
         "ja" : {
@@ -25895,25 +26554,25 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toon Finder-tags en beoordeling"
+            "value" : "Finder-tags en beoordelingen weergeven"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostrar tags do Finder e classificação"
+            "value" : "Mostrar Tags e Avaliações do Finder"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostrar Etiquetas do Finder e Classificação"
+            "value" : "Mostrar etiquetas e classificações do Finder"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Показать теги Finder и рейтинг"
+            "value" : "Показать теги и рейтинги Finder"
           }
         },
         "sv" : {
@@ -25931,7 +26590,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "顯示 Finder 標籤和評級"
+            "value" : "顯示Finder標籤和評級"
           }
         }
       }
@@ -26411,97 +27070,186 @@
         }
       }
     },
-    "Show RAW/HDR Badge on Thumbnail(if exist)" : {
-      "comment" : "缩略图显示RAW/HDR标记(如果存在)",
+    "Show RAW/HDR Badge" : {
+      "comment" : "显示RAW/HDR标记",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "عرض شارة RAW/HDR على الصورة المصغرة (إذا كانت موجودة)"
+            "value" : "إظهار شارة RAW/HDR"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAW/HDR-Kennzeichnung auf Miniaturansicht anzeigen (falls vorhanden)"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show RAW/HDR Badge on Thumbnail(if exist)"
+            "value" : "RAW/HDR-Abzeichen anzeigen"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostrar insignia RAW/HDR en la miniatura (si existe)"
+            "value" : "Mostrar insignia RAW/HDR"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afficher l'indicateur RAW/HDR sur la vignette (si existant)"
+            "value" : "Afficher l'insigne RAW/HDR"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostra badge RAW/HDR sulle miniature (se esiste)"
+            "value" : "Mostra badge RAW/HDR"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サムネイルにRAW/HDRバッジを表示(存在する場合)"
+            "value" : "RAW/HDRバッジを表示"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "썸네일에 RAW/HDR 배지 표시(존재 시)"
+            "value" : "RAW/HDR 배지 표시"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toon RAW/HDR-badge op miniatuur (indien aanwezig)"
+            "value" : "RAW/HDR-badge weergeven"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Exibir emblema RAW/HDR na miniatura (se existir)"
+            "value" : "Mostrar emblema RAW/HDR"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostrar Emblema RAW/HDR na Miniatura (se existir)"
+            "value" : "Mostrar Emblema RAW/HDR"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Показать значок RAW/HDR на миниатюре (если есть)"
+            "value" : "Показать значок RAW/HDR"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Visa RAW/HDR-märke på miniatyrbild (om det finns)"
+            "value" : "Visa RAW/HDR-märke"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "缩略图显示RAW/HDR标记(如果存在)"
+            "value" : "显示RAW/HDR标记"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "缩略圖上顯示RAW/HDR標籤（如果存在）"
+            "value" : "顯示RAW/HDR徽章"
+          }
+        }
+      }
+    },
+    "Show Shadow" : {
+      "comment" : "显示阴影",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار الظل"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schatten anzeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Shadow"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar sombra"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher l'ombre"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra ombra"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "シャドウを表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "그림자 표시"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schaduw weergeven"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar Sombra"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar Sombra"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать тень"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa skugga"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示阴影"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示陰影"
           }
         }
       }
@@ -26601,287 +27349,91 @@
         }
       }
     },
-    "Show Tag on Thumbnail(if exist)" : {
-      "comment" : "缩略图显示标签(如果存在)",
+    "Show Tags and Ratings" : {
+      "comment" : "显示标签和评级",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "عرض الوسم على الصورة المصغرة (إن وجد)"
+            "value" : "إظهار العلامات والتقييمات"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tag auf Miniaturansicht anzeigen (falls vorhanden)"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show Tag on Thumbnail(if exist)"
+            "value" : "Tags und Bewertungen anzeigen"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostrar etiqueta en miniatura (si existe)"
+            "value" : "Mostrar etiquetas y calificaciones"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afficher le tag sur la miniature (si existant)"
+            "value" : "Afficher les balises et les évaluations"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostra etichetta sulla miniatura(se esiste)"
+            "value" : "Mostra tag e valutazioni"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サムネイルにタグを表示（存在する場合）"
+            "value" : "タグと評価を表示"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "썸네일에 태그 표시(존재하는 경우)"
+            "value" : "태그 및 등급 표시"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tag op thumbnail weergeven (indien aanwezig)"
+            "value" : "Tags en beoordelingen weergeven"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostrar etiqueta na miniatura(se existir)"
+            "value" : "Mostrar Tags e Avaliações"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostrar etiqueta na miniatura (se existir)"
+            "value" : "Mostrar Etiquetas e Classificações"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Отобразить метку на миниатюре (если существует)"
+            "value" : "Показать теги и рейтинги"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Visa tagg på miniatyr (om den finns)"
+            "value" : "Visa taggar och betyg"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "缩略图显示标签(如果存在)"
+            "value" : "显示标签和评级"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在縮略圖上顯示標籤（如果存在）"
-          }
-        }
-      }
-    },
-    "Show Thumbnail Filename" : {
-      "comment" : "缩略图显示文件名",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إظهار اسم ملف الصورة المصغرة"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniaturbild-Dateiname anzeigen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show Thumbnail Filename"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar nombre de archivo de la miniatura"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher le nom du fichier en miniature"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostra nome file in miniatura"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サムネイルのファイル名を表示"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "섬네일 파일명 표시"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniatuur bestandsnaam weergeven"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar Nome do Arquivo em Miniatura"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar Nome do Ficheiro da Miniatura"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Показать имя файла миниатюры"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Visa filnamn för miniatyrbild"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "缩略图显示文件名"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顯示縮略圖文件名"
-          }
-        }
-      }
-    },
-    "Show Thumbnail Shadow (Non-Grid View)" : {
-      "comment" : "显示缩略图阴影(非网格视图)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "عرض ظل الصورة المصغرة (عرض غير شبكي)"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniaturansicht Schatten anzeigen (Nicht-Rasteransicht)"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show Thumbnail Shadow (Non-Grid View)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar sombra de miniatura (Vista no cuadrícula)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher l'ombre de la vignette (vue non-grille)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostra ombra della miniatura (visualizzazione non a griglia)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サムネイルの影を表示（グリッドビュー以外）"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "썸네일 그림자 표시(비 그리드 보기)"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniatuur Schaduw Tonen (Niet-Rasterweergave)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar Sombra da Miniatura (Visualização Não-Grade)"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar Sombra da Miniatura (Vista Não em Grade)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Показать тень миниатюры (не в виде сетки)"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Visa miniatyrskugga (ej rutnätsvy)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "显示缩略图阴影(非网格视图)"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顯示縮略圖陰影（非網格視圖）"
+            "value" : "顯示標籤和評分"
           }
         }
       }
@@ -31446,572 +31998,97 @@
         }
       }
     },
-    "Thumbnail Border Thickness (Non-Grid View)" : {
-      "comment" : "缩略图边框厚度(非网格视图)",
+    "Thumbnail General" : {
+      "comment" : "缩略图通用",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "سماكة حدود الصورة المصغرة (عرض غير شبكي)"
+            "value" : "صورة مصغرة عامة"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dicke des Vorschaubildrandes (Nicht-Gitteransicht)"
+            "value" : "Allgemeine Miniaturansicht"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thumbnail Border Thickness (Non-Grid View)"
+            "value" : "Thumbnail General"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grosor del borde de la miniatura (vista no de cuadrícula)"
+            "value" : "Miniatura General"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Épaisseur de la bordure de la vignette (vue non-grille)"
+            "value" : "Général des vignettes"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spessore bordo miniatura (visualizzazione non a griglia)"
+            "value" : "Miniatura Generale"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サムネイル枠の太さ（非グリッドビュー）"
+            "value" : "サムネイル一般"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "썸네일 테두리 두께 (비 그리드 보기)"
+            "value" : "일반 썸네일"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Miniatuur randdikte (Niet-Rasterweergave)"
+            "value" : "Miniatuur Algemeen"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Espessura da Borda da Miniatura (Exibição Não Gradeada)"
+            "value" : "Miniatura Geral"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Espessura da Borda da Miniatura (Vista Não em Grade)"
+            "value" : "Miniatura Geral"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Толщина границы миниатюры (негридовый вид)"
+            "value" : "Эскиз Общий"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Miniatyrbild Kanttjocklek (icke-rutnätsvy)"
+            "value" : "Miniatyr Allmänt"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "缩略图边框厚度(非网格视图)"
+            "value" : "缩略图通用"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "縮略圖邊框粗細 (非網格視圖)"
-          }
-        }
-      }
-    },
-    "Thumbnail Cell Padding" : {
-      "comment" : "缩略图单元格外边距",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تباعد الخلية المصغرة"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniaturansicht Zellenabstand"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thumbnail Cell Padding"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Relleno de celda de miniatura"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Remplissage de cellule de vignette"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Riempimento celle miniature"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サムネイルセルのパディング"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "썸네일 셀 패딩"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniatuurrandopvulling"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preenchimento da Célula da Miniatura"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preenchimento da Célula da Miniatura"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отступ ячейки миниатюры"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Minnatyrbildcellens utfyllnad"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "缩略图单元格外边距"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "縮略圖單元格邊距"
-          }
-        }
-      }
-    },
-    "Thumbnail Corner Radius (Grid View)" : {
-      "comment" : "缩略图圆角半径(网格视图)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نصف قطر زاوية المصغر (عرض الشبكة)"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eckenradius des Thumbnails (Rasteransicht)"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thumbnail Corner Radius (Grid View)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Radio de esquina de la miniatura (Vista de cuadrícula)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rayon d'angle de la miniature (vue en grille)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Raggio dell'angolo delle miniature (vista griglia)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サムネイルの角の丸み (グリッドビュー)"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "썸네일 코너 반경 (그리드 보기)"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hoekstraal miniatuur (Rasterweergave)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Raio do Canto da Miniatura (Visualização em Grade)"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Raio do Canto da Miniatura (Vista em Grade)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Радиус скругления углов эскиза (Вид сетки)"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniatyrhörnavstånd (Rutnätsvy)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "缩略图圆角半径(网格视图)"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "縮略圖圓角半徑（網格視圖）"
-          }
-        }
-      }
-    },
-    "Thumbnail Corner Radius (Non-Grid View)" : {
-      "comment" : "缩略图圆角半径(非网格视图)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نصف قطر زاوية الصورة المصغرة (عرض غير شبكي)"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eckenradius des Thumbnails (Nicht-Rasteransicht)"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thumbnail Corner Radius (Non-Grid View)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Radio de la esquina de la miniatura (vista no en cuadrícula)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rayon d'angle des vignettes (vue non-grille)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Raggio d’angolo delle miniature (Visualizzazione non a griglia)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サムネイルの角の半径 (非グリッド表示)"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "썸네일 모서리 반경 (비격자 보기)"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hoekstraal Miniatuur (Niet-Rasterweergave)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Raio do Canto da Miniatura (Visualização Não Grade)"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Raio do Canto da Miniatura (Vista Não-Grade)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Радиус закругления миниатюр (не сеточный вид)"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniatyrhörnsradie (icke rutnätvy)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "缩略图圆角半径(非网格视图)"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "缩略图圓角半徑(非網格視圖)"
-          }
-        }
-      }
-    },
-    "Thumbnail Filename Font Size" : {
-      "comment" : "缩略图文件名字体大小",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "حجم خط اسم ملف الصورة المصغرة"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schriftgröße des Dateinamens der Miniaturansicht"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thumbnail Filename Font Size"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tamaño de Fuente del Nombre del Archivo en Miniatura"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Taille de police du nom de fichier de la miniature"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dimensione carattere nome file miniatura"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サムネイルファイル名フォントサイズ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "썸네일 파일 이름 글꼴 크기"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniatuur bestandsnaam lettergrootte"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tamanho da Fonte do Nome do Arquivo em Miniatura"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tamanho da Fonte do Nome do Ficheiro da Miniatura"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Размер шрифта имени файла эскиза"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Teckensnittsstorlek för miniatyrbildens filnamn"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "缩略图文件名字体大小"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "縮略圖文件名字體大小"
-          }
-        }
-      }
-    },
-    "Thumbnail Line Space Adjustment (Non-Grid View)" : {
-      "comment" : "缩略图行间距调整(非网格视图)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ضبط تباعد خطوط الصور المصغرة (عرض غير الشبكة)"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thumbnail-Zeilenabstandsanpassung (Nicht-Gitter-Ansicht)"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thumbnail Line Space Adjustment (Non-Grid View)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajuste del espacio entre líneas de miniaturas (vista no en cuadrícula)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajustement de l'espacement des lignes des vignettes (vue non en grille)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Regolazione dello spazio tra le righe delle miniature (visualizzazione non a griglia)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サムネイル行間スペース調整（グリッドビュー以外）"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "썸네일 행 간격 조정 (비그리드 보기)"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aanpassing van regelafstand miniatuurweergave (Niet-Rasterweergave)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajuste do Espaçamento das Linhas em Miniatura (Visualização Não-Grade)"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajuste do Espaçamento entre Linhas de Miniaturas (Vista Não Grade)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Настройка интервала между строками миниатюр (не сеточный вид)"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Justering av miniatyrraders mellanrum (ej rutnätsvy)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "缩略图行间距调整(非网格视图)"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "縮略圖行間距調整（非網格視圖）"
+            "value" : "縮略圖通用"
           }
         }
       }

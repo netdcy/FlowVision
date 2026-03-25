@@ -11330,49 +11330,49 @@
       }
     },
     "pB9-hf-avc.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"Show Finder Tags and Rating\"; ObjectID = \"pB9-hf-avc\";",
+      "comment" : "Class = \"NSMenuItem\"; title = \"Show Finder Tags and Ratings\"; ObjectID = \"pB9-hf-avc\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "إظهار علامات Finder والتصنيف"
+            "value" : "إظهار علامات Finder والتقييمات"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finder-Tags und Bewertung anzeigen"
+            "value" : "Finder-Tags und Bewertungen anzeigen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Show Finder Tags and Rating"
+            "value" : "Show Finder Tags and Ratings"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostrar etiquetas de Finder y calificación"
+            "value" : "Mostrar etiquetas y calificaciones de Finder"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afficher les tags Finder et la note"
+            "value" : "Afficher les tags et évaluations du Finder"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostra tag e valutazione del Finder"
+            "value" : "Mostra tag e valutazioni del Finder"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finderタグと評価を表示"
+            "value" : "Finderのタグと評価を表示"
           }
         },
         "ko" : {
@@ -11384,25 +11384,25 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toon Finder-tags en beoordeling"
+            "value" : "Toon Finder-tags en beoordelingen"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostrar Tags do Finder e Avaliação"
+            "value" : "Mostrar Tags e Avaliações do Finder"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostrar Etiquetas do Finder e Classificação"
+            "value" : "Mostrar Etiquetas e Classificações do Finder"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Показать теги Finder и рейтинг"
+            "value" : "Показать теги и рейтинги Finder"
           }
         },
         "sv" : {

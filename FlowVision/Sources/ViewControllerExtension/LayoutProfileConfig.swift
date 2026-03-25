@@ -45,7 +45,7 @@ extension ViewController {
     
     func customLayoutStylePrompt (){
         if let mainWindow = NSApplication.shared.mainWindow {
-            showThumbnailOptionsPanel(on: mainWindow) { [weak self] isUseFullPath, isShowStatistics, isShowBadge, isShowTag, isShowFilename, filenameSize, cellPadding, borderRadiusInGrid, borderRadius, borderThickness, lineSpaceAdjust, showShadow in
+            showProfileOptionsPanel(on: mainWindow) { [weak self] isUseFullPath, isShowStatistics, isShowBadge, isShowTag, isShowFilename, filenameSize, cellPadding, borderRadiusInGrid, borderRadius, borderThickness, lineSpaceAdjust, showShadow in
                 guard let self = self else { return }
                 
                 let newStyle = CustomProfile()

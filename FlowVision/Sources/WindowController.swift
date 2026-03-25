@@ -1337,7 +1337,7 @@ extension WindowController: NSToolbarDelegate {
 
             menu.addItem(NSMenuItem.separator())
 
-            let largeImageViewShowTagsAndRating = menu.addItem(withTitle: NSLocalizedString("Show Finder Tags and Rating", comment: "显示Finder标签和评级"), action: #selector(toggleLargeImageViewShowTagsAndRating), keyEquivalent: "")
+            let largeImageViewShowTagsAndRating = menu.addItem(withTitle: NSLocalizedString("Show Finder Tags and Ratings", comment: "显示Finder标签和评级"), action: #selector(toggleLargeImageViewShowTagsAndRating), keyEquivalent: "")
             largeImageViewShowTagsAndRating.state = globalVar.largeImageViewShowTagsAndRating ? .on : .off
 
         }

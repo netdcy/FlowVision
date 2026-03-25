@@ -691,7 +691,7 @@ Gw
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="hHG-It-Z2Z"/>
-                                        <menuItem title="Show Finder Tags and Rating" id="pB9-hf-avc">
+                                        <menuItem title="Show Finder Tags and Ratings" id="pB9-hf-avc">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleShowFinderTagsAndRating:" target="Voe-Tx-rLC" id="5n0-hV-KdC"/>
