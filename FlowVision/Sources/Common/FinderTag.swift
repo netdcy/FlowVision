@@ -5,6 +5,7 @@
 
 import Foundation
 import Cocoa
+import BTree
 
 var customLabels: [String] = []
 
@@ -111,7 +112,7 @@ class EnhancedIndex {
 
     private static var fileIndex: [String: FileMetaInfo] = [:]
     private static var tagIndex: [String: Set<String>] = [:]
-    private static var sortedPaths: [String] = []
+    private static var sortedPaths = SortedSet<String>()
 
     private static let indexLock = NSLock()
     private static var pendingWorkItem: DispatchWorkItem?
@@ -132,6 +133,7 @@ class EnhancedIndex {
     // MARK: - 初始化
 
     static func initialize() {
+        guard ENHANCED_INDEX_ENABLED else { return }
         loadFromFile()
     }
 
@@ -139,6 +141,7 @@ class EnhancedIndex {
 
     /// progress callback: (message, isComplete)
     static func scanFolder(_ folderURL: URL, progress: ((String, Bool) -> Void)? = nil) {
+        guard ENHANCED_INDEX_ENABLED else { return }
         scanIDLock.lock()
         currentScanID += 1
         let myScanID = currentScanID
@@ -180,6 +183,7 @@ class EnhancedIndex {
     // MARK: - 批量更新文件的标签信息
 
     static func updateFiles(_ urls: [URL]) {
+        guard ENHANCED_INDEX_ENABLED else { return }
         indexLock.lock()
         var changed = false
         for url in urls {
@@ -196,13 +200,13 @@ class EnhancedIndex {
 
             if tags.isEmpty {
                 fileIndex.removeValue(forKey: path)
-                removeSortedPath(path)
+                sortedPaths.remove(path)
             } else {
                 fileIndex[path] = FileMetaInfo(tags: tags)
                 for tag in tags {
                     tagIndex[tag, default: Set()].insert(path)
                 }
-                insertSortedPath(path)
+                sortedPaths.insert(path)
             }
             changed = true
         }
@@ -216,6 +220,7 @@ class EnhancedIndex {
     // MARK: - 根据标签查询文件（带验证）
 
     static func filesForTag(_ tagName: String) -> [URL] {
+        guard ENHANCED_INDEX_ENABLED else { return [] }
         indexLock.lock()
         let paths = tagIndex[tagName] ?? Set()
         indexLock.unlock()
@@ -251,13 +256,13 @@ class EnhancedIndex {
             for path in pathsToRemove {
                 removePathFromIndices(path)
                 fileIndex.removeValue(forKey: path)
-                removeSortedPath(path)
+                sortedPaths.remove(path)
             }
             for (path, newTags) in pathsToUpdate {
                 removePathFromIndices(path)
                 if newTags.isEmpty {
                     fileIndex.removeValue(forKey: path)
-                    removeSortedPath(path)
+                    sortedPaths.remove(path)
                 } else {
                     fileIndex[path] = FileMetaInfo(tags: newTags)
                     for tag in newTags {
@@ -274,38 +279,16 @@ class EnhancedIndex {
 
     // MARK: - 排序路径辅助（调用方需持有 indexLock）
 
-    private static func lowerBound(for value: String) -> Int {
-        var lo = 0, hi = sortedPaths.count
-        while lo < hi {
-            let mid = (lo + hi) / 2
-            if sortedPaths[mid] < value { lo = mid + 1 } else { hi = mid }
-        }
-        return lo
-    }
-
-    private static func insertSortedPath(_ path: String) {
-        let idx = lowerBound(for: path)
-        if idx < sortedPaths.count && sortedPaths[idx] == path { return }
-        sortedPaths.insert(path, at: idx)
-    }
-
-    private static func removeSortedPath(_ path: String) {
-        let idx = lowerBound(for: path)
-        if idx < sortedPaths.count && sortedPaths[idx] == path {
-            sortedPaths.remove(at: idx)
-        }
-    }
-
-    /// O(log n + k) prefix search over sorted paths. Caller must hold indexLock.
+    /// O(log n + k) prefix search via B-Tree. Caller must hold indexLock.
     private static func indexedPaths(withPrefix prefix: String) -> [String] {
-        let start = lowerBound(for: prefix)
+        guard let startIdx = sortedPaths.indexOfFirstElement(notBefore: prefix) else { return [] }
         var result: [String] = []
-        for i in start..<sortedPaths.count {
-            if sortedPaths[i].hasPrefix(prefix) {
-                result.append(sortedPaths[i])
-            } else {
-                break
-            }
+        var idx = startIdx
+        while idx != sortedPaths.endIndex {
+            let path = sortedPaths[idx]
+            guard path.hasPrefix(prefix) else { break }
+            result.append(path)
+            idx = sortedPaths.index(after: idx)
         }
         return result
     }
@@ -314,6 +297,7 @@ class EnhancedIndex {
 
     /// 文件/文件夹移动或重命名后更新索引，自动处理子路径前缀替换。
     static func handleFilesMoved(_ moves: [(oldPath: String, newPath: String)]) {
+        guard ENHANCED_INDEX_ENABLED else { return }
         indexLock.lock()
         var changed = false
         for (oldPath, newPath) in moves {
@@ -329,7 +313,7 @@ class EnhancedIndex {
             for p in allExistingAtDest {
                 removePathFromIndices(p)
                 fileIndex.removeValue(forKey: p)
-                removeSortedPath(p)
+                sortedPaths.remove(p)
                 changed = true
             }
 
@@ -340,13 +324,13 @@ class EnhancedIndex {
 
                 removePathFromIndices(path)
                 fileIndex.removeValue(forKey: path)
-                removeSortedPath(path)
+                sortedPaths.remove(path)
 
                 fileIndex[newFullPath] = info
                 for tag in info.tags {
                     tagIndex[tag, default: Set()].insert(newFullPath)
                 }
-                insertSortedPath(newFullPath)
+                sortedPaths.insert(newFullPath)
                 changed = true
             }
         }
@@ -356,6 +340,7 @@ class EnhancedIndex {
 
     /// 文件/文件夹删除后清理索引，自动处理子路径。
     static func handleFilesDeleted(_ paths: [String]) {
+        guard ENHANCED_INDEX_ENABLED else { return }
         indexLock.lock()
         var changed = false
         for path in paths {
@@ -367,7 +352,7 @@ class EnhancedIndex {
             for p in affectedPaths {
                 removePathFromIndices(p)
                 fileIndex.removeValue(forKey: p)
-                removeSortedPath(p)
+                sortedPaths.remove(p)
                 changed = true
             }
         }
@@ -377,6 +362,7 @@ class EnhancedIndex {
 
     /// 文件/文件夹复制后复制索引条目，自动处理子路径。
     static func handleFilesCopied(_ copies: [(sourcePath: String, destPath: String)]) {
+        guard ENHANCED_INDEX_ENABLED else { return }
         indexLock.lock()
         var changed = false
         for (sourcePath, destPath) in copies {
@@ -387,7 +373,7 @@ class EnhancedIndex {
             for p in allExistingAtDest {
                 removePathFromIndices(p)
                 fileIndex.removeValue(forKey: p)
-                removeSortedPath(p)
+                sortedPaths.remove(p)
                 changed = true
             }
 
@@ -405,7 +391,7 @@ class EnhancedIndex {
                 for tag in info.tags {
                     tagIndex[tag, default: Set()].insert(newFullPath)
                 }
-                insertSortedPath(newFullPath)
+                sortedPaths.insert(newFullPath)
                 changed = true
             }
         }
@@ -439,6 +425,7 @@ class EnhancedIndex {
     }
 
     static func flushPendingSave() {
+        guard ENHANCED_INDEX_ENABLED else { return }
         saveQueue.sync {
             guard let item = pendingWorkItem, !item.isCancelled else { return }
             item.cancel()
@@ -487,7 +474,7 @@ class EnhancedIndex {
                     tagIndex[tag, default: Set()].insert(path)
                 }
             }
-            sortedPaths = fileIndex.keys.sorted()
+            sortedPaths = SortedSet(fileIndex.keys)
             indexLock.unlock()
         } catch {
             log("EnhancedIndex load failed: \(error)", level: .error)
