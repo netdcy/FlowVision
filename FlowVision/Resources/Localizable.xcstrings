@@ -7227,7 +7227,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ادخل إلى وضع الشاشة الكاملة"
+            "value" : "أدخل ملء الشاشة"
           }
         },
         "de" : {
@@ -7239,7 +7239,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "进入全屏"
+            "value" : "Enter Full Screen"
           }
         },
         "es" : {
@@ -7251,13 +7251,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Passer en plein écran"
+            "value" : "Passer en mode plein écran"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entra in modalità a schermo intero"
+            "value" : "Entra a schermo intero"
           }
         },
         "ja" : {
@@ -7275,7 +7275,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Volledig scherm inschakelen"
+            "value" : "Volledig scherm openen"
           }
         },
         "pt-BR" : {
@@ -7287,19 +7287,19 @@
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entrar em Ecrã Completo"
+            "value" : "Entrar em Ecrã Inteiro"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Перейти в полный экран"
+            "value" : "Войти в полноэкранный режим"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gå till helskärm"
+            "value" : "Gå in i helskärm"
           }
         },
         "zh-Hans" : {
@@ -11592,13 +11592,289 @@
       }
     },
     "Filter" : {
-      "comment" : "筛选"
+      "comment" : "筛选",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تصفية"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フィルター"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "필터"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtro"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фильтр"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrera"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "筛选"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "篩選"
+          }
+        }
+      }
     },
     "Filter by Finder Tag" : {
-      "comment" : "按Finder标签筛选"
+      "comment" : "按Finder标签筛选",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تصفية حسب علامة الباحث"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach Finder-Tag filtern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter by Finder Tag"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrar por etiqueta de Finder"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrer par étiquette Finder"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtra per etichetta Finder"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finderタグでフィルタリング"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder 태그로 필터링"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter op Finder-tag"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrar por etiqueta do Finder"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrar por etiqueta do Finder"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фильтровать по тегу Finder"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrera efter Finder-tagg"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按Finder标签筛选"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按Finder標籤篩選"
+          }
+        }
+      }
     },
     "Finder Tags" : {
-      "comment" : "Finder标签"
+      "comment" : "Finder标签",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "علامات الباحث"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder-Tags"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder Tags"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etiquetas del Finder"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tags Finder"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tag del Finder"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finderタグ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파인더 태그"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder-tags"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tags do Finder"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etiquetas do Finder"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Теги Finder"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder-taggar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder标签"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder 標籤"
+          }
+        }
+      }
     },
     "first-time-use-prompt" : {
       "comment" : "首次使用提示...",
@@ -11886,7 +12162,99 @@
       }
     },
     "Follow Current Folder" : {
-      "comment" : "跟随当前目录"
+      "comment" : "跟随当前目录",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متابعة المجلد الحالي"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuellen Ordner folgen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Follow Current Folder"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir la Carpeta Actual"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suivre le dossier actuel"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segui la cartella corrente"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在のフォルダーを追跡"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 폴더 따라가기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volg huidige map"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir Pasta Atual"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acompanhar a pasta atual"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последовать за текущей папкой"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Följ aktuell mapp"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跟随当前目录"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跟隨當前資料夾"
+          }
+        }
+      }
     },
     "gen-thumb-info" : {
       "comment" : "对于高清缩略图的说明...",
@@ -14073,6 +14441,101 @@
         }
       }
     },
+    "Learn More..." : {
+      "comment" : "了解更多...",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعلم المزيد..."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr erfahren..."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Learn More..."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aprende más..."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En savoir plus..."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scopri di più..."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細を確認..."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자세히 알아보기..."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meer informatie..."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saiba mais..."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saiba mais..."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Узнать больше..."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lär dig mer..."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "了解更多..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "了解更多..."
+          }
+        }
+      }
+    },
     "Loading..." : {
       "comment" : "加载中...",
       "localizations" : {
@@ -14269,79 +14732,79 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تأمين الصورة"
+            "value" : "قفل المرآة"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Image sperren"
+            "value" : "Spiegel sperren"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "锁定镜像"
+            "value" : "Lock Mirror"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bloquear imagen"
+            "value" : "Bloquear espejo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verrouiller l'image"
+            "value" : "Verrouiller le miroir"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Blocca Immagine"
+            "value" : "Blocca Specchio"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "イメージをロック"
+            "value" : "ミラーをロック"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이미지 잠금"
+            "value" : "미러 잠금"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beeld blokkeren"
+            "value" : "Spiegel vergrendelen"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bloquear imagem"
+            "value" : "Travar Espelho"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bloquear Imagem"
+            "value" : "Bloquear Espelho"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Заблокировать изображение"
+            "value" : "Блокировка зеркала"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lås bild"
+            "value" : "Lås spegel"
           }
         },
         "zh-Hans" : {
@@ -14353,7 +14816,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鎖定影像"
+            "value" : "鎖定鏡像"
           }
         }
       }
@@ -16349,6 +16812,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "上級的下個同級目錄"
+          }
+        }
+      }
+    },
+    "No Rating" : {
+      "comment" : "无星级",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يوجد تقييم"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Bewertung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Rating"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin calificación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune note"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna valutazione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "評価なし"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "별점 없음"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geen beoordeling"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem Avaliação"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem classificação"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет рейтинга"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen bedömning"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无星级"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無評分"
           }
         }
       }
@@ -19963,6 +20521,196 @@
         }
       }
     },
+    "Rating" : {
+      "comment" : "星级",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تصنيف"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bewertung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rating"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clasificación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Classement"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valutazione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "評価"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "평가"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beoordeling"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Classificação"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Classificação"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рейтинг"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Betyg"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星级"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "評分"
+          }
+        }
+      }
+    },
+    "rating-info" : {
+      "comment" : "对于评级的说明...",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**حول تقييمات XMP**  \nتقييمات XMP هي طريقة تقييم صور عالمية تستخدم 1 إلى 5 نجوم لتحديد أولوية الصورة. إنها بيانات وصفية بمعيار صناعي وليست صيغة خاصة من FlowVision، ويمكن التعرف عليها من قبل العديد من تطبيقات البرامج المتوافقة مع XMP.\n\n**ما هو XMP؟**  \nيمكن اعتبار XMP (Extensible Metadata Platform) كـ \"بطاقة معلومات متضمنة داخل الصورة\" تُستخدم عادة لتخزين البيانات الوصفية القابلة للتحرير مثل التقييمات والكلمات الرئيسية ومعلومات حقوق النشر. على عكس EXIF الذي يسجل غالبًا إعدادات الكاميرا مثل سرعة الغالق والفتحة وISO، يركز XMP على البيانات الوصفية القابلة للوصف والتحرير من قبل المستخدم. في هيكل الملف، كلاهما يقيم في منطقة البيانات الوصفية للصورة ولكن ينتميان إلى أنظمة تسمية بيانات أو كتل بيانات مختلفة ويمكن أن يتعايشا.\n\n**أين يتم تخزين معلومات التقييم؟**  \nيكتب FlowVision التقييمات في حقل xmp:Rating داخل البيانات الوصفية للصورة. يتم تضمين هذه المعلومات عادةً داخل قسم البيانات الوصفية لملف الصورة، على سبيل المثال في جزء البيانات الوصفية لملفات JPEG أو في الحاويات المناسبة للبيانات الوصفية لصيغ PNG وTIFF وHEIF وRAW، بدلاً من تخزينها بشكل منفصل كسجل قاعدة بيانات أو بيانات وصفية لنظام الملفات.\n\n**ماذا يعني \"بدون تقييم\"؟**  \nعند اختيارك \"بدون تقييم\"، يقوم FlowVision بإزالة حقل xmp:Rating (لا يكتب قيمة 0). هذا يشير إلى أن الصورة ليس لديها تقييم مُعين حاليًا.\n\n**ملاحظات هامة**  \nيتضمن إعداد أو إزالة تقييم كتابة للملف. بعد الكتابة، سيتم عادةً تحديث تاريخ تعديل الملف، وقد يتغير حجم الملف قليلاً أيضًا نظرًا لإعادة كتابة البيانات الوصفية. إذا كنت تعتمد على وقت التعديل للمزامنة أو النسخ الاحتياطي أو الفرز، من المستحسن فهم هذا التأثير قبل إجراء تقييمات بشكل دفعي."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Über XMP-Bewertungen** XMP-Bewertungen sind eine universelle Bildbewertungsmethode, die 1 bis 5 Sterne verwendet, um die Priorität eines Bildes anzuzeigen. Sie sind standardmäßige Metadaten der Branche und kein proprietäres FlowVision-Format und können von vielen XMP-kompatiblen Softwareanwendungen erkannt werden.\n\n**Was ist XMP?** XMP (Extensible Metadata Platform) kann als eine „in das Bild eingebettete Informationskarte“ betrachtet werden, die häufig verwendet wird, um bearbeitbare Metadaten wie Bewertungen, Schlüsselwörter und Urheberrechtsinformationen zu speichern. Im Gegensatz zu EXIF, das hauptsächlich Kameraeinstellungen wie Verschlusszeit, Blende und ISO aufzeichnet, konzentriert sich XMP mehr auf beschreibende, vom Benutzer bearbeitbare Daten. In Bezug auf die Dateistruktur befinden sich beide im Metadatenbereich des Bildes, gehören aber zu unterschiedlichen Datennamenssystemen oder Datenblöcken und können koexistieren.\n\n**Wo werden die Bewertungsinformationen gespeichert?** FlowVision schreibt Bewertungen in das xmp:Rating-Feld innerhalb der Metadaten des Bildes. Diese Informationen werden typischerweise in den Metadatenbereich der Bilddatei eingebettet - zum Beispiel im Metadatenabschnitt von JPEG-Dateien oder in den entsprechenden Metadatenspeichern von PNG-, TIFF-, HEIF- und RAW-Formaten - anstatt separat als Datenbankeintrag oder als Dateisystemmetadaten gespeichert zu werden.\n\n**Was bedeutet „Keine Bewertung“?** Wenn Sie „Keine Bewertung“ auswählen, löscht FlowVision das xmp:Rating-Feld (es schreibt keinen Wert von 0). Dies zeigt an, dass dem Bild derzeit keine Bewertung zugewiesen ist.\n\n**Wichtige Hinweise** Das Festlegen oder Löschen einer Bewertung erfordert das Schreiben in die Datei. Nach dem Schreiben wird das Änderungsdatum der Datei in der Regel aktualisiert, und auch die Dateigröße kann sich aufgrund der neu geschriebenen Metadaten geringfügig ändern. Wenn Sie sich bei der Synchronisierung, Sicherung oder Sortierung auf die Änderungszeit verlassen, ist es ratsam, diesen Einfluss zu verstehen, bevor Sie Stapelbewertungen durchführen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**About XMP Ratings**\nXMP ratings are a universal image scoring method that uses 1 to 5 stars to indicate image priority. They are industry-standard metadata, not a proprietary FlowVision format, and can be recognized by many XMP-compatible software applications.\n\n**What is XMP?**\nXMP (Extensible Metadata Platform) can be thought of as an “information card embedded within the image,” commonly used to store editable metadata such as ratings, keywords, and copyright information. Unlike EXIF, which primarily records camera settings like shutter speed, aperture, and ISO, XMP focuses more on descriptive, user-editable data. In terms of file structure, both reside in the image’s metadata area but belong to different data naming systems or data blocks and can coexist.\n\n**Where Is the Rating Information Stored?**\nFlowVision writes ratings into the xmp:Rating field within the image’s metadata. This information is typically embedded inside the image file’s metadata section—for example, in the metadata segment of JPEG files or in the corresponding metadata containers of PNG, TIFF, HEIF, and RAW formats—rather than being stored separately as a database record or as file system metadata.\n\n**What Does “No Rating” Mean?**\nWhen you select “No Rating,” FlowVision clears the xmp:Rating field (it does not write a value of 0). This indicates that the image currently has no rating assigned.\n\n**Important Notes**\nSetting or clearing a rating involves writing to the file. After writing, the file’s modification date will usually update, and the file size may also change slightly due to the metadata being rewritten. If you rely on modification time for synchronization, backups, or sorting, it’s advisable to understand this impact before performing batch ratings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Acerca de las calificaciones XMP** Las calificaciones XMP son un método universal de puntuación de imágenes que utiliza de 1 a 5 estrellas para indicar la prioridad de la imagen. Son metadatos estándar en la industria, no un formato propietario de FlowVision, y pueden ser reconocidos por muchas aplicaciones de software compatibles con XMP.\n\n**¿Qué es XMP?** XMP (Extensible Metadata Platform) se puede considerar como una \"tarjeta de información incrustada dentro de la imagen\", comúnmente utilizada para almacenar metadatos editables como calificaciones, palabras clave e información de derechos de autor. A diferencia de EXIF, que registra principalmente la configuración de la cámara como velocidad de obturación, apertura e ISO, XMP se centra más en datos descriptivos y editables por el usuario. En términos de estructura de archivos, ambos residen en el área de metadatos de la imagen pero pertenecen a sistemas de denominación de datos o bloques de datos diferentes y pueden coexistir.\n\n**¿Dónde se almacena la información de calificación?** FlowVision escribe las calificaciones en el campo xmp:Rating dentro de los metadatos de la imagen. Esta información suele estar incrustada dentro de la sección de metadatos del archivo de imagen, por ejemplo, en el segmento de metadatos de archivos JPEG o en los contenedores de metadatos correspondientes de formatos PNG, TIFF, HEIF y RAW, en lugar de estar almacenada por separado como un registro de base de datos o como metadatos del sistema de archivos.\n\n**¿Qué significa \"Sin calificación\"?** Cuando seleccionas \"Sin calificación\", FlowVision borra el campo xmp:Rating (no escribe un valor de 0). Esto indica que actualmente la imagen no tiene una calificación asignada.\n\n**Notas importantes** Establecer o borrar una calificación implica escribir en el archivo. Después de escribir, la fecha de modificación del archivo suele actualizarse, y el tamaño del archivo también puede cambiar ligeramente debido a que se reescriben los metadatos. Si dependes del tiempo de modificación para sincronización, copias de seguridad o clasificación, es recomendable entender este impacto antes de realizar calificaciones por lotes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**À propos des évaluations XMP**  \nLes évaluations XMP sont une méthode universelle de notation d'image qui utilise de 1 à 5 étoiles pour indiquer la priorité de l'image. Elles sont des métadonnées standard de l'industrie, et non un format propriétaire de FlowVision, et peuvent être reconnues par de nombreuses applications logicielles compatibles avec XMP.  \n\n**Qu'est-ce que XMP ?**  \nXMP (Extensible Metadata Platform) peut être considéré comme une \"carte d'information intégrée dans l'image\", couramment utilisée pour stocker des métadonnées modifiables telles que les évaluations, les mots-clés et les informations de droits d'auteur. Contrairement à EXIF, qui enregistre principalement les réglages de l'appareil photo comme la vitesse d'obturation, l'ouverture et l'ISO, XMP se concentre davantage sur des données descriptives et modifiables par l'utilisateur. En termes de structure de fichier, les deux résident dans la zone de métadonnées de l'image mais appartiennent à différents systèmes de noms de données ou blocs de données et peuvent coexister.  \n\n**Où est stockée l'information sur l'évaluation ?**  \nFlowVision écrit les évaluations dans le champ xmp:Rating à l'intérieur des métadonnées de l'image. Cette information est généralement intégrée dans la section des métadonnées du fichier image—par exemple, dans le segment des métadonnées des fichiers JPEG ou dans les conteneurs de métadonnées correspondants des formats PNG, TIFF, HEIF et RAW—plutôt que d'être stockée séparément en tant qu'enregistrement de base de données ou en tant que métadonnées du système de fichiers.  \n\n**Que signifie “Pas d'évaluation” ?**  \nLorsque vous sélectionnez “Pas d'évaluation”, FlowVision efface le champ xmp:Rating (il n'écrit pas une valeur de 0). Cela indique que l'image n'a actuellement pas d'évaluation attribuée.  \n\n**Notes importantes**  \nDéfinir ou effacer une évaluation implique d'écrire dans le fichier. Après l'écriture, la date de modification du fichier sera généralement mise à jour, et la taille du fichier peut également changer légèrement en raison de la réécriture des métadonnées. Si vous vous appuyez sur le temps de modification pour la synchronisation, les sauvegardes ou le tri, il est conseillé de comprendre cet impact avant d'effectuer des évaluations en lot."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Informazioni sulle valutazioni XMP** Le valutazioni XMP sono un metodo universale di punteggio delle immagini che utilizza da 1 a 5 stelle per indicare la priorità dell'immagine. Sono metadati standard di settore, non un formato proprietario di FlowVision, e possono essere riconosciuti da molte applicazioni software compatibili con XMP.\n\n**Che cos'è XMP?** XMP (Extensible Metadata Platform) può essere pensato come una \"scheda informativa incorporata nell'immagine\", comunemente utilizzato per memorizzare metadati modificabili come valutazioni, parole chiave e informazioni sul copyright. A differenza di EXIF, che registra principalmente le impostazioni della fotocamera come la velocità dell'otturatore, l'apertura e l'ISO, XMP si concentra maggiormente sui dati descrittivi e modificabili dall'utente. In termini di struttura del file, entrambi risiedono nell'area dei metadati dell'immagine ma appartengono a diversi sistemi di denominazione dei dati o blocchi di dati e possono coesistere.\n\n**Dove viene memorizzata l'informazione sulla valutazione?** FlowVision scrive le valutazioni nel campo xmp:Rating all'interno dei metadati dell'immagine. Queste informazioni sono tipicamente incorporate nella sezione dei metadati del file immagine, ad esempio nel segmento dei metadati dei file JPEG o nei corrispondenti contenitori di metadati dei formati PNG, TIFF, HEIF e RAW, piuttosto che essere memorizzate separatamente come record del database o come metadati del file system.\n\n**Cosa significa “Nessuna valutazione”?** Quando selezioni \"Nessuna valutazione\", FlowVision cancella il campo xmp:Rating (non scrive un valore di 0). Ciò indica che attualmente l'immagine non ha alcuna valutazione assegnata.\n\n**Note importanti** Impostare o cancellare una valutazione comporta la scrittura del file. Dopo la scrittura, la data di modifica del file verrà solitamente aggiornata e la dimensione del file potrebbe anche cambiare leggermente a causa della riscrittura dei metadati. Se fai affidamento sul tempo di modifica per la sincronizzazione, i backup o l'ordinamento, è consigliabile comprendere questo impatto prima di eseguire valutazioni batch."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**XMP評価について**  \nXMP評価は、画像の優先順位を示すために1から5の星を使ったユニバーサルな画像スコアリング方法です。これは業界標準のメタデータであり、FlowVisionの専有フォーマットではなく、多くのXMP互換ソフトウェアアプリケーションに認識されます。\n\n**XMPとは何ですか？**  \nXMP（Extensible Metadata Platform）は、画像内に埋め込まれた「情報カード」として考えることができ、評価、キーワード、著作権情報などの編集可能なメタデータを保存するために一般的に使用されます。シャッタースピード、絞り、ISOなどのカメラ設定を主に記録するEXIFとは異なり、XMPは記述的でユーザーが編集可能なデータを重視しています。ファイル構造の観点からは、どちらも画像のメタデータ領域に存在しますが、異なるデータ命名システムやデータブロックに属しており、共存することができます。\n\n**評価情報はどこに保存されますか？**  \nFlowVisionは、評価を画像のメタデータ内のxmp:Ratingフィールドに書き込みます。この情報は通常、画像ファイルのメタデータセクション、例えばJPEGファイルのメタデータセグメントやPNG、TIFF、HEIF、RAW形式の対応するメタデータコンテナ内に埋め込まれますが、データベースレコードやファイルシステムのメタデータとして別々に保存されることはありません。\n\n**「評価なし」とはどういう意味ですか？**  \n「評価なし」を選択すると、FlowVisionはxmp:Ratingフィールドをクリアします（値を0に設定するわけではありません）。これにより、画像に現在評価が割り当てられていないことを示します。\n\n**重要な注意事項**  \n評価の設定またはクリアはファイルへの書き込みを伴います。書き込み後は通常、ファイルの変更日が更新され、メタデータが再書き込みされるため、ファイルサイズもわずかに変わる可能性があります。同期、バックアップ、またはソートに変更時間を使用している場合、バッチ評価を実行する前にこの影響を理解しておくことをお勧めします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**XMP 등급에 대하여**\nXMP 등급은 이미지의 우선순위를 나타내기 위해 1~5개의 별을 사용하는 보편적인 이미지 점수 부여 방식입니다. 이는 산업 표준 메타데이터이며, 독점적인 FlowVision 형식이 아니며, 많은 XMP 호환 소프트웨어 애플리케이션에서 인식할 수 있습니다.\n\n**XMP란 무엇인가요?**\nXMP(Extensible Metadata Platform)는 이미지 내에 삽입된 \"정보 카드\"라고 생각할 수 있으며, 주로 등급, 키워드 및 저작권 정보를 저장하는 데 사용됩니다. EXIF가 주로 셔터 속도, 조리개, ISO 등 카메라 설정을 기록하는 것과 달리, XMP는 설명적이며 사용자가 편집 가능한 데이터에 더 중점을 둡니다. 파일 구조 측면에서 두 항목 모두 이미지의 메타데이터 영역에 존재하지만, 다른 데이터 명명 체계 또는 데이터 블록에 속하며 공존할 수 있습니다.\n\n**등급 정보는 어디에 저장되나요?**\nFlowVision은 이미자의 메타데이터 내의 xmp:Rating 필드에 등급을 기록합니다. 이 정보는 일반적으로 이미지 파일의 메타데이터 섹션에 내장되며, 예를 들어 JPEG 파일의 메타데이터 세그먼트 또는 PNG, TIFF, HEIF 및 RAW 형식의 해당 메타데이터 컨테이너에 내장됩니다. 데이터베이스 기록이나 파일 시스템 메타데이터로 별도로 저장되지 않습니다.\n\n**\"무등급\"은 무엇을 의미하나요?**\n\"무등급\"을 선택하면 FlowVision은 xmp:Rating 필드를 지워서 현재 이미지에 등급이 할당되지 않았음을 나타냅니다(0 값은 기록되지 않습니다).\n\n**중요 사항**\n등급을 설정하거나 지우는 것은 파일에 기록을 수반합니다. 기록 후 파일의 수정 날짜가 일반적으로 업데이트되고 메타데이터가 다시 작성되기 때문에 파일 크기가 약간 변경될 수 있습니다. 동기화, 백업 또는 정렬에 수정 시간을 의존하는 경우, 일괄 등급을 수행하기 전에 이러한 영향을 이해하는 것이 좋습니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Over XMP-beoordelingen**  \nXMP-beoordelingen zijn een universele methode voor het scoren van afbeeldingen die 1 tot 5 sterren gebruiken om de prioriteit van een afbeelding aan te geven. Ze zijn metadata volgens de industrienorm, geen propriëtair FlowVision-formaat, en kunnen door veel XMP-compatibele softwaretoepassingen worden herkend.\n\n**Wat is XMP?**  \nXMP (Extensible Metadata Platform) kan worden gezien als een \"informatiekaart die in de afbeelding is ingebed\", vaak gebruikt om bewerkbare metadata zoals beoordelingen, trefwoorden en copyrightinformatie op te slaan. In tegenstelling tot EXIF, dat voornamelijk camera-instellingen zoals sluitertijd, diafragma en ISO vastlegt, richt XMP zich meer op beschrijvende, door de gebruiker bewerkbare gegevens. Wat de bestandstructuur betreft, bevinden beide zich in het metagegevensgedeelte van de afbeelding, maar ze behoren tot verschillende gegevensnaamgeving systemen of gegevensblokken en kunnen naast elkaar bestaan.\n\n**Waar wordt de beoordelingsinformatie opgeslagen?**  \nFlowVision schrijft beoordelingen in het xmp:Rating-veld binnen de metadata van de afbeelding. Deze informatie is meestal ingebed in het metagegevensgedeelte van het afbeeldingsbestand—bijvoorbeeld in het metagegevensegment van JPEG-bestanden of in de overeenkomende metagegevenscontainers van PNG-, TIFF-, HEIF- en RAW-formaten—en niet apart opgeslagen als een database-record of als bestandssysteemmetadata.\n\n**Wat betekent \"Geen Beoordeling\"?**  \nWanneer u \"Geen Beoordeling\" selecteert, wist FlowVision het xmp:Rating-veld (het schrijft geen waarde van 0). Dit geeft aan dat de afbeelding momenteel geen beoordeling heeft.\n\n**Belangrijke Opmerkingen**  \nHet instellen of wissen van een beoordeling houdt in dat er naar het bestand wordt geschreven. Na het schrijven wordt de wijzigingsdatum van het bestand meestal bijgewerkt en kan de bestandsgrootte ook iets veranderen vanwege de herschreven metadata. Als u vertrouwen stelt in de wijzigingstijd voor synchronisatie, back-ups of sorteren, is het raadzaam om deze impact te begrijpen voordat u batchbeoordelingen uitvoert."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Sobre as Classificações XMP**  \nAs classificações XMP são um método universal de pontuação de imagens que usa de 1 a 5 estrelas para indicar a prioridade da imagem. Elas são metadados padrão da indústria, não um formato proprietário da FlowVision, e podem ser reconhecidas por muitos aplicativos de software compatíveis com XMP.\n\n**O que é XMP?**  \nO XMP (Extensible Metadata Platform) pode ser pensado como um “cartão de informação embutido na imagem,” comumente usado para armazenar metadados editáveis, como classificações, palavras-chave e informações de direitos autorais. Ao contrário do EXIF, que registra principalmente configurações da câmera como velocidade do obturador, abertura e ISO, o XMP foca mais em dados descritivos e editáveis pelo usuário. Em termos de estrutura de arquivo, ambos residem na área de metadados da imagem, mas pertencem a sistemas de nomenclatura de dados ou blocos de dados diferentes e podem coexistir.\n\n**Onde a Informação de Classificação é Armazenada?**  \nA FlowVision escreve as classificações no campo xmp:Rating dentro dos metadados da imagem. Essa informação é tipicamente embutida na seção de metadados do arquivo de imagem—por exemplo, no segmento de metadados de arquivos JPEG ou nos contêineres de metadados correspondentes dos formatos PNG, TIFF, HEIF e RAW—em vez de ser armazenada separadamente como um registro de banco de dados ou como metadados do sistema de arquivos.\n\n**O que significa “Sem Classificação”?**  \nQuando você seleciona “Sem Classificação,” a FlowVision limpa o campo xmp:Rating (não escreve um valor de 0). Isso indica que atualmente a imagem não tem uma classificação atribuída.\n\n**Notas Importantes**  \nDefinir ou limpar uma classificação envolve escrever no arquivo. Após a escrita, a data de modificação do arquivo geralmente é atualizada, e o tamanho do arquivo pode também mudar ligeiramente devido ao reescrita dos metadados. Se você depende do tempo de modificação para sincronização, backups ou ordenação, é aconselhável entender esse impacto antes de realizar classificações em lote."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Sobre as Classificações XMP**  \nAs classificações XMP são um método universal de pontuação de imagens que utiliza 1 a 5 estrelas para indicar a prioridade da imagem. São metadados padrão da indústria, não um formato proprietário do FlowVision, e podem ser reconhecidos por muitos aplicativos de software compatíveis com XMP.\n\n**O que é XMP?**  \nXMP (Extensible Metadata Platform) pode ser considerado como um \"cartão de informação incorporado à imagem\", comumente usado para armazenar metadados editáveis, como classificações, palavras-chave e informações de direitos autorais. Ao contrário do EXIF, que registra principalmente configurações da câmera como velocidade do obturador, abertura e ISO, XMP foca mais em dados descritivos editáveis pelo usuário. Em termos de estrutura de arquivo, ambos residem na área de metadados da imagem, mas pertencem a diferentes sistemas de nomeação de dados ou blocos de dados e podem coexistir.\n\n**Onde Estão Armazenadas as Informações de Classificação?**  \nO FlowVision escreve classificações no campo xmp:Rating dentro dos metadados da imagem. Estas informações são tipicamente incorporadas na seção de metadados do arquivo de imagem — por exemplo, no segmento de metadados de arquivos JPEG ou nos contêineres de metadados correspondentes dos formatos PNG, TIFF, HEIF e RAW — em vez de serem armazenadas separadamente como um registro de banco de dados ou como metadados do sistema de arquivos.\n\n**O Que Significa \"Sem Classificação\"?**  \nQuando seleciona \"Sem Classificação\", o FlowVision limpa o campo xmp:Rating (não escreve um valor de 0). Isto indica que a imagem atualmente não tem classificação atribuída.\n\n**Notas Importantes**  \nConfigurar ou limpar uma classificação envolve escrever no arquivo. Após a escrita, a data de modificação do arquivo geralmente será atualizada, e o tamanho do arquivo pode também mudar ligeiramente devido à reescrita dos metadados. Se você depender do tempo de modificação para sincronização, backups ou ordenação, é aconselhável compreender este impacto antes de realizar classificações em lote."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**О рейтингах XMP**\nРейтинги XMP — это универсальный метод оценки изображений, использующий от 1 до 5 звезд для указания приоритета изображения. Они являются отраслевым стандартом метаданных, а не собственным форматом FlowVision, и могут распознаваться многими программами, совместимыми с XMP.\n\n**Что такое XMP?**\nXMP (Extensible Metadata Platform) можно рассматривать как \"информационную карточку, встроенную в изображение,\" часто используемую для хранения редактируемых метаданных, таких как рейтинги, ключевые слова и информация об авторском праве. В отличие от EXIF, который в основном фиксирует настройки камеры, такие как выдержка, диафрагма и ISO, XMP в большей степени фокусируется на описательных, редактируемых пользователем данных. В структурном отношении файла, оба находятся в области метаданных изображения, но принадлежат к разным системам именования данных или блокам данных и могут сосуществовать.\n\n**Где хранится информация о рейтинге?**\nFlowVision записывает рейтинги в поле xmp:Rating в пределах метаданных изображения. Эта информация обычно встраивается в секцию метаданных файла изображения — например, в сегменте метаданных файлов JPEG или в соответствующих контейнерах метаданных форматов PNG, TIFF, HEIF и RAW — а не хранится отдельно в виде записи базы данных или метаданных файловой системы.\n\n**Что означает \"Без рейтинга\"?**\nКогда вы выбираете \"Без рейтинга,\" FlowVision очищает поле xmp:Rating (не записывая значение 0). Это указывает на то, что в настоящее время изображение не имеет присвоенного рейтинга.\n\n**Важно знать**\nУстановка или удаление рейтинга предполагает запись в файл. После записи дата изменения файла обычно будет обновлена, и размер файла может слегка измениться из-за перезаписи метаданных. Если вы полагаетесь на время изменения для синхронизации, резервного копирования или сортировки, рекомендуется понимать это влияние перед выполнением пакетных рейтингов."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Om XMP-betyg** XMP-betyg är en universell bildscoreringsmetod som använder 1 till 5 stjärnor för att ange bildens prioritet. De är industristandardmetadata, inte ett proprietärt FlowVision-format, och kan kännas igen av många XMP-kompatibla programvaror.\n\n**Vad är XMP?** XMP (Extensible Metadata Platform) kan betraktas som ett ”informationskort inbäddat i bilden”, vanligtvis använt för att lagra redigerbar metadata som betyg, nyckelord och upphovsrättsinformation. Till skillnad från EXIF, som främst registrerar kamerainställningar som slutartid, bländare och ISO, fokuserar XMP mer på beskrivande, användarredigerbara data. När det gäller filstruktur finns båda i bildens metadataområde men tillhör olika namngivningssystem eller datablock och kan samexistera.\n\n**Var lagras betygsinformationen?** FlowVision skriver betyg i fältet xmp:Rating inom bildens metadata. Denna information är normalt inbäddad i bildfilens metadatasektion—till exempel i metadata segmentet av JPEG-filer eller i motsvarande metadatabehållare för PNG, TIFF, HEIF och RAW-format—snarare än att lagras separat som en databasinspelning eller som filsystemmetadata.\n\n**Vad betyder ”Ingen betyg”?** När du väljer ”Ingen betyg” rensar FlowVision fältet xmp:Rating (det skriver inte ett värde på 0). Detta indikerar att bilden för närvarande inte har något betyg tilldelat.\n\n**Viktiga anteckningar** Att sätta eller rensa ett betyg innebär att man skriver till filen. Efter att ha skrivit, kommer vanligtvis filens ändringsdatum att uppdateras, och filstorleken kan också ändras något på grund av att metadata skrivs om. Om du förlitar dig på ändringstid för synkronisering, säkerhetskopior eller sortering, är det lämpligt att förstå denna påverkan innan du utför batchbetyg."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**关于 XMP 星级（Rating）**\nXMP 星级是一种通用的图片评分方式，用 1~5 星 标记图片优先级。\n它是行业通用元数据，不是 FlowVision 私有格式，很多支持 XMP 的软件都能识别。\n\n**XMP 是什么**\nXMP（Extensible Metadata Platform）可以理解为“写在图片里的信息卡片”，常用于保存评分、关键词、版权等可扩展信息。\n与 EXIF 主要记录相机拍摄参数（如快门、光圈、ISO）不同，XMP 更偏向可编辑的描述信息；在文件结构上，二者都位于图片的元数据区域，但属于不同的数据命名体系/数据块（可并存）。\n\n**星级信息存在哪里**\nFlowVision 将星级写入图片元数据中的 xmp:Rating 字段。\n这个信息通常嵌入在图片文件内部的元数据区域（如 JPEG 的元数据段、PNG/TIFF/HEIF/RAW 的对应元数据容器），而不是单独保存为数据库记录或文件系统的文件元信息中。\n\n**无星级的含义**\n当你选择“无星级”时，FlowVision 会清除 xmp:Rating 字段（不是写入 0）。\n这表示该图片当前未设置评级。\n\n**注意事项（重要）**\n设置或清除星级属于一次文件写入操作。\n写入后，文件的修改日期通常会更新，文件大小也可能因元数据重写而发生轻微变化。\n如果你依赖修改时间进行同步、备份或排序，建议在批量评级前先了解这一影响。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**關於 XMP 評分** XMP 評分是一種通用的影像評分方法，使用 1 到 5 顆星來表示影像優先次序。它們是行業標準的中繼數據，而不是專有的 FlowVision 格式，並可以被許多 XMP 相容的軟體識別。\n\n**什麼是 XMP？** XMP（Extensible Metadata Platform）可以被視為“嵌入在影像中的資訊卡”，通常用來儲存可編輯的中繼數據，例如評分、關鍵字和版權資訊。與 EXIF 一樣，它主要記錄相機設定，如快門速度、光圈和 ISO，不同的是 XMP 更專注於描述性、用戶可編輯的數據。在檔案結構上，兩者都位於影像的中繼數據區域，但屬於不同的數據命名系統或數據塊，並能共存。\n\n**評分資訊儲存在哪裡？** FlowVision 將評分寫入影像中繼數據裡的 xmp:Rating 欄位。此資訊通常嵌入在影像檔案的中繼數據區段，例如 JPEG 檔案的中繼數據部分或 PNG、TIFF、HEIF 和 RAW 格式的相應中繼數據容器內，而非作為資料庫紀錄或檔案系統中繼數據單獨儲存。\n\n**“無評分”意味著什麼？** 當您選擇“無評分”時，FlowVision 會清除 xmp:Rating 欄位（不會寫入 0 值）。這表示目前影像沒有分配評分。\n\n**重要注意事項** 設定或清除評分涉及寫入檔案。寫入後，檔案的修改日期通常會更新，且由於中繼數據被重寫，檔案大小也可能略微改變。如果您依賴修改時間來進行同步、備份或排序，建議在執行批量評分前了解其影響。"
+          }
+        }
+      }
+    },
     "RAW Uses Exif Embedded Thumbnail" : {
       "comment" : "RAW使用Exif内嵌缩略图",
       "localizations" : {
@@ -21579,7 +22327,99 @@
       }
     },
     "Remove All Tags" : {
-      "comment" : "移除所有标签"
+      "comment" : "移除所有标签",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إزالة جميع العلامات"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Tags entfernen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove All Tags"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar todas las etiquetas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer tous les tags"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rimuovi tutti i tag"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのタグを削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모든 태그 제거"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle tags verwijderen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover Todas as Tags"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover Todas as Etiquetas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить все теги"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta bort alla taggar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除所有标签"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除所有標籤"
+          }
+        }
+      }
     },
     "Rename" : {
       "comment" : "重命名",
@@ -22052,6 +22892,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重設"
+          }
+        }
+      }
+    },
+    "Reverse Filter" : {
+      "comment" : "反转筛选",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عكس الفلتر"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umkehrfilter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reverse Filter"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtro inverso"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtre inversé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inverti filtro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フィルターを反転"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "필터 반전"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter omkeren"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtro Reverso"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtro Inverso"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обратный фильтр"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omvänd Filter"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "反转筛选"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "反向過濾器"
           }
         }
       }
@@ -22532,10 +23467,194 @@
       }
     },
     "Scan & Update Enhanced Index" : {
-      "comment" : "扫描并更新增强索引"
+      "comment" : "扫描并更新增强索引",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسح وتحديث الفهرس المحسّن"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erweiterten Index scannen und aktualisieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan & Update Enhanced Index"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanear y actualizar índice mejorado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analyser et mettre à jour l'index amélioré"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scansiona e aggiorna l'indice migliorato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スキャンして強化インデックスを更新"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스캔 및 향상된 인덱스 업데이트"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan en update verbeterde index"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verificar e Atualizar Índice Aprimorado"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analisar e Atualizar Índice Aprimorado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сканировать и обновить расширенный индекс"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skanna och uppdatera förbättrat index"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "扫描并更新增强索引"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "掃描並更新增強索引"
+          }
+        }
+      }
     },
-    "Scan complete" : {
-      "comment" : "扫描完成"
+    "Scan Complete" : {
+      "comment" : "扫描完成",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم الفحص"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan abgeschlossen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan Complete"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escaneo completo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analyse terminée"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scansione completa"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スキャン完了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스캔 완료"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan voltooid"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verificação Concluída"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verificação Concluída"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сканирование завершено"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skanning slutförd"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "扫描完成"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "掃描完成"
+          }
+        }
+      }
     },
     "Scan Prompt" : {
       "comment" : "扫描提示",
@@ -22628,6 +23747,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "掃描提示"
+          }
+        }
+      }
+    },
+    "scan-enhanced-index-info" : {
+      "comment" : "扫描并更新增强索引说明...",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قيد الانتظار"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AUFGABE"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TODO"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "POR HACER"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À FAIRE"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DA FARE"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ToDo"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "할 일"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TODO"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AFZERAR"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A FAZER"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "НАДО"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Att göra"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TODO"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "待辦事項"
           }
         }
       }
@@ -22728,10 +23942,194 @@
       }
     },
     "Scanning" : {
-      "comment" : "扫描中"
+      "comment" : "扫描中",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جاري المسح"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scannen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scanning"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escaneando"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numérisation"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scansione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スキャン中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스캔 중"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scannen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digitalizando"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A digitalizar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сканирование"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skannar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "扫描中"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "掃描中"
+          }
+        }
+      }
     },
     "Scanning..." : {
-      "comment" : "扫描中..."
+      "comment" : "扫描中...",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جار المسح..."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scannen..."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scanning..."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escaneando..."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analyse en cours..."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scansione in corso..."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スキャン中..."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스캔 중..."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bezig met scannen..."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digitalizando..."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A analisar..."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сканирование..."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skannar..."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "扫描中..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在掃描..."
+          }
+        }
+      }
     },
     "search-help" : {
       "comment" : "关于搜索的说明",
@@ -23589,7 +24987,99 @@
       }
     },
     "Show All" : {
-      "comment" : "显示全部"
+      "comment" : "显示全部",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار الكل"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle anzeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show All"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar todo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher tout"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra tutto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべて表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모두 보기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alles Weergeven"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar tudo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar Todos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать все"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa alla"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示全部"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示全部"
+          }
+        }
+      }
     },
     "Show All Types of Files" : {
       "comment" : "显示所有类型文件",
@@ -24164,16 +25654,94 @@
     "Show in Parent Folder" : {
       "comment" : "在上层文件夹中显示",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار في المجلد الرئيسي "
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im übergeordneten Ordner anzeigen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show in Parent Folder"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en la carpeta principal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher dans le dossier parent"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra nella cartella principale"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "親フォルダで表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "상위 폴더에 표시"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weergeven in bovenliggende map"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar na Pasta Principal"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar na Pasta Superior"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать в родительской папке"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa i överordnad mapp"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "在上层文件夹中显示"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在上層資料夾中顯示"
           }
         }
       }
@@ -25509,7 +27077,99 @@
       }
     },
     "Sort Using Full Path In Collection Mode" : {
-      "comment" : "集合模式下使用完整路径排序"
+      "comment" : "集合模式下使用完整路径排序",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الفرز باستخدام المسار الكامل في وضع التجميع"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Sammlungsmodus mit vollständigem Pfad sortieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sort Using Full Path In Collection Mode"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordenar usando la ruta completa en modo de colección"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trier en utilisant le chemin complet en mode collection"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordina usando il percorso completo in modalità raccolta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コレクションモードでの完全なパスを使用した並べ替え"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "컬렉션 모드에서 전체 경로 사용 정렬"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorteren op volledige pad in verzamelingsmodus"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Classificar usando caminho completo no modo de coleção"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordenar Usando Caminho Completo no Modo de Coleção"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Использовать полные пути для сортировки в режиме коллекции"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sortera med fullständig sökväg i samlingsläge"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "集合模式下使用完整路径排序"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "集合模式中使用完整路徑排序"
+          }
+        }
+      }
     },
     "sort-addDateA" : {
       "comment" : "添加日期",
@@ -27794,16 +29454,94 @@
     "sort-readme" : {
       "comment" : "排序说明...",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يعني \"الفرز حسب المسار الكامل في وضع التجميع\" أنه في وضع التكراري أو عند العمل مع مجموعات العلامات، إذا كان لملفين المسارات التالية بالنسبة للدليل الحالي:\n./AAA/2.jpg\n./BBB/1.jpg\nفإن 2.jpg سيأتي أولاً عند الفرز حسب المسار الكامل، بينما 1.jpg سيأتي أولاً عند الفرز حسب اسم الملف.\n\nعند الفرز وفقًا لمعلومات Exif، يجب قراءة رأس كل ملف، مما قد يؤدي إلى سرعات تحميل أبطأ. على سبيل المثال، على محرك شبكة SMB أو مع ملفات الفيديو، يكون معدل القراءة النموذجي حوالي 10 ملفات في الثانية."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Sortieren nach vollständigem Pfad im Sammlungsmodus“ bedeutet, dass bei rekursivem Modus oder bei der Arbeit mit Tag-Sammlungen, wenn zwei Dateien die folgenden Pfade relativ zum aktuellen Verzeichnis haben: ./AAA/2.jpg ./BBB/1.jpg dann wird 2.jpg zuerst kommen, wenn nach vollständigem Pfad sortiert wird, während 1.jpg zuerst kommt, wenn nach Dateiname sortiert wird.\n\nBeim Sortieren nach Exif-Informationen muss der Header jeder Datei gelesen werden, was zu langsameren Ladegeschwindigkeiten führen kann. Zum Beispiel liegt auf einem SMB-Netzlaufwerk oder bei Videodateien die typische Lesegeschwindigkeit bei etwa 10 Dateien pro Sekunde."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Sorting by full path in collection mode” means that, in recursive mode or when working with tag collections, if two files have the following paths relative to the current directory:\n./AAA/2.jpg\n./BBB/1.jpg\nthen 2.jpg will come first when sorted by full path, whereas 1.jpg will come first when sorted by filename.\n\nWhen sorting by Exif information, the header of each file must be read, which may result in slower loading speeds. For example, on an SMB network drive or with video files, the typical read rate is about 10 files per second."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"Ordenar por ruta completa en modo colección\" significa que, en modo recursivo o cuando se trabaja con colecciones de etiquetas, si dos archivos tienen las siguientes rutas relativas al directorio actual: ./AAA/2.jpg ./BBB/1.jpg entonces 2.jpg aparecerá primero cuando se ordene por ruta completa, mientras que 1.jpg aparecerá primero cuando se ordene por nombre de archivo.\n\nAl ordenar por información Exif, se debe leer el encabezado de cada archivo, lo que puede resultar en velocidades de carga más lentas. Por ejemplo, en una unidad de red SMB o con archivos de video, la velocidad de lectura típica es de aproximadamente 10 archivos por segundo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« Le tri par chemin complet en mode collection » signifie qu'en mode récursif ou lors du travail avec des collections de balises, si deux fichiers ont les chemins suivants relatifs au répertoire actuel : ./AAA/2.jpg ./BBB/1.jpg alors 2.jpg viendra en premier lorsqu'il est trié par chemin complet, tandis que 1.jpg viendra en premier lorsqu'il est trié par nom de fichier. Lors du tri par information Exif, l'en-tête de chaque fichier doit être lu, ce qui peut entraîner des vitesses de chargement plus lentes. Par exemple, sur un lecteur réseau SMB ou avec des fichiers vidéo, le taux de lecture typique est d'environ 10 fichiers par seconde."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"Ordinamento per percorso completo in modalità raccolta\" significa che, in modalità ricorsiva o quando si lavora con raccolte di tag, se due file hanno i seguenti percorsi relativi alla directory corrente:\n./AAA/2.jpg\n./BBB/1.jpg\nallora 2.jpg verrà prima quando ordinato per percorso completo, mentre 1.jpg verrà prima quando ordinato per nome file.\n\nQuando si ordina per informazioni Exif, l'intestazione di ciascun file deve essere letta, il che può comportare velocità di caricamento più lente. Ad esempio, su un'unità di rete SMB o con file video, la velocità di lettura tipica è di circa 10 file al secondo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「コレクションモードでフルパスによるソート」とは、再帰モードやタグコレクションを扱う場合において、次のように現在のディレクトリに対して相対的なパスを持つ2つのファイルが存在するとき、\n./AAA/2.jpg\n./BBB/1.jpg\nはフルパスでソートする際には2.jpgが先に来るが、ファイル名でソートする際には1.jpgが先に来ることを意味します。\n\nExif情報でソートする場合、各ファイルのヘッダーを読み込む必要があり、読み込み速度が遅くなる可能性があります。例えば、SMBネットワークドライブ上やビデオファイルでは、通常の読み込み速度は1秒あたり約10ファイルです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "컬렉션 모드에서 전체 경로로 정렬한다는 것은 재귀 모드 또는 태그 컬렉션 작업 시 두 파일이 다음과 같은 현재 디렉토리 상대 경로를 가지고 있을 경우:\n./AAA/2.jpg\n./BBB/1.jpg\n전체 경로로 정렬할 때 2.jpg가 먼저 오고, 파일명으로 정렬할 때 1.jpg가 먼저 온다는 것을 의미합니다.\n\nExif 정보로 정렬할 때는 각 파일의 헤더를 읽어야 하므로 로딩 속도가 느려질 수 있습니다. 예를 들어, SMB 네트워크 드라이브나 비디오 파일에서는 일반적인 읽기 속도가 초당 약 10개의 파일입니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorteren op volledig pad in verzamelingmodus betekent dat, in recursieve modus of bij het werken met tagcollecties, als twee bestanden de volgende paden hebben ten opzichte van de huidige directory: ./AAA/2.jpg ./BBB/1.jpg dan zal 2.jpg als eerste komen bij sorteren op volledig pad, terwijl 1.jpg als eerste zal komen bij sorteren op bestandsnaam.\n\nBij sorteren op Exif-informatie moet de header van elk bestand worden gelezen, wat kan resulteren in tragere laadsnelheden. Bijvoorbeeld, op een SMB-netwerkstation of met videobestanden is de typische leessnelheid ongeveer 10 bestanden per seconde."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"Ordenar por caminho completo no modo de coleção\" significa que, no modo recursivo ou ao trabalhar com coleções de tags, se dois arquivos tiverem os seguintes caminhos relativos ao diretório atual:\n./AAA/2.jpg\n./BBB/1.jpg\nentão 2.jpg será o primeiro quando ordenado por caminho completo, enquanto 1.jpg será o primeiro quando ordenado por nome de arquivo.\n\nAo ordenar por informações Exif, o cabeçalho de cada arquivo deve ser lido, o que pode resultar em velocidades de carregamento mais lentas. Por exemplo, em uma unidade de rede SMB ou com arquivos de vídeo, a taxa de leitura típica é de cerca de 10 arquivos por segundo."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A classificação por caminho completo no modo de coleção significa que, no modo recursivo ou ao trabalhar com coleções de etiquetas, se dois ficheiros tiverem os seguintes caminhos relativos ao diretório atual: ./AAA/2.jpg ./BBB/1.jpg então 2.jpg será classificado primeiro ao classificar por caminho completo, enquanto 1.jpg será classificado primeiro ao classificar por nome de ficheiro.\n\nAo classificar por informações Exif, o cabeçalho de cada ficheiro deve ser lido, o que pode resultar em velocidades de carregamento mais lentas. Por exemplo, numa unidade de rede SMB ou com ficheiros de vídeo, a taxa de leitura típica é de cerca de 10 ficheiros por segundo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Сортировка по полному пути в режиме коллекции» означает, что в рекурсивном режиме или при работе с коллекциями тегов, если два файла имеют следующие пути относительно текущей директории: ./AAA/2.jpg ./BBB/1.jpg то 2.jpg будет первым при сортировке по полному пути, в то время как 1.jpg будет первым при сортировке по имени файла.\n\nПри сортировке по информации Exif необходимо прочитать заголовок каждого файла, что может привести к более медленной скорости загрузки. Например, на сетевом диске SMB или с видеофайлами типичная скорость чтения составляет около 10 файлов в секунду."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"Sortera efter fullständig sökväg i samlingsläge\" betyder att om man arbetar rekursivt eller med taggsamlingar, och två filer har följande sökvägar relativt den aktuella katalogen:\n./AAA/2.jpg\n./BBB/1.jpg\nså kommer 2.jpg först när man sorterar efter fullständig sökväg, medan 1.jpg kommer först när man sorterar efter filnamn.\n\nNär man sorterar efter Exif-information måste varje fils header läsas, vilket kan resultera i långsammare laddningshastigheter. Till exempel, på en SMB-nätverksenhet eller med videofiler, är den typiska läshastigheten cirka 10 filer per sekund."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "“集合模式下使用完整路径排序”是指在递归模式或标签集合下，如果两个文件相对当前目录的路径是\n./AAA/2.jpg\n./BBB/1.jpg\n以完整路径排序时2.jpg是第一个，而以文件名排序时1.jpg是第一个。\n\n按Exif信息排序时，需要读取每个文件头部内容，可能造成加载速度缓慢。例如SMB网络驱动器中或视频文件时，参考读取速度约为10个/秒。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「在集合模式下按完整路徑排序」意味著在遞歸模式或使用標籤集合時，如果兩個檔案相對於當前目錄具有以下路徑：\n./AAA/2.jpg\n./BBB/1.jpg\n那麼當按完整路徑排序時，2.jpg 會排在前面，而當按檔案名排序時，1.jpg 會排在前面。\n\n當按 Exif 資訊排序時，必須讀取每個檔案的標頭，這可能導致加載速度較慢。例如，在 SMB 網路驅動器上或與視頻檔案一起使用時，典型的讀取速率約為每秒 10 個檔案。"
           }
         }
       }
@@ -28948,102 +30686,6 @@
         }
       }
     },
-    "Tag" : {
-      "comment" : "标签",
-      "extractionState" : "stale",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تسمية"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stichwort"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tag"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Etiqueta"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Balise"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Etichetta"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "タグ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "태그"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Label"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Etiqueta"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Etiqueta"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Тег"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Etikett"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "标签"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "標籤"
-          }
-        }
-      }
-    },
     "Text File" : {
       "comment" : "文本文件",
       "localizations" : {
@@ -29994,102 +31636,6 @@
         }
       }
     },
-    "Toggle Tag" : {
-      "comment" : "标记/取消标记",
-      "extractionState" : "stale",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تبديل العلامة"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tag umschalten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toggle Tag"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alternar etiqueta"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Basculer l'étiquette"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Attiva/Disattiva Tag"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "タグの切り替え"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "태그 전환"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Label Aan/Uitzetten"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alternar Marca"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alternar Etiqueta"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Переключить тег"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Växla tagg"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "标记/取消标记"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切換標籤"
-          }
-        }
-      }
-    },
     "Undo" : {
       "comment" : "撤销",
       "localizations" : {
@@ -30470,8 +32016,100 @@
         }
       }
     },
-    "Updating index" : {
-      "comment" : "更新索引中"
+    "Updating Index" : {
+      "comment" : "更新索引中",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحديث الفهرس"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Index wird aktualisiert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updating Index"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizando índice"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mise à jour de l'index"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiornamento dell'indice"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インデックスを更新中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "인덱스 업데이트 중"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Index bijwerken"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualizando índice"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualizando Índice"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обновление индекса"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uppdaterar index"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新索引中"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新索引"
+          }
+        }
+      }
     },
     "Use Full Path" : {
       "comment" : "使用完整路径",

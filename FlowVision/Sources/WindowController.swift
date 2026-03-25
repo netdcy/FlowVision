@@ -1823,7 +1823,7 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func videoPlayInfo(_ sender: NSMenuItem){
-        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("video-play-info", comment: "对于视频播放的说明..."), width: 300)
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("video-play-info", comment: "对于视频播放的说明..."))
     }
 
     @objc func actEnterFullScreen(_ sender: NSMenuItem){

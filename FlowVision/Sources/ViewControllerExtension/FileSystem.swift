@@ -215,7 +215,11 @@ extension ViewController {
         if let tagFilter = publicVar.finderTagFilter {
             contents = contents.filter { url in
                 let tags = (try? url.resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? []
-                return tags.contains(tagFilter)
+                if publicVar.isFinderTagFilterReversed {
+                    return !tags.contains(tagFilter)
+                } else {
+                    return tags.contains(tagFilter)
+                }
             }
         }
         
@@ -879,6 +883,7 @@ extension ViewController {
             // Reset Finder tag filter
             if !globalVar.keepFilterStateWhenSwitchFolder{
                 publicVar.finderTagFilter = nil
+                publicVar.isFinderTagFilterReversed = false
             }
             // 重置自动播放可见视频
             // Reset auto-play visible video

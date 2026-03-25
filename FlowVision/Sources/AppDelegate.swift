@@ -770,6 +770,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             if mainViewController.publicVar.isInLargeView {
                 return false
             }
+            if mainViewController.fileDB.curFolder.contains("VirtualFinderTagsFolder") {
+                return false
+            }
             let pasteboard = NSPasteboard.general
             let types = pasteboard.types ?? []
             if !types.contains(.fileURL) {

@@ -710,6 +710,7 @@ extension ViewController {
         
         largeImageView.file=file
         largeImageView.refreshFinderTagDots()
+        largeImageView.refreshRatingStars()
 
         if justChangeLargeImageViewFile {return}
   

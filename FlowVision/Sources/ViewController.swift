@@ -157,6 +157,7 @@ class PublicVar{
     var customZoomStep: Double = 0.1
     var currentTag:String? = nil
     var finderTagFilter: String? = nil
+    var isFinderTagFilterReversed: Bool = false
 
     // 可一键切换的配置
     // Configuration that can be switched with one key

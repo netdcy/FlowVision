@@ -40,6 +40,7 @@ class LargeImageView: NSView {
     var infoView: InfoView!
     var unsupportedVideoOverlay: NSView!
     var finderTagDotsView: NSView?
+    var ratingStarsView: NSView?
 
     // MARK: - 图片编辑相关属性
     // MARK: - Image editing related properties
@@ -185,6 +186,7 @@ class LargeImageView: NSView {
         }
         
         refreshFinderTagDots()
+        refreshRatingStars()
 
         // 创建边缘切换箭头视图
         // Create edge switching arrow views
@@ -288,6 +290,76 @@ class LargeImageView: NSView {
         }
 
         finderTagDotsView = container
+    }
+
+    /// 根据星级返回对应颜色（1–5 星：灰 → 银 → 橙 → 黄 → 金）
+    private static func color(forRating rating: Int) -> NSColor {
+        switch rating {
+        case 1: return NSColor(calibratedWhite: 0.5, alpha: 1)
+        case 2: return NSColor(calibratedWhite: 0.7, alpha: 1)
+        case 3: return NSColor.systemOrange
+        case 4: return NSColor(calibratedRed: 1, green: 0.88, blue: 0.2, alpha: 1)
+        case 5: return NSColor(calibratedRed: 1, green: 0.68, blue: 0, alpha: 1)
+        default: return NSColor.systemGray
+        }
+    }
+
+    func refreshRatingStars() {
+        ratingStarsView?.removeFromSuperview()
+        ratingStarsView = nil
+
+        guard let rating = file.imageInfo?.rating, rating >= 1, rating <= 5 else { return }
+
+        let starSize: CGFloat = 16
+        let spacing: CGFloat = 2
+        let padding: CGFloat = 6
+        let starCount = rating
+        let color = Self.color(forRating: rating)
+
+        let contentWidth = CGFloat(starCount) * starSize + CGFloat(starCount - 1) * spacing
+        let pillWidth = contentWidth + padding * 2
+        let pillHeight = starSize + padding * 2
+
+        let container = NSView()
+        container.wantsLayer = true
+        container.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.4).cgColor
+        container.layer?.cornerRadius = pillHeight / 2
+        container.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(container)
+
+        NSLayoutConstraint.activate([
+            container.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
+            container.topAnchor.constraint(equalTo: self.topAnchor, constant: 15),
+            container.widthAnchor.constraint(equalToConstant: pillWidth),
+            container.heightAnchor.constraint(equalToConstant: pillHeight),
+        ])
+
+        let config = NSImage.SymbolConfiguration(pointSize: starSize - 2, weight: .medium, scale: .medium)
+        let fillImage = NSImage(systemSymbolName: "star.fill", accessibilityDescription: "Star")?.withSymbolConfiguration(config)
+        fillImage?.isTemplate = true
+        let outlineImage = NSImage(systemSymbolName: "star", accessibilityDescription: "Star outline")?.withSymbolConfiguration(config)
+        outlineImage?.isTemplate = true
+
+        for i in 0..<starCount {
+            let starFrame = NSRect(x: padding + CGFloat(i) * (starSize + spacing), y: padding + 1, width: starSize, height: starSize)
+            let starContainer = NSView(frame: starFrame)
+
+            let fillView = NSImageView(frame: starContainer.bounds)
+            fillView.image = fillImage
+            fillView.contentTintColor = color
+            fillView.imageScaling = .scaleProportionallyDown
+
+            let outlineView = NSImageView(frame: starContainer.bounds)
+            outlineView.image = outlineImage
+            outlineView.contentTintColor = .white
+            outlineView.imageScaling = .scaleProportionallyDown
+
+            starContainer.addSubview(fillView)
+            starContainer.addSubview(outlineView)
+            container.addSubview(starContainer)
+        }
+
+        ratingStarsView = container
     }
 
     // MARK: - 边缘切换箭头视图
@@ -1670,7 +1742,38 @@ class LargeImageView: NSView {
             finderTagMenu.addItem(NSMenuItem.separator())
             finderTagMenu.addItem(withTitle: NSLocalizedString("Remove All Tags", comment: "移除所有标签"), action: #selector(actRemoveAllFinderTags), keyEquivalent: "")
 
+            finderTagMenu.addItem(NSMenuItem.separator())
+            finderTagMenu.addItem(withTitle: NSLocalizedString("Learn More...", comment: "了解更多..."), action: #selector(actTagLearnMore), keyEquivalent: "")
+
             menu.addItem(finderTagMenuItem)
+
+            let rateSubMenu = NSMenu(title: NSLocalizedString("Rating", comment: "星级"))
+            let rateMenuItem = NSMenuItem(title: NSLocalizedString("Rating", comment: "星级"), action: nil, keyEquivalent: "")
+            rateMenuItem.submenu = rateSubMenu
+            rateMenuItem.isEnabled = file.type == .image
+
+            for rating in (1...5).reversed() {
+                let stars = String(repeating: "★", count: rating) + String(repeating: "☆", count: 5 - rating)
+                let title = "\(stars)  (\(rating))"
+                let item = NSMenuItem(title: title, action: #selector(actRate(_:)), keyEquivalent: "")
+                item.tag = rating
+                item.target = self
+                rateSubMenu.addItem(item)
+            }
+
+            let clearTitle = NSLocalizedString("No Rating", comment: "无星级")
+            let clearItem = NSMenuItem(title: clearTitle, action: #selector(actRate(_:)), keyEquivalent: "")
+            clearItem.tag = 0
+            clearItem.target = self
+            rateSubMenu.addItem(clearItem)
+
+            rateSubMenu.addItem(NSMenuItem.separator())
+
+            let rateReadmeItem = NSMenuItem(title: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(actRateReadmeAction), keyEquivalent: "")
+            rateReadmeItem.target = self
+            rateSubMenu.addItem(rateReadmeItem)
+
+            menu.addItem(rateMenuItem)
 
             menu.addItem(NSMenuItem.separator())
 
@@ -1882,6 +1985,20 @@ class LargeImageView: NSView {
         guard let url = URL(string: file.path) else { return }
         FinderTagHelper.removeAllTags(from: [url])
         getViewController(self)?.refreshFinderTagsForVisibleItems(urls: [url])
+    }
+
+    @objc func actTagLearnMore() {
+        getViewController(self)?.handleTagLearnMore()
+    }
+
+    @objc func actRate(_ sender: NSMenuItem) {
+        let rating = sender.tag
+        getViewController(self)?.handleRating(rating: rating)
+        refreshRatingStars()
+    }
+
+    @objc func actRateReadmeAction() {
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("rating-info", comment: "对于评级的说明..."))
     }
 
     @objc func actRefresh() {

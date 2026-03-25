@@ -165,37 +165,45 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
                 let actionItemMove = menu.addItem(withTitle: NSLocalizedString("Move Here", comment: "移动到此"), action: #selector(actMove), keyEquivalent: "v")
                 actionItemMove.keyEquivalentModifierMask = [.command,.option]
                 actionItemMove.isEnabled = canPasteOrMove
-                
-                menu.addItem(NSMenuItem.separator())
-                
-                let actionItemOpenInTerminal = menu.addItem(withTitle: NSLocalizedString("Open in Terminal", comment: "在终端中打开"), action: #selector(actOpenInTerminal), keyEquivalent: "")
-                
+
                 menu.addItem(NSMenuItem.separator())
 
                 let finderTagMenu = NSMenu()
                 let finderTagMenuItem = NSMenuItem(title: NSLocalizedString("Finder Tags", comment: "Finder标签"), action: nil, keyEquivalent: "")
                 finderTagMenuItem.submenu = finderTagMenu
 
-                if let folderURL = URL(string: curRightClickedPath) {
-                    let currentTags = FinderTagHelper.readTags(from: folderURL)
-                    for tag in FinderTag.all {
-                        let item = finderTagMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actToggleFinderTag(_:)), keyEquivalent: "")
-                        item.representedObject = tag.name
-                        if currentTags.contains(tag.name) {
-                            item.state = .on
-                        }
-                        item.image = tag.dotImage
-                    }
-                }
+                // if let folderURL = URL(string: curRightClickedPath) {
+                //     let currentTags = FinderTagHelper.readTags(from: folderURL)
+                //     for tag in FinderTag.all {
+                //         let item = finderTagMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actToggleFinderTag(_:)), keyEquivalent: "")
+                //         item.representedObject = tag.name
+                //         if currentTags.contains(tag.name) {
+                //             item.state = .on
+                //         }
+                //         item.image = tag.dotImage
+                //     }
+                // }
 
-                finderTagMenu.addItem(NSMenuItem.separator())
-                finderTagMenu.addItem(withTitle: NSLocalizedString("Remove All Tags", comment: "移除所有标签"), action: #selector(actRemoveAllFinderTags), keyEquivalent: "")
-                finderTagMenu.addItem(NSMenuItem.separator())
+                // finderTagMenu.addItem(NSMenuItem.separator())
+                // finderTagMenu.addItem(withTitle: NSLocalizedString("Remove All Tags", comment: "移除所有标签"), action: #selector(actRemoveAllFinderTags), keyEquivalent: "")
+
+                // finderTagMenu.addItem(NSMenuItem.separator())
                 finderTagMenu.addItem(withTitle: NSLocalizedString("Scan & Update Enhanced Index", comment: "扫描并更新增强索引"), action: #selector(actScanEnhancedIndex), keyEquivalent: "")
 
-                // menu.addItem(finderTagMenuItem)
+                // let scanEnhancedIndexReadmeItem = NSMenuItem(title: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(actScanEnhancedIndexReadmeAction), keyEquivalent: "")
+                // scanEnhancedIndexReadmeItem.target = self
+                // finderTagMenu.addItem(scanEnhancedIndexReadmeItem)
 
-                // menu.addItem(NSMenuItem.separator())
+                finderTagMenu.addItem(NSMenuItem.separator())
+                finderTagMenu.addItem(withTitle: NSLocalizedString("Learn More...", comment: "了解更多..."), action: #selector(actTagLearnMore), keyEquivalent: "")
+
+                menu.addItem(finderTagMenuItem)
+                
+                menu.addItem(NSMenuItem.separator())
+                
+                let actionItemOpenInTerminal = menu.addItem(withTitle: NSLocalizedString("Open in Terminal", comment: "在终端中打开"), action: #selector(actOpenInTerminal), keyEquivalent: "")
+
+                menu.addItem(NSMenuItem.separator())
 
                 let actionItemNewFolder = menu.addItem(withTitle: NSLocalizedString("New Folder", comment: "新建文件夹"), action: #selector(actNewFolder), keyEquivalent: "n")
                 actionItemNewFolder.keyEquivalentModifierMask = [.command,.shift]
@@ -397,6 +405,14 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
                 vc.coreAreaView.showInfo(message, timeOut: isComplete ? 2.0 : .infinity, cannotBeCleard: false)
             }
         }
+    }
+
+    @objc func actScanEnhancedIndexReadmeAction() {
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("scan-enhanced-index-info", comment: "扫描并更新增强索引说明..."))
+    }
+
+    @objc func actTagLearnMore() {
+        getViewController(self)?.handleTagLearnMore()
     }
 
     @objc func actSortByType(_ sender: NSMenuItem) {

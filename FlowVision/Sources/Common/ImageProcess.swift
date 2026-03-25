@@ -2082,6 +2082,94 @@ func formatExifData(_ imageProperties: [String: Any], isVideo: Bool, needWarp: B
     return formattedData
 }
 
+func readRating(from imageURL: URL) -> Int? {
+    guard let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, nil) else {
+        print("Failed to create image source.")
+        return nil
+    }
+    
+    guard let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil) else {
+        print("Failed to copy metadata.")
+        return nil
+    }
+    
+    //let namespace = "http://ns.adobe.com/xap/1.0/"
+    let prefix = "xmp"
+    let key = "Rating"
+    
+    if let tag = CGImageMetadataCopyTagWithPath(metadata, nil, "\(prefix):\(key)" as CFString) {
+        if let value = CGImageMetadataTagCopyValue(tag) as? String {
+            return Int(value)
+        }
+    }
+    
+    return nil
+}
+
+func writeRating(inputURL: URL, outputURL: URL, rating: Int) {
+    // SMB 等网络盘在覆盖写入后有时会把文件标成隐藏，先记下原始状态并在写入后恢复
+    let originalIsHidden = (try? inputURL.resourceValues(forKeys: [.isHiddenKey]))?.isHidden ?? false
+
+    guard let imageSource = CGImageSourceCreateWithURL(inputURL as CFURL, nil) else {
+        print("Failed to create image source.")
+        return
+    }
+    
+    guard let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) else {
+        print("Failed to create image.")
+        return
+    }
+    
+    guard let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil) else {
+        print("Failed to copy metadata.")
+        return
+    }
+    
+    guard let mutableMetadata = CGImageMetadataCreateMutableCopy(metadata) else {
+        print("Failed to create mutable metadata.")
+        return
+    }
+    
+    let namespace = "http://ns.adobe.com/xap/1.0/"
+    let prefix = "xmp"
+    let key = "Rating"
+    
+    // 在使用自定义命名空间时需要
+//    guard CGImageMetadataRegisterNamespaceForPrefix(mutableMetadata, namespace as CFString, prefix as CFString, nil) else {
+//        print("Failed to register namespace.")
+//        return
+//    }
+    
+    if rating == 0 {
+        // 0 星级：移除现有 Rating 标签（如果存在），而不是写入 0
+        CGImageMetadataRemoveTagWithPath(mutableMetadata, nil, "\(prefix):\(key)" as CFString)
+    } else {
+        let value = rating as CFNumber
+        guard CGImageMetadataSetValueWithPath(mutableMetadata, nil, "\(prefix):\(key)" as CFString, value) else {
+            print("Failed to set metadata value.")
+            return
+        }
+    }
+    
+    guard let imageDestination = CGImageDestinationCreateWithURL(outputURL as CFURL, CGImageSourceGetType(imageSource)!, 1, nil) else {
+        print("Failed to create image destination.")
+        return
+    }
+    
+    CGImageDestinationAddImageAndMetadata(imageDestination, image, mutableMetadata, nil)
+    
+    guard CGImageDestinationFinalize(imageDestination) else {
+        print("Failed to finalize image destination.")
+        return
+    }
+
+    // 写入后恢复原来的「隐藏」属性，避免 SMB 等网络盘把文件错误标成隐藏
+    var values = URLResourceValues()
+    values.isHidden = originalIsHidden
+    var tmpURL = outputURL
+    try? tmpURL.setResourceValues(values)
+}
+
 func distanceBetweenPoints(_ point1: NSPoint, _ point2: NSPoint) -> CGFloat {
     return hypot(point1.x - point2.x, point1.y - point2.y)
 }

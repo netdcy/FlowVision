@@ -12,7 +12,6 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var imageViewObj: CustomThumbImageView!
     @IBOutlet weak var imageNameField: NSTextField!
     @IBOutlet weak var imageLabel: NSTextField!
-    @IBOutlet weak var imageTag: NSTextField!
     @IBOutlet weak var videoFlag: NSImageView!
     @IBOutlet weak var videoView: NSView!
     
@@ -27,6 +26,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     
     var file = FileModel(path: "", ver: 0)
     var finderTagDotsView: NSView?
+    var ratingStarsView: NSView?
     private var mouseDownLocation: NSPoint? = nil
     
     private var lastClickTime: TimeInterval = 0
@@ -63,12 +63,6 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         // 文件名标签
         // Filename label
         imageNameField.cell?.lineBreakMode = .byTruncatingTail
-        
-        // 左上角标签
-        // Top-left corner label
-        imageTag.wantsLayer = true
-        // imageTag.layer?.backgroundColor = NSColor.gray.withAlphaComponent(0.6).cgColor
-        // imageTag.layer?.cornerRadius = 4
         
         // 右上角标签
         // Top-right corner label
@@ -207,34 +201,79 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         return itemFrame.intersects(visibleRectExtended)
     }
     
-    func refreshTagLabel(){
+    /// 根据星级返回对应颜色（1–5 星：灰 → 银 → 橙 → 黄 → 金，便于区分）
+    private static func color(forRating rating: Int) -> NSColor {
+        switch rating {
+        case 1: return NSColor(calibratedWhite: 0.5, alpha: 1)           // 灰
+        case 2: return NSColor(calibratedWhite: 0.7, alpha: 1)             // 浅灰/银
+        case 3: return NSColor.systemOrange                                // 橙
+        case 4: return NSColor(calibratedRed: 1, green: 0.88, blue: 0.2, alpha: 1)  // 黄
+        case 5: return NSColor(calibratedRed: 1, green: 0.68, blue: 0, alpha: 1)     // 金
+        default: return NSColor.systemGray
+        }
+    }
+
+    func refreshRatingStars() {
+        ratingStarsView?.removeFromSuperview()
+        ratingStarsView = nil
+
         let isShowThumbnailTag = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailTag") == "true"
-        
-        var tags: [String] = []
-        
-        if let rating = file.imageInfo?.rating {
-            let stars = String(repeating: "⭐️", count: rating)
-            tags.insert(stars, at: 0)
+        guard isShowThumbnailTag, let rating = file.imageInfo?.rating, rating >= 1, rating <= 5 else { return }
+
+        let starSize: CGFloat = 13
+        let spacing: CGFloat = 2
+        let starCount = rating
+        let color = Self.color(forRating: rating)
+
+        let totalWidth = CGFloat(starCount) * starSize + CGFloat(starCount - 1) * spacing
+        let containerHeight = starSize
+
+        let container = NSView()
+        container.wantsLayer = true
+        container.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(container)
+
+        NSLayoutConstraint.activate([
+            container.leadingAnchor.constraint(equalTo: imageViewObj.leadingAnchor, constant: 5),
+            container.topAnchor.constraint(equalTo: imageViewObj.topAnchor, constant: 5),
+            container.widthAnchor.constraint(equalToConstant: totalWidth),
+            container.heightAnchor.constraint(equalToConstant: containerHeight),
+        ])
+
+        let config = NSImage.SymbolConfiguration(pointSize: starSize - 2, weight: .medium, scale: .medium)
+        let fillImage = NSImage(systemSymbolName: "star.fill", accessibilityDescription: "Star")?.withSymbolConfiguration(config)
+        fillImage?.isTemplate = true
+        let outlineImage = NSImage(systemSymbolName: "star", accessibilityDescription: "Star outline")?.withSymbolConfiguration(config)
+        outlineImage?.isTemplate = true
+
+        for i in 0..<starCount {
+            let starFrame = NSRect(x: CGFloat(i) * (starSize + spacing), y: 0, width: starSize, height: starSize)
+            let starContainer = NSView(frame: starFrame)
+
+            let fillView = NSImageView(frame: starContainer.bounds)
+            fillView.image = fillImage
+            fillView.contentTintColor = color
+            fillView.imageScaling = .scaleProportionallyDown
+
+            let outlineView = NSImageView(frame: starContainer.bounds)
+            outlineView.image = outlineImage
+            outlineView.contentTintColor = .white
+            outlineView.imageScaling = .scaleProportionallyDown
+
+            starContainer.addSubview(fillView)
+            starContainer.addSubview(outlineView)
+            container.addSubview(starContainer)
         }
-        
-        imageTag.stringValue = tags.joined(separator: "\n")
-        
-        if imageTag.stringValue != "" && isShowThumbnailTag {
-            // 先调整文字大小
-            // Adjust text size first
-            imageTag.sizeToFit()
-            imageTag.frame.origin.x = imageViewObj.frame.origin.x + 5
-            imageTag.frame.origin.y = imageViewObj.frame.origin.y + imageViewObj.frame.height - imageTag.frame.height - 5
-            imageTag.isHidden=false
-        } else {
-            imageTag.isHidden=true
-        }
+
+        ratingStarsView = container
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         finderTagDotsView?.removeFromSuperview()
         finderTagDotsView = nil
+        ratingStarsView?.removeFromSuperview()
+        ratingStarsView = nil
     }
 
     func refreshFinderTagDots() {
@@ -348,14 +387,16 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             imageViewObj.isFolder = false
         }
 
-        // 左上角标签
-        // Top-left corner label
-        refreshTagLabel()
+        // 左上角星级
+        // Top-left rating stars
+        refreshRatingStars()
 
+        // 左下角Finder标签
+        // Bottom-left finder tag dots
         refreshFinderTagDots()
 
-        // 右上角标签
-        // Top-right corner label
+        // 右上角HDR/RAW标签
+        // Top-right corner HDR/RAWlabel
         let isShowThumbnailBadge = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailBadge") == "true"
         let isRawImage = globalVar.HandledRawExtensions.contains(imageViewObj.url?.pathExtension.lowercased() ?? "noExtention")
         if isRawImage {
@@ -961,6 +1002,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 if !types.contains(.fileURL) {
                     canPasteOrMove=false
                 }
+
+                let curFolder = getViewController(collectionView!)!.fileDB.curFolder
+                let isVirtualFinderTagsFolder = curFolder.contains("VirtualFinderTagsFolder")
                 
                 // 弹出菜单
                 // Show context menu
@@ -1035,22 +1079,14 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 let actionItemCopyPath = menu.addItem(withTitle: NSLocalizedString("Copy Path", comment: "复制路径"), action: #selector(actCopyPath), keyEquivalent: "")
                 
                 let actionItemPaste = menu.addItem(withTitle: NSLocalizedString("Paste", comment: "粘贴"), action: #selector(actPaste), keyEquivalent: "v")
-                actionItemPaste.isEnabled = canPasteOrMove
+                actionItemPaste.isEnabled = canPasteOrMove && !isVirtualFinderTagsFolder
                 
                 let actionItemMove = menu.addItem(withTitle: NSLocalizedString("Move Here", comment: "移动到此"), action: #selector(actMove), keyEquivalent: "v")
                 actionItemMove.keyEquivalentModifierMask = [.command,.option]
-                actionItemMove.isEnabled = canPasteOrMove
+                actionItemMove.isEnabled = canPasteOrMove && !isVirtualFinderTagsFolder
                 
                 let actionItemShare = menu.addItem(withTitle: NSLocalizedString("Share...", comment: "共享..."), action: #selector(actShare(_:)), keyEquivalent: "")
-                
-                menu.addItem(NSMenuItem.separator())
-                                
-                let actionItemCopyToDownload = menu.addItem(withTitle: NSLocalizedString("copy-to-download", comment: "复制到\"下载\"文件夹"), action: #selector(actCopyToDownload), keyEquivalent: "n")
-                actionItemCopyToDownload.keyEquivalentModifierMask = []
 
-                let actionItemMoveToDownload = menu.addItem(withTitle: NSLocalizedString("move-to-download", comment: "移动到\"下载\"文件夹"), action: #selector(actMoveToDownload), keyEquivalent: "m")
-                actionItemMoveToDownload.keyEquivalentModifierMask = []
-                
                 menu.addItem(NSMenuItem.separator())
 
                 let finderTagMenu = NSMenu()
@@ -1077,9 +1113,54 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 if file.isDir {
                     finderTagMenu.addItem(NSMenuItem.separator())
                     finderTagMenu.addItem(withTitle: NSLocalizedString("Scan & Update Enhanced Index", comment: "扫描并更新增强索引"), action: #selector(actScanEnhancedIndex), keyEquivalent: "")
+                    
+                    // let scanEnhancedIndexReadmeItem = NSMenuItem(title: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(actScanEnhancedIndexReadmeAction), keyEquivalent: "")
+                    // scanEnhancedIndexReadmeItem.target = self
+                    // finderTagMenu.addItem(scanEnhancedIndexReadmeItem)
                 }
 
+                finderTagMenu.addItem(NSMenuItem.separator())
+                finderTagMenu.addItem(withTitle: NSLocalizedString("Learn More...", comment: "了解更多..."), action: #selector(actTagLearnMore), keyEquivalent: "")
+
                 menu.addItem(finderTagMenuItem)
+                
+                let rateSubMenu = NSMenu(title: NSLocalizedString("Rating", comment: "星级"))
+                let rateMenuItem = NSMenuItem(title: NSLocalizedString("Rating", comment: "星级"), action: nil, keyEquivalent: "")
+                rateMenuItem.submenu = rateSubMenu
+                rateMenuItem.isEnabled = file.type == .image
+
+                // 5~1 星，带星形预览
+                for rating in (1...5).reversed() {
+                    let stars = String(repeating: "★", count: rating) + String(repeating: "☆", count: 5 - rating)
+                    let title = "\(stars)  (\(rating))"
+                    let item = NSMenuItem(title: title, action: #selector(actRate(_:)), keyEquivalent: "")
+                    item.tag = rating
+                    item.target = self
+                    rateSubMenu.addItem(item)
+                }
+
+                // 无星级
+                let clearTitle = NSLocalizedString("No Rating", comment: "无星级")
+                let clearItem = NSMenuItem(title: clearTitle, action: #selector(actRate(_:)), keyEquivalent: "")
+                clearItem.tag = 0
+                clearItem.target = self
+                rateSubMenu.addItem(clearItem)
+
+                rateSubMenu.addItem(NSMenuItem.separator())
+                
+                let rateReadmeItem = NSMenuItem(title: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(actRateReadmeAction), keyEquivalent: "")
+                rateReadmeItem.target = self
+                rateSubMenu.addItem(rateReadmeItem)
+                
+                menu.addItem(rateMenuItem)
+                
+                menu.addItem(NSMenuItem.separator())
+                                
+                let actionItemCopyToDownload = menu.addItem(withTitle: NSLocalizedString("copy-to-download", comment: "复制到\"下载\"文件夹"), action: #selector(actCopyToDownload), keyEquivalent: "n")
+                actionItemCopyToDownload.keyEquivalentModifierMask = []
+
+                let actionItemMoveToDownload = menu.addItem(withTitle: NSLocalizedString("move-to-download", comment: "移动到\"下载\"文件夹"), action: #selector(actMoveToDownload), keyEquivalent: "m")
+                actionItemMoveToDownload.keyEquivalentModifierMask = []
 
                 menu.addItem(NSMenuItem.separator())
 
@@ -1088,6 +1169,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 let newMenu = NSMenu()
                 let newMenuItem = NSMenuItem(title: NSLocalizedString("New", comment: "新建"), action: nil, keyEquivalent: "")
                 newMenuItem.submenu = newMenu
+                newMenuItem.isEnabled = !isVirtualFinderTagsFolder
                 
                 // 添加新建文件夹选项
                 // Add new folder option
@@ -1141,6 +1223,23 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 vc.coreAreaView.showInfo(message, timeOut: isComplete ? 2.0 : .infinity, cannotBeCleard: false)
             }
         }
+    }
+
+    @objc func actScanEnhancedIndexReadmeAction() {
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("scan-enhanced-index-info", comment: "扫描并更新增强索引说明..."))
+    }
+
+    @objc func actTagLearnMore() {
+        getViewController(collectionView!)?.handleTagLearnMore()
+    }
+    
+    @objc func actRate(_ sender: NSMenuItem) {
+        let rating = sender.tag
+        getViewController(collectionView!)?.handleRating(rating: rating)
+    }
+    
+    @objc func actRateReadmeAction() {
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("rating-info", comment: "对于评级的说明..."))
     }
 
     @objc func actRefresh() {

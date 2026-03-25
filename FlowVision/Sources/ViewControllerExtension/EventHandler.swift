@@ -293,6 +293,24 @@ extension ViewController {
         }
         refreshCollectionView(needLoadThumbPriority: true)
     }
+
+    func toggleFinderTagFilterReversed() {
+        publicVar.isFinderTagFilterReversed.toggle()
+        refreshCollectionView(needLoadThumbPriority: true)
+    }
+
+    func handleTagLearnMore() {
+        if let url = URL(string: FINDER_TAG_LEARN_MORE_URL) {
+            NSWorkspace.shared.open(url)
+        }
+    }
+
+    func handleRating(rating: Int) {
+        let urls: [URL] = publicVar.selectedUrls()
+        for url in urls {
+            writeRating(inputURL: url, outputURL: url, rating: rating)
+        }
+    }
     
     func toggleAutoPlayVisibleVideo() {
         publicVar.autoPlayVisibleVideo.toggle()

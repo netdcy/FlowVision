@@ -79,53 +79,26 @@ class CustomCollectionView: NSCollectionView {
                     if !types.contains(.fileURL) {
                         canPasteOrMove=false
                     }
+
+                    let curFolder = getViewController(self)!.fileDB.curFolder
+                    let isVirtualFinderTagsFolder = curFolder.contains("VirtualFinderTagsFolder")
                     
                     // 弹出菜单
                     // Show context menu
                     let menu = NSMenu(title: "Custom Menu")
                     menu.autoenablesItems = false
                     
-                    menu.addItem(withTitle: NSLocalizedString("Open in Finder", comment: "在Finder中打开"), action: #selector(actOpenInFinder), keyEquivalent: "")
+                    let actionItemOpenInFinder = menu.addItem(withTitle: NSLocalizedString("Open in Finder", comment: "在Finder中打开"), action: #selector(actOpenInFinder), keyEquivalent: "")
+                    actionItemOpenInFinder.isEnabled = !isVirtualFinderTagsFolder
                     
                     menu.addItem(NSMenuItem.separator())
 
                     let actionItemPaste = menu.addItem(withTitle: NSLocalizedString("Paste", comment: "粘贴"), action: #selector(actPaste), keyEquivalent: "v")
-                    actionItemPaste.isEnabled = canPasteOrMove
+                    actionItemPaste.isEnabled = canPasteOrMove && !isVirtualFinderTagsFolder
                     
                     let actionItemMove = menu.addItem(withTitle: NSLocalizedString("Move Here", comment: "移动到此"), action: #selector(actMove), keyEquivalent: "v")
                     actionItemMove.keyEquivalentModifierMask = [.command,.option]
-                    actionItemMove.isEnabled = canPasteOrMove
-
-                    menu.addItem(NSMenuItem.separator())
-                    
-                    // let actionItemCopyPath = menu.addItem(withTitle: NSLocalizedString("Copy Path", comment: "复制路径"), action: #selector(actCopyPath), keyEquivalent: "")
-                    
-                    let actionItemOpenInTerminal = menu.addItem(withTitle: NSLocalizedString("Open in Terminal", comment: "在终端中打开"), action: #selector(actOpenInTerminal), keyEquivalent: "")
-                    
-                    menu.addItem(NSMenuItem.separator())
-            
-                    // 创建"新建"子菜单
-                    // Create "New" submenu
-                    let newMenu = NSMenu()
-                    let newMenuItem = NSMenuItem(title: NSLocalizedString("New", comment: "新建"), action: nil, keyEquivalent: "")
-                    newMenuItem.submenu = newMenu
-                    
-                    // 添加新建文件夹选项
-                    // Add new folder option
-                    let newFolderItem = newMenu.addItem(withTitle: NSLocalizedString("Folder", comment: "文件夹"), 
-                                                       action: #selector(actNewFolder), 
-                                                       keyEquivalent: "n")
-                    newFolderItem.keyEquivalentModifierMask = [.command, .shift]
-
-                    newMenu.addItem(NSMenuItem.separator())
-                    
-                    // 添加新建文本文件选项
-                    // Add new text file option
-                    let newTextFileItem = newMenu.addItem(withTitle: NSLocalizedString("Text File", comment: "文本文件"), 
-                                                        action: #selector(actNewTextFile), 
-                                                        keyEquivalent: "")
-                    
-                    menu.addItem(newMenuItem)
+                    actionItemMove.isEnabled = canPasteOrMove && !isVirtualFinderTagsFolder
 
                     menu.addItem(NSMenuItem.separator())
 
@@ -144,13 +117,53 @@ class CustomCollectionView: NSCollectionView {
                         item.image = tag.dotImage
                     }
 
+                    let reverseFilterItem = filterMenu.addItem(withTitle: NSLocalizedString("Reverse Filter", comment: "反转筛选"), action: #selector(actReverseFinderTagFilter), keyEquivalent: "")
+                    reverseFilterItem.state = getViewController(self)?.publicVar.isFinderTagFilterReversed ?? false ? .on : .off
+
                     filterMenu.addItem(NSMenuItem.separator())
+
                     let showAllItem = filterMenu.addItem(withTitle: NSLocalizedString("Show All", comment: "显示全部"), action: #selector(actClearFinderTagFilter), keyEquivalent: "")
                     if currentFilter == nil {
                         showAllItem.state = .on
                     }
 
+                    filterMenu.addItem(NSMenuItem.separator())
+                    filterMenu.addItem(withTitle: NSLocalizedString("Learn More...", comment: "了解更多..."), action: #selector(actTagLearnMore), keyEquivalent: "")
+
                     menu.addItem(filterMenuItem)
+
+                    menu.addItem(NSMenuItem.separator())
+                    
+                    // let actionItemCopyPath = menu.addItem(withTitle: NSLocalizedString("Copy Path", comment: "复制路径"), action: #selector(actCopyPath), keyEquivalent: "")
+                    
+                    let actionItemOpenInTerminal = menu.addItem(withTitle: NSLocalizedString("Open in Terminal", comment: "在终端中打开"), action: #selector(actOpenInTerminal), keyEquivalent: "")
+                    actionItemOpenInTerminal.isEnabled = !isVirtualFinderTagsFolder
+                    
+                    menu.addItem(NSMenuItem.separator())
+            
+                    // 创建"新建"子菜单
+                    // Create "New" submenu
+                    let newMenu = NSMenu()
+                    let newMenuItem = NSMenuItem(title: NSLocalizedString("New", comment: "新建"), action: nil, keyEquivalent: "")
+                    newMenuItem.submenu = newMenu
+                    newMenuItem.isEnabled = !isVirtualFinderTagsFolder
+                    
+                    // 添加新建文件夹选项
+                    // Add new folder option
+                    let newFolderItem = newMenu.addItem(withTitle: NSLocalizedString("Folder", comment: "文件夹"), 
+                                                       action: #selector(actNewFolder), 
+                                                       keyEquivalent: "n")
+                    newFolderItem.keyEquivalentModifierMask = [.command, .shift]
+
+                    newMenu.addItem(NSMenuItem.separator())
+                    
+                    // 添加新建文本文件选项
+                    // Add new text file option
+                    let newTextFileItem = newMenu.addItem(withTitle: NSLocalizedString("Text File", comment: "文本文件"), 
+                                                        action: #selector(actNewTextFile), 
+                                                        keyEquivalent: "")
+                    
+                    menu.addItem(newMenuItem)
 
                     menu.addItem(NSMenuItem.separator())
 
@@ -219,6 +232,15 @@ class CustomCollectionView: NSCollectionView {
     }
 
     @objc func actClearFinderTagFilter() {
+        getViewController(self)?.publicVar.isFinderTagFilterReversed = false
         getViewController(self)?.toggleFinderTagFilter(nil)
+    }
+
+    @objc func actReverseFinderTagFilter() {
+        getViewController(self)?.toggleFinderTagFilterReversed()
+    }
+
+    @objc func actTagLearnMore() {
+        getViewController(self)?.handleTagLearnMore()
     }
 }

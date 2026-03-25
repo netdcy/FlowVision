@@ -811,22 +811,26 @@ Gw
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="RXp-tl-oug"/>
-                                        <menuItem title="Justified View" keyEquivalent="1" id="rIE-So-qGu">
+                                        <menuItem title="Justified View" id="rIE-So-qGu">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="switchToJustifiedView:" target="Voe-Tx-rLC" id="CIx-MD-oRV"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Waterfall View" keyEquivalent="2" id="5Wy-TF-lsK">
+                                        <menuItem title="Waterfall View" id="5Wy-TF-lsK">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="switchToWaterfallView:" target="Voe-Tx-rLC" id="uH8-jM-S3p"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Grid View" keyEquivalent="3" id="SAw-E9-7Mm">
+                                        <menuItem title="Grid View" id="SAw-E9-7Mm">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="switchToGridView:" target="Voe-Tx-rLC" id="REh-gr-8sX"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Detail View" hidden="YES" keyEquivalent="4" id="aHz-iD-6dU">
+                                        <menuItem title="Detail View" hidden="YES" id="aHz-iD-6dU">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="switchToDetailView:" target="Voe-Tx-rLC" id="zaN-HG-aSJ"/>
                                             </connections>

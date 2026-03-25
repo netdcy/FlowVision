@@ -170,9 +170,9 @@ class EnhancedIndex {
             }
 
             guard !isCancelled() else { return }
-            progress?("\(NSLocalizedString("Updating index", comment: "更新索引中")): \(urls.count) ...", false)
+            progress?("\(NSLocalizedString("Updating Index", comment: "更新索引中")): \(urls.count) ...", false)
             updateFiles(urls)
-            progress?("\(NSLocalizedString("Scan complete", comment: "扫描完成"))", true)
+            progress?("\(NSLocalizedString("Scan Complete", comment: "扫描完成"))", true)
         }
     }
 

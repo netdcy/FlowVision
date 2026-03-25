@@ -288,6 +288,44 @@ func showInformationLongDeprecate(title: String, message: String, width: CGFloat
 }
 
 func showInformationLong(title: String, message: String, width: CGFloat = 400) {
+    let attributedMessage = parseSimpleMarkup(message, fontSize: 11.5)
+    showInformationLong(title: title, attributedMessage: attributedMessage, width: width)
+}
+
+/// 解析简单标记文本，支持 **加粗**
+func parseSimpleMarkup(_ text: String, fontSize: CGFloat) -> NSAttributedString {
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.lineSpacing = 1.2
+    let baseAttributes: [NSAttributedString.Key: Any] = [
+        .font: NSFont.systemFont(ofSize: fontSize),
+        .foregroundColor: NSColor.headerTextColor,
+        .paragraphStyle: paragraphStyle
+    ]
+    let boldAttributes: [NSAttributedString.Key: Any] = [
+        .font: NSFont.boldSystemFont(ofSize: fontSize),
+        .foregroundColor: NSColor.headerTextColor,
+        .paragraphStyle: paragraphStyle
+    ]
+    
+    let result = NSMutableAttributedString()
+    let scanner = Scanner(string: text)
+    scanner.charactersToBeSkipped = nil
+    
+    while !scanner.isAtEnd {
+        if let plain = scanner.scanUpToString("**") {
+            result.append(NSAttributedString(string: plain, attributes: baseAttributes))
+        }
+        if scanner.scanString("**") != nil {
+            if let bold = scanner.scanUpToString("**") {
+                result.append(NSAttributedString(string: bold, attributes: boldAttributes))
+                scanner.scanString("**")
+            }
+        }
+    }
+    return result
+}
+
+func showInformationLong(title: String, attributedMessage: NSAttributedString, width: CGFloat = 400) {
     let alert = NSAlert()
     alert.messageText = title
     alert.alertStyle = .informational
@@ -317,22 +355,7 @@ func showInformationLong(title: String, message: String, width: CGFloat = 400) {
     textField.isSelectable = true
     textField.textColor = NSColor.headerTextColor
     
-    // 创建段落样式并设置行间距
-    // Create paragraph style and set line spacing
-    let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.lineSpacing = 1.2
-    
-    // 使用富文本设置内容和样式
-    // Use rich text to set content and style
-    let attributedString = NSAttributedString(
-        string: message,
-        attributes: [
-            .font: NSFont.systemFont(ofSize: 11.5),
-            .foregroundColor: NSColor.headerTextColor,
-            .paragraphStyle: paragraphStyle
-        ]
-    )
-    textField.textStorage?.setAttributedString(attributedString)
+    textField.textStorage?.setAttributedString(attributedMessage)
     
     // 配置文本视图容器
     // Configure text view container
@@ -349,7 +372,7 @@ func showInformationLong(title: String, message: String, width: CGFloat = 400) {
     // Add a bit of extra height to prevent unnecessary scrollbar
     // 添加5个点的额外空间
     // Add 5 points of extra space
-    let height = min(max(contentSize.height + 5, 50), 400)
+    let height = min(max(contentSize.height + 5, 50), 300)
     scrollView.frame = NSRect(x: 0, y: 0, width: width, height: height)
     
     // 设置文本视图的frame，同样添加额外空间
