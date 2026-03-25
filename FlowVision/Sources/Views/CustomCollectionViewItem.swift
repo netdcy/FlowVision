@@ -1415,7 +1415,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     
     private func resolveAliasIfNeeded(_ url: URL) -> URL {
         if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
-           values.isAliasFile == true, values.isSymbolicLink != true,
+           values.isAliasFile == true,
            let resolved = try? URL(resolvingAliasFileAt: url) {
             return resolved
         }

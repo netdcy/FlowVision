@@ -789,7 +789,7 @@ func getFileTypeIcon(url: URL) -> NSImage {
     // 需手动解析目标路径取正确类型图标，再叠加替身小箭头徽章
     // Alias file: icon(forFile:) relies on extension; resolve to get correct type icon, then overlay alias badge
     if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
-       values.isAliasFile == true, values.isSymbolicLink != true,
+       values.isAliasFile == true,
        let resolved = try? URL(resolvingAliasFileAt: url) {
         let targetIcon = NSWorkspace.shared.icon(forFile: resolved.path)
         let size = targetIcon.size

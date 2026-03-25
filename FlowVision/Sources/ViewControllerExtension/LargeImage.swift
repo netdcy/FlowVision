@@ -213,7 +213,7 @@ extension ViewController {
             // 替身文件：解析后按目标类型分发处理
             // Finder alias: resolve and dispatch based on target type
             if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
-               values.isAliasFile == true, values.isSymbolicLink != true,
+               values.isAliasFile == true,
                let resolved = try? URL(resolvingAliasFileAt: url) {
                 let resolvedAbsPath = resolved.absoluteString
                 if resolved.hasDirectoryPath {

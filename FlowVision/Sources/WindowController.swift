@@ -515,6 +515,12 @@ extension WindowController: NSToolbarDelegate {
                 if viewController.publicVar.isRecursiveMode {
                     maxWidth -= 45
                 }
+                if !viewController.publicVar.finderTagFilters.isEmpty {
+                    maxWidth -= 45
+                }
+                if !viewController.publicVar.ratingFilters.isEmpty {
+                    maxWidth -= 45
+                }
                 if viewController.publicVar.profile.getValue(forKey: "isWindowTitleShowStatistics") == "true" {
                     maxWidth -= viewController.publicVar.titleStatisticInfo.size(withAttributes: [.font: font]).width + 20
                 }

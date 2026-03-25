@@ -245,7 +245,7 @@ extension ViewController {
             // 替身文件：解析后目标为目录则算作目录
             // Alias file: treat as directory if resolved target is a directory
             if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
-               values.isAliasFile == true, values.isSymbolicLink != true,
+               values.isAliasFile == true,
                let resolved = try? URL(resolvingAliasFileAt: url),
                resolved.hasDirectoryPath {
                 return true
@@ -271,7 +271,7 @@ extension ViewController {
             // 指向目录的替身已归入目录列表，不再计入文件
             // Aliases pointing to directories are treated as directories, exclude from file list
             if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
-               values.isAliasFile == true, values.isSymbolicLink != true,
+               values.isAliasFile == true,
                let resolved = try? URL(resolvingAliasFileAt: url),
                resolved.hasDirectoryPath {
                 return false
