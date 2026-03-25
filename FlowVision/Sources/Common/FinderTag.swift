@@ -182,8 +182,10 @@ class EnhancedIndex {
 
     // MARK: - 批量更新文件的标签信息
 
-    static func updateFiles(_ urls: [URL]) {
+    static func updateFiles(_ urls: [URL], recordTime: Bool = false) {
         guard ENHANCED_INDEX_ENABLED else { return }
+        let startTime = recordTime ? CFAbsoluteTimeGetCurrent() : 0
+
         indexLock.lock()
         var changed = false
         for url in urls {
@@ -214,6 +216,11 @@ class EnhancedIndex {
 
         if changed {
             scheduleSave()
+        }
+
+        if recordTime {
+            let elapsed = CFAbsoluteTimeGetCurrent() - startTime
+            log("EnhancedIndex: updateFiles(\(urls.count) urls, changed=\(changed)) in \(String(format: "%.4f", elapsed))s", level: .debug)
         }
     }
 
@@ -456,15 +463,26 @@ class EnhancedIndex {
 
     private static func loadFromFile() {
         let startTime = CFAbsoluteTimeGetCurrent()
+        defer {
+            let elapsed = CFAbsoluteTimeGetCurrent() - startTime
+            log("EnhancedIndex: loadFromFile finished (\(fileIndex.count) entries) in \(String(format: "%.4f", elapsed))s", level: .debug)
+        }
+
         guard FileManager.default.fileExists(atPath: dataFileURL.path) else {
             log("EnhancedIndex: data file not found, starting fresh", level: .info)
             return
         }
 
         do {
+            let readStart = CFAbsoluteTimeGetCurrent()
             let data = try Data(contentsOf: dataFileURL)
-            guard let dict = try JSONSerialization.jsonObject(with: data) as? [String: [String]] else { return }
+            let readElapsed = CFAbsoluteTimeGetCurrent() - readStart
 
+            let parseStart = CFAbsoluteTimeGetCurrent()
+            guard let dict = try JSONSerialization.jsonObject(with: data) as? [String: [String]] else { return }
+            let parseElapsed = CFAbsoluteTimeGetCurrent() - parseStart
+
+            let buildStart = CFAbsoluteTimeGetCurrent()
             indexLock.lock()
             fileIndex.removeAll(keepingCapacity: true)
             tagIndex.removeAll(keepingCapacity: true)
@@ -476,10 +494,11 @@ class EnhancedIndex {
             }
             sortedPaths = SortedSet(fileIndex.keys)
             indexLock.unlock()
+            let buildElapsed = CFAbsoluteTimeGetCurrent() - buildStart
+
+            log("EnhancedIndex: read=\(String(format: "%.4f", readElapsed))s, parse=\(String(format: "%.4f", parseElapsed))s, buildIndex=\(String(format: "%.4f", buildElapsed))s", level: .debug)
         } catch {
             log("EnhancedIndex load failed: \(error)", level: .error)
         }
-        let elapsed = CFAbsoluteTimeGetCurrent() - startTime
-        log("EnhancedIndex loaded (\(fileIndex.count) entries) in \(String(format: "%.4f", elapsed))s", level: .info)
     }
 }

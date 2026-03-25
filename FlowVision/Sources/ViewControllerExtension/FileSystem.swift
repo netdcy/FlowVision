@@ -196,7 +196,7 @@ extension ViewController {
 
         // 更新增强索引
         // Update enhanced index
-        EnhancedIndex.updateFiles(contents)
+        EnhancedIndex.updateFiles(contents, recordTime: true)
 
         // 搜索过滤
         // Search filter
