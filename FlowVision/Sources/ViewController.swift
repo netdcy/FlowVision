@@ -421,6 +421,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var progressDelayWorkItem: DispatchWorkItem?
     var isProgressVisible = false
     var pendingProgress: Double = 0
+    var progressSessionId: Int = 0
     
     // 搜索框
     // Search box

@@ -10,6 +10,9 @@ import Cocoa
 extension ViewController {
     
     func setupProgressBar() {
+        guard progressBarTrack == nil else { return }
+        guard let hostView = mainScrollView.superview else { return }
+        
         let track = NSView()
         track.wantsLayer = true
         track.layer?.backgroundColor = NSColor.clear.cgColor
@@ -21,7 +24,7 @@ extension ViewController {
         fill.translatesAutoresizingMaskIntoConstraints = false
         
         track.addSubview(fill)
-        mainScrollView.superview?.addSubview(track, positioned: .above, relativeTo: mainScrollView)
+        hostView.addSubview(track, positioned: .above, relativeTo: mainScrollView)
         
         let widthConstraint = fill.widthAnchor.constraint(equalToConstant: 0)
         let leadingConstraint = fill.leadingAnchor.constraint(equalTo: track.leadingAnchor, constant: 0)
@@ -62,13 +65,19 @@ extension ViewController {
         progressFillLeadingConstraint?.constant = 0
         
         let clamped = min(max(progress, 0), 1)
+        let previousPending = pendingProgress
         pendingProgress = clamped
+        
+        if clamped > 0, previousPending == 0, !isProgressVisible {
+            progressSessionId += 1
+        }
         
         if clamped >= 1.0 {
             progressDelayWorkItem?.cancel()
             progressDelayWorkItem = nil
+            let sessionId = progressSessionId
             if isProgressVisible {
-                showProgressBar(progress: clamped, animated: animated, autoHide: true)
+                showProgressBar(progress: clamped, animated: animated, autoHide: true, sessionId: sessionId)
             } else {
                 resetProgressBar()
             }
@@ -84,18 +93,18 @@ extension ViewController {
                     if self.pendingProgress < self.progressShowThreshold {
                         self.progressDelayWorkItem = nil
                         self.isProgressVisible = true
-                        self.showProgressBar(progress: self.pendingProgress, animated: true, autoHide: false)
+                        self.showProgressBar(progress: self.pendingProgress, animated: true, autoHide: false, sessionId: self.progressSessionId)
                     }
                 }
                 progressDelayWorkItem = workItem
                 DispatchQueue.main.asyncAfter(deadline: .now() + progressShowDelay, execute: workItem)
             }
         } else {
-            showProgressBar(progress: clamped, animated: animated, autoHide: false)
+            showProgressBar(progress: clamped, animated: animated, autoHide: false, sessionId: progressSessionId)
         }
     }
     
-    private func showProgressBar(progress: Double, animated: Bool, autoHide: Bool) {
+    private func showProgressBar(progress: Double, animated: Bool, autoHide: Bool, sessionId: Int) {
         let trackWidth = mainScrollView.frame.width
         let targetWidth = trackWidth * progress
         
@@ -111,7 +120,7 @@ extension ViewController {
                     gradient.frame = self.progressBarFill.bounds
                 }
                 if autoHide {
-                    self.scheduleAutoHide()
+                    self.scheduleAutoHide(sessionId: sessionId)
                 }
             }
         } else {
@@ -125,14 +134,15 @@ extension ViewController {
             progressBarFill.superview?.layoutSubtreeIfNeeded()
             CATransaction.commit()
             if autoHide {
-                scheduleAutoHide()
+                scheduleAutoHide(sessionId: sessionId)
             }
         }
     }
     
-    private func scheduleAutoHide() {
+    private func scheduleAutoHide(sessionId: Int) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
             guard let self = self else { return }
+            guard self.progressSessionId == sessionId else { return }
             NSAnimationContext.runAnimationGroup { ctx in
                 ctx.duration = 0.3
                 self.progressBarTrack.animator().alphaValue = 0
@@ -158,6 +168,7 @@ extension ViewController {
         stopIndeterminate()
         progressDelayWorkItem?.cancel()
         progressDelayWorkItem = nil
+        progressSessionId += 1
         isProgressVisible = true
         pendingProgress = 0
         indeterminateTimer = Timer(timeInterval: .infinity, repeats: false, block: { _ in })
@@ -200,13 +211,23 @@ extension ViewController {
         stopIndeterminate()
         progressDelayWorkItem?.cancel()
         progressDelayWorkItem = nil
+        progressSessionId += 1
         isProgressVisible = false
         pendingProgress = 0
-        NSAnimationContext.runAnimationGroup { ctx in
-            ctx.duration = animated ? 0.25 : 0
-            progressBarTrack.animator().alphaValue = 0
-        } completionHandler: { [weak self] in
-            self?.resetProgressBar()
+        
+        if animated {
+            NSAnimationContext.runAnimationGroup { ctx in
+                ctx.duration = 0.25
+                progressBarTrack.animator().alphaValue = 0
+            } completionHandler: { [weak self] in
+                self?.resetProgressBar()
+            }
+        } else {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            progressBarTrack.alphaValue = 0
+            CATransaction.commit()
+            resetProgressBar()
         }
     }
 }

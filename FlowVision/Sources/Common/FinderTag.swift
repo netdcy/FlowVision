@@ -263,7 +263,7 @@ class EnhancedIndex {
 
         if recordTime {
             let elapsed = CFAbsoluteTimeGetCurrent() - startTime
-            log("EnhancedIndex: updateFiles(\(urls.count) urls, changed=\(changed)) in \(String(format: "%.4f", elapsed))s", level: .debug)
+            log("EnhancedIndex: updateFiles(\(urls.count) urls, changed=\(changed)) in \(String(format: "%.4f", elapsed))s", level: .info)
         }
     }
 
@@ -513,7 +513,7 @@ class EnhancedIndex {
         let startTime = CFAbsoluteTimeGetCurrent()
         defer {
             let elapsed = CFAbsoluteTimeGetCurrent() - startTime
-            log("EnhancedIndex: loadFromFile finished (\(fileIndex.count) entries) in \(String(format: "%.4f", elapsed))s", level: .debug)
+            log("EnhancedIndex: loadFromFile finished (\(fileIndex.count) entries) in \(String(format: "%.4f", elapsed))s", level: .info)
         }
 
         guard FileManager.default.fileExists(atPath: dataFileURL.path) else {
@@ -556,7 +556,7 @@ class EnhancedIndex {
 
             indexLock.unlock()
 
-            log("EnhancedIndex: read=\(String(format: "%.4f", readElapsed))s, parse=\(String(format: "%.4f", parseElapsed))s, buildFileIndex=\(String(format: "%.4f", fileIndexElapsed))s, buildTagIndex=\(String(format: "%.4f", tagIndexElapsed))s, buildSortedPaths=\(String(format: "%.4f", sortedPathsElapsed))s", level: .debug)
+            log("EnhancedIndex: read=\(String(format: "%.4f", readElapsed))s, parse=\(String(format: "%.4f", parseElapsed))s, buildFileIndex=\(String(format: "%.4f", fileIndexElapsed))s, buildTagIndex=\(String(format: "%.4f", tagIndexElapsed))s, buildSortedPaths=\(String(format: "%.4f", sortedPathsElapsed))s", level: .info)
         } catch {
             log("EnhancedIndex load failed: \(error)", level: .error)
         }

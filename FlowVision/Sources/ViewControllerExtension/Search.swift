@@ -473,6 +473,9 @@ extension ViewController {
     }
     
     func quickSearch(_ character: String) {
+        
+        let quickSearchAutoHideDuration = 2.5
+        
         // 清除之前的计时器
         // Clear previous timer
         quickSearchTimer?.invalidate()
@@ -492,7 +495,7 @@ extension ViewController {
                 _ = performSearch(searchText: quickSearchText, isEnterKey: false, forceUseRegex: false, firstMatch: true)
             }
         }
-        coreAreaView.showInfo(NSLocalizedString("Quick Search", comment: "快速搜索")+": "+quickSearchText, timeOut: 1.8, duration: 0.1, cannotBeCleard: true)
+        coreAreaView.showInfo(NSLocalizedString("Quick Search", comment: "快速搜索")+": "+quickSearchText, timeOut: quickSearchAutoHideDuration, duration: 0.1, cannotBeCleard: true)
         
         if !publicVar.isCollectionViewFirstResponder {
             view.window?.makeFirstResponder(collectionView)
@@ -501,7 +504,7 @@ extension ViewController {
         // 设置新的计时器,n秒后清空搜索文本
         // Set new timer, clear search text after n seconds
         quickSearchState = true
-        quickSearchTimer = Timer.scheduledTimer(withTimeInterval: 1.8, repeats: false) { [weak self] _ in
+        quickSearchTimer = Timer.scheduledTimer(withTimeInterval: quickSearchAutoHideDuration, repeats: false) { [weak self] _ in
             self?.quickSearchText = ""
             self?.quickSearchState = false
         }
