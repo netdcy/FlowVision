@@ -226,8 +226,8 @@ class LargeImageView: NSView {
         let tags = file.finderTags.compactMap { FinderTag.byName($0) }
         guard !tags.isEmpty else { return }
 
-        let colorTags = tags.filter { $0.colorIndex != nil }
-        let textTags = tags.filter { $0.colorIndex == nil }
+        let colorTags = tags.filter { $0.isSystemColorLabel }
+        let textTags = tags.filter { !$0.isSystemColorLabel }
         let sortedTags = colorTags + textTags
 
         let dotSize: CGFloat = 10
@@ -240,7 +240,7 @@ class LargeImageView: NSView {
         var contentWidth: CGFloat = 0
         for (i, tag) in sortedTags.enumerated() {
             if i > 0 { contentWidth += spacing }
-            if tag.colorIndex != nil {
+            if tag.isSystemColorLabel {
                 contentWidth += dotSize
             } else {
                 let textWidth = (tag.name as NSString).size(withAttributes: [.font: textFont]).width
@@ -267,7 +267,7 @@ class LargeImageView: NSView {
 
         var xOffset: CGFloat = padding
         for tag in sortedTags {
-            if tag.colorIndex != nil {
+            if tag.isSystemColorLabel {
                 let dot = NSView(frame: NSRect(x: xOffset, y: padding, width: dotSize, height: dotSize))
                 dot.wantsLayer = true
                 dot.layer?.backgroundColor = tag.color.cgColor
@@ -289,7 +289,7 @@ class LargeImageView: NSView {
                 label.layer?.borderColor = NSColor.gray.cgColor
                 label.layer?.borderWidth = 0.5
                 label.layer?.cornerRadius = 3
-                label.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.7).cgColor
+                label.layer?.backgroundColor = tag.color.withAlphaComponent(0.7).cgColor
                 label.frame = NSRect(x: xOffset, y: padding - 2, width: labelWidth, height: labelHeight)
                 container.addSubview(label)
                 xOffset += labelWidth + spacing
@@ -1684,17 +1684,20 @@ class LargeImageView: NSView {
             
             menu.addItem(NSMenuItem.separator())
 
+            let currentTags = file.finderTags
+            let allTags = FinderTag.all
+            let activeTagNames = Set(allTags.filter { currentTags.contains($0.name) }.map { $0.name })
+
             let finderTagMenu = NSMenu()
-            let finderTagMenuItem = NSMenuItem(title: NSLocalizedString("Finder Tags", comment: "Finder标签"), action: nil, keyEquivalent: "")
+            let finderTagTitle = NSLocalizedString("Finder Tags", comment: "Finder标签")
+            let finderTagMenuItem = NSMenuItem(title: finderTagTitle, action: nil, keyEquivalent: "")
             finderTagMenuItem.submenu = finderTagMenu
 
-            let currentTags = file.finderTags
-
-            for (i, tag) in FinderTag.all.enumerated() {
+            for (i, tag) in allTags.enumerated() {
                 let item = finderTagMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actToggleFinderTag(_:)), keyEquivalent: (i + 1 <= 9) ? "\(i + 1)" : "")
                 item.keyEquivalentModifierMask = [.command]
                 item.representedObject = tag.name
-                if currentTags.contains(tag.name) {
+                if activeTagNames.contains(tag.name) {
                     item.state = .on
                 }
                 item.image = tag.dotImage
@@ -1705,6 +1708,37 @@ class LargeImageView: NSView {
 
             finderTagMenu.addItem(NSMenuItem.separator())
             finderTagMenu.addItem(withTitle: NSLocalizedString("Learn More...", comment: "了解更多..."), action: #selector(actTagLearnMore), keyEquivalent: "")
+
+            let colorTags = allTags//.filter { $0.colorIndex != nil && $0.colorIndex != 0 }
+            if !colorTags.isEmpty {
+                let dotsItem = NSMenuItem()
+                let dotsView = FinderTagDotsView(tags: colorTags, activeTags: activeTagNames) { [weak self, weak menu] tagName in
+                    guard let self = self, let menu = menu else { return }
+                    getViewController(self)?.handleToggleFinderTag(tagName)
+                    menu.cancelTracking()
+                }
+                dotsView.onHoverChanged = { [weak finderTagMenuItem] index in
+                    guard let finderTagMenuItem = finderTagMenuItem else { return }
+                    if index >= 0 && index < colorTags.count {
+                        let tag = colorTags[index]
+                        if activeTagNames.contains(tag.name) {
+                            finderTagMenuItem.title = NSLocalizedString("Remove", comment: "移除") + "\"\(tag.name)\""
+                        } else {
+                            finderTagMenuItem.title = NSLocalizedString("Add", comment: "添加") + "\"\(tag.name)\""
+                        }
+                        let attrTitle = NSAttributedString(
+                            string: finderTagMenuItem.title,
+                            attributes: [.foregroundColor: NSColor.secondaryLabelColor]
+                        )
+                        finderTagMenuItem.attributedTitle = attrTitle
+                    } else {
+                        finderTagMenuItem.attributedTitle = nil
+                        finderTagMenuItem.title = finderTagTitle
+                    }
+                }
+                dotsItem.view = dotsView
+                menu.addItem(dotsItem)
+            }
 
             menu.addItem(finderTagMenuItem)
 
@@ -1737,7 +1771,7 @@ class LargeImageView: NSView {
             rateSubMenu.addItem(rateReadmeItem)
 
             menu.addItem(rateMenuItem)
-            
+
             menu.addItem(NSMenuItem.separator())
                         
             let actionItemCopyToDownload = menu.addItem(withTitle: NSLocalizedString("copy-to-download", comment: "复制到\"下载\"文件夹"), action: #selector(actCopyToDownload), keyEquivalent: "n")

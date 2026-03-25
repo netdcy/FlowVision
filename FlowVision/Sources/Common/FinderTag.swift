@@ -19,6 +19,10 @@ struct FinderTag {
     static let defaultLabelColor: NSColor = NSColor.white
     static let defaultDotImage: NSImage = makeDotImage(for: defaultLabelColor)
     
+    var isSystemColorLabel: Bool {
+        FinderTag.systemColorLabels.contains { $0.name == name }
+    }
+
     var color: NSColor {
         if let colorIndex = colorIndex,
            colorIndex < FILE_LABEL_COLORS.count,
@@ -84,6 +88,126 @@ struct FinderTag {
             path.lineWidth = 0.5
             path.stroke()
             return true
+        }
+    }
+}
+
+// MARK: - Finder-style color dots view for context menus
+
+class FinderTagDotsView: NSView {
+    private let tags: [FinderTag]
+    private let activeTags: Set<String>
+    var onTagToggle: ((String) -> Void)?
+    var onHoverChanged: ((Int) -> Void)?
+    private var hoveredIndex: Int = -1
+
+    private static let dotDiameter: CGFloat = 16
+    private static let dotSpacing: CGFloat = 8
+    private static let paddingH: CGFloat = 20
+    private static let paddingV: CGFloat = 4
+
+    init(tags: [FinderTag], activeTags: Set<String>, onTagToggle: @escaping (String) -> Void) {
+        self.tags = tags
+        self.activeTags = activeTags
+        self.onTagToggle = onTagToggle
+
+        let d = Self.dotDiameter
+        let s = Self.dotSpacing
+        let width = Self.paddingH * 2 + CGFloat(tags.count) * d + CGFloat(max(0, tags.count - 1)) * s
+        let height = d + Self.paddingV * 2
+
+        super.init(frame: NSRect(x: 0, y: 0, width: width, height: height))
+
+        let trackingArea = NSTrackingArea(
+            rect: bounds,
+            options: [.mouseEnteredAndExited, .mouseMoved, .activeAlways],
+            owner: self, userInfo: nil
+        )
+        addTrackingArea(trackingArea)
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    private func dotRect(at index: Int) -> NSRect {
+        let d = Self.dotDiameter
+        let s = Self.dotSpacing
+        let x = Self.paddingH + CGFloat(index) * (d + s)
+        let y = Self.paddingV
+        return NSRect(x: x, y: y, width: d, height: d)
+    }
+
+    private func dotIndex(at point: NSPoint) -> Int? {
+        guard !tags.isEmpty else { return nil }
+        let step = Self.dotDiameter + Self.dotSpacing
+        let firstCenter = Self.paddingH + Self.dotDiameter / 2
+        let lastCenter = firstCenter + CGFloat(tags.count - 1) * step
+        let halfStep = step / 2
+        guard point.x >= firstCenter - halfStep && point.x <= lastCenter + halfStep else { return nil }
+        let index = Int(round((point.x - firstCenter) / step))
+        guard index >= 0 && index < tags.count else { return nil }
+        return index
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        for (i, tag) in tags.enumerated() {
+            let rect = dotRect(at: i)
+            let insetRect = rect.insetBy(dx: 0.5, dy: 0.5)
+            let path = NSBezierPath(ovalIn: insetRect)
+
+            tag.color.setFill()
+            path.fill()
+
+            let brightness = tag.color.usingColorSpace(.genericRGB)?.brightnessComponent ?? 0
+            if brightness > 0.85 {
+                NSColor.separatorColor.setStroke()
+                path.lineWidth = 0.75
+                path.stroke()
+            }
+
+            if i == hoveredIndex {
+                NSColor.white.withAlphaComponent(0.3).setFill()
+                path.fill()
+            }
+
+            if activeTags.contains(tag.name) {
+                let checkColor: NSColor = brightness > 0.85 ? .labelColor : .white
+                checkColor.setStroke()
+                let cx = rect.midX, cy = rect.midY
+                let s = rect.width / 16.0
+                let check = NSBezierPath()
+                check.move(to: NSPoint(x: cx - 3 * s, y: cy + 0.5 * s))
+                check.line(to: NSPoint(x: cx - 0.5 * s, y: cy - 2.5 * s))
+                check.line(to: NSPoint(x: cx + 3.5 * s, y: cy + 3 * s))
+                check.lineWidth = 1.8
+                check.lineCapStyle = .round
+                check.lineJoinStyle = .round
+                check.stroke()
+            }
+        }
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        let point = convert(event.locationInWindow, from: nil)
+        if let index = dotIndex(at: point) {
+            onTagToggle?(tags[index].name)
+        }
+    }
+
+    override func mouseMoved(with event: NSEvent) {
+        let point = convert(event.locationInWindow, from: nil)
+        let newIndex = dotIndex(at: point) ?? -1
+        if newIndex != hoveredIndex {
+            hoveredIndex = newIndex
+            needsDisplay = true
+            onHoverChanged?(hoveredIndex)
+        }
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        if hoveredIndex != -1 {
+            hoveredIndex = -1
+            needsDisplay = true
+            onHoverChanged?(hoveredIndex)
         }
     }
 }

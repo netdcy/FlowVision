@@ -312,8 +312,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         let tags = file.finderTags.compactMap { FinderTag.byName($0) }
         guard !tags.isEmpty else { return }
 
-        let colorTags = tags.filter { $0.colorIndex != nil }
-        let textTags = tags.filter { $0.colorIndex == nil }
+        let colorTags = tags.filter { $0.isSystemColorLabel }
+        let textTags = tags.filter { !$0.isSystemColorLabel }
         let sortedTags = colorTags + textTags
 
         let scale = tagScaleFactor()
@@ -328,7 +328,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         var totalWidth: CGFloat = 0
         for (i, tag) in sortedTags.enumerated() {
             if i > 0 { totalWidth += spacing }
-            if tag.colorIndex != nil {
+            if tag.isSystemColorLabel {
                 totalWidth += dotSize
             } else {
                 let textWidth = (tag.name as NSString).size(withAttributes: [.font: textFont]).width
@@ -352,7 +352,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
         var xOffset: CGFloat = 0
         for tag in sortedTags {
-            if tag.colorIndex != nil {
+            if tag.isSystemColorLabel {
                 let dotY = (containerHeight - dotSize) / 2
                 let dot = NSView(frame: NSRect(x: xOffset, y: dotY, width: dotSize, height: dotSize))
                 dot.wantsLayer = true
@@ -374,7 +374,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 label.layer?.borderColor = NSColor.gray.cgColor
                 label.layer?.borderWidth = round(1 * scale * 2) / 2
                 label.layer?.cornerRadius = round(3 * scale)
-                label.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.7).cgColor
+                label.layer?.backgroundColor = tag.color.withAlphaComponent(0.7).cgColor
                 label.frame = NSRect(x: xOffset, y: 0, width: labelWidth, height: containerHeight)
                 container.addSubview(label)
                 xOffset += labelWidth + spacing
@@ -1157,19 +1157,26 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
                 menu.addItem(NSMenuItem.separator())
 
-                let finderTagMenu = NSMenu()
-                let finderTagMenuItem = NSMenuItem(title: NSLocalizedString("Finder Tags", comment: "Finder标签"), action: nil, keyEquivalent: "")
-                finderTagMenuItem.submenu = finderTagMenu
-
                 let selectedURLs = getViewController(collectionView!)?.publicVar.selectedUrls() ?? []
                 let tagsPerURL = selectedURLs.map { FinderTagHelper.readTags(from: $0) }
+                let allTags = FinderTag.all
+                let activeTagNames: Set<String> = {
+                    guard !selectedURLs.isEmpty else { return [] }
+                    return Set(allTags.filter { tag in
+                        tagsPerURL.allSatisfy { $0.contains(tag.name) }
+                    }.map { $0.name })
+                }()
 
-                for (i, tag) in FinderTag.all.enumerated() {
+                let finderTagMenu = NSMenu()
+                let finderTagTitle = NSLocalizedString("Finder Tags", comment: "Finder标签")
+                let finderTagMenuItem = NSMenuItem(title: finderTagTitle, action: nil, keyEquivalent: "")
+                finderTagMenuItem.submenu = finderTagMenu
+
+                for (i, tag) in allTags.enumerated() {
                     let item = finderTagMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actToggleFinderTag(_:)), keyEquivalent: (i + 1 <= 9) ? "\(i + 1)" : "")
                     item.keyEquivalentModifierMask = [.command]
                     item.representedObject = tag.name
-
-                    if !selectedURLs.isEmpty && tagsPerURL.allSatisfy({ $0.contains(tag.name) }) {
+                    if activeTagNames.contains(tag.name) {
                         item.state = .on
                     }
                     item.image = tag.dotImage
@@ -1181,14 +1188,41 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 if file.isDir {
                     finderTagMenu.addItem(NSMenuItem.separator())
                     finderTagMenu.addItem(withTitle: NSLocalizedString("Scan & Update Enhanced Index", comment: "扫描并更新增强索引"), action: #selector(actScanEnhancedIndex), keyEquivalent: "")
-                    
-                    // let scanEnhancedIndexReadmeItem = NSMenuItem(title: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(actScanEnhancedIndexReadmeAction), keyEquivalent: "")
-                    // scanEnhancedIndexReadmeItem.target = self
-                    // finderTagMenu.addItem(scanEnhancedIndexReadmeItem)
                 }
 
                 finderTagMenu.addItem(NSMenuItem.separator())
                 finderTagMenu.addItem(withTitle: NSLocalizedString("Learn More...", comment: "了解更多..."), action: #selector(actTagLearnMore), keyEquivalent: "")
+
+                let colorTags = allTags//.filter { $0.colorIndex != nil && $0.colorIndex != 0 }
+                if !colorTags.isEmpty {
+                    let dotsItem = NSMenuItem()
+                    let dotsView = FinderTagDotsView(tags: colorTags, activeTags: activeTagNames) { [weak self, weak menu] tagName in
+                        guard let self = self, let menu = menu else { return }
+                        getViewController(self.collectionView!)?.handleToggleFinderTag(tagName)
+                        menu.cancelTracking()
+                    }
+                    dotsView.onHoverChanged = { [weak finderTagMenuItem] index in
+                        guard let finderTagMenuItem = finderTagMenuItem else { return }
+                        if index >= 0 && index < colorTags.count {
+                            let tag = colorTags[index]
+                            if activeTagNames.contains(tag.name) {
+                                finderTagMenuItem.title = NSLocalizedString("Remove", comment: "移除") + "\"\(tag.name)\""
+                            } else {
+                                finderTagMenuItem.title = NSLocalizedString("Add", comment: "添加") + "\"\(tag.name)\""
+                            }
+                            let attrTitle = NSAttributedString(
+                                string: finderTagMenuItem.title,
+                                attributes: [.foregroundColor: NSColor.secondaryLabelColor]
+                            )
+                            finderTagMenuItem.attributedTitle = attrTitle
+                        } else {
+                            finderTagMenuItem.attributedTitle = nil
+                            finderTagMenuItem.title = finderTagTitle
+                        }
+                    }
+                    dotsItem.view = dotsView
+                    menu.addItem(dotsItem)
+                }
 
                 menu.addItem(finderTagMenuItem)
                 
