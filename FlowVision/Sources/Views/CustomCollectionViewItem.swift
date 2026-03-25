@@ -517,7 +517,16 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         if getViewController(collectionView!)!.publicVar.isRecursiveMode {
             tooltipParts.append("\(relativePathLabel): \(relativePath)")
         }
-        
+
+        if curFolder.contains("VirtualFinderTagsFolder") || curFolder.contains("VirtualTestFolder") {
+            let parentDirectoryLabel = NSLocalizedString("Location", comment: "位置")
+            var parentDirectory = (filePath as NSString).deletingLastPathComponent
+            if parentDirectory.hasPrefix("file:") {
+                parentDirectory = String(parentDirectory.dropFirst("file:".count))
+            }
+            tooltipParts.append("\(parentDirectoryLabel): \(parentDirectory)")
+        }
+
         // 如果文件大小存在，添加文件大小
         // If file size exists, add file size
         if let fileSize = fileSize {

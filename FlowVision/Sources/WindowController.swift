@@ -469,6 +469,8 @@ extension WindowController: NSToolbarDelegate {
                 let components = pathString.components(separatedBy: "/")
                 var pathItems: [CustomPathControlItem] = []
                 
+                let isVirtualFinderTagsFolder = pathString.hasPrefix("VirtualFinderTagsFolder")
+                
                 for (i,component) in components.enumerated() {
                     if component == "" {continue}
                     let item = CustomPathControlItem()
@@ -478,13 +480,19 @@ extension WindowController: NSToolbarDelegate {
                     let encodedPath = "file:///\(componentPath)/"
                     item.myUrl = URL(string: encodedPath)
 
+                    if isVirtualFinderTagsFolder && i == 0 {
+                        item.title = NSLocalizedString("Finder Tags", comment: "Finder标签")
+                    }
+
                     pathItems.append(item)
                 }
                 
-                let rootItem = CustomPathControlItem()
-                rootItem.title = ROOT_NAME
-                rootItem.myUrl = URL(string: "file:///")
-                pathItems.insert(rootItem, at: 0)
+                if !isVirtualFinderTagsFolder {
+                    let rootItem = CustomPathControlItem()
+                    rootItem.title = ROOT_NAME
+                    rootItem.myUrl = URL(string: "file:///")
+                    pathItems.insert(rootItem, at: 0)
+                }
                 
                 // 指定总宽度
                 // Specify total width

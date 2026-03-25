@@ -6,18 +6,20 @@
 import Foundation
 import Cocoa
 
+var customLabels: [String] = []
+
 struct FinderTag {
     let name: String
     let color: NSColor?
     let colorIndex: Int?
     let dotImage: NSImage?
     
-    static let all: [FinderTag] = {
-        let customLabels = [
-            FinderTag(name: "个人", color: customLabelColor, colorIndex: nil, dotImage: customLabelDotImage)
-        ]
-        return defaultColorLabels + customLabels
-    }()
+    static var all: [FinderTag] {
+        let custom = customLabels.sorted { $0.localizedStandardCompare($1) == .orderedAscending }.map { name in
+            FinderTag(name: name, color: customLabelColor, colorIndex: nil, dotImage: customLabelDotImage)
+        }
+        return defaultColorLabels + custom
+    }
     
     static let customLabelColor: NSColor = NSColor.white
     static let customLabelDotImage: NSImage = makeDotImage(for: customLabelColor)

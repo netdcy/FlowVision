@@ -118,6 +118,13 @@ extension ViewController {
         if path.contains("VirtualTagFolder") {
             targetPaths = ["Tag " + URL(string: path)!.lastPathComponent]
         }
+        if path.contains("VirtualFinderTagsFolder") {
+            if path == "file:///VirtualFinderTagsFolder/" {
+                targetPaths = [NSLocalizedString("Finder Tags", comment: "Finder标签")]
+            }else{
+                targetPaths = [NSLocalizedString("Finder Tags", comment: "Finder标签"), URL(string: path)!.lastPathComponent]
+            }
+        }
         
         if targetPaths.isEmpty {
             outlineView.deselectAll(nil)

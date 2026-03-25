@@ -65,15 +65,27 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
         let view = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("DataCell"), owner: self) as! CustomTableCellView
         view.textField?.stringValue = treeNode.name
         
-        let folderIcon = NSImage(named: NSImage.folderName)?.withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 20, weight: .regular))
-        // 设置为模板
-        // Set as template
-        // folderIcon?.isTemplate = true
-        // 将图标颜色设置为红色
-        // Set icon color to red
-        // view.imageView?.contentTintColor = NSColor.red
-        view.imageView?.image = folderIcon
-        // view?.imageView?.image = NSImage(named: NSImage.folderName)
+        if treeNode.fullPath.contains("VirtualFinderTagsFolder") {
+            let tagIcon = NSImage(systemSymbolName: "tag.fill", accessibilityDescription: nil)?
+                .withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 14, weight: .regular))
+            if let url = URL(string: treeNode.fullPath), url.path != "/VirtualFinderTagsFolder" {
+                let tag = FinderTag.byName(url.lastPathComponent)
+                if let dotImage = tag?.dotImage {
+                    view.imageView?.image = dotImage
+                    view.imageView?.contentTintColor = nil
+                } else {
+                    view.imageView?.image = tagIcon
+                    view.imageView?.contentTintColor = .secondaryLabelColor
+                }
+            } else {
+                view.imageView?.image = tagIcon
+                view.imageView?.contentTintColor = .secondaryLabelColor
+            }
+        } else {
+            let folderIcon = NSImage(named: NSImage.folderName)?.withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 20, weight: .regular))
+            view.imageView?.image = folderIcon
+            view.imageView?.contentTintColor = nil
+        }
         
 //        let backgroundView = NSView()
 //        backgroundView.wantsLayer = true
@@ -190,6 +202,9 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
     }
     
     func outlineView(_ outlineView: NSOutlineView, validateDrop info: NSDraggingInfo, proposedItem item: Any?, proposedChildIndex index: Int) -> NSDragOperation {
+        if let node = item as? TreeNode, node.fullPath.contains("VirtualFinderTagsFolder") {
+            return []
+        }
         return .move
     }
     
@@ -233,6 +248,7 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
     
     func outlineView(_ outlineView: NSOutlineView, pasteboardWriterForItem item: Any) -> NSPasteboardWriting? {
         guard let outlineItem = item as? TreeNode else { return nil }
+        if outlineItem.fullPath.contains("VirtualFinderTagsFolder") { return nil }
         
         let pasteboardItem = NSPasteboardItem()
 

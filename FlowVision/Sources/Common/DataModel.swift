@@ -572,6 +572,14 @@ class TreeViewModel {
     }
     
     func hasSubdirectory(at folderURL: URL) -> Bool {
+        if folderURL.path.contains("VirtualFinderTagsFolder") {
+            if folderURL.path == "/VirtualFinderTagsFolder" {
+                return true
+            }else{
+                return false
+            }
+        }
+        
         let fileManager = FileManager.default
         var options: FileManager.DirectoryEnumerationOptions
         if viewController.publicVar.isShowHiddenFile {
@@ -598,7 +606,11 @@ class TreeViewModel {
             
             // 检查是否是根目录
             // Check if it's the root directory
-            if folderURL.path != "root" {
+            if folderURL.path == "/VirtualFinderTagsFolder" {
+                for tag in FinderTag.all {
+                    contents.append(URL(string: "file:///VirtualFinderTagsFolder/\(tag.name)/")!)
+                }
+            } else if folderURL.path != "root" {
                 contents = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: [.isDirectoryKey, .isUbiquitousItemKey, .isHiddenKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey], options: [])
             }else{
 
@@ -637,6 +649,7 @@ class TreeViewModel {
             // 过滤隐藏文件
             // Filter hidden files
             contents = contents.filter { url in
+                if url.path.contains("VirtualFinderTagsFolder") { return true }
 
                 // 获取隐藏属性
                 // Get hidden attribute
@@ -663,6 +676,7 @@ class TreeViewModel {
             // 过滤出目录列表
             // Filter out directory list
             var subFolders = contents.filter { url in
+                if url.path.contains("VirtualFinderTagsFolder") { return true }
                 guard let isDirectoryResourceValue = try? url.resourceValues(forKeys: [.isDirectoryKey]), let isDirectory = isDirectoryResourceValue.isDirectory else {
                     return false
                 }
@@ -673,7 +687,10 @@ class TreeViewModel {
             // Sort
             // 卷列表保持字母序
             // Volume list maintains alphabetical order
-            if folderURL.path == "root" {
+            if folderURL.path.contains("VirtualFinderTagsFolder") {
+                // 不排序，保持 FinderTag.all 的顺序
+                // No sorting, keep FinderTag.all order
+            } else if folderURL.path == "root" {
                 subFolders.sort { $0.lastPathComponent.lowercased().localizedStandardCompare($1.lastPathComponent.lowercased()) == .orderedAscending }
             }else{
                 let sortType = SortType(rawValue: Int(viewController.publicVar.profile.getValue(forKey: "dirTreeSortType")) ?? 0)
@@ -721,10 +738,6 @@ class TreeViewModel {
                     subFolders.sort { $0.lastPathComponent.lowercased().localizedStandardCompare($1.lastPathComponent.lowercased()) == .orderedAscending }
                 }
             }
-            
-            if globalVar.autoHideToolbar && folderURL.path == "root" {
-                subFolders.insert(URL(fileURLWithPath: "/PlaceholderForAutoHideToolbar"), at: 0)
-            }
 
             if folderURL.path == "root" {
                 let tags = TaggingSystem.getAllTags().reversed()
@@ -732,6 +745,12 @@ class TreeViewModel {
                     let tagURL = URL(string: "file:///VirtualTagFolder/\(tag)/")!
                     subFolders.insert(tagURL, at: 0)
                 }
+                let testURL = URL(string: "file:///VirtualFinderTagsFolder/")!
+                subFolders.insert(testURL, at: 0)
+            }
+
+            if globalVar.autoHideToolbar && folderURL.path == "root" {
+                subFolders.insert(URL(fileURLWithPath: "/PlaceholderForAutoHideToolbar"), at: 0)
             }
             
             let oldChildren=node.children
@@ -747,6 +766,13 @@ class TreeViewModel {
                 }
                 if subFolder.absoluteString.contains("VirtualTagFolder") {
                     name = "Tag " + name
+                }
+                if subFolder.absoluteString.contains("VirtualFinderTagsFolder") {
+                    if subFolder.absoluteString == "file:///VirtualFinderTagsFolder/" {
+                        name = NSLocalizedString("Finder Tags", comment: "Finder标签")
+                    }else{
+                        
+                    }
                 }
                 var newNode = TreeNode(name: name, fullPath: fullPath)
                 

@@ -63,6 +63,26 @@ extension ViewController {
 
     }
     
+    func scanVirtualFiles(at folderURL: URL, contents: inout [URL], properties: [URLResourceKey],
+                          tagName: String) {
+        let queryString = "kMDItemUserTags == '\(tagName)'"
+        guard let query = MDQueryCreate(kCFAllocatorDefault, queryString as CFString, nil, nil) else { return }
+        
+        // 同步执行Spotlight查询
+        // Execute Spotlight query synchronously
+        MDQueryExecute(query, CFOptionFlags(kMDQuerySynchronous.rawValue))
+        
+        let count = MDQueryGetResultCount(query)
+        for i in 0..<count {
+            if let rawPtr = MDQueryGetResultAtIndex(query, i) {
+                let item = Unmanaged<MDItem>.fromOpaque(rawPtr).takeUnretainedValue()
+                if let path = MDItemCopyAttribute(item, kMDItemPath) as? String {
+                    contents.append(URL(fileURLWithPath: path))
+                }
+            }
+        }
+    }
+    
     func isExifSortTimeExceedCancel(folderURL: URL, imageCount: Int, videoCount: Int) -> Bool {
         let networkTimeConsume: Double = Double(imageCount+videoCount)/10.0
         let localTimeConsume: Double = Double(imageCount)/2000.0 + Double(videoCount)/10.0
@@ -131,7 +151,11 @@ extension ViewController {
                 dirURLCacheParameters = curDirURLCacheParameters
                 
                 if dirURLCache.isEmpty {
-                    if folderURL.path.contains("VirtualTagFolder") {
+                    if folderURL.path.contains("VirtualFinderTagsFolder") {
+                        let tagName = folderURL.lastPathComponent
+                        scanVirtualFiles(at: folderURL, contents: &dirURLCache, properties: properties, tagName: tagName)
+                        isInSameDir = false
+                    }else if folderURL.path.contains("VirtualTagFolder") {
                         dirURLCache = TaggingSystem.getList(tag: folderURL.lastPathComponent)
                         isInSameDir = false
                     }else if publicVar.isRecursiveMode {
@@ -142,18 +166,6 @@ extension ViewController {
                 }
                 contents.append(contentsOf: dirURLCache)
             }catch{}
-        }
-        
-        // 搜索过滤
-        // Search filter
-        let searchText = searchField?.stringValue ?? search_searchText
-        if publicVar.isFilenameFilterOn && searchText != "" {
-            contents = contents.filter { url in
-                if let fileName = getFileNameForSearch(path: url.absoluteString) {
-                    return isSearchMatch(fileName: fileName, searchText: searchText, forceUseRegex: false)
-                }
-                return true
-            }
         }
 
         // 过滤隐藏文件
@@ -178,6 +190,20 @@ extension ViewController {
             return !isHidden || publicVar.isShowHiddenFile
         }
 
+        // 搜索过滤
+        // Search filter
+        let searchText = searchField?.stringValue ?? search_searchText
+        if publicVar.isFilenameFilterOn && searchText != "" {
+            contents = contents.filter { url in
+                if let fileName = getFileNameForSearch(path: url.absoluteString) {
+                    return isSearchMatch(fileName: fileName, searchText: searchText, forceUseRegex: false)
+                }
+                return true
+            }
+        }
+
+        // 过滤标签
+        // Filter tags
         if let tagFilter = publicVar.finderTagFilter {
             contents = contents.filter { url in
                 let tags = (try? url.resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? []
@@ -719,6 +745,16 @@ extension ViewController {
             if rawdirection == .left || rawdirection == .up_left || rawdirection == .down_left
                 || rawdirection == .right || rawdirection == .up_right || rawdirection == .down_right {
                 showAlert(message: NSLocalizedString("recursive-mode-nodirection", comment: "递归模式下不能执行此动作"))
+                return
+            }
+        }
+
+        fileDB.lock()
+        let curFolder = fileDB.curFolder
+        fileDB.unlock()
+        if curFolder.contains("VirtualFinderTagsFolder") {
+            if rawdirection == .left || rawdirection == .up_left || rawdirection == .down_left
+                || rawdirection == .right || rawdirection == .up_right || rawdirection == .down_right {
                 return
             }
         }
