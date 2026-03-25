@@ -115,6 +115,8 @@ class EnhancedIndex {
     private static var sortedPaths = SortedSet<String>()
 
     private static let indexLock = NSLock()
+    private static let loadingGroup = DispatchGroup()
+    private static var isLoaded = false
     private static var pendingWorkItem: DispatchWorkItem?
     private static let saveQueue = DispatchQueue(label: "com.flowvision.EnhancedIndex.save")
     private static let debounceInterval: TimeInterval = 2.0
@@ -134,7 +136,17 @@ class EnhancedIndex {
 
     static func initialize() {
         guard ENHANCED_INDEX_ENABLED else { return }
-        loadFromFile()
+        loadingGroup.enter()
+        DispatchQueue.global(qos: .userInitiated).async {
+            loadFromFile()
+            isLoaded = true
+            loadingGroup.leave()
+        }
+    }
+
+    private static func waitUntilLoaded() {
+        if isLoaded { return }
+        loadingGroup.wait()
     }
 
     // MARK: - 扫描文件夹并更新索引
@@ -142,6 +154,7 @@ class EnhancedIndex {
     /// progress callback: (message, isComplete)
     static func scanFolder(_ folderURL: URL, progress: ((String, Bool) -> Void)? = nil) {
         guard ENHANCED_INDEX_ENABLED else { return }
+        waitUntilLoaded()
         scanIDLock.lock()
         currentScanID += 1
         let myScanID = currentScanID
@@ -182,8 +195,12 @@ class EnhancedIndex {
 
     // MARK: - 批量更新文件的标签信息
 
-    static func updateFiles(_ urls: [URL], recordTime: Bool = false) {
+    static func updateFiles(_ urls: [URL], isCalledByDirOpen: Bool = false, recordTime: Bool = false) {
         guard ENHANCED_INDEX_ENABLED else { return }
+        if !isLoaded {
+            if isCalledByDirOpen { return }
+            waitUntilLoaded()
+        }
         let startTime = recordTime ? CFAbsoluteTimeGetCurrent() : 0
 
         indexLock.lock()
@@ -228,6 +245,7 @@ class EnhancedIndex {
 
     static func filesForTag(_ tagName: String) -> [URL] {
         guard ENHANCED_INDEX_ENABLED else { return [] }
+        waitUntilLoaded()
         indexLock.lock()
         let paths = tagIndex[tagName] ?? Set()
         indexLock.unlock()
@@ -305,6 +323,7 @@ class EnhancedIndex {
     /// 文件/文件夹移动或重命名后更新索引，自动处理子路径前缀替换。
     static func handleFilesMoved(_ moves: [(oldPath: String, newPath: String)]) {
         guard ENHANCED_INDEX_ENABLED else { return }
+        waitUntilLoaded()
         indexLock.lock()
         var changed = false
         for (oldPath, newPath) in moves {
@@ -348,6 +367,7 @@ class EnhancedIndex {
     /// 文件/文件夹删除后清理索引，自动处理子路径。
     static func handleFilesDeleted(_ paths: [String]) {
         guard ENHANCED_INDEX_ENABLED else { return }
+        waitUntilLoaded()
         indexLock.lock()
         var changed = false
         for path in paths {
@@ -370,6 +390,7 @@ class EnhancedIndex {
     /// 文件/文件夹复制后复制索引条目，自动处理子路径。
     static func handleFilesCopied(_ copies: [(sourcePath: String, destPath: String)]) {
         guard ENHANCED_INDEX_ENABLED else { return }
+        waitUntilLoaded()
         indexLock.lock()
         var changed = false
         for (sourcePath, destPath) in copies {
@@ -433,6 +454,7 @@ class EnhancedIndex {
 
     static func flushPendingSave() {
         guard ENHANCED_INDEX_ENABLED else { return }
+        waitUntilLoaded()
         saveQueue.sync {
             guard let item = pendingWorkItem, !item.isCancelled else { return }
             item.cancel()
@@ -482,21 +504,33 @@ class EnhancedIndex {
             guard let dict = try JSONSerialization.jsonObject(with: data) as? [String: [String]] else { return }
             let parseElapsed = CFAbsoluteTimeGetCurrent() - parseStart
 
-            let buildStart = CFAbsoluteTimeGetCurrent()
             indexLock.lock()
             fileIndex.removeAll(keepingCapacity: true)
+            fileIndex.reserveCapacity(dict.count)
             tagIndex.removeAll(keepingCapacity: true)
+            tagIndex.reserveCapacity(dict.count)
+
+            let fileIndexStart = CFAbsoluteTimeGetCurrent()
             for (path, tags) in dict {
                 fileIndex[path] = FileMetaInfo(tags: tags)
-                for tag in tags {
+            }
+            let fileIndexElapsed = CFAbsoluteTimeGetCurrent() - fileIndexStart
+
+            let tagIndexStart = CFAbsoluteTimeGetCurrent()
+            for (path, info) in fileIndex {
+                for tag in info.tags {
                     tagIndex[tag, default: Set()].insert(path)
                 }
             }
-            sortedPaths = SortedSet(fileIndex.keys)
-            indexLock.unlock()
-            let buildElapsed = CFAbsoluteTimeGetCurrent() - buildStart
+            let tagIndexElapsed = CFAbsoluteTimeGetCurrent() - tagIndexStart
 
-            log("EnhancedIndex: read=\(String(format: "%.4f", readElapsed))s, parse=\(String(format: "%.4f", parseElapsed))s, buildIndex=\(String(format: "%.4f", buildElapsed))s", level: .debug)
+            let sortedPathsStart = CFAbsoluteTimeGetCurrent()
+            sortedPaths = SortedSet(fileIndex.keys)
+            let sortedPathsElapsed = CFAbsoluteTimeGetCurrent() - sortedPathsStart
+
+            indexLock.unlock()
+
+            log("EnhancedIndex: read=\(String(format: "%.4f", readElapsed))s, parse=\(String(format: "%.4f", parseElapsed))s, buildFileIndex=\(String(format: "%.4f", fileIndexElapsed))s, buildTagIndex=\(String(format: "%.4f", tagIndexElapsed))s, buildSortedPaths=\(String(format: "%.4f", sortedPathsElapsed))s", level: .debug)
         } catch {
             log("EnhancedIndex load failed: \(error)", level: .error)
         }

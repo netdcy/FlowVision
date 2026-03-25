@@ -112,6 +112,7 @@ class Logger {
     private init() {
         setupLogFile()
         setupLogWindow()
+        log("Logger initialized", level: .debug)
     }
 
     private func setupLogFile() {
