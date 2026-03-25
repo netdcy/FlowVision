@@ -279,7 +279,15 @@ extension ViewController {
             return true
         }
         for file in fileContents {
-            if publicVar.HandledFileExtensions.contains(file.pathExtension.lowercased()) || publicVar.isShowAllTypeFile {
+            let aliasValues = try? file.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey])
+            let isAlias = aliasValues?.isAliasFile == true
+            let effectiveExt: String
+            if isAlias, let resolved = try? URL(resolvingAliasFileAt: file) {
+                effectiveExt = resolved.pathExtension.lowercased()
+            } else {
+                effectiveExt = file.pathExtension.lowercased()
+            }
+            if publicVar.HandledFileExtensions.contains(effectiveExt) || publicVar.isShowAllTypeFile {
                 filesUrlInFolder.append(file)
             }
             // 不将替身文件统计为图像或视频
@@ -1107,7 +1115,27 @@ extension ViewController {
             let url = urls[0]
             var isDirectory: ObjCBool = false
             if FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) {
-                if !isDirectory.boolValue {
+                
+                let aliasResourceValues = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey])
+                let isAliasFile = aliasResourceValues?.isAliasFile ?? false
+                let isSymlink = aliasResourceValues?.isSymbolicLink ?? false
+                let isAlias = isAliasFile || isSymlink
+                let resolvedUrl: URL
+                let aliasTypeLabel: String
+                if isSymlink {
+                    resolvedUrl = url.resolvingSymlinksInPath()
+                    aliasTypeLabel = NSLocalizedString("Symbolic Link", comment: "符号链接")
+                } else if isAliasFile {
+                    resolvedUrl = (try? URL(resolvingAliasFileAt: url)) ?? url
+                    aliasTypeLabel = NSLocalizedString("Finder Alias", comment: "Finder替身")
+                } else {
+                    resolvedUrl = url
+                    aliasTypeLabel = ""
+                }
+                let resolvedIsDirectory = resolvedUrl.hasDirectoryPath
+                
+                if !isDirectory.boolValue && !resolvedIsDirectory {
+
                     let file = FileModel(path: "", ver: 0)
                     file.path = url.absoluteString
                     file.fileSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize)
@@ -1115,13 +1143,19 @@ extension ViewController {
                     file.modDate = (try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate)
                     file.addDate = (try? url.resourceValues(forKeys: [.addedToDirectoryDateKey]).addedToDirectoryDate)
                     
-                    let ext = url.pathExtension.lowercased()
+                    let ext = resolvedUrl.pathExtension.lowercased()
                     if globalVar.HandledImageAndRawExtensions.contains(ext) || globalVar.HandledVideoExtensions.contains(ext) {
-                        file.imageInfo = getImageInfo(url: url, needMetadata: true)
+                        file.imageInfo = getImageInfo(url: resolvedUrl, needMetadata: true)
                     }
                     let exifData = convertExifData(file: file)
                     var formatedExifData = formatExifData(exifData ?? [:], isVideo: globalVar.HandledVideoExtensions.contains(ext), needWarp: false)
+
                     formatedExifData.insert((NSLocalizedString("File Path", comment: "文件路径"),url.deletingLastPathComponent().path+"/"), at: 0)
+
+                    if isAlias {
+                        formatedExifData.insert((NSLocalizedString("Original Path", comment: "原始路径"), resolvedUrl.path), at: 0)
+                        formatedExifData.insert((NSLocalizedString("Alias Type", comment: "替身类型"), aliasTypeLabel), at: 0)
+                    }
                     
                     let separator = "--------------------"
                     
@@ -1145,15 +1179,19 @@ extension ViewController {
                     }
                     
                     var text = formatExifDataAligned(formatedExifData)
-                    
-                    if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()),
-                       let videoRawMetadata = getVideoMetadataFFmpeg(for: url),
-                       let specificMetadata = getVideoMetadataFormatedFFmpeg(for: url) {
+
+                    func appendSection(_ content: String) {
+                        text += (text.hasSuffix(separator) ? "\n" : "\n" + separator + "\n") + content
+                    }
+
+                    if globalVar.HandledVideoExtensions.contains(ext),
+                       let videoRawMetadata = getVideoMetadataFFmpeg(for: resolvedUrl),
+                       let specificMetadata = getVideoMetadataFormatedFFmpeg(for: resolvedUrl) {
                         let metadataAligned = formatExifDataAligned(specificMetadata)
-                        text += "\n" + separator + "\n" + metadataAligned + "\n" + separator + "\n" + videoRawMetadata
+                        appendSection(metadataAligned + "\n" + separator + "\n" + videoRawMetadata)
                     }
                     
-                    if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
+                    if globalVar.HandledImageAndRawExtensions.contains(ext) {
                         func formatDictionary(_ dictionary: [String: Any], indentLevel: Int = 0, outputFormat: String = "json", sort: Bool = true) -> String {
                             let sortedDictionary: [(String, Any)]
                             if sort {
@@ -1195,7 +1233,7 @@ extension ViewController {
 
                         if let properties = file.imageInfo?.properties {
                             if properties.count > 0 {
-                                text += "\n" + separator + "\n" + formatDictionary(properties).replacingOccurrences(of: "\\/", with: "/")
+                                appendSection(formatDictionary(properties).replacingOccurrences(of: "\\/", with: "/"))
                             }
                         }
                         if let metadata = file.imageInfo?.metadata,
@@ -1216,11 +1254,14 @@ extension ViewController {
                                 }
                             }
                             if result.count > 0 {
-                                text += "\n" + separator + "\n" + formatDictionary(result).replacingOccurrences(of: "\\/", with: "/")
+                                appendSection(formatDictionary(result).replacingOccurrences(of: "\\/", with: "/"))
                             }
                         }
                     }
                     
+                    if text.hasSuffix(separator) {
+                        text = String(text.dropLast(separator.count)).trimmingCharacters(in: .newlines)
+                    }
                     showInformationLong(title: NSLocalizedString("File Info", comment: "文件信息"), message: text, width: 400)
                     
                     return
@@ -1236,18 +1277,34 @@ extension ViewController {
         for url in urls {
             var isDirectory: ObjCBool = false
             if FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) {
-                if isDirectory.boolValue {
+                let isAlias = (try? url.resourceValues(forKeys: [.isAliasFileKey]).isAliasFile) ?? false
+                let aliasSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+                if isAlias {
+                    let resolvedUrl = try? URL(resolvingAliasFileAt: url)
+                    if let resolved = resolvedUrl, resolved.hasDirectoryPath {
+                        result.folderCount += 1
+                        result.totalSize += aliasSize
+                    } else {
+                        result.fileCount += 1
+                        let ext = (resolvedUrl ?? url).pathExtension.lowercased()
+                        if globalVar.HandledImageAndRawExtensions.contains(ext) {
+                            result.imageCount += 1
+                        } else if globalVar.HandledVideoExtensions.contains(ext) {
+                            result.videoCount += 1
+                        }
+                        result.totalSize += aliasSize
+                    }
+                } else if isDirectory.boolValue {
                     result.folderCount += 1
                     getFolderStatistic(url, result: result)
-                }else{
+                } else {
                     result.fileCount += 1
                     if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
                         result.imageCount += 1
                     } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
                         result.videoCount += 1
                     }
-                    let fileSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
-                    result.totalSize += fileSize
+                    result.totalSize += aliasSize
                 }
             }
         }
@@ -1256,7 +1313,7 @@ extension ViewController {
     }
     
     func getFolderStatistic(_ folderURL: URL, result: FolderStatisticInfo) {
-        let properties: [URLResourceKey] = [.isHiddenKey, .isDirectoryKey, .fileSizeKey]
+        let properties: [URLResourceKey] = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .isAliasFileKey]
         let options:FileManager.DirectoryEnumerationOptions = [] // [.skipsHiddenFiles]
         
         let enumerator = FileManager.default.enumerator(at: folderURL, includingPropertiesForKeys: properties, options: options, errorHandler: { (url, error) -> Bool in
@@ -1270,9 +1327,23 @@ extension ViewController {
         
         while let url = enumerator?.nextObject() as? URL {
             let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) ?? false
+            let isAlias = (try? url.resourceValues(forKeys: [.isAliasFileKey]).isAliasFile) ?? false
             let fileSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
-            
-            if !isDirectory {
+
+            if isAlias && !isDirectory {
+                if let resolved = try? URL(resolvingAliasFileAt: url), resolved.hasDirectoryPath {
+                    result.folderCount += 1
+                    result.totalSize += fileSize
+                } else {
+                    result.fileCount += 1
+                    if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
+                        result.imageCount += 1
+                    } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
+                        result.videoCount += 1
+                    }
+                    result.totalSize += fileSize
+                }
+            } else if !isDirectory {
                 result.fileCount += 1
                 if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
                     result.imageCount += 1
@@ -1280,7 +1351,7 @@ extension ViewController {
                     result.videoCount += 1
                 }
                 result.totalSize += fileSize
-            }else{
+            } else {
                 result.folderCount += 1
             }
             

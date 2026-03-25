@@ -1236,6 +1236,101 @@
         }
       }
     },
+    "Alias Type" : {
+      "comment" : "替身类型",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نوع الاسم المستعار"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alias-Typ"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alias Type"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo de alias"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type d'alias"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo di alias"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エイリアスタイプ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "별칭 유형"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alias Type"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo de Alias"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo de Alias"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тип псевдонима"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alias-typ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "替身类型"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "別名類型"
+          }
+        }
+      }
+    },
     "Always Generate HD Thumbnails" : {
       "comment" : "总是生成高清缩略图",
       "localizations" : {
@@ -12351,6 +12446,101 @@
         }
       }
     },
+    "Finder Alias" : {
+      "comment" : "Finder替身",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "البحث عن الاسم المستعار"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder-Alias"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder Alias"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alias de Finder"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alias Finder"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alias Finder"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファインダーエイリアス"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파인더 별칭"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder Alias"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alias do Finder"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alias do Finder"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Псевдоним Finder"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder-alias"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder替身"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder替身"
+          }
+        }
+      }
+    },
     "Finder Tags" : {
       "comment" : "Finder标签",
       "localizations" : {
@@ -19476,6 +19666,101 @@
         }
       }
     },
+    "Original Path" : {
+      "comment" : "原始路径",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المسار الأصلي"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ursprünglicher Pfad"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original Path"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruta original"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chemin d'origine"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Percorso originale"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オリジナルパス"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원본 경로"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oorspronkelijk pad"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caminho Original"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caminho Original"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Исходный путь"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ursprunglig sökväg"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原始路径"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原始路徑"
+          }
+        }
+      }
+    },
     "Other" : {
       "comment" : "其它",
       "localizations" : {
@@ -25182,91 +25467,91 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***تصفية المحتوى***\nيقوم زر \"تطبيق التصفية\" بتصفية محتويات الدليل الحالي، ويعرض فقط العناصر التي تطابق معايير البحث. لاستعادة العرض الأصلي، قم بمسح معايير البحث وانقر على هذا الزر مرة أخرى، أو انقر على أيقونة البحث في شريط الأدوات.\n\n***البحث في المجلدات الفرعية***\nللبحث عن الملفات في الأدلة الفرعية، قم أولاً بتمكين \"وضع التصفح التكراري\".\n\n***ما هي التعبيرات العادية؟***\nالتعبيرات العادية (regex) هي أنماط تُستخدم لمطابقة تركيبات الأحرف داخل السلاسل. إنها أداة قوية لمعالجة النصوص تُستخدم على نطاق واسع في مهام مثل البحث والاستبدال وتحليل النصوص.\nعلى سبيل المثال:\n^2024 يمكن أن يطابق الملفات التي تبدأ بـ '2024';\n.*modified\\.[^.]+$ يمكن أن يطابق الملفات التي تنتهي بـ 'modified' (بغض النظر عن الامتداد);\n.*\\.jpg$ يمكن أن يطابق الملفات ذات الامتداد '.jpg'.\n\n***البحث المتقدم***\nفي \"وضع التصفح التكراري\"، يمكنك أيضًا استخدام خيار \"استخدام المسار الكامل\" ودمجه مع التعبيرات العادية لإجراء عمليات بحث متقدمة.\nعلى سبيل المثال، بالنظر إلى مسار ملف كامل مثل:\n/Users/Alice/Pictures/20220101/mypick/001.jpg\nيمكنك استخدام التعبير العادي:\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\nلمطابقة جميع الملفات التي تحتوي أسماء أدلة الوالدين الخاصة بها على \"pick\". للحصول على أنماط regex أكثر تعقيدًا، يمكنك استخدام نماذج اللغة الكبيرة للمساعدة في كتابتها."
+            "value" : "**تصفية المحتوى**  \nيقوم زر \"تطبيق التصفية\" بتصفية محتويات الدليل الحالي، ويعرض فقط العناصر التي تطابق معايير البحث. لاستعادة العرض الأصلي، قم بمسح معايير البحث وانقر على هذا الزر مرة أخرى، أو انقر على أيقونة البحث في شريط الأدوات.\n\n**البحث في المجلدات الفرعية**  \nللبحث عن الملفات في الأدلة الفرعية، قم أولاً بتمكين \"وضع التصفح المتكرر\".\n\n**ما هي التعبيرات العادية؟**  \nالتعبيرات العادية (regex) هي أنماط تُستخدم لمطابقة تركيبات الأحرف داخل السلاسل. إنها أداة قوية لمعالجة النصوص تُستخدم على نطاق واسع في مهام مثل البحث والاستبدال وتحليل النصوص.  \nعلى سبيل المثال:  \n^2024 يمكن أن يطابق الملفات التي تبدأ بـ '2024';  \n.*modified\\.[^.]+$ يمكن أن يطابق الملفات التي تنتهي بـ 'modified' (بغض النظر عن الامتداد);  \n.*\\.jpg$ يمكن أن يطابق الملفات ذات الامتداد '.jpg'.\n\n**البحث المتقدم**  \nفي \"وضع التصفح المتكرر\"، يمكنك استخدام خيار \"استخدام المسار الكامل\" ودمجه مع التعبيرات العادية لإجراء عمليات بحث متقدمة.  \nعلى سبيل المثال، بالنظر إلى مسار ملف كامل مثل:  \n/Users/Alice/Pictures/20220101/mypick/001.jpg  \nيمكنك استخدام التعبير العادي:  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$  \nلمطابقة جميع الملفات التي تحتوي أسماء أدلة الوالدين الخاصة بها على \"pick\". للحصول على أنماط regex أكثر تعقيدًا، يمكنك استخدام نماذج اللغة الكبيرة للمساعدة في كتابتها."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***Inhalt filtern***  \nDie Schaltfläche „Filter anwenden“ filtert die Inhalte des aktuellen Verzeichnisses und zeigt nur Elemente an, die den Suchkriterien entsprechen. Um die ursprüngliche Ansicht wiederherzustellen, löschen Sie die Suchkriterien und klicken Sie erneut auf diese Schaltfläche oder klicken Sie auf das Suchsymbol in der Symbolleiste.\n\n***Unterordner durchsuchen***  \nUm Dateien in Unterverzeichnissen zu durchsuchen, aktivieren Sie zuerst den „Rekursiven Durchsuchen-Modus“.\n\n***Was sind reguläre Ausdrücke?***  \nReguläre Ausdrücke (Regex) sind Muster, die verwendet werden, um Zeichenkombinationen innerhalb von Zeichenfolgen zu finden. Sie sind ein leistungsstarkes Textverarbeitungswerkzeug, das häufig für Aufgaben wie Suchen, Ersetzen und Parsen von Text verwendet wird.  \nZum Beispiel:  \n^2024 kann Dateien finden, die mit '2024' beginnen;  \n.*modified\\.[^.]+$ kann Dateien finden, die mit 'modified' enden (unabhängig von der Erweiterung);  \n.*\\.jpg$ kann Dateien mit der Erweiterung '.jpg' finden.\n\n***Erweiterte Suche***  \nIm „Rekursiven Durchsuchen-Modus“ können Sie zusätzlich die Option „Vollständigen Pfad verwenden“ nutzen und sie mit regulären Ausdrücken kombinieren, um erweiterte Suchen durchzuführen.  \nZum Beispiel, bei einem vollständigen Dateipfad wie:  \n/Users/Alice/Pictures/20220101/mypick/001.jpg  \nkönnen Sie den regulären Ausdruck verwenden:  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$  \num alle Dateien zu finden, deren übergeordnete Verzeichnisnamen „pick“ enthalten. Für komplexere Regex-Muster können Sie große Sprachmodelle verwenden, um beim Schreiben zu helfen."
+            "value" : "**Inhalt filtern**\nDie Schaltfläche „Filter anwenden“ filtert die Inhalte des aktuellen Verzeichnisses und zeigt nur Elemente an, die den Suchkriterien entsprechen. Um die ursprüngliche Ansicht wiederherzustellen, löschen Sie die Suchkriterien und klicken Sie erneut auf diese Schaltfläche oder klicken Sie auf das Suchsymbol in der Symbolleiste.\n\n**Unterordner durchsuchen**\nUm Dateien in Unterverzeichnissen zu durchsuchen, aktivieren Sie zuerst den „Rekursiven Durchsuchen-Modus“.\n\n**Was sind reguläre Ausdrücke?**\nReguläre Ausdrücke (Regex) sind Muster, die verwendet werden, um Zeichenkombinationen innerhalb von Zeichenfolgen zu finden. Sie sind ein leistungsstarkes Textverarbeitungswerkzeug, das häufig für Aufgaben wie Suchen, Ersetzen und Parsen von Text verwendet wird. Zum Beispiel: ^2024 kann Dateien finden, die mit '2024' beginnen; .*modified\\.[^.]+$ kann Dateien finden, die mit 'modified' enden (unabhängig von der Erweiterung); .*\\.jpg$ kann Dateien mit der Erweiterung '.jpg' finden.\n\n**Erweiterte Suche**\nIm „Rekursiven Durchsuchen-Modus“ können Sie zusätzlich die Option „Vollständigen Pfad verwenden“ nutzen und sie mit regulären Ausdrücken kombinieren, um erweiterte Suchen durchzuführen. Zum Beispiel, bei einem vollständigen Dateipfad wie: /Users/Alice/Pictures/20220101/mypick/001.jpg können Sie den regulären Ausdruck verwenden: ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ um alle Dateien zu finden, deren übergeordnete Verzeichnisnamen „pick“ enthalten. Für komplexere Regex-Muster können Sie große Sprachmodelle verwenden, um beim Schreiben zu helfen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***Filter Content***\nThe “Apply Filter” button filters the contents of the current directory, displaying only items that match the search criteria. To restore the original view, clear the search criteria and click this button again, or click the search icon in the toolbar.\n\n***Search Subfolders***\nTo search files in subdirectories, first enable “Recursive Browse Mode”.\n\n***What Are Regular Expressions?***\nRegular expressions (regex) are patterns used to match character combinations within strings. They are a powerful text-processing tool widely used for tasks such as searching, replacing, and parsing text.\nFor example:\n^2024 can match files starting with '2024';\n.*modified\\.[^.]+$ can match files ending with 'modified' (regardless of the extension);\n.*\\.jpg$ can match files with the '.jpg' extension.\n\n***Advanced Search***\nIn “Recursive Browse Mode,” you can additionally use the “Use Full Path” option and combine it with regular expressions to perform advanced searches.\nFor example, given a full file path like:\n/Users/Alice/Pictures/20220101/mypick/001.jpg\nyou can use the regular expression:\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\nto match all files whose parent directory names contain “pick.” For more complex regex patterns, you can use large language models to assist in writing them."
+            "value" : "**Filter Content**\nThe “Apply Filter” button filters the contents of the current directory, displaying only items that match the search criteria. To restore the original view, clear the search criteria and click this button again, or click the search icon in the toolbar.\n\n**Search Subfolders**\nTo search files in subdirectories, first enable “Recursive Browse Mode”.\n\n**What Are Regular Expressions?**\nRegular expressions (regex) are patterns used to match character combinations within strings. They are a powerful text-processing tool widely used for tasks such as searching, replacing, and parsing text.\nFor example:\n^2024 can match files starting with '2024';\n.*modified\\.[^.]+$ can match files ending with 'modified' (regardless of the extension);\n.*\\.jpg$ can match files with the '.jpg' extension.\n\n**Advanced Search**\nIn “Recursive Browse Mode,” you can additionally use the “Use Full Path” option and combine it with regular expressions to perform advanced searches.\nFor example, given a full file path like:\n/Users/Alice/Pictures/20220101/mypick/001.jpg\nyou can use the regular expression:\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\nto match all files whose parent directory names contain “pick.” For more complex regex patterns, you can use large language models to assist in writing them."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***Filtrar contenido*** El botón “Aplicar filtro” filtra los contenidos del directorio actual, mostrando solo los elementos que coinciden con los criterios de búsqueda. Para restaurar la vista original, borra los criterios de búsqueda y haz clic en este botón nuevamente, o haz clic en el icono de búsqueda en la barra de herramientas.\n\n***Buscar en subcarpetas*** Para buscar archivos en subdirectorios, primero habilita el “Modo de navegación recursiva”.\n\n***¿Qué son las expresiones regulares?*** Las expresiones regulares (regex) son patrones utilizados para coincidir combinaciones de caracteres dentro de cadenas. Son una herramienta poderosa de procesamiento de texto ampliamente utilizada para tareas como buscar, reemplazar y analizar texto. Por ejemplo: ^2024 puede coincidir con archivos que comienzan con '2024'; .*modified\\.[^.]+$ puede coincidir con archivos que terminan con 'modified' (independientemente de la extensión); .*\\.jpg$ puede coincidir con archivos con la extensión '.jpg'.\n\n***Búsqueda avanzada*** En el “Modo de navegación recursiva,” puedes usar adicionalmente la opción “Usar ruta completa” y combinarla con expresiones regulares para realizar búsquedas avanzadas. Por ejemplo, dado un camino completo de archivo como: /Users/Alice/Pictures/20220101/mypick/001.jpg puedes usar la expresión regular: ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ para coincidir con todos los archivos cuyos nombres de directorio padre contengan “pick.” Para patrones de regex más complejos, puedes usar modelos de lenguaje grandes para ayudar a escribirlos."
+            "value" : "**Filtrar contenido**  \nEl botón “Aplicar filtro” filtra los contenidos del directorio actual, mostrando solo los elementos que coinciden con los criterios de búsqueda. Para restaurar la vista original, borra los criterios de búsqueda y haz clic en este botón nuevamente, o haz clic en el icono de búsqueda en la barra de herramientas.\n\n**Buscar en subcarpetas**  \nPara buscar archivos en subdirectorios, primero habilita el “Modo de navegación recursiva”.\n\n**¿Qué son las expresiones regulares?**  \nLas expresiones regulares (regex) son patrones utilizados para coincidir combinaciones de caracteres dentro de cadenas. Son una herramienta poderosa de procesamiento de texto ampliamente utilizada para tareas como buscar, reemplazar y analizar texto.  \nPor ejemplo:  \n^2024 puede coincidir con archivos que comienzan con '2024';  \n.*modified\\.[^.]+$ puede coincidir con archivos que terminan con 'modified' (independientemente de la extensión);  \n.*\\.jpg$ puede coincidir con archivos con la extensión '.jpg'.\n\n**Búsqueda avanzada**  \nEn el “Modo de navegación recursiva,” puedes usar adicionalmente la opción “Usar ruta completa” y combinarla con expresiones regulares para realizar búsquedas avanzadas.  \nPor ejemplo, dado un camino completo de archivo como:  \n/Users/Alice/Pictures/20220101/mypick/001.jpg  \npuedes usar la expresión regular:  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$  \npara coincidir con todos los archivos cuyos nombres de directorio padre contengan “pick.” Para patrones regex más complejos, puedes usar modelos de lenguaje grandes para ayudar a escribirlos."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***Filtrer le contenu*** Le bouton « Appliquer le filtre » filtre le contenu du répertoire actuel, affichant uniquement les éléments qui correspondent aux critères de recherche. Pour restaurer la vue originale, effacez les critères de recherche et cliquez à nouveau sur ce bouton, ou cliquez sur l'icône de recherche dans la barre d'outils.\n\n***Rechercher dans les sous-dossiers*** Pour rechercher des fichiers dans les sous-répertoires, activez d'abord le « Mode de navigation récursive ».\n\n***Qu'est-ce que les expressions régulières ?*** Les expressions régulières (regex) sont des motifs utilisés pour correspondre à des combinaisons de caractères dans des chaînes. Elles sont un outil puissant de traitement de texte largement utilisé pour des tâches telles que la recherche, le remplacement et l'analyse de texte. Par exemple : ^2024 peut correspondre à des fichiers commençant par '2024'; .*modified\\.[^.]+$ peut correspondre à des fichiers se terminant par 'modified' (peu importe l'extension); .*\\.jpg$ peut correspondre à des fichiers avec l'extension '.jpg'.\n\n***Recherche avancée*** En « Mode de navigation récursive », vous pouvez également utiliser l'option « Utiliser le chemin complet » et la combiner avec des expressions régulières pour effectuer des recherches avancées. Par exemple, étant donné un chemin de fichier complet comme : /Users/Alice/Pictures/20220101/mypick/001.jpg vous pouvez utiliser l'expression régulière : ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ pour correspondre à tous les fichiers dont les noms de répertoire parent contiennent « pick ». Pour des motifs regex plus complexes, vous pouvez utiliser de grands modèles de langage pour vous aider à les rédiger."
+            "value" : "**Filtrer le contenu**\nLe bouton « Appliquer le filtre » filtre le contenu du répertoire actuel, affichant uniquement les éléments qui correspondent aux critères de recherche. Pour restaurer la vue originale, effacez les critères de recherche et cliquez à nouveau sur ce bouton, ou cliquez sur l'icône de recherche dans la barre d'outils.\n\n**Rechercher dans les sous-dossiers**\nPour rechercher des fichiers dans les sous-répertoires, activez d'abord le « Mode de navigation récursive ».\n\n**Qu'est-ce que les expressions régulières ?**\nLes expressions régulières (regex) sont des motifs utilisés pour correspondre à des combinaisons de caractères dans des chaînes. Ce sont des outils puissants de traitement de texte largement utilisés pour des tâches telles que la recherche, le remplacement et l'analyse de texte. Par exemple : ^2024 peut correspondre à des fichiers commençant par '2024'; .*modified\\.[^.]+$ peut correspondre à des fichiers se terminant par 'modified' (peu importe l'extension); .*\\.jpg$ peut correspondre à des fichiers avec l'extension '.jpg'.\n\n**Recherche avancée**\nEn « Mode de navigation récursive », vous pouvez également utiliser l'option « Utiliser le chemin complet » et la combiner avec des expressions régulières pour effectuer des recherches avancées. Par exemple, étant donné un chemin de fichier complet comme : /Users/Alice/Pictures/20220101/mypick/001.jpg vous pouvez utiliser l'expression régulière : ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ pour correspondre à tous les fichiers dont les noms de répertoires parents contiennent « pick ». Pour des motifs regex plus complexes, vous pouvez utiliser de grands modèles de langage pour vous aider à les écrire."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***Filtra contenuto*** Il pulsante “Applica filtro” filtra i contenuti della directory corrente, visualizzando solo gli elementi che corrispondono ai criteri di ricerca. Per ripristinare la visualizzazione originale, cancella i criteri di ricerca e fai nuovamente clic su questo pulsante, oppure fai clic sull'icona di ricerca nella barra degli strumenti.\n\n***Cerca nelle sottocartelle*** Per cercare file nelle sottodirectory, abilita prima la “Modalità di navigazione ricorsiva”.\n\n***Cosa sono le espressioni regolari?*** Le espressioni regolari (regex) sono modelli utilizzati per abbinare combinazioni di caratteri all'interno delle stringhe. Sono uno strumento potente per l'elaborazione del testo ampiamente utilizzato per compiti come la ricerca, la sostituzione e l'analisi del testo. Ad esempio: ^2024 può abbinare file che iniziano con '2024'; .*modified\\.[^.]+$ può abbinare file che terminano con 'modified' (indipendentemente dall'estensione); .*\\.jpg$ può abbinare file con l'estensione '.jpg'.\n\n***Ricerca avanzata*** In “Modalità di navigazione ricorsiva,” puoi inoltre utilizzare l'opzione “Usa percorso completo” e combinarla con espressioni regolari per eseguire ricerche avanzate. Ad esempio, dato un percorso file completo come: /Users/Alice/Pictures/20220101/mypick/001.jpg puoi utilizzare l'espressione regolare: ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ per abbinare tutti i file i cui nomi di directory padre contengono “pick.” Per modelli regex più complessi, puoi utilizzare modelli di linguaggio di grandi dimensioni per assisterti nella loro scrittura."
+            "value" : "**Filtra contenuto**  \nIl pulsante “Applica filtro” filtra i contenuti della directory corrente, visualizzando solo gli elementi che corrispondono ai criteri di ricerca. Per ripristinare la visualizzazione originale, cancella i criteri di ricerca e fai clic nuovamente su questo pulsante, oppure fai clic sull'icona di ricerca nella barra degli strumenti.\n\n**Cerca nelle sottocartelle**  \nPer cercare file nelle sottodirectory, abilita prima la “Modalità di navigazione ricorsiva”.\n\n**Cosa sono le espressioni regolari?**  \nLe espressioni regolari (regex) sono modelli utilizzati per abbinare combinazioni di caratteri all'interno delle stringhe. Sono uno strumento potente per l'elaborazione del testo ampiamente utilizzato per attività come la ricerca, la sostituzione e l'analisi del testo.  \nAd esempio:  \n^2024 può abbinare file che iniziano con '2024';  \n.*modified\\.[^.]+$ può abbinare file che terminano con 'modified' (indipendentemente dall'estensione);  \n.*\\.jpg$ può abbinare file con l'estensione '.jpg'.\n\n**Ricerca avanzata**  \nIn “Modalità di navigazione ricorsiva,” puoi inoltre utilizzare l'opzione “Usa percorso completo” e combinarla con espressioni regolari per eseguire ricerche avanzate.  \nAd esempio, dato un percorso file completo come:  \n/Users/Alice/Pictures/20220101/mypick/001.jpg  \npuoi utilizzare l'espressione regolare:  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$  \nper abbinare tutti i file i cui nomi delle directory padre contengono “pick.” Per modelli regex più complessi, puoi utilizzare modelli di linguaggio di grandi dimensioni per assisterti nella loro scrittura."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***コンテンツをフィルタリング***\n「フィルタを適用」ボタンは、現在のディレクトリの内容をフィルタリングし、検索条件に一致する項目のみを表示します。元のビューに戻すには、検索条件をクリアしてこのボタンを再度クリックするか、ツールバーの検索アイコンをクリックします。\n\n***サブフォルダを検索***\nサブディレクトリ内のファイルを検索するには、まず「再帰的ブラウズモード」を有効にします。\n\n***正規表現とは？***\n正規表現（regex）は、文字列内の文字の組み合わせをマッチさせるためのパターンです。検索、置換、テキストの解析などのタスクに広く使用される強力なテキスト処理ツールです。\n例えば：\n^2024 は '2024' で始まるファイルにマッチできます。\n.*modified\\.[^.]+$ は 'modified' で終わるファイルにマッチできます（拡張子に関係なく）。\n.*\\.jpg$ は '.jpg' 拡張子のファイルにマッチできます。\n\n***高度な検索***\n「再帰的ブラウズモード」では、「フルパスを使用」オプションを使用し、正規表現と組み合わせて高度な検索を行うことができます。\n例えば、次のようなフルファイルパスがある場合：\n/Users/Alice/Pictures/20220101/mypick/001.jpg\n次の正規表現を使用して：\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\n親ディレクトリ名に「pick」を含むすべてのファイルにマッチさせることができます。より複雑な正規表現パターンについては、大規模言語モデルを使用して作成を支援することができます。"
+            "value" : "**コンテンツをフィルター**\n「フィルターを適用」ボタンは、現在のディレクトリのコンテンツをフィルターし、検索条件に一致する項目のみを表示します。元のビューに戻すには、検索条件をクリアしてこのボタンを再度クリックするか、ツールバーの検索アイコンをクリックします。\n\n**サブフォルダを検索**\nサブディレクトリ内のファイルを検索するには、まず「再帰的ブラウズモード」を有効にします。\n\n**正規表現とは何ですか？**\n正規表現（regex）は、文字列内の文字の組み合わせに一致させるためのパターンです。検索、置換、解析などのタスクに広く使用される強力なテキスト処理ツールです。\n例えば：\n^2024 は '2024' で始まるファイルに一致します。\n.*modified\\.[^.]+$ は 'modified' で終わるファイルに一致します（拡張子に関係なく）。\n.*\\.jpg$ は '.jpg' 拡張子のファイルに一致します。\n\n**高度な検索**\n「再帰的ブラウズモード」では、「フルパスを使用」オプションを使用し、正規表現と組み合わせて高度な検索を行うことができます。\n例えば、次のようなフルファイルパスがある場合：\n/Users/Alice/Pictures/20220101/mypick/001.jpg\n次の正規表現を使用して：\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\n親ディレクトリ名に「pick」を含むすべてのファイルに一致させることができます。より複雑な正規表現パターンについては、大規模言語モデルを使用して作成を支援することができます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***필터 콘텐츠*** “필터 적용” 버튼은 현재 디렉토리의 내용을 필터링하여 검색 기준과 일치하는 항목만 표시합니다. 원래 보기를 복원하려면 검색 기준을 지우고 이 버튼을 다시 클릭하거나 도구 모음의 검색 아이콘을 클릭하십시오.\n\n***하위 폴더 검색*** 하위 디렉토리에서 파일을 검색하려면 먼저 “재귀적 탐색 모드”를 활성화하십시오.\n\n***정규 표현식이란 무엇입니까?*** 정규 표현식(정규식)은 문자열 내 문자 조합을 일치시키는 데 사용되는 패턴입니다. 검색, 대체, 텍스트 구문 분석과 같은 작업에 널리 사용되는 강력한 텍스트 처리 도구입니다. 예를 들어: ^2024는 '2024'로 시작하는 파일과 일치할 수 있습니다; .*modified\\.[^.]+$는 'modified'로 끝나는 파일과 일치할 수 있습니다(확장자와 무관); .*\\.jpg$는 '.jpg' 확장자를 가진 파일과 일치할 수 있습니다.\n\n***고급 검색*** “재귀적 탐색 모드”에서는 “전체 경로 사용” 옵션을 추가로 사용할 수 있으며 이를 정규 표현식과 결합하여 고급 검색을 수행할 수 있습니다. 예를 들어, 다음과 같은 전체 파일 경로가 주어졌을 때: /Users/Alice/Pictures/20220101/mypick/001.jpg 정규 표현식을 사용할 수 있습니다: ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ “pick”을 포함하는 상위 디렉토리 이름을 가진 모든 파일과 일치합니다. 더 복잡한 정규식 패턴의 경우 대형 언어 모델을 사용하여 작성하는 데 도움을 받을 수 있습니다."
+            "value" : "**콘텐츠 필터링**  \n\"필터 적용\" 버튼은 현재 디렉토리의 콘텐츠를 필터링하여 검색 기준과 일치하는 항목만 표시합니다. 원래 보기를 복원하려면 검색 기준을 지우고 이 버튼을 다시 클릭하거나 도구 모음의 검색 아이콘을 클릭하십시오.\n\n**하위 폴더 검색**  \n하위 디렉토리에서 파일을 검색하려면 먼저 \"재귀적 탐색 모드\"를 활성화하십시오.\n\n**정규 표현식이란 무엇입니까?**  \n정규 표현식(정규식)은 문자열 내에서 문자 조합을 일치시키는 데 사용되는 패턴입니다. 검색, 대체 및 텍스트 구문 분석과 같은 작업에 널리 사용되는 강력한 텍스트 처리 도구입니다.  \n예를 들어:  \n^2024는 '2024'로 시작하는 파일과 일치할 수 있습니다;  \n.*modified\\.[^.]+$는 'modified'로 끝나는 파일과 일치할 수 있습니다(확장자와 무관하게);  \n.*\\.jpg$는 '.jpg' 확장자를 가진 파일과 일치할 수 있습니다.\n\n**고급 검색**  \n\"재귀적 탐색 모드\"에서는 \"전체 경로 사용\" 옵션을 추가로 사용할 수 있으며, 이를 정규 표현식과 결합하여 고급 검색을 수행할 수 있습니다.  \n예를 들어, 다음과 같은 전체 파일 경로가 주어졌을 때:  \n/Users/Alice/Pictures/20220101/mypick/001.jpg  \n정규 표현식:  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$  \n을 사용하여 상위 디렉토리 이름에 \"pick\"이 포함된 모든 파일과 일치시킬 수 있습니다. 더 복잡한 정규식 패턴의 경우 대형 언어 모델을 사용하여 작성하는 데 도움을 받을 수 있습니다."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***Filterinhoud*** De knop \"Filter toepassen\" filtert de inhoud van de huidige map en toont alleen items die aan de zoekcriteria voldoen. Om de oorspronkelijke weergave te herstellen, wis de zoekcriteria en klik opnieuw op deze knop, of klik op het zoekpictogram in de werkbalk.\n\n***Submappen doorzoeken*** Om bestanden in submappen te doorzoeken, schakel eerst \"Recursieve bladermodus\" in.\n\n***Wat zijn reguliere expressies?*** Reguliere expressies (regex) zijn patronen die worden gebruikt om tekencombinaties binnen strings te matchen. Ze zijn een krachtig tekstverwerkingstool die veel wordt gebruikt voor taken zoals zoeken, vervangen en parseren van tekst. Bijvoorbeeld: ^2024 kan bestanden matchen die beginnen met '2024'; .*modified\\.[^.]+$ kan bestanden matchen die eindigen met 'modified' (ongeacht de extensie); .*\\.jpg$ kan bestanden matchen met de extensie '.jpg'.\n\n***Geavanceerd zoeken*** In de \"Recursieve bladermodus\" kun je bovendien de optie \"Volledig pad gebruiken\" gebruiken en deze combineren met reguliere expressies om geavanceerde zoekopdrachten uit te voeren. Bijvoorbeeld, gegeven een volledig bestandspad zoals: /Users/Alice/Pictures/20220101/mypick/001.jpg kun je de reguliere expressie gebruiken: ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ om alle bestanden te matchen waarvan de namen van de bovenliggende mappen \"pick\" bevatten. Voor complexere regex-patronen kun je grote taalmodellen gebruiken om te helpen bij het schrijven ervan."
+            "value" : "**Inhoud filteren**\nDe knop \"Filter toepassen\" filtert de inhoud van de huidige map en toont alleen items die aan de zoekcriteria voldoen. Om de oorspronkelijke weergave te herstellen, wist u de zoekcriteria en klikt u opnieuw op deze knop, of klikt u op het zoekpictogram in de werkbalk.\n\n**Submappen doorzoeken**\nOm bestanden in submappen te doorzoeken, schakelt u eerst \"Recursieve bladermodus\" in.\n\n**Wat zijn reguliere expressies?**\nReguliere expressies (regex) zijn patronen die worden gebruikt om tekencombinaties binnen strings te matchen. Ze zijn een krachtig tekstverwerkingstool die veel wordt gebruikt voor taken zoals zoeken, vervangen en parseren van tekst. Bijvoorbeeld: ^2024 kan bestanden matchen die beginnen met '2024'; .*modified\\.[^.]+$ kan bestanden matchen die eindigen met 'modified' (ongeacht de extensie); .*\\.jpg$ kan bestanden matchen met de extensie '.jpg'.\n\n**Geavanceerd zoeken**\nIn de \"Recursieve bladermodus\" kunt u bovendien de optie \"Volledig pad gebruiken\" gebruiken en deze combineren met reguliere expressies om geavanceerde zoekopdrachten uit te voeren. Bijvoorbeeld, gegeven een volledig bestandspad zoals: /Users/Alice/Pictures/20220101/mypick/001.jpg kunt u de reguliere expressie gebruiken: ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ om alle bestanden te matchen waarvan de namen van de bovenliggende mappen \"pick\" bevatten. Voor complexere regex-patronen kunt u grote taalmodellen gebruiken om te helpen bij het schrijven ervan."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***Filtrar Conteúdo*** O botão “Aplicar Filtro” filtra o conteúdo do diretório atual, exibindo apenas itens que correspondem aos critérios de pesquisa. Para restaurar a visualização original, limpe os critérios de pesquisa e clique neste botão novamente, ou clique no ícone de pesquisa na barra de ferramentas.\n\n***Pesquisar Subpastas*** Para pesquisar arquivos em subdiretórios, primeiro ative o “Modo de Navegação Recursiva”.\n\n***O Que São Expressões Regulares?*** Expressões regulares (regex) são padrões usados para corresponder combinações de caracteres dentro de strings. Elas são uma poderosa ferramenta de processamento de texto amplamente utilizada para tarefas como busca, substituição e análise de texto. Por exemplo: ^2024 pode corresponder a arquivos que começam com '2024'; .*modified\\.[^.]+$ pode corresponder a arquivos que terminam com 'modified' (independentemente da extensão); .*\\.jpg$ pode corresponder a arquivos com a extensão '.jpg'.\n\n***Pesquisa Avançada*** No “Modo de Navegação Recursiva”, você pode adicionalmente usar a opção “Usar Caminho Completo” e combiná-la com expressões regulares para realizar pesquisas avançadas. Por exemplo, dado um caminho completo de arquivo como: /Users/Alice/Pictures/20220101/mypick/001.jpg você pode usar a expressão regular: ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ para corresponder a todos os arquivos cujos nomes de diretórios pai contêm “pick”. Para padrões regex mais complexos, você pode usar modelos de linguagem grandes para ajudar a escrevê-los."
+            "value" : "**Filtrar Conteúdo**\nO botão “Aplicar Filtro” filtra o conteúdo do diretório atual, exibindo apenas itens que correspondem aos critérios de pesquisa. Para restaurar a visualização original, limpe os critérios de pesquisa e clique neste botão novamente, ou clique no ícone de pesquisa na barra de ferramentas.\n\n**Pesquisar Subpastas**\nPara pesquisar arquivos em subdiretórios, primeiro ative o “Modo de Navegação Recursiva”.\n\n**O que são Expressões Regulares?**\nExpressões regulares (regex) são padrões usados para corresponder combinações de caracteres dentro de strings. Elas são uma poderosa ferramenta de processamento de texto amplamente utilizada para tarefas como busca, substituição e análise de texto. Por exemplo: ^2024 pode corresponder a arquivos que começam com '2024'; .*modified\\.[^.]+$ pode corresponder a arquivos que terminam com 'modified' (independentemente da extensão); .*\\.jpg$ pode corresponder a arquivos com a extensão '.jpg'.\n\n**Pesquisa Avançada**\nNo “Modo de Navegação Recursiva,” você pode adicionalmente usar a opção “Usar Caminho Completo” e combiná-la com expressões regulares para realizar pesquisas avançadas. Por exemplo, dado um caminho completo de arquivo como: /Users/Alice/Pictures/20220101/mypick/001.jpg você pode usar a expressão regular: ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ para corresponder a todos os arquivos cujos nomes de diretórios pai contêm “pick.” Para padrões de regex mais complexos, você pode usar modelos de linguagem grandes para ajudar a escrevê-los."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***Filtrar Conteúdo*** O botão “Aplicar Filtro” filtra os conteúdos do diretório atual, exibindo apenas itens que correspondem aos critérios de pesquisa. Para restaurar a visualização original, limpe os critérios de pesquisa e clique neste botão novamente, ou clique no ícone de pesquisa na barra de ferramentas.\n\n***Pesquisar Subpastas*** Para pesquisar ficheiros em subdiretórios, primeiro ative o “Modo de Navegação Recursiva”.\n\n***O Que São Expressões Regulares?*** Expressões regulares (regex) são padrões usados para corresponder combinações de caracteres dentro de strings. São uma poderosa ferramenta de processamento de texto amplamente utilizada para tarefas como pesquisa, substituição e análise de texto. Por exemplo: ^2024 pode corresponder a ficheiros que começam com '2024'; .*modified\\.[^.]+$ pode corresponder a ficheiros que terminam com 'modified' (independentemente da extensão); .*\\.jpg$ pode corresponder a ficheiros com a extensão '.jpg'.\n\n***Pesquisa Avançada*** No “Modo de Navegação Recursiva,” pode adicionalmente usar a opção “Usar Caminho Completo” e combiná-la com expressões regulares para realizar pesquisas avançadas. Por exemplo, dado um caminho completo de ficheiro como: /Users/Alice/Pictures/20220101/mypick/001.jpg pode usar a expressão regular: ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ para corresponder a todos os ficheiros cujos nomes de diretório pai contêm “pick.” Para padrões regex mais complexos, pode usar modelos de linguagem grandes para ajudar a escrevê-los."
+            "value" : "**Filtrar Conteúdo**\nO botão “Aplicar Filtro” filtra os conteúdos do diretório atual, exibindo apenas itens que correspondem aos critérios de pesquisa. Para restaurar a visualização original, limpe os critérios de pesquisa e clique neste botão novamente, ou clique no ícone de pesquisa na barra de ferramentas.\n\n**Pesquisar Subpastas**\nPara pesquisar arquivos em subdiretórios, primeiro ative o “Modo de Navegação Recursiva”.\n\n**O que são Expressões Regulares?**\nExpressões regulares (regex) são padrões usados para corresponder combinações de caracteres dentro de strings. São uma poderosa ferramenta de processamento de texto amplamente utilizada para tarefas como pesquisa, substituição e análise de texto. Por exemplo: ^2024 pode corresponder a arquivos que começam com '2024'; .*modified\\.[^.]+$ pode corresponder a arquivos que terminam com 'modified' (independentemente da extensão); .*\\.jpg$ pode corresponder a arquivos com a extensão '.jpg'.\n\n**Pesquisa Avançada**\nNo “Modo de Navegação Recursiva”, pode adicionalmente usar a opção “Usar Caminho Completo” e combiná-la com expressões regulares para realizar pesquisas avançadas. Por exemplo, dado um caminho completo de arquivo como: /Users/Alice/Pictures/20220101/mypick/001.jpg pode usar a expressão regular: ^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$ para corresponder a todos os arquivos cujos nomes de diretório pai contêm “pick.” Para padrões regex mais complexos, pode usar modelos de linguagem grandes para ajudar a escrevê-los."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***Фильтр содержимого***  \nКнопка «Применить фильтр» фильтрует содержимое текущего каталога, отображая только элементы, соответствующие критериям поиска. Чтобы восстановить исходный вид, очистите критерии поиска и нажмите эту кнопку снова или нажмите значок поиска на панели инструментов.\n\n***Поиск в подпапках***  \nЧтобы искать файлы в подкаталогах, сначала включите «Режим рекурсивного просмотра».\n\n***Что такое регулярные выражения?***  \nРегулярные выражения (regex) — это шаблоны, используемые для сопоставления комбинаций символов в строках. Это мощный инструмент обработки текста, широко используемый для таких задач, как поиск, замена и разбор текста.  \nНапример:  \n^2024 может соответствовать файлам, начинающимся с '2024';  \n.*modified\\.[^.]+$ может соответствовать файлам, заканчивающимся на 'modified' (независимо от расширения);  \n.*\\.jpg$ может соответствовать файлам с расширением '.jpg'.\n\n***Расширенный поиск***  \nВ «Режиме рекурсивного просмотра» вы можете дополнительно использовать опцию «Использовать полный путь» и комбинировать её с регулярными выражениями для выполнения расширенного поиска.  \nНапример, имея полный путь к файлу, такой как:  \n/Users/Alice/Pictures/20220101/mypick/001.jpg  \nвы можете использовать регулярное выражение:  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$  \nчтобы сопоставить все файлы, чьи имена родительских каталогов содержат «pick». Для более сложных шаблонов regex вы можете использовать большие языковые модели, чтобы помочь в их написании."
+            "value" : "**Фильтр контента**  \nКнопка «Применить фильтр» фильтрует содержимое текущего каталога, отображая только элементы, соответствующие критериям поиска. Чтобы восстановить исходный вид, очистите критерии поиска и нажмите эту кнопку снова или нажмите значок поиска на панели инструментов.\n\n**Поиск в подпапках**  \nЧтобы искать файлы в подкаталогах, сначала включите «Режим рекурсивного просмотра».\n\n**Что такое регулярные выражения?**  \nРегулярные выражения (regex) — это шаблоны, используемые для сопоставления комбинаций символов в строках. Это мощный инструмент обработки текста, широко используемый для таких задач, как поиск, замена и разбор текста.  \nНапример:  \n^2024 может соответствовать файлам, начинающимся с '2024';  \n.*modified\\.[^.]+$ может соответствовать файлам, заканчивающимся на 'modified' (независимо от расширения);  \n.*\\.jpg$ может соответствовать файлам с расширением '.jpg'.\n\n**Расширенный поиск**  \nВ «Режиме рекурсивного просмотра» вы можете дополнительно использовать опцию «Использовать полный путь» и комбинировать её с регулярными выражениями для выполнения расширенного поиска.  \nНапример, имея полный путь к файлу, такой как:  \n/Users/Alice/Pictures/20220101/mypick/001.jpg  \nвы можете использовать регулярное выражение:  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$  \nчтобы сопоставить все файлы, чьи имена родительских каталогов содержат «pick». Для более сложных шаблонов regex вы можете использовать большие языковые модели, чтобы помочь в их написании."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***Filtrera innehåll***  \nKnappen \"Tillämpa filter\" filtrerar innehållet i den aktuella katalogen och visar endast objekt som matchar sökkriterierna. För att återställa den ursprungliga vyn, rensa sökkriterierna och klicka på den här knappen igen, eller klicka på sökikonen i verktygsfältet.\n\n***Sök i undermappar***  \nFör att söka filer i underkataloger, aktivera först \"Rekursivt bläddringsläge\".\n\n***Vad är reguljära uttryck?***  \nReguljära uttryck (regex) är mönster som används för att matcha teckenkombinationer inom strängar. De är ett kraftfullt textbehandlingsverktyg som används i stor utsträckning för uppgifter som att söka, ersätta och analysera text.  \nTill exempel:  \n^2024 kan matcha filer som börjar med '2024';  \n.*modified\\.[^.]+$ kan matcha filer som slutar med 'modified' (oavsett filändelse);  \n.*\\.jpg$ kan matcha filer med filändelsen '.jpg'.\n\n***Avancerad sökning***  \nI \"Rekursivt bläddringsläge\" kan du dessutom använda alternativet \"Använd fullständig sökväg\" och kombinera det med reguljära uttryck för att utföra avancerade sökningar.  \nTill exempel, givet en fullständig filsökväg som:  \n/Users/Alice/Pictures/20220101/mypick/001.jpg  \nkan du använda det reguljära uttrycket:  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$  \nför att matcha alla filer vars överordnade katalognamn innehåller \"pick\". För mer komplexa regex-mönster kan du använda stora språkmodeller för att hjälpa till att skriva dem."
+            "value" : "**Filtrera innehåll**  \nKnappen \"Tillämpa filter\" filtrerar innehållet i den aktuella katalogen och visar endast objekt som matchar sökkriterierna. För att återställa den ursprungliga vyn, rensa sökkriterierna och klicka på den här knappen igen, eller klicka på sökikonen i verktygsfältet.\n\n**Sök i undermappar**  \nFör att söka filer i underkataloger, aktivera först \"Rekursivt bläddringsläge\".\n\n**Vad är reguljära uttryck?**  \nReguljära uttryck (regex) är mönster som används för att matcha teckenkombinationer inom strängar. De är ett kraftfullt textbehandlingsverktyg som används i stor utsträckning för uppgifter som att söka, ersätta och analysera text.  \nTill exempel:  \n^2024 kan matcha filer som börjar med '2024';  \n.*modified\\.[^.]+$ kan matcha filer som slutar med 'modified' (oavsett filändelse);  \n.*\\.jpg$ kan matcha filer med filändelsen '.jpg'.\n\n**Avancerad sökning**  \nI \"Rekursivt bläddringsläge\" kan du dessutom använda alternativet \"Använd fullständig sökväg\" och kombinera det med reguljära uttryck för att utföra avancerade sökningar.  \nTill exempel, givet en fullständig filsökväg som:  \n/Users/Alice/Pictures/20220101/mypick/001.jpg  \nkan du använda det reguljära uttrycket:  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$  \nför att matcha alla filer vars överordnade katalognamn innehåller \"pick\". För mer komplexa regex-mönster kan du använda stora språkmodeller för att hjälpa till att skriva dem."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***过滤内容***\n“执行过滤”按钮将筛选当前目录的内容，只显示符合搜索条件的项目。要恢复原始视图，可以清空搜索条件后再次点击此按钮，或者点击工具栏中的搜索图标。\n\n***搜索子文件夹***\n要实现对子目录中文件的搜索，可先启用“递归浏览模式”。\n\n***什么是正则表达式***\n正则表达式（Regular Expression）是一种用于匹配字符串中字符组合的模式。它是一种强大的文本处理工具，广泛应用于搜索、替换和文本解析等任务中。\n例如：\n^2024 可以匹配以'2024'开头的文件；\n.*modified\\.[^.]+$ 可以匹配以'modified'结尾的文件（不论扩展名）；\n.*\\.jpg$ 可以匹配扩展名为'.jpg'的文件。\n\n***高级搜索***\n“递归浏览模式”下可额外使用搜索选项“使用完整路径”，再结合正则表达式实现高级搜索。\n例如，文件完整路径为：\n/Users/Alice/Pictures/20220101/mypick/001.jpg  \n可使用正则表达式：\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\n匹配所有父目录名含有“pick”的文件，更复杂的正则表达式可使用大模型辅助编写。"
+            "value" : "**过滤内容**\n“执行过滤”按钮将筛选当前目录的内容，只显示符合搜索条件的项目。要恢复原始视图，可以清空搜索条件后再次点击此按钮，或者点击工具栏中的搜索图标。\n\n**搜索子文件夹**\n要实现对子目录中文件的搜索，可先启用“递归浏览模式”。\n\n**什么是正则表达式**\n正则表达式（Regular Expression）是一种用于匹配字符串中字符组合的模式。它是一种强大的文本处理工具，广泛应用于搜索、替换和文本解析等任务中。\n例如：\n^2024 可以匹配以'2024'开头的文件；\n.*modified\\.[^.]+$ 可以匹配以'modified'结尾的文件（不论扩展名）；\n.*\\.jpg$ 可以匹配扩展名为'.jpg'的文件。\n\n**高级搜索**\n“递归浏览模式”下可额外使用搜索选项“使用完整路径”，再结合正则表达式实现高级搜索。\n例如，文件完整路径为：\n/Users/Alice/Pictures/20220101/mypick/001.jpg  \n可使用正则表达式：\n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$\n匹配所有父目录名含有“pick”的文件，更复杂的正则表达式可使用大模型辅助编写。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "***篩選內容***  \n“套用篩選”按鈕會篩選當前目錄的內容，只顯示符合搜尋條件的項目。要恢復原始視圖，請清除搜尋條件並再次點擊此按鈕，或點擊工具欄中的搜尋圖標。\n\n***搜尋子資料夾***  \n要搜尋子目錄中的檔案，首先啟用“遞迴瀏覽模式”。\n\n***什麼是正則表達式？***  \n正則表達式（regex）是用於匹配字串中字符組合的模式。它們是一種強大的文本處理工具，廣泛用於搜尋、替換和解析文本等任務。  \n例如：  \n^2024 可以匹配以 '2024' 開頭的檔案；  \n.*modified\\.[^.]+$ 可以匹配以 'modified' 結尾的檔案（無論擴展名）；  \n.*\\.jpg$ 可以匹配擁有 '.jpg' 擴展名的檔案。\n\n***進階搜尋***  \n在“遞迴瀏覽模式”中，您還可以使用“使用完整路徑”選項，並將其與正則表達式結合以進行進階搜尋。  \n例如，給定一個完整的檔案路徑如：  \n/Users/Alice/Pictures/20220101/mypick/001.jpg  \n您可以使用正則表達式：  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$  \n來匹配父目錄名稱包含“pick”的所有檔案。對於更複雜的正則表達式模式，您可以使用大型語言模型來協助編寫。"
+            "value" : "**篩選內容**  \n“應用篩選”按鈕會篩選當前目錄的內容，只顯示符合搜索條件的項目。要恢復原始視圖，請清除搜索條件並再次點擊此按鈕，或點擊工具欄中的搜索圖標。\n\n**搜索子文件夾**  \n要搜索子目錄中的文件，首先啟用“遞歸瀏覽模式”。\n\n**什麼是正則表達式？**  \n正則表達式（regex）是用於匹配字符串中字符組合的模式。它們是一種強大的文本處理工具，廣泛用於搜索、替換和解析文本等任務。  \n例如：  \n^2024 可以匹配以 '2024' 開頭的文件；  \n.*modified\\.[^.]+$ 可以匹配以 'modified' 結尾的文件（無論擴展名）；  \n.*\\.jpg$ 可以匹配擁有 '.jpg' 擴展名的文件。\n\n**高級搜索**  \n在“遞歸瀏覽模式”中，您還可以使用“使用完整路徑”選項，並將其與正則表達式結合以進行高級搜索。  \n例如，給定一個完整的文件路徑，如：  \n/Users/Alice/Pictures/20220101/mypick/001.jpg  \n您可以使用正則表達式：  \n^.*\\/[^\\/]*pick[^\\/]*\\/[^\\/]+$  \n來匹配父目錄名稱包含“pick”的所有文件。對於更複雜的正則表達式模式，您可以使用大型語言模型來協助編寫。"
           }
         }
       }
@@ -26521,6 +26806,12 @@
             "value" : "Finder-Tags und Bewertungen anzeigen"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Finder Tags and Ratings"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27085,6 +27376,12 @@
             "value" : "RAW/HDR-Abzeichen anzeigen"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show RAW/HDR Badge"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27362,6 +27659,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tags und Bewertungen anzeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Tags and Ratings"
           }
         },
         "es" : {
@@ -31804,6 +32107,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "配合系統"
+          }
+        }
+      }
+    },
+    "Symbolic Link" : {
+      "comment" : "符号链接",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ارتباط رمزي"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbolische Verknüpfung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbolic Link"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enlace simbólico"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lien symbolique"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collegamento simbolico"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "シンボリックリンク"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "심볼릭 링크"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbolische link"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Link Simbólico"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Link Simbólico"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Символическая ссылка"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Symbolisk länk"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "符号链接"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "符號鏈接"
           }
         }
       }
