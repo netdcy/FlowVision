@@ -2184,6 +2184,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if path.contains("Cryptomator") {
             return
         }
+
+        // 虚拟Finder标签目录不监听
+        // VirtualFinderTagsFolder directory doesn't listen
+        if path.contains("VirtualFinderTagsFolder") {
+            return
+        }
         
         // 递归模式不监听
         // Recursive mode doesn't listen

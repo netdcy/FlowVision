@@ -235,7 +235,9 @@ extension ViewController {
         let curFolder = fileDB.curFolder
         fileDB.unlock()
         outlineView.reloadData()
-        treeReLocate(path: curFolder, doCollapse: false, expandLast: false)
+        if globalVar.dirTreeAutoExpand {
+            treeReLocate(path: curFolder, doCollapse: false, expandLast: false)
+        }
         outlineViewManager.adjustColumnWidth()
     }
 }

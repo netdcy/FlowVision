@@ -197,6 +197,8 @@ extension ViewController {
             return !isHidden || publicVar.isShowHiddenFile
         }
 
+        // 更新增强索引
+        // Update enhanced index
         EnhancedIndex.updateFiles(contents)
 
         // 搜索过滤
@@ -761,7 +763,7 @@ extension ViewController {
         fileDB.lock()
         let curFolder = fileDB.curFolder
         fileDB.unlock()
-        if curFolder.contains("VirtualFinderTagsFolder") {
+        if curFolder.contains("VirtualFinderTagsFolder") || publicVar.finderTagFilter != nil {
             if rawdirection == .left || rawdirection == .up_left || rawdirection == .down_left
                 || rawdirection == .right || rawdirection == .up_right || rawdirection == .down_right {
                 return
@@ -874,6 +876,11 @@ extension ViewController {
             // Reset search filter
             if !globalVar.keepFilterStateWhenSwitchFolder{
                 publicVar.isFilenameFilterOn = false
+                
+            }
+            // 重置Finder标签过滤
+            // Reset Finder tag filter
+            if !globalVar.keepFilterStateWhenSwitchFolder{
                 publicVar.finderTagFilter = nil
             }
             // 重置自动播放可见视频
@@ -927,7 +934,9 @@ extension ViewController {
             publicVar.folderStepStack.insert(lastFolder, at: 0)
         }
         
-        treeReLocate(path: nextFolder, doCollapse: doCollapse, expandLast: expandLast)
+        if globalVar.dirTreeAutoExpand {
+            treeReLocate(path: nextFolder, doCollapse: doCollapse, expandLast: expandLast)
+        }
         
         log("Switch:",nextFolder.removingPercentEncoding!)
         switchFolder(path: nextFolder)

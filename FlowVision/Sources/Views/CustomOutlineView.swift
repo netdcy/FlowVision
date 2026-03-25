@@ -193,9 +193,9 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
                 finderTagMenu.addItem(NSMenuItem.separator())
                 finderTagMenu.addItem(withTitle: NSLocalizedString("Scan & Update Enhanced Index", comment: "扫描并更新增强索引"), action: #selector(actScanEnhancedIndex), keyEquivalent: "")
 
-                menu.addItem(finderTagMenuItem)
+                // menu.addItem(finderTagMenuItem)
 
-                menu.addItem(NSMenuItem.separator())
+                // menu.addItem(NSMenuItem.separator())
 
                 let actionItemNewFolder = menu.addItem(withTitle: NSLocalizedString("New Folder", comment: "新建文件夹"), action: #selector(actNewFolder), keyEquivalent: "n")
                 actionItemNewFolder.keyEquivalentModifierMask = [.command,.shift]
@@ -203,6 +203,10 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             }
             
             menu.addItem(NSMenuItem.separator())
+
+            let actionItemAutoExpand = menu.addItem(withTitle: NSLocalizedString("Follow Current Folder", comment: "跟随当前目录"), action: #selector(actAutoExpand), keyEquivalent: "")
+            actionItemAutoExpand.keyEquivalentModifierMask = []
+            actionItemAutoExpand.state = globalVar.dirTreeAutoExpand ? .on : .off
             
             let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("Refresh", comment: "刷新"), action: #selector(refreshAll), keyEquivalent: "r")
             actionItemRefresh.keyEquivalentModifierMask = [.command]
@@ -237,6 +241,11 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
     
     @objc func refreshAll() {
         getViewController(self)?.handleUserRefresh()
+    }
+
+    @objc func actAutoExpand() {
+        globalVar.dirTreeAutoExpand.toggle()
+        UserDefaults.standard.set(globalVar.dirTreeAutoExpand, forKey: "dirTreeAutoExpand")
     }
     
     @objc func actOpenInNewTab() {

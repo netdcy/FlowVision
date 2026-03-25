@@ -995,7 +995,21 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                         actionItemOpenInNewTab.isEnabled=true
                     }
                 }
-                
+
+                let isRecursive = getViewController(collectionView!)?.publicVar.isRecursiveMode ?? false
+                let canShowParent = selectedCount == 1 && (isRecursive || getViewController(collectionView!)!.fileDB.curFolder.contains("VirtualFinderTagsFolder"))
+                if canShowParent, let url = URL(string: file.path) {
+                    let parentURL = url.deletingLastPathComponent()
+                    if !parentURL.path.isEmpty && parentURL.absoluteString != url.absoluteString {
+                        let actionItemShowParent = menu.addItem(withTitle: NSLocalizedString("Show in Parent Folder", comment: "在上层文件夹中显示"), action: #selector(actShowParentInNewTab), keyEquivalent: "")
+                        if isWindowNumMax() {
+                            actionItemShowParent.isEnabled = false
+                        } else {
+                            actionItemShowParent.isEnabled = true
+                        }
+                    }
+                }
+
                 menu.addItem(NSMenuItem.separator())
                 
                 addOpenWithSubMenu(to: menu)
@@ -1193,6 +1207,19 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             }else{
                 actOpen()
             }
+        }
+    }
+
+    @objc func actShowParentInNewTab() {
+        guard let url = URL(string: file.path) else { return }
+        let parentURL = url.deletingLastPathComponent()
+        guard !parentURL.path.isEmpty, parentURL.absoluteString != url.absoluteString else { return }
+        var parentPath = parentURL.absoluteString
+        if !parentPath.hasSuffix("/") {
+            parentPath += "/"
+        }
+        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+            _ = appDelegate.createNewWindow(parentPath)
         }
     }
 

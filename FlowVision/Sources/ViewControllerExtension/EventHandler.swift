@@ -230,7 +230,12 @@ extension ViewController {
     }
     
     func handleToggleFinderTag(_ tagName: String) {
-        let urls = publicVar.selectedUrls()
+        var urls: [URL] = []
+        if publicVar.isCollectionViewFirstResponder {
+            urls = publicVar.selectedUrls()
+        } else if publicVar.isOutlineViewFirstResponder {
+            
+        }
         guard !urls.isEmpty else { return }
 
         let added = FinderTagHelper.toggleTag(tagName, on: urls)

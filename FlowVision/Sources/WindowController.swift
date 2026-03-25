@@ -308,6 +308,7 @@ extension NSToolbarItem.Identifier {
     static let thumbSize = NSToolbarItem.Identifier("com.example.thumbSize")
     static let isRecursiveMode = NSToolbarItem.Identifier("com.example.isRecursiveMode")
     static let isSearchFilterOn = NSToolbarItem.Identifier("com.example.isSearchFilterOn")
+    static let isTagFilterOn = NSToolbarItem.Identifier("com.example.isTagFilterOn")
     static let isAutoPlayVisibleVideo = NSToolbarItem.Identifier("com.example.isAutoPlayVisibleVideo")
     static let isEnableHDR = NSToolbarItem.Identifier("com.example.isEnableHDR")
 }
@@ -359,6 +360,9 @@ extension WindowController: NSToolbarDelegate {
                 
                 if viewController.publicVar.autoPlayVisibleVideo {
                     identifiers.append(.isAutoPlayVisibleVideo)
+                }
+                if viewController.publicVar.finderTagFilter != nil {
+                    identifiers.append(.isTagFilterOn)
                 }
                 if viewController.publicVar.isCurrentFolderFiltered {
                     identifiers.append(.isSearchFilterOn)
@@ -787,6 +791,16 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.label = NSLocalizedString("Cancel Filter", comment: "取消过滤")
             toolbarItem.paletteLabel = NSLocalizedString("Cancel Filter", comment: "取消过滤")
             toolbarItem.visibilityPriority = .low
+
+        case .isTagFilterOn:
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "t.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleTagFilter(_:)))
+            setButtonStyle(button)
+            // button.showsBorderOnlyWhileMouseInside = false
+            button.toolTip = NSLocalizedString("Cancel Filter", comment: "取消过滤")
+            toolbarItem.view = button
+            toolbarItem.label = NSLocalizedString("Cancel Filter", comment: "取消过滤")
+            toolbarItem.paletteLabel = NSLocalizedString("Cancel Filter", comment: "取消过滤")
+            toolbarItem.visibilityPriority = .low
             
         case .isRecursiveMode:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "r.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleRecursiveMode(_:)))
@@ -1015,7 +1029,7 @@ extension WindowController: NSToolbarDelegate {
         folderFirstItem.state = viewController.publicVar.profile.isSortFolderFirst ? .on : .off
         menu.addItem(folderFirstItem)
 
-        let sortUseFullPathItem = NSMenuItem(title: NSLocalizedString("Sort Using Full Path In Recursive Mode", comment: "递归模式下使用完整路径排序"), action: #selector(sortUseFullPath(_:)), keyEquivalent: "")
+        let sortUseFullPathItem = NSMenuItem(title: NSLocalizedString("Sort Using Full Path In Collection Mode", comment: "集合模式下使用完整路径排序"), action: #selector(sortUseFullPath(_:)), keyEquivalent: "")
         sortUseFullPathItem.state = viewController.publicVar.profile.isSortUseFullPath ? .on : .off
         menu.addItem(sortUseFullPathItem)
 
@@ -1418,22 +1432,24 @@ extension WindowController: NSToolbarDelegate {
         // 大图视图
         // Large image view
         } else {
+
+            menu.addItem(NSMenuItem.separator())
+        
+            let lockRotation = menu.addItem(withTitle: NSLocalizedString("Lock Rotation", comment: "锁定旋转"), action: #selector(toggleLockRotation), keyEquivalent: "")
+            lockRotation.keyEquivalentModifierMask = []
+            lockRotation.state = viewController.publicVar.isRotationLocked ? .on : .off
             
+            let lockZoom = menu.addItem(withTitle: NSLocalizedString("Lock Zoom", comment: "锁定缩放"), action: #selector(toggleLockZoom), keyEquivalent: "")
+            lockZoom.keyEquivalentModifierMask = []
+            lockZoom.state = viewController.publicVar.isZoomLocked ? .on : .off
+            lockZoom.isEnabled = viewController.largeImageView.file.type == .image
+
+            let lockMirror = menu.addItem(withTitle: NSLocalizedString("Lock Mirror", comment: "锁定镜像"), action: #selector(toggleLockMirror), keyEquivalent: "")
+            lockMirror.keyEquivalentModifierMask = []
+            lockMirror.state = viewController.publicVar.isMirrorLocked ? .on : .off
+            lockMirror.isEnabled = viewController.largeImageView.file.type == .image
+
             if viewController.largeImageView.file.type == .image {
-
-                menu.addItem(NSMenuItem.separator())
-            
-                let lockRotation = menu.addItem(withTitle: NSLocalizedString("Lock Rotation", comment: "锁定旋转"), action: #selector(toggleLockRotation), keyEquivalent: "")
-                lockRotation.keyEquivalentModifierMask = []
-                lockRotation.state = viewController.publicVar.isRotationLocked ? .on : .off
-                
-                let lockZoom = menu.addItem(withTitle: NSLocalizedString("Lock Zoom", comment: "锁定缩放"), action: #selector(toggleLockZoom), keyEquivalent: "")
-                lockZoom.keyEquivalentModifierMask = []
-                lockZoom.state = viewController.publicVar.isZoomLocked ? .on : .off
-
-                let lockMirror = menu.addItem(withTitle: NSLocalizedString("Lock Mirror", comment: "锁定镜像"), action: #selector(toggleLockMirror), keyEquivalent: "")
-                lockMirror.keyEquivalentModifierMask = []
-                lockMirror.state = viewController.publicVar.isMirrorLocked ? .on : .off
 
                 menu.addItem(NSMenuItem.separator())
             
@@ -1760,6 +1776,11 @@ extension WindowController: NSToolbarDelegate {
     @objc func toggleSearchFilter(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.applyFilter(isReset: true)
+    }
+
+    @objc func toggleTagFilter(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleFinderTagFilter(nil)
     }
     
     @objc func toggleRecursiveMode(_ sender: NSMenuItem){

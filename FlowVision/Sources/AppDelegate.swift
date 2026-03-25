@@ -173,7 +173,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             globalVar.doNotUseFFmpeg = doNotUseFFmpeg
         }
         if let portableMode = UserDefaults.standard.value(forKey: "portableMode") as? Bool {
-            globalVar.portableMode = portableMode
+            // Temporary disable portable mode feature
+            // globalVar.portableMode = portableMode
         }
         if let videoPlayRememberPosition = UserDefaults.standard.value(forKey: "videoPlayRememberPosition") as? Bool {
             globalVar.videoPlayRememberPosition = videoPlayRememberPosition
@@ -198,6 +199,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         }
         if let keepFilterStateWhenSwitchFolder = UserDefaults.standard.value(forKey: "keepFilterStateWhenSwitchFolder") as? Bool {
             globalVar.keepFilterStateWhenSwitchFolder = keepFilterStateWhenSwitchFolder
+        }
+        if let dirTreeAutoExpand = UserDefaults.standard.value(forKey: "dirTreeAutoExpand") as? Bool {
+            globalVar.dirTreeAutoExpand = dirTreeAutoExpand
         }
         globalVar.myFavoritesArray = defaults.array(forKey: "globalVar.myFavoritesArray") as? [String] ?? [String]()
         

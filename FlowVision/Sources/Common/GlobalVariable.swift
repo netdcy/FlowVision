@@ -96,6 +96,7 @@ class GlobalVar{
     var openLastFolder = true
     var homeFolder = "file:///"
     var keepFilterStateWhenSwitchFolder = false
+    var dirTreeAutoExpand = true
     
     // 可记忆设置变量
     // Rememberable settings variables

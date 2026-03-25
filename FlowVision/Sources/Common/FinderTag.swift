@@ -165,14 +165,14 @@ class EnhancedIndex {
                 urls.append(url)
                 if urls.count % 1000 == 0 {
                     guard !isCancelled() else { return }
-                    progress?("\(NSLocalizedString("Scanning", comment: "扫描中")) \(urls.count) ...", false)
+                    progress?("\(NSLocalizedString("Scanning", comment: "扫描中")): \(urls.count) ...", false)
                 }
             }
 
             guard !isCancelled() else { return }
-            progress?("\(NSLocalizedString("Updating index", comment: "更新索引中")) \(urls.count) ...", false)
+            progress?("\(NSLocalizedString("Updating index", comment: "更新索引中")): \(urls.count) ...", false)
             updateFiles(urls)
-            progress?("\(NSLocalizedString("Scan complete", comment: "扫描完成")): \(urls.count)", true)
+            progress?("\(NSLocalizedString("Scan complete", comment: "扫描完成"))", true)
         }
     }
 
