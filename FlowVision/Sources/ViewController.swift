@@ -1549,68 +1549,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         log("Time taken to reach hidden snapshot reason 1: \(timeInterval) seconds")
                                         log("-----------------------------------------------------------")
                                         
-                                        // 向上或者后退时定位文件夹
-                                        // Locate folder when going up or back
-                                        if let (lastFolder,direction) = publicVar.folderStepForLocate.first {
-                                            
-                                            if let lastURL = URL(string: lastFolder),
-                                               let curURL = URL(string: curFolder),
-                                               lastURL.deletingLastPathComponent().absoluteString == curURL.absoluteString {
-                                                
-                                                publicVar.folderStepForLocate.removeAll()
-                                                
-                                                let targetFolderPath = lastURL.absoluteString
-                                                let targetKey = SortKeyFile(targetFolderPath, isDir: true, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
-                                                
-                                                fileDB.lock()
-                                                if let index=fileDB.db[SortKeyDir(curFolder)]?.files.index(forKey: targetKey),
-                                                   let offset=fileDB.db[SortKeyDir(curFolder)]?.files.offset(of: index) {
-                                                    fileDB.unlock()
-                                                    let indexPath=IndexPath(item: offset, section: 0)
-                                                    collectionView.scrollToItems(at: [indexPath], scrollPosition: .nearestHorizontalEdge)
-                                                    collectionView.reloadData()
-                                                    collectionView.deselectAll(nil)
-                                                    collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
-                                                    collectionView.selectItems(at: [indexPath], scrollPosition: [])
-                                                    collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
-                                                    setLoadThumbPriority(ifNeedVisable: true)
-                                                }else{
-                                                    fileDB.unlock()
-                                                }
-                                            }
-                                        }
-                                        
-                                        // 粘贴或移动后选中变更的文件
-                                        // Select changed files after paste or move
-                                        if !publicVar.filesForLocateAfterChange.isEmpty {
-                                            let targetPaths = publicVar.filesForLocateAfterChange
-                                            publicVar.filesForLocateAfterChange.removeAll()
-                                            
-                                            let targetPathSet = Set(targetPaths.map { $0.hasSuffix("/") ? String($0.dropLast()) : $0 })
-                                            var indexPaths: [IndexPath] = []
-                                            fileDB.lock()
-                                            if let files = fileDB.db[SortKeyDir(curFolder)]?.files {
-                                                for (offset, element) in files.enumerated() {
-                                                    let filePath = element.0.path
-                                                    let normalizedPath = filePath.hasSuffix("/") ? String(filePath.dropLast()) : filePath
-                                                    if targetPathSet.contains(normalizedPath) {
-                                                        indexPaths.append(IndexPath(item: offset, section: 0))
-                                                    }
-                                                }
-                                            }
-                                            fileDB.unlock()
-                                            
-                                            if !indexPaths.isEmpty {
-                                                let indexPathSet = Set(indexPaths)
-                                                collectionView.scrollToItems(at: [indexPaths[0]], scrollPosition: .nearestHorizontalEdge)
-                                                collectionView.reloadData()
-                                                collectionView.deselectAll(nil)
-                                                collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: indexPathSet)
-                                                collectionView.selectItems(at: indexPathSet, scrollPosition: [])
-                                                collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: indexPathSet)
-                                                setLoadThumbPriority(ifNeedVisable: true)
-                                            }
-                                        }
+                                        // 选中产生变化的文件（粘贴或移动后）
+                                        // Select files that have changed (after paste or move)
+                                        selectItemsNewChanged()
                                     }
                                     
                                     while snapshotQueue.count > 0{

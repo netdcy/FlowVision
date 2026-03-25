@@ -687,6 +687,7 @@ extension ViewController {
             let url = URL(string: publicVar.openFromFinderPath)!
             file=FileModel(path: publicVar.openFromFinderPath, ver: 0)
             file.imageInfo=getImageInfo(url: url, needMetadata: true)
+            file.finderTags = (try? url.resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? []
             file.originalSize=file.imageInfo?.size
             if !justChangeLargeImageViewFile {
                 // 获取缩略图（以加快响应）

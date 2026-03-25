@@ -1263,9 +1263,6 @@ extension ViewController {
                     item.updateCutDimEffect()
                 }
             }
-            if vc.publicVar.isInLargeView && globalVar.cutItemPaths.contains(vc.largeImageView.file.path) {
-                vc.largeImageView.alphaValue = 0.4
-            }
             updateOutlineViewCutDimEffect(vc.outlineView)
         }
     }
@@ -1280,9 +1277,6 @@ extension ViewController {
                     if let item = item as? CustomCollectionViewItem {
                         item.updateCutDimEffect()
                     }
-                }
-                if vc.publicVar.isInLargeView {
-                    vc.largeImageView.alphaValue = 1.0
                 }
                 updateOutlineViewCutDimEffect(vc.outlineView)
             }

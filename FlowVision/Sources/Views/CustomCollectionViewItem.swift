@@ -300,7 +300,6 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         ratingStarsView = nil
         aliasBadgeView?.removeFromSuperview()
         aliasBadgeView = nil
-        view.alphaValue = 1.0
     }
 
     func refreshFinderTagDots() {
@@ -557,7 +556,12 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     
     func updateCutDimEffect() {
         let isCut = globalVar.cutItemPaths.contains(file.path)
-        view.alphaValue = isCut ? 0.4 : 1.0
+        let targetAlpha: CGFloat = isCut ? 0.4 : 1.0
+        // 由于布局过程中alpha值可能会被重置，需要等待布局完成后再设置
+        // Since the alpha value may be reset during layout, it needs to be set after layout is complete
+        DispatchQueue.main.async { [weak self] in
+            self?.view.alphaValue = targetAlpha
+        }
     }
     
     func setTooltip(){
