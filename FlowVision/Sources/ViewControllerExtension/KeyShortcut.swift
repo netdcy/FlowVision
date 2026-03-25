@@ -575,12 +575,24 @@ extension ViewController {
                 }
             }
 
-            // 检查按键是否是 Command+1~7 键
-            // Check if key is Command+1~7
-            if ["1","2","3","4","5","6","7"].contains(characters) && isOnlyCommandPressed {
-                let index = Int(characters)! - 1
-                handleToggleFinderTag(FinderTag.all[index].name)
-                return nil
+            // 检查按键是否是 Command+1~9 键
+            // Check if key is Command+1~9
+            if ["1","2","3","4","5","6","7","8","9"].contains(characters) && isOnlyCommandPressed {
+                if publicVar.isCollectionViewFirstResponder {
+                    let index = Int(characters)! - 1
+                    handleToggleFinderTag(FinderTag.all[index].name)
+                    return nil
+                }
+            }
+
+            // 检查按键是否是 Control+1~5 键
+            // Check if key is Command+1~5
+            if ["1","2","3","4","5","0"].contains(characters) && isOnlyCtrlPressed {
+                if publicVar.isCollectionViewFirstResponder {
+                    let index = Int(characters)!
+                    handleRating(rating: index)
+                    return nil
+                }
             }
             
             // 检查按键是否是 Opt+1~9 键

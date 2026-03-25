@@ -673,7 +673,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = FlowVision;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2025 netdcy";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2024 netdcy";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -707,7 +707,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = FlowVision;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2025 netdcy";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2024 netdcy";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (

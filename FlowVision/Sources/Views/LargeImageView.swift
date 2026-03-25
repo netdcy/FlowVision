@@ -1735,7 +1735,7 @@ class LargeImageView: NSView {
             let currentTags = file.finderTags
 
             for (i, tag) in FinderTag.all.enumerated() {
-                let item = finderTagMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actToggleFinderTag(_:)), keyEquivalent: "\(i + 1)")
+                let item = finderTagMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actToggleFinderTag(_:)), keyEquivalent: (i + 1 <= 9) ? "\(i + 1)" : "")
                 item.keyEquivalentModifierMask = [.command]
                 item.representedObject = tag.name
                 if currentTags.contains(tag.name) {

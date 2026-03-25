@@ -108,14 +108,17 @@ class CustomCollectionView: NSCollectionView {
 
                     let currentFilter = getViewController(self)?.publicVar.finderTagFilter
 
-                    for tag in FinderTag.all {
-                        let item = filterMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actFilterByFinderTag(_:)), keyEquivalent: "")
+                    for (i, tag) in FinderTag.all.enumerated() {
+                        let item = filterMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actFilterByFinderTag(_:)), keyEquivalent: (i + 1 <= 9) ? "\(i + 1)" : "")
+                        item.keyEquivalentModifierMask = [.command, .shift]
                         item.representedObject = tag.name
                         if currentFilter == tag.name {
                             item.state = .on
                         }
                         item.image = tag.dotImage
                     }
+
+                    filterMenu.addItem(NSMenuItem.separator())
 
                     let reverseFilterItem = filterMenu.addItem(withTitle: NSLocalizedString("Reverse Filter", comment: "反转筛选"), action: #selector(actReverseFinderTagFilter), keyEquivalent: "")
                     reverseFilterItem.state = getViewController(self)?.publicVar.isFinderTagFilterReversed ?? false ? .on : .off

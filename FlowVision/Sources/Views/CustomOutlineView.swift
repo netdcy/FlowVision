@@ -215,6 +215,8 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             let actionItemAutoExpand = menu.addItem(withTitle: NSLocalizedString("Follow Current Folder", comment: "跟随当前目录"), action: #selector(actAutoExpand), keyEquivalent: "")
             actionItemAutoExpand.keyEquivalentModifierMask = []
             actionItemAutoExpand.state = globalVar.dirTreeAutoExpand ? .on : .off
+
+            menu.addItem(NSMenuItem.separator())
             
             let actionItemRefresh = menu.addItem(withTitle: NSLocalizedString("Refresh", comment: "刷新"), action: #selector(refreshAll), keyEquivalent: "r")
             actionItemRefresh.keyEquivalentModifierMask = [.command]

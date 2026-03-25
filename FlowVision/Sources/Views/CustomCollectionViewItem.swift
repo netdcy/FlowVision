@@ -1094,7 +1094,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 let tagsPerURL = selectedURLs.map { FinderTagHelper.readTags(from: $0) }
 
                 for (i, tag) in FinderTag.all.enumerated() {
-                    let item = finderTagMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actToggleFinderTag(_:)), keyEquivalent: "\(i + 1)")
+                    let item = finderTagMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actToggleFinderTag(_:)), keyEquivalent: (i + 1 <= 9) ? "\(i + 1)" : "")
                     item.keyEquivalentModifierMask = [.command]
                     item.representedObject = tag.name
 
@@ -1130,7 +1130,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 for rating in (1...5).reversed() {
                     let stars = String(repeating: "★", count: rating) + String(repeating: "☆", count: 5 - rating)
                     let title = "\(stars)  (\(rating))"
-                    let item = NSMenuItem(title: title, action: #selector(actRate(_:)), keyEquivalent: "")
+                    let item = NSMenuItem(title: title, action: #selector(actRate(_:)), keyEquivalent: "\(rating)")
+                    item.keyEquivalentModifierMask = [.control]
                     item.tag = rating
                     item.target = self
                     rateSubMenu.addItem(item)
@@ -1138,7 +1139,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
                 // 无星级
                 let clearTitle = NSLocalizedString("No Rating", comment: "无星级")
-                let clearItem = NSMenuItem(title: clearTitle, action: #selector(actRate(_:)), keyEquivalent: "")
+                let clearItem = NSMenuItem(title: clearTitle, action: #selector(actRate(_:)), keyEquivalent: "0")
+                clearItem.keyEquivalentModifierMask = [.control]
                 clearItem.tag = 0
                 clearItem.target = self
                 rateSubMenu.addItem(clearItem)

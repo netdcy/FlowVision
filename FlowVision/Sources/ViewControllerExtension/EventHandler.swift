@@ -306,6 +306,7 @@ extension ViewController {
     }
 
     func handleRating(rating: Int) {
+        guard publicVar.isCollectionViewFirstResponder else { return }
         let urls: [URL] = publicVar.selectedUrls()
         for url in urls {
             writeRating(inputURL: url, outputURL: url, rating: rating)
