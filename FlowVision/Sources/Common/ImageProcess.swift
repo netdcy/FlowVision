@@ -784,6 +784,20 @@ func getVideoThumbnailFFmpeg(for url: URL, at time: TimeInterval = 10) -> NSImag
     return nil
 }
 
+func overlayAliasBadge(on image: NSImage) -> NSImage {
+    guard let badgeIcon = NSImage(named: "AliasBadge") else {
+        return image
+    }
+    let size = image.size
+    return NSImage(size: size, flipped: false) { rect in
+        image.draw(in: rect)
+        let badgeRef = max(size.width, size.height) / 512.0
+        let badgeSize = NSSize(width: badgeRef * badgeIcon.size.width, height: badgeRef * badgeIcon.size.height)
+        badgeIcon.draw(in: NSRect(origin: .zero, size: badgeSize))
+        return true
+    }
+}
+
 func getFileTypeIcon(url: URL) -> NSImage {
     // 替身文件：icon(forFile:) 依赖扩展名，无标准扩展名时会返回错误图标
     // 需手动解析目标路径取正确类型图标，再叠加替身小箭头徽章
@@ -792,21 +806,19 @@ func getFileTypeIcon(url: URL) -> NSImage {
        values.isAliasFile == true,
        let resolved = try? URL(resolvingAliasFileAt: url) {
         let targetIcon = NSWorkspace.shared.icon(forFile: resolved.path)
-        let size = targetIcon.size
-        guard let badgeIcon = NSImage(named: "AliasBadge") else {
-            return targetIcon
-        }
-        return NSImage(size: size, flipped: false) { rect in
-            targetIcon.draw(in: rect)
-            let badgeSize = NSSize(width: size.width * 0.15, height: size.height * 0.19)
-            badgeIcon.draw(in: NSRect(origin: .zero, size: badgeSize))
-            return true
-        }
+        return overlayAliasBadge(on: targetIcon)
     }
     return NSWorkspace.shared.icon(forFile: url.path)
 }
 
 func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil, isPreferInternalThumb: Bool = false) -> NSImage? {
+    
+    if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
+       values.isAliasFile == true,
+       let resolved = try? URL(resolvingAliasFileAt: url),
+       let thumb = getImageThumb(url: resolved, size: oriSize, refSize: refSize, isPreferInternalThumb: isPreferInternalThumb) {
+        return overlayAliasBadge(on: thumb)
+    }
     
     let size: NSSize? = oriSize != nil ? NSSize(width: round(oriSize!.width), height: round(oriSize!.height)) : nil
     
@@ -1707,6 +1719,11 @@ func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
 }
 
 func getImageInfo(url: URL, needMetadata: Bool) -> ImageInfo? {
+    if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
+       values.isAliasFile == true,
+       let resolved = try? URL(resolvingAliasFileAt: url) {
+        return getImageInfo(url: resolved, needMetadata: needMetadata)
+    }
     // let defaultSize = DEFAULT_SIZE
     if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
         if globalVar.HandledNotNativeSupportedVideoExtensions.contains(url.pathExtension.lowercased()){
