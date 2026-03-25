@@ -362,7 +362,7 @@ extension WindowController: NSToolbarDelegate {
                 if viewController.publicVar.autoPlayVisibleVideo {
                     identifiers.append(.isAutoPlayVisibleVideo)
                 }
-                if viewController.publicVar.finderTagFilter != nil {
+                if !viewController.publicVar.finderTagFilters.isEmpty {
                     identifiers.append(.isTagFilterOn)
                 }
                 if viewController.publicVar.isCurrentFolderFiltered {

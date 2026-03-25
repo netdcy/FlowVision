@@ -282,14 +282,22 @@ extension ViewController {
     }
 
     func toggleFinderTagFilter(_ tagName: String?) {
-        if tagName == nil || publicVar.finderTagFilter == tagName {
-            publicVar.finderTagFilter = nil
+        guard let tagName = tagName else {
+            publicVar.finderTagFilters.removeAll()
+            coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: false)
+            refreshCollectionView(needLoadThumbPriority: true)
+            return
+        }
+        if publicVar.finderTagFilters.contains(tagName) {
+            publicVar.finderTagFilters.remove(tagName)
+        } else {
+            publicVar.finderTagFilters.insert(tagName)
+        }
+        if publicVar.finderTagFilters.isEmpty {
             coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: false)
         } else {
-            publicVar.finderTagFilter = tagName
-            if let tagName = tagName, let tag = FinderTag.byName(tagName) {
-                coreAreaView.showInfo(NSLocalizedString("Filter", comment: "筛选") + ": \(tag.name)", timeOut: 0.8, cannotBeCleard: false)
-            }
+            let names = publicVar.finderTagFilters.compactMap { FinderTag.byName($0)?.name }.joined(separator: ", ")
+            coreAreaView.showInfo(NSLocalizedString("Filter", comment: "筛选") + ": \(names)", timeOut: 0.8, cannotBeCleard: false)
         }
         refreshCollectionView(needLoadThumbPriority: true)
     }

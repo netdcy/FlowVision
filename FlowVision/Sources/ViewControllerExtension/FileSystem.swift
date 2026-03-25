@@ -212,14 +212,16 @@ extension ViewController {
 
         // 过滤标签
         // Filter tags
-        if let tagFilter = publicVar.finderTagFilter {
+        if !publicVar.finderTagFilters.isEmpty {
             contents = contents.filter { url in
-                let tags = (try? url.resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? []
-                if publicVar.isFinderTagFilterReversed {
-                    return !tags.contains(tagFilter)
+                let tags = Set((try? url.resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? [])
+                let matched: Bool
+                if publicVar.isFinderTagFilterModeAnd {
+                    matched = publicVar.finderTagFilters.isSubset(of: tags)
                 } else {
-                    return tags.contains(tagFilter)
+                    matched = !tags.isDisjoint(with: publicVar.finderTagFilters)
                 }
+                return publicVar.isFinderTagFilterReversed ? !matched : matched
             }
         }
         
@@ -782,7 +784,7 @@ extension ViewController {
         fileDB.lock()
         let curFolder = fileDB.curFolder
         fileDB.unlock()
-        if curFolder.hasPrefix("file:///VirtualFinderTagsFolder") || publicVar.finderTagFilter != nil {
+        if curFolder.hasPrefix("file:///VirtualFinderTagsFolder") || !publicVar.finderTagFilters.isEmpty {
             if rawdirection == .left || rawdirection == .up_left || rawdirection == .down_left
                 || rawdirection == .right || rawdirection == .up_right || rawdirection == .down_right {
                 return
@@ -900,8 +902,9 @@ extension ViewController {
             // 重置Finder标签过滤
             // Reset Finder tag filter
             if !globalVar.keepFilterStateWhenSwitchFolder{
-                publicVar.finderTagFilter = nil
+                publicVar.finderTagFilters.removeAll()
                 publicVar.isFinderTagFilterReversed = false
+                publicVar.isFinderTagFilterModeAnd = false
             }
             // 重置自动播放可见视频
             // Reset auto-play visible video

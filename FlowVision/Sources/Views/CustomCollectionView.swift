@@ -106,17 +106,25 @@ class CustomCollectionView: NSCollectionView {
                     let filterMenuItem = NSMenuItem(title: NSLocalizedString("Filter by Finder Tag", comment: "按Finder标签筛选"), action: nil, keyEquivalent: "")
                     filterMenuItem.submenu = filterMenu
 
-                    let currentFilter = getViewController(self)?.publicVar.finderTagFilter
+                    let currentFilters = getViewController(self)?.publicVar.finderTagFilters ?? []
 
                     for (i, tag) in FinderTag.all.enumerated() {
                         let item = filterMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actFilterByFinderTag(_:)), keyEquivalent: (i + 1 <= 9) ? "\(i + 1)" : "")
                         item.keyEquivalentModifierMask = [.command, .shift]
                         item.representedObject = tag.name
-                        if currentFilter == tag.name {
+                        if currentFilters.contains(tag.name) {
                             item.state = .on
                         }
                         item.image = tag.dotImage
                     }
+
+                    filterMenu.addItem(NSMenuItem.separator())
+
+                    let isAndMode = getViewController(self)?.publicVar.isFinderTagFilterModeAnd ?? false
+                    let matchAnyItem = filterMenu.addItem(withTitle: NSLocalizedString("Match Any (OR)", comment: "匹配任一 (OR)"), action: #selector(actSetFinderTagFilterModeOr), keyEquivalent: "")
+                    matchAnyItem.state = isAndMode ? .off : .on
+                    let matchAllItem = filterMenu.addItem(withTitle: NSLocalizedString("Match All (AND)", comment: "匹配全部 (AND)"), action: #selector(actSetFinderTagFilterModeAnd), keyEquivalent: "")
+                    matchAllItem.state = isAndMode ? .on : .off
 
                     filterMenu.addItem(NSMenuItem.separator())
 
@@ -126,7 +134,7 @@ class CustomCollectionView: NSCollectionView {
                     filterMenu.addItem(NSMenuItem.separator())
 
                     let showAllItem = filterMenu.addItem(withTitle: NSLocalizedString("Show All", comment: "显示全部"), action: #selector(actClearFinderTagFilter), keyEquivalent: "")
-                    if currentFilter == nil {
+                    if currentFilters.isEmpty {
                         showAllItem.state = .on
                     }
 
@@ -236,11 +244,23 @@ class CustomCollectionView: NSCollectionView {
 
     @objc func actClearFinderTagFilter() {
         getViewController(self)?.publicVar.isFinderTagFilterReversed = false
+        getViewController(self)?.publicVar.isFinderTagFilterModeAnd = false
+        getViewController(self)?.publicVar.finderTagFilters.removeAll()
         getViewController(self)?.toggleFinderTagFilter(nil)
     }
 
     @objc func actReverseFinderTagFilter() {
         getViewController(self)?.toggleFinderTagFilterReversed()
+    }
+
+    @objc func actSetFinderTagFilterModeAnd() {
+        getViewController(self)?.publicVar.isFinderTagFilterModeAnd = true
+        getViewController(self)?.refreshCollectionView(needLoadThumbPriority: true)
+    }
+
+    @objc func actSetFinderTagFilterModeOr() {
+        getViewController(self)?.publicVar.isFinderTagFilterModeAnd = false
+        getViewController(self)?.refreshCollectionView(needLoadThumbPriority: true)
     }
 
     @objc func actTagLearnMore() {
