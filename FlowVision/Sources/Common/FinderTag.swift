@@ -563,6 +563,8 @@ class EnhancedIndex {
     }
 }
 
+// MARK: - 读取原始信息公共函数
+
 struct FileTagAttributes {
     var userTags: [FinderTag]
     var finderInfoTagIndex: Int?
@@ -581,8 +583,6 @@ struct FileTagAttributes {
         return nil
     }
 }
-
-
 
 func readFinderExtendedAttributes(url: URL, needFinderInfo: Bool = false) -> FileTagAttributes? {
     let filePath = url.path

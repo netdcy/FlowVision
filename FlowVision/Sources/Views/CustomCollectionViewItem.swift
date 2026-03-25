@@ -201,6 +201,26 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         return itemFrame.intersects(visibleRectExtended)
     }
     
+    private func tagScaleFactor() -> CGFloat {
+        guard let vc = getViewController(collectionView!) else { return 1.0 }
+        let thumbSize = CGFloat(vc.publicVar.profile.thumbSize)
+        let baseScale = thumbSize / 512.0 * 1.0
+
+        let layoutCoefficient: CGFloat
+        switch vc.publicVar.profile.layoutType {
+        case .justified:
+            layoutCoefficient = 1.3
+        case .waterfall:
+            layoutCoefficient = 1.2
+        case .grid:
+            layoutCoefficient = 1.1
+        case .detail:
+            layoutCoefficient = 1.0
+        }
+
+        return max(1.0, min(2.5, baseScale * layoutCoefficient))
+    }
+
     /// 根据评级返回对应颜色（1–5 星：灰 → 银 → 橙 → 黄 → 金，便于区分）
     private static func color(forRating rating: Int) -> NSColor {
         switch rating {
@@ -220,8 +240,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         let isShowThumbnailTag = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailTag") == "true"
         guard isShowThumbnailTag, let rating = file.imageInfo?.rating, rating >= 1, rating <= 5 else { return }
 
-        let starSize: CGFloat = 13
-        let spacing: CGFloat = 2
+        let scale = tagScaleFactor()
+        let starSize: CGFloat = round(13 * scale)
+        let spacing: CGFloat = round(2 * scale)
+        let inset: CGFloat = round(5 * scale)
         let starCount = rating
         let color = Self.color(forRating: rating)
 
@@ -234,8 +256,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         view.addSubview(container)
 
         NSLayoutConstraint.activate([
-            container.leadingAnchor.constraint(equalTo: imageViewObj.leadingAnchor, constant: 5),
-            container.topAnchor.constraint(equalTo: imageViewObj.topAnchor, constant: 5),
+            container.leadingAnchor.constraint(equalTo: imageViewObj.leadingAnchor, constant: inset),
+            container.topAnchor.constraint(equalTo: imageViewObj.topAnchor, constant: inset),
             container.widthAnchor.constraint(equalToConstant: totalWidth),
             container.heightAnchor.constraint(equalToConstant: containerHeight),
         ])
@@ -290,11 +312,13 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         let textTags = tags.filter { $0.colorIndex == nil }
         let sortedTags = colorTags + textTags
 
-        let dotSize: CGFloat = 8
-        let spacing: CGFloat = 2
-        let fontSize: CGFloat = 9
-        let textPaddingH: CGFloat = 4
-        let textPaddingV: CGFloat = 2
+        let scale = tagScaleFactor()
+        let dotSize: CGFloat = round(8 * scale)
+        let spacing: CGFloat = round(2 * scale)
+        let fontSize: CGFloat = round(9 * scale)
+        let textPaddingH: CGFloat = round(4 * scale)
+        let textPaddingV: CGFloat = round(2 * scale)
+        let inset: CGFloat = round(6 * scale)
         let textFont = NSFont.systemFont(ofSize: fontSize)
 
         var totalWidth: CGFloat = 0
@@ -316,8 +340,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         self.view.addSubview(container)
 
         NSLayoutConstraint.activate([
-            container.leadingAnchor.constraint(equalTo: imageViewObj.leadingAnchor, constant: 5),
-            container.bottomAnchor.constraint(equalTo: imageViewObj.bottomAnchor, constant: -5),
+            container.leadingAnchor.constraint(equalTo: imageViewObj.leadingAnchor, constant: inset),
+            container.bottomAnchor.constraint(equalTo: imageViewObj.bottomAnchor, constant: -inset),
             container.widthAnchor.constraint(equalToConstant: totalWidth),
             container.heightAnchor.constraint(equalToConstant: containerHeight),
         ])
@@ -332,7 +356,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 dot.layer?.cornerRadius = dotSize / 2
                 let isLight = (tag.color.usingColorSpace(.genericGray)?.whiteComponent ?? 0) > 0.9
                 dot.layer?.borderColor = (isLight ? NSColor.gray : NSColor.white).cgColor
-                dot.layer?.borderWidth = 0.5
+                dot.layer?.borderWidth = round(0.5 * scale * 2) / 2
                 container.addSubview(dot)
                 xOffset += dotSize + spacing
             } else {
@@ -344,8 +368,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 label.alignment = .center
                 label.wantsLayer = true
                 label.layer?.borderColor = NSColor.gray.cgColor
-                label.layer?.borderWidth = 1
-                label.layer?.cornerRadius = 3
+                label.layer?.borderWidth = round(1 * scale * 2) / 2
+                label.layer?.cornerRadius = round(3 * scale)
                 label.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.7).cgColor
                 label.frame = NSRect(x: xOffset, y: 0, width: labelWidth, height: containerHeight)
                 container.addSubview(label)
@@ -1216,12 +1240,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
     @objc func actScanEnhancedIndex() {
         guard file.isDir, let url = URL(string: file.path) else { return }
-        guard let vc = getViewController(collectionView!) else { return }
-        EnhancedIndex.scanFolder(url) { message, isComplete in
-            DispatchQueue.main.async {
-                vc.coreAreaView.showInfo(message, timeOut: isComplete ? 2.0 : .infinity, cannotBeCleard: false)
-            }
-        }
+        getViewController(collectionView!)?.handleScanEnhancedIndex(url: url)
     }
 
     @objc func actScanEnhancedIndexReadmeAction() {

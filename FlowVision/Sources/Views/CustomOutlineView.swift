@@ -400,13 +400,8 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
     }
 
     @objc func actScanEnhancedIndex() {
-        guard let url = URL(string: curRightClickedPath),
-              let vc = getViewController(self) else { return }
-        EnhancedIndex.scanFolder(url) { message, isComplete in
-            DispatchQueue.main.async {
-                vc.coreAreaView.showInfo(message, timeOut: isComplete ? 2.0 : .infinity, cannotBeCleard: false)
-            }
-        }
+        guard let url = URL(string: curRightClickedPath) else { return }
+        getViewController(self)?.handleScanEnhancedIndex(url: url)
     }
 
     @objc func actScanEnhancedIndexReadmeAction() {

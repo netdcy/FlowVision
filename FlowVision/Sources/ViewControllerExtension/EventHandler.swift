@@ -281,6 +281,15 @@ extension ViewController {
         fileDB.unlock()
     }
 
+    func handleScanEnhancedIndex(url: URL) {
+        EnhancedIndex.scanFolder(url) { message, isComplete in
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                coreAreaView.showInfo(message, timeOut: isComplete ? 2.0 : .infinity, cannotBeCleard: false)
+            }
+        }
+    }
+
     func toggleFinderTagFilter(_ tagName: String?) {
         guard let tagName = tagName else {
             publicVar.finderTagFilters.removeAll()
