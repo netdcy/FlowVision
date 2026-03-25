@@ -146,7 +146,7 @@ extension ViewController {
         if VolumeManager.shared.isExternalVolume(folderURL) {
             properties = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey, .tagNamesKey, .isAliasFileKey, .isSymbolicLinkKey]
         }
-        var isInSameDir = !publicVar.isRecursiveMode
+        var isInSameDir = true
         if !skip {
             do {
                 let curDirURLCacheParameters = (folderURL, publicVar.isRecursiveMode, publicVar.isShowHiddenFile, publicVar.isRecursiveContainFolder, properties)
@@ -157,11 +157,11 @@ extension ViewController {
                 }
                 dirURLCacheParameters = curDirURLCacheParameters
                 
+                isInSameDir = !publicVar.isRecursiveMode && !folderURL.path.contains("VirtualFinderTagsFolder")
                 if dirURLCache.isEmpty {
                     if folderURL.path.contains("VirtualFinderTagsFolder") {
                         let tagName = folderURL.lastPathComponent
                         scanVirtualFiles(at: folderURL, contents: &dirURLCache, properties: properties, tagName: tagName)
-                        isInSameDir = false
                     }else if publicVar.isRecursiveMode {
                         scanFiles(at: folderURL, contents: &dirURLCache, properties: properties)
                     }else{
