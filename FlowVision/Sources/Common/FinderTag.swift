@@ -411,6 +411,16 @@ class EnhancedIndex {
 
         for path in paths {
             guard FileManager.default.fileExists(atPath: path) else {
+                if path.hasPrefix("/Volumes/") {
+                    // /Volumes/[volume]/[optional subpath/...] -> Check /Volumes/<volume> existence
+                    let pathComponents = (path as NSString).pathComponents
+                    if pathComponents.count > 3 {
+                        let secondLevelPath = NSString.path(withComponents: Array(pathComponents.prefix(3)))
+                        if !FileManager.default.fileExists(atPath: secondLevelPath) {
+                            continue
+                        }
+                    }
+                }
                 pathsToRemove.append(path)
                 continue
             }

@@ -10,6 +10,43 @@ class CustomCollectionView: NSCollectionView {
 
     private var mouseDownLocation: NSPoint? = nil
     
+    private lazy var folderInfoLabel: NSTextField = {
+        let label = NSTextField(labelWithString: "")
+        label.font = NSFont.systemFont(ofSize: 16, weight: .regular)
+        label.textColor = NSColor.tertiaryLabelColor
+        label.alignment = .center
+        label.lineBreakMode = .byWordWrapping
+        label.maximumNumberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.isHidden = true
+        return label
+    }()
+    
+    private var folderInfoLabelConstraints: [NSLayoutConstraint] = []
+    
+    private func setupFolderInfoLabelIfNeeded() {
+        guard folderInfoLabel.superview == nil else { return }
+        guard let scrollView = enclosingScrollView,
+              let parentView = scrollView.superview else { return }
+        parentView.addSubview(folderInfoLabel)
+        folderInfoLabelConstraints = [
+            folderInfoLabel.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+            folderInfoLabel.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor),
+            folderInfoLabel.widthAnchor.constraint(lessThanOrEqualTo: scrollView.widthAnchor, multiplier: 0.8)
+        ]
+        NSLayoutConstraint.activate(folderInfoLabelConstraints)
+    }
+    
+    func showFolderInfo(_ text: String) {
+        setupFolderInfoLabelIfNeeded()
+        folderInfoLabel.stringValue = text
+        folderInfoLabel.isHidden = false
+    }
+    
+    func hideFolderInfo() {
+        folderInfoLabel.isHidden = true
+    }
+    
     override func becomeFirstResponder() -> Bool {
         let result = super.becomeFirstResponder()
         log("CustomCollectionView becomeFirstResponder")

@@ -718,6 +718,9 @@ extension ViewController {
             }
             readInfoTaskPoolLock.unlock()
             publicVar.isInStageOneProgress = false
+
+            // Hide folder info
+            collectionView.hideFolderInfo()
             
             // 对于空文件夹，播放渐变动画（因为没有分派任务，所以在任务里的渐变调用不到）
             // For empty folders, play fade animation (because no tasks are dispatched, fade in tasks won't be called)
@@ -727,6 +730,14 @@ extension ViewController {
                 collectionView.numberOfItems(inSection:0)
 
                 setProgress(1.0)
+
+                if !FileManager.default.fileExists(atPath: path.dropLast().replacingOccurrences(of: "file://", with: "").removingPercentEncoding!) {
+                    if path == "file:///VirtualFinderTagsFolder/" {
+                        collectionView.showFolderInfo(NSLocalizedString("Please select a specific tag", comment: "请选择具体的标签"))
+                    } else if !path.hasPrefix("file:///VirtualFinderTagsFolder") {
+                        collectionView.showFolderInfo(NSLocalizedString("Directory does not exist", comment: "目录不存在"))
+                    }
+                }
                 
                 while snapshotQueue.count > 0{
                     let snapshot=snapshotQueue.first!
