@@ -43,6 +43,16 @@ extension ViewController {
         
         let characters = (event.charactersIgnoringModifiers ?? "").lowercased()
         let specialKey = event.specialKey ?? .f30
+
+        // 把按键信息打印出来，用于调试不同键盘的键值差异
+        // var modifierStrings: [String] = []
+        // if isCommandPressed { modifierStrings.append("Command") }
+        // if isAltPressed { modifierStrings.append("Option") }
+        // if isCtrlPressed { modifierStrings.append("Control") }
+        // if isShiftPressed { modifierStrings.append("Shift") }
+        // if isFnPressed { modifierStrings.append("Fn") }
+        // let modifierDescription = modifierStrings.isEmpty ? "None" : modifierStrings.joined(separator: "+")
+        // log("Key Event Debug - characters: \(characters), keyCode: \(event.keyCode), specialKey: \(specialKey), modifierFlags: \(modifierFlags.rawValue), Modifiers: \(modifierDescription)", level: .debug)
         
         // 快速搜索
         // Quick search
@@ -585,6 +595,16 @@ extension ViewController {
                 }
             }
 
+            // 检查按键是否是 Command+Shift+1~9 键
+            // Check if key is Command+Shift+1~9
+            // if ["1","2","3","4","5","6","7","8","9"].contains(characters) && isCommandPressed && isShiftPressed && !isAltPressed && !isCtrlPressed {
+            //     if publicVar.isCollectionViewFirstResponder {
+            //         let index = Int(characters)! - 1
+            //         toggleFinderTagFilter(index)
+            //         return nil
+            //     }
+            // }
+
             // 检查按键是否是 Control+1~5 键
             // Check if key is Command+1~5
             if ["1","2","3","4","5","0"].contains(characters) && isOnlyCtrlPressed {
@@ -594,6 +614,16 @@ extension ViewController {
                     return nil
                 }
             }
+
+            // 检查按键是否是 Control+Shift+1~5 键
+            // Check if key is Control+Shift+1~5
+            // if ["1","2","3","4","5","0"].contains(characters) && isCtrlPressed && isShiftPressed && !isAltPressed && !isCommandPressed {
+            //     if publicVar.isCollectionViewFirstResponder {
+            //         let index = Int(characters)!
+            //         toggleRatingFilter(index)
+            //         return nil
+            //     }
+            // }
             
             // 检查按键是否是 Opt+1~9 键
             // Check if key is Opt+1~9

@@ -257,7 +257,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
         NSLayoutConstraint.activate([
             container.leadingAnchor.constraint(equalTo: imageViewObj.leadingAnchor, constant: inset),
-            container.topAnchor.constraint(equalTo: imageViewObj.topAnchor, constant: inset),
+            container.topAnchor.constraint(equalTo: imageViewObj.topAnchor, constant: inset-1),
             container.widthAnchor.constraint(equalToConstant: totalWidth),
             container.heightAnchor.constraint(equalToConstant: containerHeight),
         ])
@@ -341,7 +341,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
         NSLayoutConstraint.activate([
             container.leadingAnchor.constraint(equalTo: imageViewObj.leadingAnchor, constant: inset),
-            container.bottomAnchor.constraint(equalTo: imageViewObj.bottomAnchor, constant: -inset),
+            container.bottomAnchor.constraint(equalTo: imageViewObj.bottomAnchor, constant: -(inset-1)),
             container.widthAnchor.constraint(equalToConstant: totalWidth),
             container.heightAnchor.constraint(equalToConstant: containerHeight),
         ])

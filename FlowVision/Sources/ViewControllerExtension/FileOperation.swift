@@ -903,7 +903,8 @@ extension ViewController {
                 } else {
                     var appleScriptURLs = ""
                     for url in urlsToDelete {
-                        appleScriptURLs += "\"\(url.path)\" as POSIX file, "
+                        let escapedPath = url.path.replacingOccurrences(of: "\"", with: "\\\"")
+                        appleScriptURLs += "\"\(escapedPath)\" as POSIX file, "
                     }
                     
                     // Remove the trailing comma and space

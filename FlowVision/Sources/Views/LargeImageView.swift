@@ -1639,8 +1639,8 @@ class LargeImageView: NSView {
     }
 
     override func rightMouseUp(with event: NSEvent) {
-        getViewController(self)!.publicVar.isRightMouseDown = false
         mouseUp(with: event)
+        getViewController(self)!.publicVar.isRightMouseDown = false
         
         if !doNotPopRightMenu && event.locationInWindow.y < getViewController(self)!.mainScrollView.bounds.height {
             // 弹出菜单

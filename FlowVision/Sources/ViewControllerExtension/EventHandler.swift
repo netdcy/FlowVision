@@ -296,6 +296,14 @@ extension ViewController {
         }
     }
 
+    func toggleFinderTagFilter(_ tagIndex: Int) {
+        if tagIndex < 0 || tagIndex >= FinderTag.all.count {
+            return
+        }
+        let tagName = FinderTag.all[tagIndex].name
+        toggleFinderTagFilter(tagName)
+    }
+
     func toggleFinderTagFilter(_ tagName: String?) {
         guard let tagName = tagName else {
             publicVar.finderTagFilters.removeAll()

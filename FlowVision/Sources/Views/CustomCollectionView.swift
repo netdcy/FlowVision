@@ -109,7 +109,8 @@ class CustomCollectionView: NSCollectionView {
                     let currentFilters = getViewController(self)?.publicVar.finderTagFilters ?? []
 
                     for (i, tag) in FinderTag.all.enumerated() {
-                        let item = filterMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actFilterByFinderTag(_:)), keyEquivalent: (i + 1 <= 9) ? "\(i + 1)" : "")
+                        // (i + 1 <= 9) ? "\(i + 1)" : ""
+                        let item = filterMenu.addItem(withTitle: NSLocalizedString(tag.name, comment: ""), action: #selector(actFilterByFinderTag(_:)), keyEquivalent: "")
                         item.keyEquivalentModifierMask = [.command, .shift]
                         item.representedObject = tag.name
                         if currentFilters.contains(tag.name) {
@@ -153,7 +154,7 @@ class CustomCollectionView: NSCollectionView {
                     for rating in (1...5).reversed() {
                         let stars = String(repeating: "★", count: rating) + String(repeating: "☆", count: 5 - rating)
                         let title = "\(stars)  (\(rating))"
-                        let item = ratingMenu.addItem(withTitle: title, action: #selector(actFilterByRating(_:)), keyEquivalent: "\(rating)")
+                        let item = ratingMenu.addItem(withTitle: title, action: #selector(actFilterByRating(_:)), keyEquivalent: "")
                         item.keyEquivalentModifierMask = [.control, .shift]
                         item.representedObject = rating
                         if currentRatingFilters.contains(rating) {
@@ -161,7 +162,7 @@ class CustomCollectionView: NSCollectionView {
                         }
                     }
 
-                    let noRatingItem = ratingMenu.addItem(withTitle: NSLocalizedString("No Rating", comment: "无评级"), action: #selector(actFilterByRating(_:)), keyEquivalent: "0")
+                    let noRatingItem = ratingMenu.addItem(withTitle: NSLocalizedString("No Rating", comment: "无评级"), action: #selector(actFilterByRating(_:)), keyEquivalent: "")
                     noRatingItem.keyEquivalentModifierMask = [.control, .shift]
                     noRatingItem.representedObject = 0
                     if currentRatingFilters.contains(0) {
