@@ -10072,7 +10072,7 @@
       }
     },
     "Exif-Rating" : {
-      "comment" : "星级",
+      "comment" : "评级",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10155,7 +10155,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "星级"
+            "value" : "评级"
           }
         },
         "zh-Hant" : {
@@ -11872,6 +11872,101 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "按Finder標籤篩選"
+          }
+        }
+      }
+    },
+    "Filter by Rating" : {
+      "comment" : "按评级筛选",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التصفية حسب التقييم"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach Bewertung filtern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter by Rating"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrar por calificación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrer par note"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtra per valutazione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "評価でフィルター"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "평점별 필터링"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filteren op beoordeling"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrar por classificação"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrar por classificação"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фильтр по рейтингу"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrera efter betyg"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按评级筛选"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按評級篩選"
           }
         }
       }
@@ -17102,7 +17197,7 @@
       }
     },
     "No Rating" : {
-      "comment" : "无星级",
+      "comment" : "无评级",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -17185,7 +17280,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无星级"
+            "value" : "无评级"
           }
         },
         "zh-Hant" : {
@@ -20807,7 +20902,7 @@
       }
     },
     "Rating" : {
-      "comment" : "星级",
+      "comment" : "评级",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -20890,7 +20985,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "星级"
+            "value" : "评级"
           }
         },
         "zh-Hant" : {
@@ -20985,7 +21080,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "**关于 XMP 星级（Rating）**\nXMP 星级是一种通用的图片评分方式，用 1~5 星 标记图片优先级。\n它是行业通用元数据，不是 FlowVision 私有格式，很多支持 XMP 的软件都能识别。\n\n**XMP 是什么**\nXMP（Extensible Metadata Platform）可以理解为“写在图片里的信息卡片”，常用于保存评分、关键词、版权等可扩展信息。\n与 EXIF 主要记录相机拍摄参数（如快门、光圈、ISO）不同，XMP 更偏向可编辑的描述信息；在文件结构上，二者都位于图片的元数据区域，但属于不同的数据命名体系/数据块（可并存）。\n\n**星级信息存在哪里**\nFlowVision 将星级写入图片元数据中的 xmp:Rating 字段。\n这个信息通常嵌入在图片文件内部的元数据区域（如 JPEG 的元数据段、PNG/TIFF/HEIF/RAW 的对应元数据容器），而不是单独保存为数据库记录或文件系统的文件元信息中。\n\n**无星级的含义**\n当你选择“无星级”时，FlowVision 会清除 xmp:Rating 字段（不是写入 0）。\n这表示该图片当前未设置评级。\n\n**注意事项（重要）**\n设置或清除星级属于一次文件写入操作。\n写入后，文件的修改日期通常会更新，文件大小也可能因元数据重写而发生轻微变化。\n如果你依赖修改时间进行同步、备份或排序，建议在批量评级前先了解这一影响。"
+            "value" : "**关于 XMP 评级（Rating）**\nXMP 评级是一种通用的图片评分方式，用 1~5 星 标记图片优先级。\n它是行业通用元数据，不是 FlowVision 私有格式，很多支持 XMP 的软件都能识别。\n\n**XMP 是什么**\nXMP（Extensible Metadata Platform）可以理解为“写在图片里的信息卡片”，常用于保存评分、关键词、版权等可扩展信息。\n与 EXIF 主要记录相机拍摄参数（如快门、光圈、ISO）不同，XMP 更偏向可编辑的描述信息；在文件结构上，二者都位于图片的元数据区域，但属于不同的数据命名体系/数据块（可并存）。\n\n**评级信息存在哪里**\nFlowVision 将评级写入图片元数据中的 xmp:Rating 字段。\n这个信息通常嵌入在图片文件内部的元数据区域（如 JPEG 的元数据段、PNG/TIFF/HEIF/RAW 的对应元数据容器），而不是单独保存为数据库记录或文件系统的文件元信息中。\n\n**无评级的含义**\n当你选择“无评级”时，FlowVision 会清除 xmp:Rating 字段（不是写入 0）。\n这表示该图片当前未设置评级。\n\n**注意事项（重要）**\n设置或清除评级属于一次文件写入操作。\n写入后，文件的修改日期通常会更新，文件大小也可能因元数据重写而发生轻微变化。\n如果你依赖修改时间进行同步、备份或排序，建议在批量评级前先了解这一影响。"
           }
         },
         "zh-Hant" : {

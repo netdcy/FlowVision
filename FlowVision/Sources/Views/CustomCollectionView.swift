@@ -143,6 +143,48 @@ class CustomCollectionView: NSCollectionView {
 
                     menu.addItem(filterMenuItem)
 
+                    // 根据评级筛选
+                    let ratingMenu = NSMenu()
+                    let ratingMenuItem = NSMenuItem(title: NSLocalizedString("Filter by Rating", comment: "按评级筛选"), action: nil, keyEquivalent: "")
+                    ratingMenuItem.submenu = ratingMenu
+
+                    let currentRatingFilters = getViewController(self)?.publicVar.ratingFilters ?? []
+
+                    for rating in (1...5).reversed() {
+                        let stars = String(repeating: "★", count: rating) + String(repeating: "☆", count: 5 - rating)
+                        let title = "\(stars)  (\(rating))"
+                        let item = ratingMenu.addItem(withTitle: title, action: #selector(actFilterByRating(_:)), keyEquivalent: "\(rating)")
+                        item.keyEquivalentModifierMask = [.control, .shift]
+                        item.representedObject = rating
+                        if currentRatingFilters.contains(rating) {
+                            item.state = .on
+                        }
+                    }
+
+                    let noRatingItem = ratingMenu.addItem(withTitle: NSLocalizedString("No Rating", comment: "无评级"), action: #selector(actFilterByRating(_:)), keyEquivalent: "0")
+                    noRatingItem.keyEquivalentModifierMask = [.control, .shift]
+                    noRatingItem.representedObject = 0
+                    if currentRatingFilters.contains(0) {
+                        noRatingItem.state = .on
+                    }
+
+                    ratingMenu.addItem(NSMenuItem.separator())
+
+                    let reverseRatingFilterItem = ratingMenu.addItem(withTitle: NSLocalizedString("Reverse Filter", comment: "反转筛选"), action: #selector(actReverseRatingFilter), keyEquivalent: "")
+                    reverseRatingFilterItem.state = getViewController(self)?.publicVar.isRatingFilterReversed ?? false ? .on : .off
+
+                    ratingMenu.addItem(NSMenuItem.separator())
+
+                    let showAllRatingItem = ratingMenu.addItem(withTitle: NSLocalizedString("Show All", comment: "显示全部"), action: #selector(actClearRatingFilter), keyEquivalent: "")
+                    if currentRatingFilters.isEmpty {
+                        showAllRatingItem.state = .on
+                    }
+
+                    ratingMenu.addItem(NSMenuItem.separator())
+                    ratingMenu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(actRatingReadme), keyEquivalent: "")
+
+                    menu.addItem(ratingMenuItem)
+
                     menu.addItem(NSMenuItem.separator())
                     
                     // let actionItemCopyPath = menu.addItem(withTitle: NSLocalizedString("Copy Path", comment: "复制路径"), action: #selector(actCopyPath), keyEquivalent: "")
@@ -265,5 +307,24 @@ class CustomCollectionView: NSCollectionView {
 
     @objc func actTagLearnMore() {
         getViewController(self)?.handleTagLearnMore()
+    }
+
+    @objc func actFilterByRating(_ sender: NSMenuItem) {
+        guard let rating = sender.representedObject as? Int else { return }
+        getViewController(self)?.toggleRatingFilter(rating)
+    }
+
+    @objc func actClearRatingFilter() {
+        getViewController(self)?.publicVar.isRatingFilterReversed = false
+        getViewController(self)?.publicVar.ratingFilters.removeAll()
+        getViewController(self)?.toggleRatingFilter(nil)
+    }
+
+    @objc func actReverseRatingFilter() {
+        getViewController(self)?.toggleRatingFilterReversed()
+    }
+
+    @objc func actRatingReadme() {
+        showInformationLong(title: NSLocalizedString("Info", comment: "说明"), message: NSLocalizedString("rating-info", comment: "对于评级的说明..."))
     }
 }

@@ -310,6 +310,7 @@ extension NSToolbarItem.Identifier {
     static let isRecursiveMode = NSToolbarItem.Identifier("com.example.isRecursiveMode")
     static let isSearchFilterOn = NSToolbarItem.Identifier("com.example.isSearchFilterOn")
     static let isTagFilterOn = NSToolbarItem.Identifier("com.example.isTagFilterOn")
+    static let isRatingFilterOn = NSToolbarItem.Identifier("com.example.isRatingFilterOn")
     static let isAutoPlayVisibleVideo = NSToolbarItem.Identifier("com.example.isAutoPlayVisibleVideo")
     static let isEnableHDR = NSToolbarItem.Identifier("com.example.isEnableHDR")
 }
@@ -364,6 +365,9 @@ extension WindowController: NSToolbarDelegate {
                 }
                 if !viewController.publicVar.finderTagFilters.isEmpty {
                     identifiers.append(.isTagFilterOn)
+                }
+                if !viewController.publicVar.ratingFilters.isEmpty {
+                    identifiers.append(.isRatingFilterOn)
                 }
                 if viewController.publicVar.isCurrentFolderFiltered {
                     identifiers.append(.isSearchFilterOn)
@@ -775,7 +779,7 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.visibilityPriority = .low
             
         case .isAutoPlayVisibleVideo:
-            let button = NSButton(title: "", image: NSImage(systemSymbolName: "v.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleAutoPlayVisibleVideo(_:)))
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "video.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleAutoPlayVisibleVideo(_:)))
             setButtonStyle(button)
             button.toolTip = NSLocalizedString("Cancel Auto Play Visible Video", comment: "取消自动播放可见视频")
             toolbarItem.view = button
@@ -784,7 +788,7 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.visibilityPriority = .low
             
         case .isSearchFilterOn:
-            let button = NSButton(title: "", image: NSImage(systemSymbolName: "f.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleSearchFilter(_:)))
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "magnifyingglass.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleSearchFilter(_:)))
             setButtonStyle(button)
             // button.showsBorderOnlyWhileMouseInside = false
             button.toolTip = NSLocalizedString("Cancel Filter", comment: "取消过滤")
@@ -794,7 +798,7 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.visibilityPriority = .low
 
         case .isTagFilterOn:
-            let button = NSButton(title: "", image: NSImage(systemSymbolName: "t.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleTagFilter(_:)))
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "tag.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleTagFilter(_:)))
             setButtonStyle(button)
             // button.showsBorderOnlyWhileMouseInside = false
             button.toolTip = NSLocalizedString("Cancel Filter", comment: "取消过滤")
@@ -803,8 +807,17 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.paletteLabel = NSLocalizedString("Cancel Filter", comment: "取消过滤")
             toolbarItem.visibilityPriority = .low
             
+        case .isRatingFilterOn:
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "star.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleRatingFilter(_:)))
+            setButtonStyle(button)
+            button.toolTip = NSLocalizedString("Cancel Filter", comment: "取消过滤")
+            toolbarItem.view = button
+            toolbarItem.label = NSLocalizedString("Cancel Filter", comment: "取消过滤")
+            toolbarItem.paletteLabel = NSLocalizedString("Cancel Filter", comment: "取消过滤")
+            toolbarItem.visibilityPriority = .low
+
         case .isRecursiveMode:
-            let button = NSButton(title: "", image: NSImage(systemSymbolName: "r.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleRecursiveMode(_:)))
+            let button = NSButton(title: "", image: NSImage(systemSymbolName: "rectangle.fill.on.rectangle.fill.circle.fill", accessibilityDescription: "")!, target: self, action: #selector(toggleRecursiveMode(_:)))
             setButtonStyle(button)
             // button.showsBorderOnlyWhileMouseInside = false
             button.toolTip = NSLocalizedString("Exit Recursive Mode", comment: "退出递归浏览模式")
@@ -1735,6 +1748,11 @@ extension WindowController: NSToolbarDelegate {
     @objc func toggleTagFilter(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.toggleFinderTagFilter(nil)
+    }
+
+    @objc func toggleRatingFilter(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleRatingFilter(nil)
     }
     
     @objc func toggleRecursiveMode(_ sender: NSMenuItem){

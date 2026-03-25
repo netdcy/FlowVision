@@ -224,6 +224,16 @@ extension ViewController {
                 return publicVar.isFinderTagFilterReversed ? !matched : matched
             }
         }
+
+        // 过滤评级
+        // Filter rating
+        if !publicVar.ratingFilters.isEmpty {
+            contents = contents.filter { url in
+                let rating = readRating(from: url) ?? 0
+                let matched = publicVar.ratingFilters.contains(rating)
+                return publicVar.isRatingFilterReversed ? !matched : matched
+            }
+        }
         
         // 过滤出目录列表（含指向目录的替身）
         // Filter out directory list (including aliases pointing to directories)
@@ -691,6 +701,8 @@ extension ViewController {
                 
                 collectionView.reloadData()
                 collectionView.numberOfItems(inSection:0)
+
+                setProgress(1.0)
                 
                 while snapshotQueue.count > 0{
                     let snapshot=snapshotQueue.first!
@@ -788,7 +800,7 @@ extension ViewController {
         fileDB.lock()
         let curFolder = fileDB.curFolder
         fileDB.unlock()
-        if curFolder.hasPrefix("file:///VirtualFinderTagsFolder") || !publicVar.finderTagFilters.isEmpty {
+        if curFolder.hasPrefix("file:///VirtualFinderTagsFolder") || !publicVar.finderTagFilters.isEmpty || !publicVar.ratingFilters.isEmpty {
             if rawdirection == .left || rawdirection == .up_left || rawdirection == .down_left
                 || rawdirection == .right || rawdirection == .up_right || rawdirection == .down_right {
                 return
@@ -909,6 +921,8 @@ extension ViewController {
                 publicVar.finderTagFilters.removeAll()
                 publicVar.isFinderTagFilterReversed = false
                 publicVar.isFinderTagFilterModeAnd = false
+                publicVar.ratingFilters.removeAll()
+                publicVar.isRatingFilterReversed = false
             }
             // 重置自动播放可见视频
             // Reset auto-play visible video

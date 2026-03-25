@@ -254,7 +254,7 @@ func getFileInfo(file: FileModel) {
         }
         
     } catch {
-        log("Error fetching file info (size and date): \(error)")
+        log("Error fetching file info (size and date): \(error)", level: .warn)
     }
 }
 
@@ -333,7 +333,7 @@ func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, preferDi
                     break
                 }
             } catch {
-                log("Error accessing contents of directory \(currentDirectory): \(error)")
+                log("Error accessing contents of directory \(currentDirectory): \(error)", level: .warn)
             }
         }
 
@@ -413,7 +413,7 @@ func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, preferDi
                     }
                 }
             } catch {
-                log("Error accessing contents of directory \(currentDirectory): \(error)")
+                log("Error accessing contents of directory \(currentDirectory): \(error)", level: .warn)
             }
         }
 
@@ -926,7 +926,6 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         // 若指定了大小则特殊处理
         // Special handling if size is specified
         if size != nil && "ai" != url.pathExtension.lowercased() {
-            // log(size.width,size.height)
             if let resizedImage=getResizedImage(url: url, size: size!, isRawUseEmbeddedThumb: true){
                 return resizedImage
             }
@@ -1343,7 +1342,7 @@ func getVideoMetadataFormatedFFmpeg(for url: URL) -> [(String, String)]? {
             result = result + formatVideoMetadata(stream)
         }
     } else {
-        log("FFprobe execution failed")
+        log("FFprobe execution failed", level: .warn)
     }
     
     if let session = FFmpegKitWrapper.shared.executeFFprobeCommand(ffprobeArgsAudio),
@@ -1352,7 +1351,7 @@ func getVideoMetadataFormatedFFmpeg(for url: URL) -> [(String, String)]? {
             result = result + [("-","-")] + formatAudioMetadata(stream)
         }
     } else {
-        log("FFprobe execution failed")
+        log("FFprobe execution failed", level: .warn)
     }
     
     if result.isEmpty {
@@ -1595,7 +1594,7 @@ func getVideoMetadataFFmpeg(for url: URL) -> String? {
             return output
         }
     } else {
-        log("FFprobe execution failed")
+        log("FFprobe execution failed", level: .warn)
     }
     return nil
 }
@@ -1649,7 +1648,7 @@ func getVideoResolutionAndDateFFmpeg(for url: URL) -> (Int,Int,Date?)? {
             return (width,height,creationTime)
         }
     } else {
-        log("FFprobe execution failed")
+        log("FFprobe execution failed", level: .warn)
     }
     return nil
 }
@@ -1702,7 +1701,7 @@ func getVideoResolutionFFmpeg(for url: URL) -> NSSize? {
             }
         }
     } else {
-        log("FFprobe execution failed")
+        log("FFprobe execution failed", level: .warn)
     }
     return nil
 }
@@ -1928,7 +1927,7 @@ func formatExifData(_ imageProperties: [String: Any], isVideo: Bool, needWarp: B
         ("FileCreatedTime" as CFString, NSLocalizedString("Exif-FileCreatedTime", comment: "文件创建时间")),
         ("FileModifiedTime" as CFString, NSLocalizedString("Exif-FileModifiedTime", comment: "文件修改时间")),
         ("FileAddedTime" as CFString, NSLocalizedString("Exif-FileAddedTime", comment: "文件添加时间")),
-        ("Rating" as CFString, NSLocalizedString("Exif-Rating", comment: "星级")),
+        ("Rating" as CFString, NSLocalizedString("Exif-Rating", comment: "评级")),
         
         ("-" as CFString, "-"),
         
@@ -2101,15 +2100,8 @@ func formatExifData(_ imageProperties: [String: Any], isVideo: Bool, needWarp: B
 }
 
 func readRating(from imageURL: URL) -> Int? {
-    guard let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, nil) else {
-        print("Failed to create image source.")
-        return nil
-    }
-    
-    guard let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil) else {
-        print("Failed to copy metadata.")
-        return nil
-    }
+    guard let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, nil) else { return nil }
+    guard let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil) else { return nil }
     
     //let namespace = "http://ns.adobe.com/xap/1.0/"
     let prefix = "xmp"
@@ -2128,58 +2120,31 @@ func writeRating(inputURL: URL, outputURL: URL, rating: Int) {
     // SMB 等网络盘在覆盖写入后有时会把文件标成隐藏，先记下原始状态并在写入后恢复
     let originalIsHidden = (try? inputURL.resourceValues(forKeys: [.isHiddenKey]))?.isHidden ?? false
 
-    guard let imageSource = CGImageSourceCreateWithURL(inputURL as CFURL, nil) else {
-        print("Failed to create image source.")
-        return
-    }
-    
-    guard let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) else {
-        print("Failed to create image.")
-        return
-    }
-    
-    guard let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil) else {
-        print("Failed to copy metadata.")
-        return
-    }
-    
-    guard let mutableMetadata = CGImageMetadataCreateMutableCopy(metadata) else {
-        print("Failed to create mutable metadata.")
-        return
-    }
+    guard let imageSource = CGImageSourceCreateWithURL(inputURL as CFURL, nil) else { return }
+    guard let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) else { return }
+    guard let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil) else { return }
+    guard let mutableMetadata = CGImageMetadataCreateMutableCopy(metadata) else { return }
     
     let namespace = "http://ns.adobe.com/xap/1.0/"
     let prefix = "xmp"
     let key = "Rating"
     
     // 在使用自定义命名空间时需要
-//    guard CGImageMetadataRegisterNamespaceForPrefix(mutableMetadata, namespace as CFString, prefix as CFString, nil) else {
-//        print("Failed to register namespace.")
-//        return
-//    }
+//    guard CGImageMetadataRegisterNamespaceForPrefix(mutableMetadata, namespace as CFString, prefix as CFString, nil) else { return }
     
     if rating == 0 {
-        // 0 星级：移除现有 Rating 标签（如果存在），而不是写入 0
+        // 0 评级：移除现有 Rating 标签（如果存在），而不是写入 0
         CGImageMetadataRemoveTagWithPath(mutableMetadata, nil, "\(prefix):\(key)" as CFString)
     } else {
         let value = rating as CFNumber
-        guard CGImageMetadataSetValueWithPath(mutableMetadata, nil, "\(prefix):\(key)" as CFString, value) else {
-            print("Failed to set metadata value.")
-            return
-        }
+        guard CGImageMetadataSetValueWithPath(mutableMetadata, nil, "\(prefix):\(key)" as CFString, value) else { return }
     }
     
-    guard let imageDestination = CGImageDestinationCreateWithURL(outputURL as CFURL, CGImageSourceGetType(imageSource)!, 1, nil) else {
-        print("Failed to create image destination.")
-        return
-    }
+    guard let imageDestination = CGImageDestinationCreateWithURL(outputURL as CFURL, CGImageSourceGetType(imageSource)!, 1, nil) else { return }
     
     CGImageDestinationAddImageAndMetadata(imageDestination, image, mutableMetadata, nil)
     
-    guard CGImageDestinationFinalize(imageDestination) else {
-        print("Failed to finalize image destination.")
-        return
-    }
+    guard CGImageDestinationFinalize(imageDestination) else { return }
 
     // 写入后恢复原来的「隐藏」属性，避免 SMB 等网络盘把文件错误标成隐藏
     var values = URLResourceValues()

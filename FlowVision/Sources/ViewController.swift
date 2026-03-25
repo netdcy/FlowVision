@@ -159,6 +159,8 @@ class PublicVar{
     var finderTagFilters: Set<String> = []
     var isFinderTagFilterReversed: Bool = false
     var isFinderTagFilterModeAnd: Bool = false
+    var ratingFilters: Set<Int> = []
+    var isRatingFilterReversed: Bool = false
 
     // 可一键切换的配置
     // Configuration that can be switched with one key

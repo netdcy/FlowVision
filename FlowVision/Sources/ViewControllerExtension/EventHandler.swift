@@ -307,6 +307,32 @@ extension ViewController {
         refreshCollectionView(needLoadThumbPriority: true)
     }
 
+    func toggleRatingFilter(_ rating: Int?) {
+        guard let rating = rating else {
+            publicVar.ratingFilters.removeAll()
+            coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: false)
+            refreshCollectionView(needLoadThumbPriority: true)
+            return
+        }
+        if publicVar.ratingFilters.contains(rating) {
+            publicVar.ratingFilters.remove(rating)
+        } else {
+            publicVar.ratingFilters.insert(rating)
+        }
+        if publicVar.ratingFilters.isEmpty {
+            coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: false)
+        } else {
+            let stars = publicVar.ratingFilters.sorted().map { $0 == 0 ? NSLocalizedString("No Rating", comment: "无评级") : String(repeating: "★", count: $0) }.joined(separator: ", ")
+            coreAreaView.showInfo(NSLocalizedString("Filter", comment: "筛选") + ": \(stars)", timeOut: 0.8, cannotBeCleard: false)
+        }
+        refreshCollectionView(needLoadThumbPriority: true)
+    }
+
+    func toggleRatingFilterReversed() {
+        publicVar.isRatingFilterReversed.toggle()
+        refreshCollectionView(needLoadThumbPriority: true)
+    }
+
     func handleTagLearnMore() {
         if let url = URL(string: FINDER_TAG_LEARN_MORE_URL) {
             NSWorkspace.shared.open(url)

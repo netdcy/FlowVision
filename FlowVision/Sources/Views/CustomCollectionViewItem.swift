@@ -201,7 +201,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         return itemFrame.intersects(visibleRectExtended)
     }
     
-    /// 根据星级返回对应颜色（1–5 星：灰 → 银 → 橙 → 黄 → 金，便于区分）
+    /// 根据评级返回对应颜色（1–5 星：灰 → 银 → 橙 → 黄 → 金，便于区分）
     private static func color(forRating rating: Int) -> NSColor {
         switch rating {
         case 1: return NSColor(calibratedWhite: 0.5, alpha: 1)           // 灰
@@ -383,7 +383,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             imageViewObj.isFolder = false
         }
 
-        // 左上角星级
+        // 左上角评级
         // Top-left rating stars
         refreshRatingStars()
 
@@ -1121,8 +1121,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
                 menu.addItem(finderTagMenuItem)
                 
-                let rateSubMenu = NSMenu(title: NSLocalizedString("Rating", comment: "星级"))
-                let rateMenuItem = NSMenuItem(title: NSLocalizedString("Rating", comment: "星级"), action: nil, keyEquivalent: "")
+                let rateSubMenu = NSMenu(title: NSLocalizedString("Rating", comment: "评级"))
+                let rateMenuItem = NSMenuItem(title: NSLocalizedString("Rating", comment: "评级"), action: nil, keyEquivalent: "")
                 rateMenuItem.submenu = rateSubMenu
                 rateMenuItem.isEnabled = file.type == .image
 
@@ -1137,8 +1137,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     rateSubMenu.addItem(item)
                 }
 
-                // 无星级
-                let clearTitle = NSLocalizedString("No Rating", comment: "无星级")
+                // 无评级
+                let clearTitle = NSLocalizedString("No Rating", comment: "无评级")
                 let clearItem = NSMenuItem(title: clearTitle, action: #selector(actRate(_:)), keyEquivalent: "0")
                 clearItem.keyEquivalentModifierMask = [.control]
                 clearItem.tag = 0

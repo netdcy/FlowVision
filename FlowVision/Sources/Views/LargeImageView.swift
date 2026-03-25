@@ -299,7 +299,7 @@ class LargeImageView: NSView {
         finderTagDotsView = container
     }
 
-    /// 根据星级返回对应颜色（1–5 星：灰 → 银 → 橙 → 黄 → 金）
+    /// 根据评级返回对应颜色（1–5 星：灰 → 银 → 橙 → 黄 → 金）
     private static func color(forRating rating: Int) -> NSColor {
         switch rating {
         case 1: return NSColor(calibratedWhite: 0.5, alpha: 1)
@@ -1752,22 +1752,24 @@ class LargeImageView: NSView {
 
             menu.addItem(finderTagMenuItem)
 
-            let rateSubMenu = NSMenu(title: NSLocalizedString("Rating", comment: "星级"))
-            let rateMenuItem = NSMenuItem(title: NSLocalizedString("Rating", comment: "星级"), action: nil, keyEquivalent: "")
+            let rateSubMenu = NSMenu(title: NSLocalizedString("Rating", comment: "评级"))
+            let rateMenuItem = NSMenuItem(title: NSLocalizedString("Rating", comment: "评级"), action: nil, keyEquivalent: "")
             rateMenuItem.submenu = rateSubMenu
             rateMenuItem.isEnabled = file.type == .image
 
             for rating in (1...5).reversed() {
                 let stars = String(repeating: "★", count: rating) + String(repeating: "☆", count: 5 - rating)
                 let title = "\(stars)  (\(rating))"
-                let item = NSMenuItem(title: title, action: #selector(actRate(_:)), keyEquivalent: "")
+                let item = NSMenuItem(title: title, action: #selector(actRate(_:)), keyEquivalent: "\(rating)")
+                item.keyEquivalentModifierMask = [.control]
                 item.tag = rating
                 item.target = self
                 rateSubMenu.addItem(item)
             }
 
-            let clearTitle = NSLocalizedString("No Rating", comment: "无星级")
-            let clearItem = NSMenuItem(title: clearTitle, action: #selector(actRate(_:)), keyEquivalent: "")
+            let clearTitle = NSLocalizedString("No Rating", comment: "无评级")
+            let clearItem = NSMenuItem(title: clearTitle, action: #selector(actRate(_:)), keyEquivalent: "0")
+            clearItem.keyEquivalentModifierMask = [.control]
             clearItem.tag = 0
             clearItem.target = self
             rateSubMenu.addItem(clearItem)
