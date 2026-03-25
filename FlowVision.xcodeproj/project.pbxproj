@@ -73,6 +73,7 @@
 		F7DECD6D2D00939300ECC099 /* CustomEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */; };
 		F7E0B31C2DBF0F55007CBD17 /* SDWebImageWebPCoder in Frameworks */ = {isa = PBXBuildFile; productRef = F7E0B31B2DBF0F55007CBD17 /* SDWebImageWebPCoder */; };
 		F7F600482E1E095500ED8536 /* FinderTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F600472E1E094A00ED8536 /* FinderTag.swift */; };
+		F7FAE0012F6BA00000FAE001 /* FavoritesPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -179,6 +180,7 @@
 		F7DECD6C2D00938600ECC099 /* CustomEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEffectView.swift; sourceTree = "<group>"; };
 		F7E65E342C09C7F100ACC4C0 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		F7F600472E1E094A00ED8536 /* FinderTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderTag.swift; sourceTree = "<group>"; };
+		F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesPopoverViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -229,6 +231,7 @@
 				F7AC30042D37E25800F48AEF /* CustomPathControl.swift */,
 				F795AC6D2C196B80004B487F /* CustomSplitView.swift */,
 				F73865E52C37C1AA00837FE4 /* DrawingView.swift */,
+				F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */,
 				F78960F12BDCC26B00C2571B /* LargeImageView.swift */,
 				F73865D42C37B9B800837FE4 /* Layout.swift */,
 			);
@@ -465,6 +468,7 @@
 				F73865DE2C37BEAC00837FE4 /* CoreAreaView.swift in Sources */,
 				F70F9FC12BAFE7B300C50CDD /* Common.swift in Sources */,
 				F70F9FC32BAFE85D00C50CDD /* CustomCollectionViewManager.swift in Sources */,
+				F7FAE0012F6BA00000FAE001 /* FavoritesPopoverViewController.swift in Sources */,
 				F7A075542BA1D716009C47A6 /* AppDelegate.swift in Sources */,
 				F77098952F0E427800E7D164 /* FileOperation.swift in Sources */,
 				F74636552C5237720086E920 /* ActionsSettingsViewController.swift in Sources */,

@@ -10,6 +10,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     var pathShortenStore = ""
     var windowFrameBeforeFullScreen: NSRect?
     var cursorHideTimer: Timer?
+    var favoritesPopover: NSPopover?
 
     override func windowDidLoad() {
         super.windowDidLoad()
@@ -1103,99 +1104,41 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func favoritesAction(_ sender: Any?) {
-        guard let viewController = contentViewController as? ViewController else {return}
-        
-        let favoritesMenu = NSMenu()
-        
-        let addFolderMenuItem = NSMenuItem(
-            title: NSLocalizedString("Add Current Folder", comment: "添加当前文件夹"),
-            action: #selector(favoritesAdd(_:)),
-            keyEquivalent: "d"
-        )
-        addFolderMenuItem.target = self
-        addFolderMenuItem.keyEquivalentModifierMask = .command
-        favoritesMenu.addItem(addFolderMenuItem)
-        
-        favoritesMenu.addItem(NSMenuItem.separator())
-        
-        if globalVar.myFavoritesArray.count > 0 {
-            for (index, folderPath) in globalVar.myFavoritesArray.enumerated() {
-                let displayTitle = folderPath
-                    .replacingOccurrences(of: "file://", with: "")
-                    .removingPercentEncoding!
-                    .replacingOccurrences(of: "/VirtualFinderTagsFolder", with: NSLocalizedString("Finder Tags", comment: "Finder标签"))
-                let folderMenuItem = NSMenuItem(
-                    title: displayTitle,
-                    action: #selector(pathClick(_:)),
-                    keyEquivalent: ""
-                )
-                folderMenuItem.target = self
-                folderMenuItem.representedObject = folderPath
-                
-                // 创建子菜单
-                // Create submenu
-                let subMenu = NSMenu(title: folderPath)
-                
-                // 创建删除项
-                // Create delete item
-                let deleteMenuItem = NSMenuItem(
-                    title: NSLocalizedString("Delete", comment: "删除"),
-                    action: #selector(deleteFavorite(_:)),
-                    keyEquivalent: ""
-                )
-                deleteMenuItem.target = self
-                deleteMenuItem.representedObject = folderPath
-                
-                // 创建上移项
-                // Create move up item
-                let moveUpMenuItem = NSMenuItem(
-                    title: NSLocalizedString("Move Up", comment: "上移"),
-                    action: #selector(moveUpFavorite(_:)),
-                    keyEquivalent: ""
-                )
-                moveUpMenuItem.target = self
-                moveUpMenuItem.representedObject = index
-                
-                // 创建下移项
-                // Create move down item
-                let moveDownMenuItem = NSMenuItem(
-                    title: NSLocalizedString("Move Down", comment: "下移"),
-                    action: #selector(moveDownFavorite(_:)),
-                    keyEquivalent: ""
-                )
-                moveDownMenuItem.target = self
-                moveDownMenuItem.representedObject = index
-                
-                // 将项添加到子菜单
-                // Add items to submenu
-                subMenu.addItem(deleteMenuItem)
-                subMenu.addItem(moveUpMenuItem)
-                subMenu.addItem(moveDownMenuItem)
-                
-                // 将子菜单添加到主菜单项
-                // Add submenu to main menu item
-                folderMenuItem.submenu = subMenu
-                
-                // 将主菜单项添加到 favoritesMenu
-                // Add main menu item to favoritesMenu
-                favoritesMenu.addItem(folderMenuItem)
-            }
-        } else {
-            let emptyMenuItem = NSMenuItem(
-                title: NSLocalizedString("empty-enclose", comment: "菜单当内容为空时显示的东西"),
-                action: nil,
-                keyEquivalent: ""
-            )
-            favoritesMenu.addItem(emptyMenuItem)
+        if let existingPopover = favoritesPopover, existingPopover.isShown {
+            existingPopover.close()
+            favoritesPopover = nil
+            return
         }
         
+        let favVC = FavoritesPopoverViewController()
+        favVC.onNavigate = { [weak self] path in
+            guard let self = self,
+                  let viewController = self.contentViewController as? ViewController else { return }
+            guard let url = URL(string: getFileSchemeAbsPath(path)) else { return }
+            if viewController.publicVar.isInLargeView {
+                viewController.closeLargeImage(0)
+            }
+            viewController.switchDirByDirection(direction: .zero, dest: url.absoluteString, doCollapse: true, expandLast: true, skip: false, stackDeep: 0)
+        }
+        favVC.onGetCurrentFolder = { [weak self] in
+            guard let viewController = self?.contentViewController as? ViewController else { return nil }
+            viewController.fileDB.lock()
+            let curFolder = viewController.fileDB.curFolder
+            viewController.fileDB.unlock()
+            return curFolder
+        }
+        
+        let popover = NSPopover()
+        popover.contentViewController = favVC
+        popover.behavior = .transient
+        popover.animates = false
+        popover.contentSize = NSSize(width: 400, height: 600)
+        favVC.popover = popover
+        
+        self.favoritesPopover = popover
+        
         if let button = sender as? NSButton {
-            let buttonFrame = button.convert(button.bounds, to: nil)
-            let menuLocation = NSPoint(x: 0, y: buttonFrame.height + 4)
-            favoritesMenu.popUp(positioning: nil, at: menuLocation, in: button)
-        } else {
-            let menuLocation = NSEvent.mouseLocation
-            favoritesMenu.popUp(positioning: nil, at: menuLocation, in: nil)
+            popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         }
     }
     

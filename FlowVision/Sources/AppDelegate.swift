@@ -503,6 +503,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             
             if globalVar.myFavoritesArray.count > 0 {
                 for (index, folderPath) in globalVar.myFavoritesArray.enumerated() {
+                    if folderPath == FavoritesPopoverViewController.separatorValue {
+                        favoritesMenu.addItem(NSMenuItem.separator())
+                        continue
+                    }
+                    
                     let displayTitle = folderPath
                         .replacingOccurrences(of: "file://", with: "")
                         .removingPercentEncoding!
