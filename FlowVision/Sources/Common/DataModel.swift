@@ -756,8 +756,8 @@ class TreeViewModel {
                 var fullPath = subFolder.absoluteString
                 if name == "/" { name = ROOT_NAME }
                 if name == "PlaceholderForAutoHideToolbar" {
-                    name = "Hidden Volume"
-                    fullPath = "file:///"
+                    name = "FlowVision"
+                    fullPath = "file:///FlowVisionTitleFolder/"
                 }
                 if subFolder.absoluteString.contains("VirtualFinderTagsFolder") {
                     if subFolder.absoluteString == "file:///VirtualFinderTagsFolder/" {

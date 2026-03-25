@@ -65,7 +65,10 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
         let view = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("DataCell"), owner: self) as! CustomTableCellView
         view.textField?.stringValue = treeNode.name
         
-        if treeNode.fullPath.contains("VirtualFinderTagsFolder") {
+        if treeNode.fullPath.contains("FlowVisionTitleFolder") {
+            view.imageView?.image = NSImage(named: "AppIcon")
+            view.imageView?.contentTintColor = nil
+        } else if treeNode.fullPath.contains("VirtualFinderTagsFolder") {
             let tagIcon = NSImage(systemSymbolName: "tag.fill", accessibilityDescription: nil)?
                 .withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 14, weight: .regular))
             if let url = URL(string: treeNode.fullPath), url.path != "/VirtualFinderTagsFolder" {
