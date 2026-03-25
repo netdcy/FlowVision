@@ -311,6 +311,15 @@ extension ViewController {
             writeRating(inputURL: url, outputURL: url, rating: rating)
         }
     }
+
+    func toggleLargeImageViewShowTagsAndRating() {
+        globalVar.largeImageViewShowTagsAndRating.toggle()
+        UserDefaults.standard.set(globalVar.largeImageViewShowTagsAndRating, forKey: "largeImageViewShowTagsAndRating")
+        if publicVar.isInLargeView {
+            largeImageView.refreshFinderTagDots()
+            largeImageView.refreshRatingStars()
+        }
+    }
     
     func toggleAutoPlayVisibleVideo() {
         publicVar.autoPlayVisibleVideo.toggle()

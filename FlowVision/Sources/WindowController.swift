@@ -1373,6 +1373,11 @@ extension WindowController: NSToolbarDelegate {
             let actionItemEnterFullScreen = menu.addItem(withTitle: fullScreenTitle, action: #selector(actEnterFullScreen), keyEquivalent: "\r")
             actionItemEnterFullScreen.keyEquivalentModifierMask = [.option]
 
+            menu.addItem(NSMenuItem.separator())
+
+            let largeImageViewShowTagsAndRating = menu.addItem(withTitle: NSLocalizedString("Show Finder Tags and Rating", comment: "显示Finder标签和评级"), action: #selector(toggleLargeImageViewShowTagsAndRating), keyEquivalent: "")
+            largeImageViewShowTagsAndRating.state = globalVar.largeImageViewShowTagsAndRating ? .on : .off
+
         }
 
         if !viewController.publicVar.isInLargeView || (viewController.publicVar.isInLargeView && viewController.largeImageView.file.type == .video) {
@@ -1856,5 +1861,10 @@ extension WindowController: NSToolbarDelegate {
     @objc func customLayoutStyle(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.customLayoutStylePrompt()
+    }
+
+    @objc func toggleLargeImageViewShowTagsAndRating(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleLargeImageViewShowTagsAndRating()
     }
 }

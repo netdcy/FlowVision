@@ -220,6 +220,7 @@ class LargeImageView: NSView {
     func refreshFinderTagDots() {
         finderTagDotsView?.removeFromSuperview()
         finderTagDotsView = nil
+        guard globalVar.largeImageViewShowTagsAndRating else { return }
 
         let tags = file.finderTags.compactMap { FinderTag.byName($0) }
         guard !tags.isEmpty else { return }
@@ -316,6 +317,7 @@ class LargeImageView: NSView {
     func refreshRatingStars() {
         ratingStarsView?.removeFromSuperview()
         ratingStarsView = nil
+        guard globalVar.largeImageViewShowTagsAndRating else { return }
 
         guard let rating = file.imageInfo?.rating, rating >= 1, rating <= 5 else { return }
 

@@ -98,6 +98,7 @@ class GlobalVar{
     var homeFolder = "file:///"
     var keepFilterStateWhenSwitchFolder = false
     var dirTreeAutoExpand = true
+    var largeImageViewShowTagsAndRating = true
     
     // 可记忆设置变量
     // Rememberable settings variables

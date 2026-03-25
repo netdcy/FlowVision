@@ -206,6 +206,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let dirTreeAutoExpand = UserDefaults.standard.value(forKey: "dirTreeAutoExpand") as? Bool {
             globalVar.dirTreeAutoExpand = dirTreeAutoExpand
         }
+        if let largeImageViewShowTagsAndRating = UserDefaults.standard.value(forKey: "largeImageViewShowTagsAndRating") as? Bool {
+            globalVar.largeImageViewShowTagsAndRating = largeImageViewShowTagsAndRating
+        }
         globalVar.myFavoritesArray = defaults.array(forKey: "globalVar.myFavoritesArray") as? [String] ?? [String]()
         
         // requestAppleEventsPermission()
