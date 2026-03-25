@@ -43,6 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     @IBOutlet weak var activatePanScrollReadmeMenuItem: NSMenuItem!
     @IBOutlet weak var toggleRawUseEmbeddedThumbMenuItem: NSMenuItem!
     @IBOutlet weak var toggleRawUseEmbeddedThumbReadmeMenuItem: NSMenuItem!
+    @IBOutlet weak var showFinderTagsAndRatingMenuItem: NSMenuItem!
     
     var commonParentPath=""
     
@@ -692,10 +693,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             lockRotationMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
             lockZoomMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
             lockMirrorMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
-            activatePanScrollMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
-            activatePanScrollReadmeMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
-            toggleRawUseEmbeddedThumbMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
-            toggleRawUseEmbeddedThumbReadmeMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
+            activatePanScrollMenuItem.isHidden = !(mainViewController.publicVar.isInLargeView && mainViewController.largeImageView.file.type == .image)
+            activatePanScrollReadmeMenuItem.isHidden = !(mainViewController.publicVar.isInLargeView && mainViewController.largeImageView.file.type == .image)
+            toggleRawUseEmbeddedThumbMenuItem.isHidden = !(mainViewController.publicVar.isInLargeView && mainViewController.largeImageView.file.type == .image)
+            toggleRawUseEmbeddedThumbReadmeMenuItem.isHidden = !(mainViewController.publicVar.isInLargeView && mainViewController.largeImageView.file.type == .image)
+
+            showFinderTagsAndRatingMenuItem.state = globalVar.largeImageViewShowTagsAndRating ? .on : .off
+            showFinderTagsAndRatingMenuItem.isHidden = !mainViewController.publicVar.isInLargeView
         }
     }
     
@@ -826,6 +830,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         // Whether to show all file types
         if menuItem.action == #selector(toggleIsShowImageFile(_:)) || menuItem.action == #selector(toggleIsShowRawFile(_:)) || menuItem.action == #selector(toggleIsShowVideoFile(_:)) {
             if mainViewController.publicVar.isShowAllTypeFile {
+                return false
+            }
+        }
+        // 锁定缩放、镜像
+        // Lock zoom, mirror
+        if menuItem.action == #selector(toggleLockZoom(_:)) || menuItem.action == #selector(toggleLockMirror(_:)) {
+            if mainViewController.largeImageView.file.type != .image {
                 return false
             }
         }
@@ -1037,6 +1048,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         let printInfo = NSPrintInfo.shared
         
         pageLayout.runModal(with: printInfo)
+    }
+
+    @IBAction func toggleShowFinderTagsAndRating(_ sender: NSMenuItem){
+        getMainViewController()?.toggleLargeImageViewShowTagsAndRating()
     }
 
     @IBAction func toggleLockRotation(_ sender: NSMenuItem){

@@ -490,13 +490,17 @@ extension ViewController {
                     fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
                 }
             }
+            var keysToRemove: [SortKeyFile] = []
             for ele in fileDB.db[SortKeyDir(folderpath)]!.files{
                 // log(ele.0.path.removingPercentEncoding)
                 if ele.1.ver != fileDB.db[SortKeyDir(folderpath)]!.ver {
                     ele.1.image=nil
                     ele.1.folderImages=[]
-                    fileDB.db[SortKeyDir(folderpath)]!.files.removeValue(forKey: ele.0)
+                    keysToRemove.append(ele.0)
                 }
+            }
+            for key in keysToRemove {
+                fileDB.db[SortKeyDir(folderpath)]!.files.removeValue(forKey: key)
             }
         }
         

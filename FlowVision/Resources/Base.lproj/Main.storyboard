@@ -690,6 +690,13 @@ Gw
                                                 <action selector="customLayoutStyle:" target="Voe-Tx-rLC" id="Ehw-fZ-DPS"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="hHG-It-Z2Z"/>
+                                        <menuItem title="Show Finder Tags and Rating" id="pB9-hf-avc">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="toggleShowFinderTagsAndRating:" target="Voe-Tx-rLC" id="5n0-hV-KdC"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="2Mq-tp-wyX"/>
                                         <menuItem title="Lock Rotation" id="VCB-ff-DEq">
                                             <modifierMask key="keyEquivalentModifierMask"/>
@@ -949,6 +956,7 @@ Gw
                         <outlet property="onTopMenuItem" destination="aEU-QL-iYf" id="XOy-Dx-Aw4"/>
                         <outlet property="optimizeWindowMenuItem" destination="tmG-gn-Pce" id="iuh-K8-8iB"/>
                         <outlet property="reopenClosedTabsMenuItem" destination="zBc-1w-QcQ" id="Xxd-rc-TBq"/>
+                        <outlet property="showFinderTagsAndRatingMenuItem" destination="pB9-hf-avc" id="Nr9-Wg-8fN"/>
                         <outlet property="switchToActualSizeMenuItem" destination="pzo-yf-TTx" id="DN8-BG-O7v"/>
                         <outlet property="switchToFitToWindowMenuItem" destination="d9h-3l-mAH" id="gda-Df-WtZ"/>
                         <outlet property="systemThemeMenuItem" destination="I6E-O3-RVP" id="AYN-qT-D7o"/>
@@ -1184,7 +1192,7 @@ Gw
                                     <rect key="frame" x="0.0" y="0.0" width="745" height="522"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textView wantsLayer="YES" importsGraphics="NO" richText="YES" verticallyResizable="YES" findStyle="bar" id="Hvc-43-Pyw">
+                                        <textView wantsLayer="YES" importsGraphics="NO" verticallyResizable="YES" findStyle="bar" id="Hvc-43-Pyw">
                                             <rect key="frame" x="0.0" y="0.0" width="745" height="522"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
