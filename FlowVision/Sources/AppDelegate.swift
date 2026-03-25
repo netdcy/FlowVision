@@ -54,6 +54,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             GeneralSettingsViewController(),
             CustomSettingsViewController(),
             ActionsSettingsViewController(),
+            TaggingSettingsViewController(),
             AdvancedSettingsViewController()
         ],
         animated: true,
@@ -212,6 +213,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         }
         globalVar.myFavoritesArray = defaults.array(forKey: "globalVar.myFavoritesArray") as? [String] ?? [String]()
         
+        if let savedLabels = UserDefaults.standard.array(forKey: CustomTagView.userDefaultsKey) as? [[String: Any]] {
+            customLabels = savedLabels.compactMap { dict in
+                guard let name = dict["name"] as? String else { return nil }
+                return (name, dict["colorIndex"] as? Int)
+            }
+        }
+
         // requestAppleEventsPermission()
         
         favoritesMenu.removeAllItems()

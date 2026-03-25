@@ -67,7 +67,7 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
             guard let self = self else { return }
             let refFrameInWindow = refViewForExcludeListView.convert(refViewForExcludeListView.bounds, to: nil)
             let newY = refFrameInWindow.origin.y - excludeContainerView.frame.height + refViewForExcludeListView.frame.height
-            excludeContainerView.frame = NSRect(x: refFrameInWindow.origin.x, y: newY, width: 300, height: 125)
+            excludeContainerView.frame = NSRect(x: refFrameInWindow.origin.x + 1, y: newY, width: 300, height: 125)
         }
         
         // 设置增减图标

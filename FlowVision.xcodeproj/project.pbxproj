@@ -13,6 +13,8 @@
 		F71DCEB92BD425D6006E5B1E /* CustomOutlineViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71DCEB82BD425D6006E5B1E /* CustomOutlineViewManager.swift */; };
 		F72B1E6E2F7139FA0056B19F /* DemoSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F72B1E6D2F7139FA0056B19F /* DemoSettingsViewController.xib */; };
 		F72B1E702F713AF60056B19F /* DemoSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72B1E6F2F713AF60056B19F /* DemoSettingsViewController.swift */; };
+		F72B1E742F713D570056B19F /* TaggingSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F72B1E732F713D570056B19F /* TaggingSettingsViewController.xib */; };
+		F72B1E762F713DA80056B19F /* TaggingSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72B1E752F713DA80056B19F /* TaggingSettingsViewController.swift */; };
 		F73865D32C37B97500837FE4 /* CustomCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73865D22C37B97500837FE4 /* CustomCollectionView.swift */; };
 		F73865D52C37B9B800837FE4 /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73865D42C37B9B800837FE4 /* Layout.swift */; };
 		F73865D72C37BB2900837FE4 /* CustomOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73865D62C37BB2900837FE4 /* CustomOutlineView.swift */; };
@@ -118,6 +120,9 @@
 		F72B1E6B2F7139FA0056B19F /* DemoSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = DemoSettingsViewController.xib; path = Base.lproj/DemoSettingsViewController.xib; sourceTree = "<group>"; };
 		F72B1E6C2F7139FA0056B19F /* DemoSettingsViewController.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = DemoSettingsViewController.xcstrings; path = mul.lproj/DemoSettingsViewController.xcstrings; sourceTree = "<group>"; };
 		F72B1E6F2F713AF60056B19F /* DemoSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoSettingsViewController.swift; sourceTree = "<group>"; };
+		F72B1E712F713D570056B19F /* TaggingSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = TaggingSettingsViewController.xib; path = Base.lproj/TaggingSettingsViewController.xib; sourceTree = "<group>"; };
+		F72B1E722F713D570056B19F /* TaggingSettingsViewController.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = TaggingSettingsViewController.xcstrings; path = mul.lproj/TaggingSettingsViewController.xcstrings; sourceTree = "<group>"; };
+		F72B1E752F713DA80056B19F /* TaggingSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggingSettingsViewController.swift; sourceTree = "<group>"; };
 		F73865D22C37B97500837FE4 /* CustomCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionView.swift; sourceTree = "<group>"; };
 		F73865D42C37B9B800837FE4 /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		F73865D62C37BB2900837FE4 /* CustomOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomOutlineView.swift; sourceTree = "<group>"; };
@@ -345,11 +350,13 @@
 				F78D1A892D4CF31D00741908 /* CustomSettingsViewController.xib */,
 				F78D1A8B2D4CF37900741908 /* CustomSettingsViewController.swift */,
 				F74636582C523EFF0086E920 /* ActionsSettingsViewController.xib */,
-				F72B1E6D2F7139FA0056B19F /* DemoSettingsViewController.xib */,
-				F72B1E6F2F713AF60056B19F /* DemoSettingsViewController.swift */,
 				F74636542C5237720086E920 /* ActionsSettingsViewController.swift */,
+				F72B1E732F713D570056B19F /* TaggingSettingsViewController.xib */,
+				F72B1E752F713DA80056B19F /* TaggingSettingsViewController.swift */,
 				F74636462C4FFA340086E920 /* AdvancedSettingsViewController.xib */,
 				F74636352C4F43AE0086E920 /* AdvancedSettingsViewController.swift */,
+				F72B1E6D2F7139FA0056B19F /* DemoSettingsViewController.xib */,
+				F72B1E6F2F713AF60056B19F /* DemoSettingsViewController.swift */,
 			);
 			path = SettingsViews;
 			sourceTree = "<group>";
@@ -429,6 +436,7 @@
 				F74636402C4FF9A30086E920 /* GeneralSettingsViewController.xib in Resources */,
 				F7790ED82BA5FB6A00406D35 /* CustomCollectionViewItem.xib in Resources */,
 				F7A075582BA1D717009C47A6 /* Assets.xcassets in Resources */,
+				F72B1E742F713D570056B19F /* TaggingSettingsViewController.xib in Resources */,
 				F70368E82BF609F300155F36 /* Localizable.xcstrings in Resources */,
 				F7A0755B2BA1D717009C47A6 /* Main.storyboard in Resources */,
 				F72B1E6E2F7139FA0056B19F /* DemoSettingsViewController.xib in Resources */,
@@ -472,6 +480,7 @@
 				F77098932F0E411500E7D164 /* FileSystem.swift in Sources */,
 				F76F6A672F5EB69100D798DC /* CustomProfileView.swift in Sources */,
 				F73865D72C37BB2900837FE4 /* CustomOutlineView.swift in Sources */,
+				F72B1E762F713DA80056B19F /* TaggingSettingsViewController.swift in Sources */,
 				F73865E42C37C11B00837FE4 /* ImageProcess.swift in Sources */,
 				F74D55562F0E487C00C9AB85 /* RightMouseGesture.swift in Sources */,
 				F71DCEB92BD425D6006E5B1E /* CustomOutlineViewManager.swift in Sources */,
@@ -507,6 +516,15 @@
 				F72B1E6C2F7139FA0056B19F /* DemoSettingsViewController.xcstrings */,
 			);
 			name = DemoSettingsViewController.xib;
+			sourceTree = "<group>";
+		};
+		F72B1E732F713D570056B19F /* TaggingSettingsViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F72B1E712F713D570056B19F /* TaggingSettingsViewController.xib */,
+				F72B1E722F713D570056B19F /* TaggingSettingsViewController.xcstrings */,
+			);
+			name = TaggingSettingsViewController.xib;
 			sourceTree = "<group>";
 		};
 		F74636422C4FF9A30086E920 /* GeneralSettingsViewController.xib */ = {

@@ -99,7 +99,7 @@
                             </scroller>
                         </scrollView>
                         <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ICk-me-dcc">
-                            <rect key="frame" x="0.0" y="0.0" width="55" height="21"/>
+                            <rect key="frame" x="-2" y="0.0" width="55" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="VgT-IN-ngd">
                                 <font key="font" metaFont="smallSystem"/>

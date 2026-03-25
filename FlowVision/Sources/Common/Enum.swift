@@ -26,6 +26,7 @@ extension Settings.PaneIdentifier {
     static let general = Self("general")
     static let custom = Self("custom")
     static let actions = Self("actions")
+    static let tagging = Self("tagging")
     static let advanced = Self("advanced")
     static let demo = Self("demo")
 }

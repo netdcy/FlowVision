@@ -1683,50 +1683,6 @@ class LargeImageView: NSView {
             let actionItemShare = menu.addItem(withTitle: NSLocalizedString("Share...", comment: "共享..."), action: #selector(actShare(_:)), keyEquivalent: "")
             
             menu.addItem(NSMenuItem.separator())
-                        
-            let actionItemCopyToDownload = menu.addItem(withTitle: NSLocalizedString("copy-to-download", comment: "复制到\"下载\"文件夹"), action: #selector(actCopyToDownload), keyEquivalent: "n")
-            actionItemCopyToDownload.keyEquivalentModifierMask = []
-            
-            let actionItemMoveToDownload = menu.addItem(withTitle: NSLocalizedString("move-to-download", comment: "移动到\"下载\"文件夹"), action: #selector(actMoveToDownload), keyEquivalent: "m")
-            actionItemMoveToDownload.keyEquivalentModifierMask = []
-            
-            menu.addItem(NSMenuItem.separator())
-            
-            var textForExif = NSLocalizedString("Show Exif", comment: "显示Exif信息")
-            if file.type == .video {
-                textForExif = NSLocalizedString("Show Video Metadata", comment: "显示视频元数据")
-            }
-            let actionItemShowExif = menu.addItem(withTitle: textForExif, action: #selector(actShowExif), keyEquivalent: "i")
-            actionItemShowExif.keyEquivalentModifierMask = []
-            actionItemShowExif.state = getViewController(self)!.publicVar.isShowExif ? .on : .off
-            
-            if file.type == .image {
-                let actionItemOCR = menu.addItem(withTitle: NSLocalizedString("recognize-OCR", comment: "识别文本"), action: #selector(actOCR), keyEquivalent: "o")
-                actionItemOCR.keyEquivalentModifierMask = []
-            
-                let actionItemQRCode = menu.addItem(withTitle: NSLocalizedString("recognize-QRCode", comment: "识别二维码"), action: #selector(actQRCode), keyEquivalent: "p")
-                actionItemQRCode.keyEquivalentModifierMask = []
-            } else if file.type == .video {
-                let actionItemRememberPosition = menu.addItem(withTitle: NSLocalizedString("Remember Position", comment: "（视频）记忆位置"), action: #selector(actRememberPlayPosition), keyEquivalent: "j")
-                actionItemRememberPosition.keyEquivalentModifierMask = []
-                actionItemRememberPosition.state = globalVar.videoPlayRememberPosition ? .on : .off
-
-                let actionItemABPlay = menu.addItem(withTitle: NSLocalizedString("A-B Loop", comment: "（视频）A-B循环"), action: #selector(actABPlay), keyEquivalent: "k")
-                actionItemABPlay.keyEquivalentModifierMask = []
-                if let positionA = abPlayPositionA?.seconds,
-                       let positionB = abPlayPositionB?.seconds,
-                       positionA < positionB {
-                    actionItemABPlay.state = .on
-                } else {
-                    actionItemABPlay.state = .off
-                }
-                
-                let actionItemSequentialPlay = menu.addItem(withTitle: NSLocalizedString("Sequential Playback", comment: "（视频）顺序播放"), action: #selector(actSequentialPlay), keyEquivalent: "l")
-                actionItemSequentialPlay.keyEquivalentModifierMask = []
-                actionItemSequentialPlay.state = globalVar.videoPlaySequentialPlay ? .on : .off
-            }
-
-            menu.addItem(NSMenuItem.separator())
 
             let finderTagMenu = NSMenu()
             let finderTagMenuItem = NSMenuItem(title: NSLocalizedString("Finder Tags", comment: "Finder标签"), action: nil, keyEquivalent: "")
@@ -1781,6 +1737,50 @@ class LargeImageView: NSView {
             rateSubMenu.addItem(rateReadmeItem)
 
             menu.addItem(rateMenuItem)
+            
+            menu.addItem(NSMenuItem.separator())
+                        
+            let actionItemCopyToDownload = menu.addItem(withTitle: NSLocalizedString("copy-to-download", comment: "复制到\"下载\"文件夹"), action: #selector(actCopyToDownload), keyEquivalent: "n")
+            actionItemCopyToDownload.keyEquivalentModifierMask = []
+            
+            let actionItemMoveToDownload = menu.addItem(withTitle: NSLocalizedString("move-to-download", comment: "移动到\"下载\"文件夹"), action: #selector(actMoveToDownload), keyEquivalent: "m")
+            actionItemMoveToDownload.keyEquivalentModifierMask = []
+            
+            menu.addItem(NSMenuItem.separator())
+            
+            var textForExif = NSLocalizedString("Show Exif", comment: "显示Exif信息")
+            if file.type == .video {
+                textForExif = NSLocalizedString("Show Video Metadata", comment: "显示视频元数据")
+            }
+            let actionItemShowExif = menu.addItem(withTitle: textForExif, action: #selector(actShowExif), keyEquivalent: "i")
+            actionItemShowExif.keyEquivalentModifierMask = []
+            actionItemShowExif.state = getViewController(self)!.publicVar.isShowExif ? .on : .off
+            
+            if file.type == .image {
+                let actionItemOCR = menu.addItem(withTitle: NSLocalizedString("recognize-OCR", comment: "识别文本"), action: #selector(actOCR), keyEquivalent: "o")
+                actionItemOCR.keyEquivalentModifierMask = []
+            
+                let actionItemQRCode = menu.addItem(withTitle: NSLocalizedString("recognize-QRCode", comment: "识别二维码"), action: #selector(actQRCode), keyEquivalent: "p")
+                actionItemQRCode.keyEquivalentModifierMask = []
+            } else if file.type == .video {
+                let actionItemRememberPosition = menu.addItem(withTitle: NSLocalizedString("Remember Position", comment: "（视频）记忆位置"), action: #selector(actRememberPlayPosition), keyEquivalent: "j")
+                actionItemRememberPosition.keyEquivalentModifierMask = []
+                actionItemRememberPosition.state = globalVar.videoPlayRememberPosition ? .on : .off
+
+                let actionItemABPlay = menu.addItem(withTitle: NSLocalizedString("A-B Loop", comment: "（视频）A-B循环"), action: #selector(actABPlay), keyEquivalent: "k")
+                actionItemABPlay.keyEquivalentModifierMask = []
+                if let positionA = abPlayPositionA?.seconds,
+                       let positionB = abPlayPositionB?.seconds,
+                       positionA < positionB {
+                    actionItemABPlay.state = .on
+                } else {
+                    actionItemABPlay.state = .off
+                }
+                
+                let actionItemSequentialPlay = menu.addItem(withTitle: NSLocalizedString("Sequential Playback", comment: "（视频）顺序播放"), action: #selector(actSequentialPlay), keyEquivalent: "l")
+                actionItemSequentialPlay.keyEquivalentModifierMask = []
+                actionItemSequentialPlay.state = globalVar.videoPlaySequentialPlay ? .on : .off
+            }
 
             menu.addItem(NSMenuItem.separator())
 

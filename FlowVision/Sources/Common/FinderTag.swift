@@ -57,10 +57,8 @@ struct FinderTag {
     }()
 
     static var all: [FinderTag] {
-        let custom = customLabels.sorted { $0.0.localizedStandardCompare($1.0) == .orderedAscending }.map { name, colorIndex in
-            FinderTag(name: name, colorIndex: colorIndex)
-        }
-        return systemColorLabels + custom
+        if customLabels.isEmpty { return [] } // systemColorLabels
+        return customLabels.map { FinderTag(name: $0.0, colorIndex: $0.1) }
     }
 
     static func byName(_ name: String) -> FinderTag? {

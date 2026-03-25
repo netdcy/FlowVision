@@ -1,0 +1,582 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "0t2-fb-lpk.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Learn more…\"; ObjectID = \"0t2-fb-lpk\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اعرف المزيد…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erfahren Sie mehr…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Learn more…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más información…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En savoir plus…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scopri di più…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細を確認する…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자세히 알아보기…"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meer informatie…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saiba mais…"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saiba mais…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Узнать больше…"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Läs mer…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "了解更多…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "了解更多…"
+          }
+        }
+      }
+    },
+    "6PU-he-9gg.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Because macOS Spotlight cannot index external disks, network drives, or the contents of directories excluded in the \\\"Search Privacy\\\" settings, this app introduces an enhanced indexing feature: when you browse a folder within the app, it records the tags associated with the files inside that folder.\\n\\nLater, when you select the corresponding tag in the directory tree, the app will supplement the system's search results by displaying the relevant files.\"; ObjectID = \"6PU-he-9gg\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نظرًا لأن Spotlight في macOS لا يمكنه فهرسة الأقراص الخارجية أو محركات الشبكة أو محتويات الدلائل المستبعدة في إعدادات \"خصوصية البحث\"، فإن هذا التطبيق يقدم ميزة فهرسة محسّنة: عند تصفح مجلد داخل التطبيق، يقوم بتسجيل العلامات المرتبطة بالملفات داخل ذلك المجلد.\n\nلاحقًا، عند تحديد العلامة المقابلة في شجرة الدليل، سيقوم التطبيق بتعزيز نتائج البحث الخاصة بالنظام عن طريق عرض الملفات ذات الصلة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Da macOS Spotlight externe Festplatten, Netzlaufwerke oder die Inhalte von Verzeichnissen, die in den \"Suchdatenschutz\"-Einstellungen ausgeschlossen sind, nicht indexieren kann, führt diese App eine erweiterte Indexierungsfunktion ein: Wenn Sie einen Ordner innerhalb der App durchsuchen, werden die mit den Dateien in diesem Ordner verknüpften Tags aufgezeichnet.\n\nSpäter, wenn Sie das entsprechende Tag im Verzeichnisbaum auswählen, ergänzt die App die Suchergebnisse des Systems, indem sie die relevanten Dateien anzeigt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Because macOS Spotlight cannot index external disks, network drives, or the contents of directories excluded in the \"Search Privacy\" settings, this app introduces an enhanced indexing feature: when you browse a folder within the app, it records the tags associated with the files inside that folder.\n\nLater, when you select the corresponding tag in the directory tree, the app will supplement the system's search results by displaying the relevant files."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debido a que Spotlight de macOS no puede indexar discos externos, unidades de red o el contenido de directorios excluidos en la configuración de \"Privacidad de búsqueda\", esta aplicación introduce una función de indexación mejorada: cuando navegas por una carpeta dentro de la aplicación, registra las etiquetas asociadas con los archivos dentro de esa carpeta.\n\nMás tarde, cuando seleccionas la etiqueta correspondiente en el árbol de directorios, la aplicación complementará los resultados de búsqueda del sistema mostrando los archivos relevantes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comme Spotlight de macOS ne peut pas indexer les disques externes, les lecteurs réseau ou le contenu des répertoires exclus dans les paramètres de \"Confidentialité de la recherche\", cette application introduit une fonctionnalité d'indexation améliorée : lorsque vous parcourez un dossier dans l'application, elle enregistre les tags associés aux fichiers à l'intérieur de ce dossier.\n\nPlus tard, lorsque vous sélectionnez le tag correspondant dans l'arborescence du répertoire, l'application complétera les résultats de recherche du système en affichant les fichiers pertinents."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poiché macOS Spotlight non può indicizzare dischi esterni, unità di rete o il contenuto delle directory escluse nelle impostazioni di \"Privacy di ricerca\", questa app introduce una funzione di indicizzazione avanzata: quando esplori una cartella all'interno dell'app, registra i tag associati ai file all'interno di quella cartella.\n\nSuccessivamente, quando selezioni il tag corrispondente nell'albero delle directory, l'app integrerà i risultati di ricerca del sistema visualizzando i file pertinenti."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS Spotlightは外部ディスク、ネットワークドライブ、または「検索プライバシー」設定で除外されたディレクトリの内容をインデックス化できないため、このアプリは強化されたインデックス機能を導入します: アプリ内でフォルダを閲覧すると、そのフォルダ内のファイルに関連付けられたタグを記録します。\n\n後でディレクトリツリーで対応するタグを選択すると、アプリは関連するファイルを表示することでシステムの検索結果を補完します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS Spotlight은 외장 디스크, 네트워크 드라이브 또는 \"검색 개인 정보 보호\" 설정에서 제외된 디렉토리의 내용을 인덱싱할 수 없기 때문에, 이 앱은 향상된 인덱싱 기능을 도입합니다: 앱 내에서 폴더를 탐색할 때 해당 폴더 안의 파일과 관련된 태그를 기록합니다.\n\n나중에 디렉토리 트리에서 해당 태그를 선택하면, 앱은 관련 파일을 표시하여 시스템의 검색 결과를 보완합니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omdat macOS Spotlight geen externe schijven, netwerkschijven of de inhoud van mappen die zijn uitgesloten in de \"Zoekprivacy\"-instellingen kan indexeren, introduceert deze app een verbeterde indexeringsfunctie: wanneer je een map binnen de app doorbladert, registreert het de tags die aan de bestanden in die map zijn gekoppeld.\n\nLater, wanneer je de overeenkomstige tag in de directoryboom selecteert, zal de app de zoekresultaten van het systeem aanvullen door de relevante bestanden weer te geven."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como o Spotlight do macOS não pode indexar discos externos, unidades de rede ou o conteúdo de diretórios excluídos nas configurações de \"Privacidade de Pesquisa\", este aplicativo introduz um recurso de indexação aprimorado: quando você navega por uma pasta dentro do aplicativo, ele registra as tags associadas aos arquivos dentro dessa pasta.\n\nMais tarde, quando você seleciona a tag correspondente na árvore de diretórios, o aplicativo complementará os resultados de pesquisa do sistema exibindo os arquivos relevantes."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como o Spotlight do macOS não consegue indexar discos externos, unidades de rede ou o conteúdo de diretórios excluídos nas definições de \"Privacidade de Pesquisa\", esta aplicação introduz uma funcionalidade de indexação melhorada: quando navega numa pasta dentro da aplicação, são registadas as etiquetas associadas aos ficheiros dentro dessa pasta.\n\nMais tarde, quando selecionar a etiqueta correspondente na árvore de diretórios, a aplicação complementará os resultados de pesquisa do sistema ao exibir os ficheiros relevantes."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поскольку macOS Spotlight не может индексировать внешние диски, сетевые диски или содержимое каталогов, исключенных в настройках \"Конфиденциальность поиска\", это приложение вводит улучшенную функцию индексирования: когда вы просматриваете папку в приложении, оно записывает теги, связанные с файлами внутри этой папки.\n\nПозже, когда вы выбираете соответствующий тег в дереве каталогов, приложение дополнит результаты поиска системы, отображая соответствующие файлы."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eftersom macOS Spotlight inte kan indexera externa diskar, nätverksenheter eller innehållet i kataloger som är undantagna i inställningarna för \"Sök integritet\", introducerar den här appen en förbättrad indexeringsfunktion: när du bläddrar i en mapp inom appen, registrerar den taggarna som är associerade med filerna i den mappen.\n\nSenare, när du väljer motsvarande tagg i katalogträdet, kommer appen att komplettera systemets sökresultat genom att visa de relevanta filerna."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由于 macOS 的 Spotlight 无法索引外置磁盘、网络驱动器以及“搜索隐私”设置中排除的目录内容，本应用引入了增强索引：当你在应用内浏览某个文件夹时，应用会记录该文件夹内文件的标签信息。\n\n随后，在目录树中选择相应标签时，应用会在系统搜索结果的基础上补充展示相关文件。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由於 macOS Spotlight 無法索引外部磁碟、網路驅動器或在「搜尋隱私」設定中排除的目錄內容，這個應用程式引入了一個增強的索引功能：當您在應用程式中瀏覽資料夾時，它會記錄該資料夾內檔案的標籤。\n\n稍後，當您在目錄樹中選擇相應的標籤時，應用程式將透過顯示相關檔案來補充系統的搜尋結果。"
+          }
+        }
+      }
+    },
+    "Elm-3Y-yxv.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Enable Enhanced Index\"; ObjectID = \"Elm-3Y-yxv\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تمكين الفهرس المحسن"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erweiterten Index aktivieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enable Enhanced Index"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habilitar índice mejorado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activer l'index amélioré"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abilita indice avanzato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拡張インデックスを有効にする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "향상된 인덱스 활성화"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbeterde index inschakelen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativar Índice Aprimorado"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativar Índice Aprimorado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включить расширенный индекс"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktivera förbättrat index"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用增强索引"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用增強索引"
+          }
+        }
+      }
+    },
+    "R7m-7o-ENQ.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Custom Tags:\"; ObjectID = \"R7m-7o-ENQ\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "علامات مخصصة:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benutzerdefinierte Tags:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Custom Tags:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etiquetas personalizadas:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balises personnalisées :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tag personalizzati:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタムタグ:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용자 지정 태그:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aangepaste tags:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tags Personalizados:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etiquetas Personalizadas:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пользовательские теги:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anpassade taggar:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义标签："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自訂標籤："
+          }
+        }
+      }
+    },
+    "tRG-X6-q84.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Enhanced Index:\"; ObjectID = \"tRG-X6-q84\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فهرس محسّن:"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erweiterter Index:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enhanced Index:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Índice mejorado:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Index amélioré :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indice migliorato:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拡張インデックス:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "향상된 인덱스:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbeterde index:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Índice Aprimorado:"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Índice Melhorado:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Улучшенный индекс:"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Förbättrat index:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "增强索引："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "增強索引："
+          }
+        }
+      }
+    },
+    "yE8-sl-Qa9.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"The application uses macOS's standard tagging mechanism. Please ensure that the tag names and colors in this app exactly match those in Finder; otherwise, you may encounter inconsistencies in tag colors when displaying or writing tags.\"; ObjectID = \"yE8-sl-Qa9\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يستخدم التطبيق آلية الوسم القياسية في macOS. يرجى التأكد من أن أسماء الوسوم والألوان في هذا التطبيق تتطابق تمامًا مع تلك الموجودة في Finder؛ وإلا، قد تواجه تناقضات في ألوان الوسوم عند عرض أو كتابة الوسوم."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anwendung verwendet das standardmäßige Tagging-Mechanismus von macOS. Bitte stellen Sie sicher, dass die Tag-Namen und Farben in dieser App genau mit denen im Finder übereinstimmen; andernfalls können Inkonsistenzen bei den Tag-Farben auftreten, wenn Tags angezeigt oder geschrieben werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The application uses macOS's standard tagging mechanism. Please ensure that the tag names and colors in this app exactly match those in Finder; otherwise, you may encounter inconsistencies in tag colors when displaying or writing tags."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aplicación utiliza el mecanismo de etiquetado estándar de macOS. Asegúrese de que los nombres y colores de las etiquetas en esta aplicación coincidan exactamente con los de Finder; de lo contrario, puede encontrar inconsistencias en los colores de las etiquetas al mostrar o escribir etiquetas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'application utilise le mécanisme de marquage standard de macOS. Veuillez vous assurer que les noms et les couleurs des balises dans cette application correspondent exactement à ceux du Finder ; sinon, vous pourriez rencontrer des incohérences dans les couleurs des balises lors de l'affichage ou de l'écriture des balises."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'applicazione utilizza il meccanismo di etichettatura standard di macOS. Assicurati che i nomi e i colori delle etichette in questa app corrispondano esattamente a quelli in Finder; altrimenti, potresti riscontrare incongruenze nei colori delle etichette durante la visualizzazione o la scrittura delle etichette."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアプリケーションはmacOSの標準タグ付け機能を使用しています。このアプリ内のタグ名と色がFinderのものと完全に一致していることを確認してください。そうしないと、タグを表示または書き込む際にタグの色に不一致が生じる可能性があります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 애플리케이션은 macOS의 표준 태그 메커니즘을 사용합니다. 이 앱의 태그 이름과 색상이 Finder와 정확히 일치하는지 확인하십시오. 그렇지 않으면 태그를 표시하거나 작성할 때 태그 색상에 불일치가 발생할 수 있습니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De applicatie gebruikt het standaard tagmechanisme van macOS. Zorg ervoor dat de tagnamen en kleuren in deze app exact overeenkomen met die in Finder; anders kunt u inconsistenties in tagkleuren tegenkomen bij het weergeven of schrijven van tags."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O aplicativo usa o mecanismo de marcação padrão do macOS. Certifique-se de que os nomes e cores das tags neste aplicativo correspondam exatamente aos do Finder; caso contrário, você pode encontrar inconsistências nas cores das tags ao exibir ou escrever tags."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A aplicação utiliza o mecanismo de etiquetagem padrão do macOS. Por favor, assegure-se de que os nomes e cores das etiquetas nesta aplicação correspondem exatamente aos do Finder; caso contrário, poderá encontrar inconsistências nas cores das etiquetas ao exibir ou escrever etiquetas."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приложение использует стандартный механизм тегирования macOS. Пожалуйста, убедитесь, что названия и цвета тегов в этом приложении точно соответствуют тем, что в Finder; в противном случае вы можете столкнуться с несоответствиями в цветах тегов при отображении или записи тегов."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applikationen använder macOS standardtaggningsmekanism. Se till att taggnamnen och färgerna i denna app exakt matchar de i Finder; annars kan du stöta på inkonsekvenser i taggfärger när du visar eller skriver taggar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "程序使用 macOS 标准标签机制。请确保本应用中的标签名称与颜色与 Finder 中的设置完全一致，否则显示和写入时可能出现标签颜色不一致的问题。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此應用程式使用 macOS 的標準標籤機制。請確保此應用程式中的標籤名稱和顏色與 Finder 中的完全匹配，否則在顯示或寫入標籤時可能會遇到標籤顏色不一致的情況。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

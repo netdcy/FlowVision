@@ -168,6 +168,15 @@ func getMainViewController() -> ViewController? {
     return nil
 }
 
+func getAnyViewController() -> ViewController? {
+    for window in NSApplication.shared.windows {
+        if let viewController = window.contentViewController as? ViewController {
+            return viewController
+        }
+    }
+    return nil
+}
+
 func getViewController(_ selfView: NSView) -> ViewController? {
     var responder: NSResponder? = selfView
     while responder != nil {
