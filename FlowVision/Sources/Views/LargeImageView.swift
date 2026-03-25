@@ -1400,8 +1400,18 @@ class LargeImageView: NSView {
         getViewController(self)!.publicVar.isLeftMouseDown = true
         
         isKeyWindowWhenMouseDown = self.window?.isKeyWindow ?? true
-        
-        // 通过音量记录来标识是否完整点击事件，而且避免点击音量条时触发暂停
+
+        // 判断是否点击视频顶部区域 (macOS 26 音量条在右上角)
+        // Check if clicking video top area (macOS 26 volume bar is in top right corner)
+        let mouseLocation = self.convert(event.locationInWindow, from: nil)
+        let isVideoTopArea = file.type == .video
+            && mouseLocation.y >= self.bounds.height - 50
+            && mouseLocation.x >= self.bounds.width - 200
+        if isVideoTopArea {
+            return
+        }
+
+        // 通过音量记录来标识是否完整点击事件，而且避免点击音量条时触发暂停 (macOS 15 及以前)
         // Use volume record to identify complete click event and avoid triggering pause when clicking volume bar
         if !(getViewController(self)!.publicVar.isRightMouseDown),
            file.type == .video,
