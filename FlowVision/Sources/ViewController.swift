@@ -407,6 +407,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     var dirURLCache: [URL] = []
     var dirURLCacheParameters: Any = []
+
+    // 加载进度条
+    // Loading progress bar
+    let progressBarHeight: CGFloat = 2.5
+    var progressBarTrack: NSView!
+    var progressBarFill: NSView!
+    var progressFillWidthConstraint: NSLayoutConstraint?
+    var indeterminateTimer: Timer?
     
     // 搜索框
     // Search box
@@ -472,6 +480,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         // 全局拖动操作
         // Global drag operation
         collectionView.setDraggingSourceOperationMask([.every], forLocal: false)
+        
+        // 初始化加载进度条
+        // Initialize loading progress bar
+        setupProgressBar()
         
 //        publicVar.justifiedLayout.minimumInteritemSpacing=10
 //        publicVar.justifiedLayout.minimumLineSpacing=10
@@ -1323,6 +1335,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     // publicVar.timer.intervalSafe(name: "recalcLayoutReloadData", second: 0.02+Double(i)*0.0001)
                                     collectionView.reloadData()
                                     collectionView.numberOfItems(inSection:0)
+                                    setProgress(1.0)
                                 }
                                 
                                 fileDB.lock()
@@ -1360,6 +1373,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                             if !keepScrollPos {
                                                 let newIndexPaths = indexPaths.dropFirst(curItemCount + indexPaths.count - nowLayoutCalcPos)
                                                 collectionView.insertItems(at: Set(newIndexPaths))
+                                                setProgress(Double(curItemCount+newIndexPaths.count)/Double(count))
                                             }
                                             if nowLayoutCalcPos == count {
                                                 fileDB.lock()

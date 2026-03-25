@@ -39,6 +39,7 @@
 		F7663C162F222AAC0028DF35 /* ImageEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7663C152F222AAC0028DF35 /* ImageEditingView.swift */; };
 		F76E2EFE2C3B765C0031B0B4 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76E2EFD2C3B765C0031B0B4 /* Log.swift */; };
 		F76F6A632F4FE58800D798DC /* TempVariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76F6A622F4FE58000D798DC /* TempVariable.swift */; };
+		F76F6A652F5B15B700D798DC /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76F6A642F5B15B200D798DC /* ProgressBar.swift */; };
 		F77098912F0E3C6B00E7D164 /* KeyShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77098902F0E3C6200E7D164 /* KeyShortcut.swift */; };
 		F77098932F0E411500E7D164 /* FileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77098922F0E411200E7D164 /* FileSystem.swift */; };
 		F77098952F0E427800E7D164 /* FileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77098942F0E427700E7D164 /* FileOperation.swift */; };
@@ -149,6 +150,7 @@
 		F7663C152F222AAC0028DF35 /* ImageEditingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditingView.swift; sourceTree = "<group>"; };
 		F76E2EFD2C3B765C0031B0B4 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		F76F6A622F4FE58000D798DC /* TempVariable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempVariable.swift; sourceTree = "<group>"; };
+		F76F6A642F5B15B200D798DC /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
 		F77098902F0E3C6200E7D164 /* KeyShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyShortcut.swift; sourceTree = "<group>"; };
 		F77098922F0E411200E7D164 /* FileSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystem.swift; sourceTree = "<group>"; };
 		F77098942F0E427700E7D164 /* FileOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOperation.swift; sourceTree = "<group>"; };
@@ -287,6 +289,7 @@
 				F77098982F0E43DF00E7D164 /* LayoutManagement.swift */,
 				F74D55572F0E491D00C9AB85 /* LayoutProfileConfig.swift */,
 				F74D55532F0E47D400C9AB85 /* MemoryManagement.swift */,
+				F76F6A642F5B15B200D798DC /* ProgressBar.swift */,
 				F74D55552F0E487800C9AB85 /* RightMouseGesture.swift */,
 				F74D55512F0E46D100C9AB85 /* Search.swift */,
 				F74D554D2F0E459600C9AB85 /* WindowManagement.swift */,
@@ -441,6 +444,7 @@
 				F74D555C2F0E501200C9AB85 /* EventHandler.swift in Sources */,
 				F74D55522F0E46D200C9AB85 /* Search.swift in Sources */,
 				F74D55542F0E47D700C9AB85 /* MemoryManagement.swift in Sources */,
+				F76F6A652F5B15B700D798DC /* ProgressBar.swift in Sources */,
 				F7AAA8BD2D9BD1F2007CE330 /* VideoProcess.swift in Sources */,
 				F795AC6E2C196B80004B487F /* CustomSplitView.swift in Sources */,
 				F73865D52C37B9B800837FE4 /* Layout.swift in Sources */,
