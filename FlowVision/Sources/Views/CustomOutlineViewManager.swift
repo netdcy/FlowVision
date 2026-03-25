@@ -68,7 +68,7 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
         if treeNode.fullPath.contains("FlowVisionTitleFolder") {
             view.imageView?.image = NSImage(named: "AppIcon")
             view.imageView?.contentTintColor = nil
-        } else if treeNode.fullPath.contains("VirtualFinderTagsFolder") {
+        } else if treeNode.fullPath.hasPrefix("file:///VirtualFinderTagsFolder") {
             let tagIcon = NSImage(systemSymbolName: "tag.fill", accessibilityDescription: nil)?
                 .withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 14, weight: .regular))
             if let url = URL(string: treeNode.fullPath), url.path != "/VirtualFinderTagsFolder" {
@@ -205,7 +205,7 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
     }
     
     func outlineView(_ outlineView: NSOutlineView, validateDrop info: NSDraggingInfo, proposedItem item: Any?, proposedChildIndex index: Int) -> NSDragOperation {
-        if let node = item as? TreeNode, node.fullPath.contains("VirtualFinderTagsFolder") {
+        if let node = item as? TreeNode, node.fullPath.hasPrefix("file:///VirtualFinderTagsFolder") {
             return []
         }
         return .move
@@ -251,7 +251,7 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
     
     func outlineView(_ outlineView: NSOutlineView, pasteboardWriterForItem item: Any) -> NSPasteboardWriting? {
         guard let outlineItem = item as? TreeNode else { return nil }
-        if outlineItem.fullPath.contains("VirtualFinderTagsFolder") { return nil }
+        if outlineItem.fullPath.hasPrefix("file:///VirtualFinderTagsFolder") { return nil }
         
         let pasteboardItem = NSPasteboardItem()
 

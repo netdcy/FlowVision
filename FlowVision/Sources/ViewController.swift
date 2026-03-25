@@ -2188,7 +2188,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
         // 虚拟Finder标签目录不监听
         // VirtualFinderTagsFolder directory doesn't listen
-        if path.contains("VirtualFinderTagsFolder") {
+        if path.hasPrefix("/VirtualFinderTagsFolder") {
             return
         }
         

@@ -157,9 +157,9 @@ extension ViewController {
                 }
                 dirURLCacheParameters = curDirURLCacheParameters
                 
-                isInSameDir = !publicVar.isRecursiveMode && !folderURL.path.contains("VirtualFinderTagsFolder")
+                isInSameDir = !publicVar.isRecursiveMode && !folderURL.path.hasPrefix("/VirtualFinderTagsFolder")
                 if dirURLCache.isEmpty {
-                    if folderURL.path.contains("VirtualFinderTagsFolder") {
+                    if folderURL.path.hasPrefix("/VirtualFinderTagsFolder") {
                         let tagName = folderURL.lastPathComponent
                         scanVirtualFiles(at: folderURL, contents: &dirURLCache, properties: properties, tagName: tagName)
                     }else if publicVar.isRecursiveMode {
@@ -782,7 +782,7 @@ extension ViewController {
         fileDB.lock()
         let curFolder = fileDB.curFolder
         fileDB.unlock()
-        if curFolder.contains("VirtualFinderTagsFolder") || publicVar.finderTagFilter != nil {
+        if curFolder.hasPrefix("file:///VirtualFinderTagsFolder") || publicVar.finderTagFilter != nil {
             if rawdirection == .left || rawdirection == .up_left || rawdirection == .down_left
                 || rawdirection == .right || rawdirection == .up_right || rawdirection == .down_right {
                 return

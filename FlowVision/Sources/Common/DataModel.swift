@@ -572,7 +572,7 @@ class TreeViewModel {
     }
     
     func hasSubdirectory(at folderURL: URL) -> Bool {
-        if folderURL.path.contains("VirtualFinderTagsFolder") {
+        if folderURL.path.hasPrefix("/VirtualFinderTagsFolder") {
             if folderURL.path == "/VirtualFinderTagsFolder" {
                 return true
             }else{
@@ -649,7 +649,7 @@ class TreeViewModel {
             // 过滤隐藏文件
             // Filter hidden files
             contents = contents.filter { url in
-                if url.path.contains("VirtualFinderTagsFolder") { return true }
+                if url.path.hasPrefix("/VirtualFinderTagsFolder") { return true }
 
                 // 获取隐藏属性
                 // Get hidden attribute
@@ -676,7 +676,7 @@ class TreeViewModel {
             // 过滤出目录列表
             // Filter out directory list
             var subFolders = contents.filter { url in
-                if url.path.contains("VirtualFinderTagsFolder") { return true }
+                if url.path.hasPrefix("/VirtualFinderTagsFolder") { return true }
                 guard let isDirectoryResourceValue = try? url.resourceValues(forKeys: [.isDirectoryKey]), let isDirectory = isDirectoryResourceValue.isDirectory else {
                     return false
                 }
@@ -687,7 +687,7 @@ class TreeViewModel {
             // Sort
             // 卷列表保持字母序
             // Volume list maintains alphabetical order
-            if folderURL.path.contains("VirtualFinderTagsFolder") {
+            if folderURL.path.hasPrefix("/VirtualFinderTagsFolder") {
                 // 不排序，保持 FinderTag.all 的顺序
                 // No sorting, keep FinderTag.all order
             } else if folderURL.path == "root" {
@@ -759,7 +759,7 @@ class TreeViewModel {
                     name = "FlowVision"
                     fullPath = "file:///FlowVisionTitleFolder/"
                 }
-                if subFolder.absoluteString.contains("VirtualFinderTagsFolder") {
+                if subFolder.absoluteString.hasPrefix("file:///VirtualFinderTagsFolder") {
                     if subFolder.absoluteString == "file:///VirtualFinderTagsFolder/" {
                         name = NSLocalizedString("Finder Tags", comment: "Finder标签")
                     }else{

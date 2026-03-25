@@ -81,7 +81,7 @@ class CustomCollectionView: NSCollectionView {
                     }
 
                     let curFolder = getViewController(self)!.fileDB.curFolder
-                    let isVirtualFinderTagsFolder = curFolder.contains("VirtualFinderTagsFolder")
+                    let isVirtualFinderTagsFolder = curFolder.hasPrefix("file:///VirtualFinderTagsFolder")
                     
                     // 弹出菜单
                     // Show context menu

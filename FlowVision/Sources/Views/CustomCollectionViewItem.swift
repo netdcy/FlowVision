@@ -558,7 +558,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             tooltipParts.append("\(relativePathLabel): \(relativePath)")
         }
 
-        if curFolder.contains("VirtualFinderTagsFolder") || curFolder.contains("VirtualTestFolder") {
+        if curFolder.hasPrefix("file:///VirtualFinderTagsFolder") {
             let parentDirectoryLabel = NSLocalizedString("Location", comment: "位置")
             var parentDirectory = (filePath as NSString).deletingLastPathComponent
             if parentDirectory.hasPrefix("file:") {
@@ -1004,7 +1004,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 }
 
                 let curFolder = getViewController(collectionView!)!.fileDB.curFolder
-                let isVirtualFinderTagsFolder = curFolder.contains("VirtualFinderTagsFolder")
+                let isVirtualFinderTagsFolder = curFolder.hasPrefix("file:///VirtualFinderTagsFolder")
                 
                 // 弹出菜单
                 // Show context menu
@@ -1037,7 +1037,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 }
 
                 let isRecursive = getViewController(collectionView!)?.publicVar.isRecursiveMode ?? false
-                let canShowParent = selectedCount == 1 && (isRecursive || getViewController(collectionView!)!.fileDB.curFolder.contains("VirtualFinderTagsFolder"))
+                let canShowParent = selectedCount == 1 && (isRecursive || getViewController(collectionView!)!.fileDB.curFolder.hasPrefix("file:///VirtualFinderTagsFolder"))
                 if canShowParent, let url = URL(string: file.path) {
                     let parentURL = url.deletingLastPathComponent()
                     if !parentURL.path.isEmpty && parentURL.absoluteString != url.absoluteString {

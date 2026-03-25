@@ -105,7 +105,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
                 actionItemOpenInNewTab.isEnabled=true
             }
 
-            if curRightClickedPath.contains("VirtualFinderTagsFolder") {
+            if curRightClickedPath.hasPrefix("file:///VirtualFinderTagsFolder") {
                 
             } else {
                 
