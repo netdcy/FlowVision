@@ -1548,6 +1548,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                                     let indexPath=IndexPath(item: offset, section: 0)
                                                     collectionView.scrollToItems(at: [indexPath], scrollPosition: .nearestHorizontalEdge)
                                                     collectionView.reloadData()
+                                                    collectionView.deselectAll(nil)
                                                     collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
                                                     collectionView.selectItems(at: [indexPath], scrollPosition: [])
                                                     collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
@@ -1580,9 +1581,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                             
                                             if !indexPaths.isEmpty {
                                                 let indexPathSet = Set(indexPaths)
-                                                collectionView.deselectAll(nil)
                                                 collectionView.scrollToItems(at: [indexPaths[0]], scrollPosition: .nearestHorizontalEdge)
                                                 collectionView.reloadData()
+                                                collectionView.deselectAll(nil)
                                                 collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: indexPathSet)
                                                 collectionView.selectItems(at: indexPathSet, scrollPosition: [])
                                                 collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: indexPathSet)
