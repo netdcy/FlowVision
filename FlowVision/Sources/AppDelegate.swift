@@ -770,7 +770,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             // 如果焦点在OutlineView
             // If focus is on OutlineView
             if mainViewController.publicVar.isOutlineViewFirstResponder{
-                if mainViewController.outlineView.getFirstSelectedUrl() == nil {
+                if let url = mainViewController.outlineView.getFirstSelectedUrl() {
+                    if url.absoluteString.hasPrefix("file:///VirtualFinderTagsFolder") {
+                        return false
+                    }
+                } else {
                     return false
                 }
             }
@@ -934,6 +938,23 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         
         guard let mainViewController=getMainViewController() else{return}
         
+        // 先清除上一次剪切的变淡效果
+        // Clear dim effect from previous cut
+        mainViewController.clearCutItemsDimEffect()
+        
+        // 收集即将被剪切的文件路径
+        // Collect file paths about to be cut
+        var cutUrls: [URL] = []
+        if mainViewController.publicVar.isInLargeView {
+            cutUrls = [URL(string: mainViewController.largeImageView.file.path)].compactMap { $0 }
+        } else if mainViewController.publicVar.isOutlineViewFirstResponder {
+            if let url = mainViewController.outlineView.getFirstSelectedUrl() {
+                cutUrls = [url]
+            }
+        } else if mainViewController.publicVar.isCollectionViewFirstResponder {
+            cutUrls = mainViewController.publicVar.selectedUrls()
+        }
+        
         // 复用复制逻辑，将文件URL复制到剪贴板
         // Reuse copy logic, copy file URLs to pasteboard
         if mainViewController.publicVar.isInLargeView {
@@ -954,6 +975,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         // 设置剪切模式标志，下次粘贴时将执行移动操作
         // Set cut mode flag, next paste will perform move operation
         globalVar.isCutMode = true
+        
+        // 记录被剪切的路径并应用变淡效果
+        // Record cut paths and apply dim effect
+        globalVar.cutItemPaths = Set(cutUrls.map { $0.absoluteString })
+        mainViewController.applyCutItemsDimEffect()
     }
     
     @IBAction func editCopy(_ sender: NSMenuItem){
@@ -982,10 +1008,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 mainViewController.handleCopy()
             }
         }
-        
-        // 复制操作重置剪切模式
-        // Copy operation resets cut mode
-        globalVar.isCutMode = false
     }
     
     @IBAction func editPaste(_ sender: NSMenuItem){

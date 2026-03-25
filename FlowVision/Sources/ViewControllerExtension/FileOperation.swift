@@ -323,6 +323,7 @@ extension ViewController {
         // 复制操作重置剪切模式
         // Copy operation resets cut mode
         globalVar.isCutMode = false
+        clearCutItemsDimEffect()
     }
     
     func handleCopyToDownload() {
@@ -345,6 +346,7 @@ extension ViewController {
         // If in cut mode, perform move operation instead of copy
         if globalVar.isCutMode {
             globalVar.isCutMode = false
+            clearCutItemsDimEffect()
             handleMove(targetURL: targetURL, pasteboard: pasteboard)
             return
         }
@@ -592,6 +594,7 @@ extension ViewController {
         // 重置剪切模式，防止直接调用handleMove后isCutMode残留为true
         // Reset cut mode to prevent isCutMode remaining true after direct handleMove calls
         globalVar.isCutMode = false
+        clearCutItemsDimEffect()
         
         // 按住Option则为复制
         // Hold Option to copy
@@ -1250,5 +1253,54 @@ extension ViewController {
             }
         }
         return false
+    }
+    
+    func applyCutItemsDimEffect() {
+        for window in NSApp.windows {
+            guard let vc = window.contentViewController as? ViewController else { continue }
+            for item in vc.collectionView.visibleItems() {
+                if let item = item as? CustomCollectionViewItem {
+                    item.updateCutDimEffect()
+                }
+            }
+            if vc.publicVar.isInLargeView && globalVar.cutItemPaths.contains(vc.largeImageView.file.path) {
+                vc.largeImageView.alphaValue = 0.4
+            }
+            updateOutlineViewCutDimEffect(vc.outlineView)
+        }
+    }
+    
+    func clearCutItemsDimEffect() {
+        let hadCutItems = !globalVar.cutItemPaths.isEmpty
+        globalVar.cutItemPaths.removeAll()
+        if hadCutItems {
+            for window in NSApp.windows {
+                guard let vc = window.contentViewController as? ViewController else { continue }
+                for item in vc.collectionView.visibleItems() {
+                    if let item = item as? CustomCollectionViewItem {
+                        item.updateCutDimEffect()
+                    }
+                }
+                if vc.publicVar.isInLargeView {
+                    vc.largeImageView.alphaValue = 1.0
+                }
+                updateOutlineViewCutDimEffect(vc.outlineView)
+            }
+        }
+    }
+    
+    private func updateOutlineViewCutDimEffect(_ outlineView: CustomOutlineView) {
+        let visibleRange = outlineView.rows(in: outlineView.visibleRect)
+        for row in visibleRange.location..<(visibleRange.location + visibleRange.length) {
+            guard let rowView = outlineView.rowView(atRow: row, makeIfNecessary: false) else { continue }
+            if let treeNode = outlineView.item(atRow: row) as? TreeNode {
+                let isCut = globalVar.cutItemPaths.contains(treeNode.fullPath)
+                for col in 0..<outlineView.numberOfColumns {
+                    if let cellView = rowView.view(atColumn: col) as? NSView {
+                        cellView.alphaValue = isCut ? 0.4 : 1.0
+                    }
+                }
+            }
+        }
     }
 }

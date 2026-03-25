@@ -335,6 +335,11 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         // 将文件URL添加到剪贴板
         // Add file URL to clipboard
         pasteboard.writeObjects(urls as [NSPasteboardWriting])
+
+        // 复制操作重置剪切模式
+        // Copy operation resets cut mode
+        globalVar.isCutMode = false
+        getViewController(self)?.clearCutItemsDimEffect()
     }
     
     @objc func actDelete(isByKeyboard: Bool = false, isShowPrompt: Bool = true) {

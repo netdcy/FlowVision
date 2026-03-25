@@ -99,6 +99,8 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
 //        backgroundView.frame = view.bounds
 //        backgroundView.autoresizingMask = [.width, .height]
         
+        view.alphaValue = globalVar.cutItemPaths.contains(treeNode.fullPath) ? 0.4 : 1.0
+        
         return view
     }
     func outlineViewSelectionDidChange(_ notification: Notification) {

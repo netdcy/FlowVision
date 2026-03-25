@@ -42,6 +42,10 @@ class GlobalVar{
     // Cut mode flag, set to true on cut, checked on paste to decide move or copy
     var isCutMode = false
     
+    // 被剪切的文件路径集合，用于在UI上显示变淡效果
+    // Set of cut file paths, used to show dimmed effect in UI
+    var cutItemPaths = Set<String>()
+    
     // 实时状态变量
     // Real-time state variables
     var isInMiddleMouseDrag = false

@@ -157,6 +157,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             deselectedColor()
         }
         lastClickTime=0
+        updateCutDimEffect()
     }
 
     override func viewWillDisappear() {
@@ -299,6 +300,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         ratingStarsView = nil
         aliasBadgeView?.removeFromSuperview()
         aliasBadgeView = nil
+        view.alphaValue = 1.0
     }
 
     func refreshFinderTagDots() {
@@ -550,7 +552,12 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 //            }
         }
         
-        
+        updateCutDimEffect()
+    }
+    
+    func updateCutDimEffect() {
+        let isCut = globalVar.cutItemPaths.contains(file.path)
+        view.alphaValue = isCut ? 0.4 : 1.0
     }
     
     func setTooltip(){
