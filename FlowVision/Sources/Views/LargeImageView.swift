@@ -1196,7 +1196,7 @@ class LargeImageView: NSView {
         getViewController(self)!.publicVar.zoomLock = ratio
         
         if isShowPrompt {
-            let text = String(Int(ratio*100))
+            let text = String(Int((ratio*100).rounded()))
             ratioView.showInfo(text: NSLocalizedString("Zoom", comment: "缩放")+": "+text+"%")
         }
     }
@@ -1585,11 +1585,11 @@ class LargeImageView: NSView {
                 let actionItemQRCode = menu.addItem(withTitle: NSLocalizedString("recognize-QRCode", comment: "识别二维码"), action: #selector(actQRCode), keyEquivalent: "p")
                 actionItemQRCode.keyEquivalentModifierMask = []
             } else if file.type == .video {
-                let actionItemRememberPosition = menu.addItem(withTitle: NSLocalizedString("Remember Position", comment: "（视频）记忆位置"), action: #selector(actRememberPlayPosition), keyEquivalent: "k")
+                let actionItemRememberPosition = menu.addItem(withTitle: NSLocalizedString("Remember Position", comment: "（视频）记忆位置"), action: #selector(actRememberPlayPosition), keyEquivalent: "j")
                 actionItemRememberPosition.keyEquivalentModifierMask = []
                 actionItemRememberPosition.state = globalVar.videoPlayRememberPosition ? .on : .off
 
-                let actionItemABPlay = menu.addItem(withTitle: NSLocalizedString("A-B Loop", comment: "（视频）A-B循环"), action: #selector(actABPlay), keyEquivalent: "l")
+                let actionItemABPlay = menu.addItem(withTitle: NSLocalizedString("A-B Loop", comment: "（视频）A-B循环"), action: #selector(actABPlay), keyEquivalent: "k")
                 actionItemABPlay.keyEquivalentModifierMask = []
                 if let positionA = abPlayPositionA?.seconds,
                        let positionB = abPlayPositionB?.seconds,
@@ -1599,7 +1599,8 @@ class LargeImageView: NSView {
                     actionItemABPlay.state = .off
                 }
                 
-                let actionItemSequentialPlay = menu.addItem(withTitle: NSLocalizedString("Sequential Playback", comment: "（视频）顺序播放"), action: #selector(actSequentialPlay), keyEquivalent: "")
+                let actionItemSequentialPlay = menu.addItem(withTitle: NSLocalizedString("Sequential Playback", comment: "（视频）顺序播放"), action: #selector(actSequentialPlay), keyEquivalent: "l")
+                actionItemSequentialPlay.keyEquivalentModifierMask = []
                 actionItemSequentialPlay.state = globalVar.videoPlaySequentialPlay ? .on : .off
             }
 

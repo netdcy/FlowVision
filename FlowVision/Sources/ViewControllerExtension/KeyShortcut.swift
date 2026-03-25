@@ -253,13 +253,13 @@ extension ViewController {
                 }
                 return nil
             }
-            
-            // 检查按键是否是 "L" 键
-            // Check if key is "L"
-            if characters == "l" && noModifierKey {
+
+            // 检查按键是否是 "J" 键
+            // Check if key is "J"
+            if characters == "j" && noModifierKey {
                 if publicVar.isInLargeView,
                    largeImageView.file.type == .video {
-                    largeImageView.specifyABPlayPositionAuto()
+                    largeImageView.actRememberPlayPosition()
                 }
                 return nil
             }
@@ -269,7 +269,17 @@ extension ViewController {
             if characters == "k" && noModifierKey {
                 if publicVar.isInLargeView,
                    largeImageView.file.type == .video {
-                    largeImageView.actRememberPlayPosition()
+                    largeImageView.actABPlay()
+                }
+                return nil
+            }
+
+            // 检查按键是否是 "L" 键
+            // Check if key is "L"
+            if characters == "l" && noModifierKey {
+                if publicVar.isInLargeView,
+                   largeImageView.file.type == .video {
+                    largeImageView.actSequentialPlay()
                 }
                 return nil
             }
