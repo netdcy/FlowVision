@@ -411,10 +411,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     // 加载进度条
     // Loading progress bar
     let progressBarHeight: CGFloat = 2.5
+    let progressShowDelay: TimeInterval = 1.0
+    let progressShowThreshold: Double = 0.5
     var progressBarTrack: NSView!
     var progressBarFill: NSView!
     var progressFillWidthConstraint: NSLayoutConstraint?
     var indeterminateTimer: Timer?
+    var progressDelayWorkItem: DispatchWorkItem?
+    var isProgressVisible = false
     
     // 搜索框
     // Search box
