@@ -935,66 +935,38 @@ extension ViewController {
             
         }
         
-        // 处理弹出重命名对话框、OCR状态的复制粘贴操作
-        // Handle copy/paste operations for rename dialog popup and OCR state
+        // 处理弹出重命名对话框、OCR状态的 Home/End 光标移动操作
+        // Handle Home/End cursor movement for rename dialog popup and OCR state
+        if !publicVar.isKeyEventEnabled || largeImageView.isInOcrState {
+            if specialKey == .home {
+                NSApp.keyWindow?.firstResponder?.moveToBeginningOfDocument(nil)
+                return nil
+            }
+            if specialKey == .end {
+                NSApp.keyWindow?.firstResponder?.moveToEndOfDocument(nil)
+                return nil
+            }
+        }
+
+        // 处理弹出重命名对话框、OCR状态的复制粘贴、撤销操作
+        // Handle copy/paste and undo operations for rename dialog popup and OCR state
         if (!publicVar.isKeyEventEnabled || largeImageView.isInOcrState) && isOnlyCommandPressed {
             switch event.charactersIgnoringModifiers {
             case "a":
-                if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.selectAll(_:))) {
-                    responder.perform(#selector(NSText.selectAll(_:)), with: nil)
-                    // 事件已处理，返回 nil 以防止传递给下一个响应者
-                    // Event handled, return nil to prevent passing to next responder
-                    return nil
-                } else {
-                    // 处理自定义 Command+A 操作
-                    // Handle custom Command+A action
-                    log("Custom Command+A action")
-                    // 事件已处理，返回 nil 以防止传递给下一个响应者
-                    // Event handled, return nil to prevent passing to next responder
-                    return nil
-                }
+                NSApp.sendAction(#selector(NSText.selectAll(_:)), to: nil, from: nil)
+                return nil
             case "c":
-                if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.copy(_:))) {
-                    responder.perform(#selector(NSText.copy(_:)), with: nil)
-                    // 事件已处理，返回 nil 以防止传递给下一个响应者
-                    // Event handled, return nil to prevent passing to next responder
-                    return nil
-                } else {
-                    // 处理自定义 Command+C 操作
-                    // Handle custom Command+C action
-                    log("Custom Command+C action")
-                    // 事件已处理，返回 nil 以防止传递给下一个响应者
-                    // Event handled, return nil to prevent passing to next responder
-                    return nil
-                }
+                NSApp.sendAction(#selector(NSText.copy(_:)), to: nil, from: nil)
+                return nil
             case "v":
-                if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.paste(_:))) {
-                    responder.perform(#selector(NSText.paste(_:)), with: nil)
-                    // 事件已处理，返回 nil 以防止传递给下一个响应者
-                    // Event handled, return nil to prevent passing to next responder
-                    return nil
-                } else {
-                    // 处理自定义 Command+V 操作
-                    // Handle custom Command+V action
-                    log("Custom Command+V action")
-                    // 事件已处理，返回 nil 以防止传递给下一个响应者
-                    // Event handled, return nil to prevent passing to next responder
-                    return nil
-                }
+                NSApp.sendAction(#selector(NSText.paste(_:)), to: nil, from: nil)
+                return nil
             case "x":
-                if let responder = NSApp.keyWindow?.firstResponder, responder.responds(to: #selector(NSText.cut(_:))) {
-                    responder.perform(#selector(NSText.cut(_:)), with: nil)
-                    // 事件已处理，返回 nil 以防止传递给下一个响应者
-                    // Event handled, return nil to prevent passing to next responder
-                    return nil
-                } else {
-                    // 处理自定义 Command+X 操作
-                    // Handle custom Command+X action
-                    log("Custom Command+X action")
-                    // 事件已处理，返回 nil 以防止传递给下一个响应者
-                    // Event handled, return nil to prevent passing to next responder
-                    return nil
-                }
+                NSApp.sendAction(#selector(NSText.cut(_:)), to: nil, from: nil)
+                return nil
+            case "z":
+                NSApp.sendAction(Selector(("undo:")), to: nil, from: nil)
+                return nil
             default:
                 break
             }

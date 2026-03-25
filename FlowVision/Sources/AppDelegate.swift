@@ -923,6 +923,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
     
     @IBAction func editMove(_ sender: NSMenuItem){
+        // 如果焦点在标准文本控件上，使用系统默认的移动行为（不支持）
+        // If focus is on standard text controls, use system default move behavior (not supported)
+        if let firstResponder = NSApp.keyWindow?.firstResponder {
+            if firstResponder is NSTextView || firstResponder is NSTextField { return }
+        }
         getMainViewController()?.handleMove()
     }
     
@@ -1011,12 +1016,25 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
     
     @IBAction func editPaste(_ sender: NSMenuItem){
+        // 如果焦点在标准文本控件上，使用系统默认的粘贴行为
+        // If focus is on standard text controls, use system default paste behavior
+        if let firstResponder = NSApp.keyWindow?.firstResponder {
+            if firstResponder is NSTextView || firstResponder is NSTextField {
+                firstResponder.tryToPerform(#selector(NSText.paste(_:)), with: nil)
+                return
+            }
+        }
         getMainViewController()?.handlePaste()
     }
     
     @IBAction func editDelete(_ sender: NSMenuItem){
         // 注意：由于未知原因有时无法触发，因此主要在按键监听里处理
         // Note: Sometimes cannot trigger for unknown reasons, so mainly handled in key listener
+        // 如果焦点在标准文本控件上，不处理，因为单键无法触发，这里做个防御操作
+        // If focus is on standard text controls, do not handle, because single key cannot trigger, here is a defensive operation
+        if let firstResponder = NSApp.keyWindow?.firstResponder {
+            if firstResponder is NSTextView || firstResponder is NSTextField { return }
+        }
         guard let mainViewController=getMainViewController() else{return}
         if mainViewController.publicVar.isInLargeView {
             mainViewController.handleDelete()
