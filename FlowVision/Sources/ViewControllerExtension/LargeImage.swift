@@ -733,6 +733,7 @@ extension ViewController {
         }
         
         largeImageView.file=file
+        largeImageView.refreshPixelPerfectRendering()
         largeImageView.refreshFinderTagDots()
         largeImageView.refreshRatingStars()
 
@@ -809,6 +810,13 @@ extension ViewController {
             // When original image actual size is smaller than view size, display at actual size
             if !publicVar.isLargeImageFitWindow && originalSize.width<largeSize.width*scale && !triggeredByLongPress {
                 largeSize=NSSize(width: originalSize.width/scale, height: originalSize.height/scale)
+            }
+            
+            if globalVar.pixelPerfectImageScaling &&
+               !publicVar.isZoomLocked &&
+               (publicVar.isLargeImageFitWindow || triggeredByLongPress),
+               let pixelPerfectSize = largeImageView.pixelPerfectFitSize(maxBounds: maxBounds.size) {
+                largeSize = pixelPerfectSize
             }
             
             // 缩放锁定

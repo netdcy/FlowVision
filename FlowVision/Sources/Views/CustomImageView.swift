@@ -193,6 +193,13 @@ class CustomThumbImageView: BorderedImageView {
 
 class CustomLargeImageView: IntegerImageView {
     var isMirroredH: Bool = false
+    var isPixelPerfectEnabled: Bool = false {
+        didSet {
+            needsDisplay = true
+            layer?.magnificationFilter = isPixelPerfectEnabled ? .nearest : .linear
+            layer?.minificationFilter = isPixelPerfectEnabled ? .nearest : .linear
+        }
+    }
     
     override var image: NSImage? {
         get { return super.image }
@@ -211,5 +218,17 @@ class CustomLargeImageView: IntegerImageView {
         if let img = super.image {
             super.image = img.flippedHorizontally()
         }
+    }
+    
+    override func draw(_ dirtyRect: NSRect) {
+        guard isPixelPerfectEnabled, let image = image else {
+            super.draw(dirtyRect)
+            return
+        }
+        
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current?.imageInterpolation = .none
+        image.draw(in: bounds, from: .zero, operation: .sourceOver, fraction: 1.0, respectFlipped: true, hints: [.interpolation: NSImageInterpolation.none])
+        NSGraphicsContext.restoreGraphicsState()
     }
 }

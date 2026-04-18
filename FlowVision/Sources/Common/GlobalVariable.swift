@@ -98,6 +98,7 @@ class GlobalVar{
     var isEnterKeyToOpen = false
     var clickEdgeToSwitchImage = false
     var scrollMouseWheelToZoom = false
+    var pixelPerfectImageScaling = false
     var openLastFolder = true
     var homeFolder = "file:///"
     var keepFilterStateWhenSwitchFolder = false
@@ -206,4 +207,3 @@ func getSystemVolumeName() -> String? {
         return nil
     }
 }
-
