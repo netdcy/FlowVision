@@ -543,7 +543,7 @@
     },
     "kUa-1f-s4l.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Press Opt + 1~9 to switch to the corresponding profile.\\nPress Opt + Cmd + 1~9 to save the current layout and style to the corresponding profile.\\nThe configurations involved in switching include: whether to display the sidebar, view type, sorting method, thumbnail size, and custom styles (such as whether to display file names and the width of the thumbnail border).\"; ObjectID = \"kUa-1f-s4l\";",
-      "extractionState" : "extracted_with_value",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

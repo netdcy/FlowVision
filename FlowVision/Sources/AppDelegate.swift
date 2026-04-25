@@ -193,6 +193,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let useInternalPlayer = UserDefaults.standard.value(forKey: "useInternalPlayer") as? Bool {
             globalVar.useInternalPlayer = useInternalPlayer
         }
+        if let preferIINAForExternalVideoPlayer = UserDefaults.standard.value(forKey: "preferIINAForExternalVideoPlayer") as? Bool {
+            globalVar.preferIINAForExternalVideoPlayer = preferIINAForExternalVideoPlayer
+        }
         if let isEnterKeyToOpen = UserDefaults.standard.value(forKey: "isEnterKeyToOpen") as? Bool {
             globalVar.isEnterKeyToOpen = isEnterKeyToOpen
         }
@@ -216,6 +219,36 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         }
         if let enhancedIndexEnabled = UserDefaults.standard.value(forKey: "enhancedIndexEnabled") as? Bool {
             globalVar.enhancedIndexEnabled = enhancedIndexEnabled
+        }
+        if let photoFolder1Path = UserDefaults.standard.value(forKey: "photoFolder1Path") as? String {
+            globalVar.photoFolder1Path = photoFolder1Path
+        }
+        if let photoFolder1CopyShortcut = UserDefaults.standard.value(forKey: "photoFolder1CopyShortcut") as? String,
+           !photoFolder1CopyShortcut.isEmpty {
+            globalVar.photoFolder1CopyShortcut = photoFolder1CopyShortcut.uppercased()
+        }
+        if let photoFolder2Path = UserDefaults.standard.value(forKey: "photoFolder2Path") as? String {
+            globalVar.photoFolder2Path = photoFolder2Path
+        }
+        if let photoFolder2CopyShortcut = UserDefaults.standard.value(forKey: "photoFolder2CopyShortcut") as? String,
+           !photoFolder2CopyShortcut.isEmpty {
+            globalVar.photoFolder2CopyShortcut = photoFolder2CopyShortcut.uppercased()
+        }
+        if let quickRenameRule = UserDefaults.standard.value(forKey: "quickRenameRule") as? String,
+           !quickRenameRule.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            globalVar.quickRenameRule = quickRenameRule
+        }
+        if let videoShiftArrowSwitchFile = UserDefaults.standard.value(forKey: "videoShiftArrowSwitchFile") as? Bool {
+            globalVar.videoShiftArrowSwitchFile = videoShiftArrowSwitchFile
+        }
+        if let showArchiveFileType = UserDefaults.standard.value(forKey: "showArchiveFileType") as? Bool {
+            globalVar.showArchiveFileType = showArchiveFileType
+        }
+        if let compressionDefaultPassword = UserDefaults.standard.value(forKey: "compressionDefaultPassword") as? String {
+            globalVar.compressionDefaultPassword = compressionDefaultPassword
+        }
+        if let compressionUseDefaultPassword = UserDefaults.standard.value(forKey: "compressionUseDefaultPassword") as? Bool {
+            globalVar.compressionUseDefaultPassword = compressionUseDefaultPassword
         }
         if let collectionViewItemShowTooltip = UserDefaults.standard.value(forKey: "collectionViewItemShowTooltip") as? Bool {
             globalVar.collectionViewItemShowTooltip = collectionViewItemShowTooltip
@@ -533,6 +566,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                         .replacingOccurrences(of: "file://", with: "")
                         .removingPercentEncoding!
                         .replacingOccurrences(of: "/VirtualFinderTagsFolder", with: NSLocalizedString("Finder Tags", comment: "Finder标签"))
+                        .replacingOccurrences(of: "/VirtualFavoritesFolder", with: NSLocalizedString("Favorites", comment: "收藏"))
+                        .replacingOccurrences(of: "/VirtualHistoryFolder", with: NSLocalizedString("History", comment: "历史"))
+                        .replacingOccurrences(of: "/VirtualArchiveFolder", with: NSLocalizedString("Archive", comment: "压缩包"))
                     let folderMenuItem = NSMenuItem(
                         title: displayTitle,
                         action: #selector(pathClick(_:)),
@@ -622,6 +658,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                         .replacingOccurrences(of: "file://", with: "")
                         .removingPercentEncoding!
                         .replacingOccurrences(of: "/VirtualFinderTagsFolder", with: NSLocalizedString("Finder Tags", comment: "Finder标签"))
+                        .replacingOccurrences(of: "/VirtualFavoritesFolder", with: NSLocalizedString("Favorites", comment: "收藏"))
+                        .replacingOccurrences(of: "/VirtualHistoryFolder", with: NSLocalizedString("History", comment: "历史"))
+                        .replacingOccurrences(of: "/VirtualArchiveFolder", with: NSLocalizedString("Archive", comment: "压缩包"))
                     let menuItem = NSMenuItem(title: historyDisplayTitle, action: #selector(pathClick(_:)), keyEquivalent: "")
                     menuItem.representedObject = item
                     menuItem.target = self
@@ -791,7 +830,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             // If focus is on OutlineView
             if mainViewController.publicVar.isOutlineViewFirstResponder{
                 if let url = mainViewController.outlineView.getFirstSelectedUrl() {
-                    if url.absoluteString.hasPrefix("file:///VirtualFinderTagsFolder") {
+                    if isVirtualFolderPath(url.absoluteString) {
                         return false
                     }
                 } else {
@@ -818,7 +857,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             if mainViewController.publicVar.isInLargeView {
                 return false
             }
-            if mainViewController.fileDB.curFolder.hasPrefix("file:///VirtualFinderTagsFolder") {
+            if isReadOnlyVirtualFolderPath(mainViewController.fileDB.curFolder) {
                 return false
             }
             let pasteboard = NSPasteboard.general
@@ -889,26 +928,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         mainViewController.fileDB.lock()
         let curFolder=mainViewController.fileDB.curFolder
         mainViewController.fileDB.unlock()
-        if !globalVar.myFavoritesArray.contains(curFolder) {
-            globalVar.myFavoritesArray.append(curFolder)
-            let defaults = UserDefaults.standard
-            defaults.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
-        }
+        _ = addFavoritePath(curFolder)
     }
     @objc func deleteFavorite(_ sender: NSMenuItem) {
         guard let folderPath = sender.representedObject as? String else { return }
-        
-        // 在这里处理删除逻辑
-        // Handle delete logic here
-        if let index = globalVar.myFavoritesArray.firstIndex(of: folderPath) {
-            globalVar.myFavoritesArray.remove(at: index)
-            let defaults = UserDefaults.standard
-            defaults.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
-        }
-        
-        // 更新菜单以反映更改
-        // Update menu to reflect changes
-        // menuNeedsUpdate(favoritesMenu)
+        _ = removeFavoritePath(folderPath)
     }
     @objc func moveUpFavorite(_ sender: NSMenuItem) {
         guard let index = sender.representedObject as? Int, index > 0 else { return }
@@ -1261,4 +1285,3 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         getMainViewController()?.toggleSearchOverlay()
     }
 }
-

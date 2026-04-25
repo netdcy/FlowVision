@@ -215,17 +215,9 @@ In image view: W/S zoom in/zoom out, Z zoom to 100%, X zoom to fit, A/D previous
                             </textField>
                         </gridCell>
                         <gridCell row="ZWa-1o-EWV" column="oNd-Vu-470" id="hiH-ud-Jdz">
-                            <textField key="contentView" focusRingType="none" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="2vx-cQ-j1A">
+                            <customView key="contentView" placeholderIntrinsicWidth="320" placeholderIntrinsicHeight="98" translatesAutoresizingMaskIntoConstraints="NO" id="2vx-cQ-j1A">
                                 <rect key="frame" x="132" y="0.0" width="320" height="98"/>
-                                <textFieldCell key="cell" selectable="YES" id="kUa-1f-s4l">
-                                    <font key="font" metaFont="message" size="11"/>
-                                    <string key="title">Press Opt + 1~9 to switch to the corresponding profile.
-Press Opt + Cmd + 1~9 to save the current layout and style to the corresponding profile.
-The configurations involved in switching include: whether to display the sidebar, view type, sorting method, thumbnail size, and custom styles (such as whether to display file names and the width of the thumbnail border).</string>
-                                    <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
+                            </customView>
                         </gridCell>
                     </gridCells>
                 </gridView>

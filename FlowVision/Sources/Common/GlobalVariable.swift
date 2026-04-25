@@ -89,6 +89,7 @@ class GlobalVar{
     var usePinyinInitialSearch = false
     var videoPlayRememberPosition = false
     var videoPlaySequentialPlay = false
+    var preferIINAForExternalVideoPlayer = true
     var useInternalPlayer = true {
         didSet {
             useInternalPlayerCheckbox?.state = useInternalPlayer ? .on : .off
@@ -104,6 +105,15 @@ class GlobalVar{
     var dirTreeAutoExpand = true
     var largeImageViewShowTagsAndRating = true
     var enhancedIndexEnabled = true
+    var photoFolder1Path: String = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first?.path ?? homeDirectory
+    var photoFolder1CopyShortcut: String = "N"
+    var photoFolder2Path: String = FileManager.default.urls(for: .moviesDirectory, in: .userDomainMask).first?.path ?? FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first?.path ?? homeDirectory
+    var photoFolder2CopyShortcut: String = "F4"
+    var quickRenameRule: String = "{folder}_{index}"
+    var videoShiftArrowSwitchFile = true
+    var showArchiveFileType = true
+    var compressionDefaultPassword: String = ""
+    var compressionUseDefaultPassword = false
     var collectionViewItemShowTooltip = true
     
     // 可记忆设置变量
@@ -208,4 +218,3 @@ func getSystemVolumeName() -> String? {
         return nil
     }
 }
-

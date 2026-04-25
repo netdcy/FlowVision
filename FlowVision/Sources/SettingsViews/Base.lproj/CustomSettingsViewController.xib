@@ -277,7 +277,7 @@
                                 <rect key="frame" x="99" y="442" width="353" height="42"/>
                                 <textFieldCell key="cell" selectable="YES" id="Jbl-Lw-mRw">
                                     <font key="font" metaFont="message" size="11"/>
-                                    <string key="title">Since macOS natively supports only video formats like "mp4", "mov", "m2ts", "ts", "mpeg", "mpg", "m4v", and "vob", other formats still need to be played using an external player.</string>
+                                    <string key="title">When the internal player is disabled, videos are opened with IINA first if installed, otherwise with the system default player.</string>
                                     <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>

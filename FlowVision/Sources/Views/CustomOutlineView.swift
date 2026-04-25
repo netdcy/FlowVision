@@ -105,9 +105,17 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
                 actionItemOpenInNewTab.isEnabled=true
             }
 
-            if curRightClickedPath.hasPrefix("file:///VirtualFinderTagsFolder") {
+            if isReadOnlyVirtualFolderPath(curRightClickedPath) {
                 
             } else {
+                
+                menu.addItem(NSMenuItem.separator())
+
+                if isFavoritePath(curRightClickedPath) {
+                    menu.addItem(withTitle: NSLocalizedString("Remove from Favorites", comment: "取消收藏"), action: #selector(actRemoveFromFavorites), keyEquivalent: "")
+                } else {
+                    menu.addItem(withTitle: NSLocalizedString("Add to Favorites", comment: "添加到收藏"), action: #selector(actAddToFavorites), keyEquivalent: "")
+                }
                 
                 menu.addItem(NSMenuItem.separator())
                 
@@ -149,7 +157,21 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
                 
                 let actionItemDelete = menu.addItem(withTitle: NSLocalizedString("Move to Trash", comment: "移动到废纸篓"), action: #selector(actDelete), keyEquivalent: "\u{8}")
                 actionItemDelete.keyEquivalentModifierMask = []
+
+                if let archiveURL = URL(string: curRightClickedPath),
+                   getViewController(self)?.isSupportedArchiveURL(archiveURL) == true {
+                    menu.addItem(withTitle: NSLocalizedString("解压到当前目录", comment: "解压到当前目录"), action: #selector(actExtractArchive), keyEquivalent: "")
+                    menu.addItem(withTitle: NSLocalizedString("解压并删除压缩包", comment: "解压并删除压缩包"), action: #selector(actExtractArchiveAndDelete), keyEquivalent: "")
+                }
                 
+                menu.addItem(withTitle: NSLocalizedString("快速压缩", comment: "快速压缩"), action: #selector(actQuickCompress), keyEquivalent: "")
+                menu.addItem(withTitle: NSLocalizedString("压缩为 ZIP", comment: "压缩为 ZIP"), action: #selector(actCompressZip), keyEquivalent: "")
+                menu.addItem(withTitle: NSLocalizedString("压缩并删除源文件", comment: "压缩并删除源文件"), action: #selector(actCompressZipAndDelete), keyEquivalent: "")
+                menu.addItem(withTitle: NSLocalizedString("加密压缩...", comment: "加密压缩..."), action: #selector(actEncryptAndCompress), keyEquivalent: "")
+                if !globalVar.compressionDefaultPassword.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    menu.addItem(withTitle: NSLocalizedString("使用默认密码加密压缩", comment: "使用默认密码加密压缩"), action: #selector(actEncryptCompressWithDefaultPassword), keyEquivalent: "")
+                }
+
                 menu.addItem(NSMenuItem.separator())
                 
                 let actionItemRename = menu.addItem(withTitle: NSLocalizedString("Rename", comment: "重命名"), action: #selector(actRename), keyEquivalent: "r")
@@ -389,6 +411,59 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         task.launchPath = "/usr/bin/open"
         task.arguments = ["-a", "Terminal", url.path]
         task.launch()
+    }
+
+    @objc func actQuickCompress() {
+        guard let vc = getViewController(self), let url = URL(string: curRightClickedPath) else { return }
+        _ = vc.handleCompressByDefaultSetting(urls: [url], deleteOriginal: false)
+    }
+
+    @objc func actExtractArchive() {
+        guard let vc = getViewController(self), let url = URL(string: curRightClickedPath) else { return }
+        _ = vc.handleExtractArchives(urls: [url], deleteOriginal: false)
+    }
+
+    @objc func actExtractArchiveAndDelete() {
+        guard let vc = getViewController(self), let url = URL(string: curRightClickedPath) else { return }
+        _ = vc.handleExtractArchives(urls: [url], deleteOriginal: true)
+    }
+
+    @objc func actCompressZip() {
+        guard let vc = getViewController(self), let url = URL(string: curRightClickedPath) else { return }
+        _ = vc.handleCompress(urls: [url], mode: .plainZip, deleteOriginal: false)
+    }
+
+    @objc func actCompressZipAndDelete() {
+        guard let vc = getViewController(self), let url = URL(string: curRightClickedPath) else { return }
+        _ = vc.handleCompress(urls: [url], mode: .plainZip, deleteOriginal: true)
+    }
+
+    @objc func actEncryptAndCompress() {
+        guard let vc = getViewController(self), let url = URL(string: curRightClickedPath) else { return }
+        guard let password = vc.promptCompressionPassword(initialValue: globalVar.compressionDefaultPassword) else { return }
+        _ = vc.handleCompress(urls: [url], mode: .encryptedZip(password: password), deleteOriginal: false)
+    }
+
+    @objc func actEncryptCompressWithDefaultPassword() {
+        guard let vc = getViewController(self), let url = URL(string: curRightClickedPath) else { return }
+        let password = globalVar.compressionDefaultPassword.trimmingCharacters(in: .whitespacesAndNewlines)
+        if password.isEmpty {
+            showAlert(message: NSLocalizedString("Default compression password is empty.", comment: "默认压缩密码为空。"))
+            return
+        }
+        _ = vc.handleCompress(urls: [url], mode: .encryptedZip(password: password), deleteOriginal: false)
+    }
+
+    @objc func actAddToFavorites() {
+        if addFavoritePath(curRightClickedPath) {
+            refreshTreeView()
+        }
+    }
+
+    @objc func actRemoveFromFavorites() {
+        if removeFavoritePath(curRightClickedPath) {
+            refreshTreeView()
+        }
     }
 
     @objc func actToggleFinderTag(_ sender: NSMenuItem) {

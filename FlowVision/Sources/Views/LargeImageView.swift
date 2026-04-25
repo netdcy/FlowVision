@@ -8,12 +8,145 @@ import Cocoa
 import VisionKit
 import AVKit
 
+private final class VideoCropOverlayView: NSView {
+    private let actionButtonSize: CGFloat = 26
+    private let actionButtonGap: CGFloat = 6
+
+    var selectionRect: NSRect = .zero {
+        didSet { needsDisplay = true }
+    }
+
+    override var isFlipped: Bool { false }
+
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        nil
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
+
+        NSColor.black.withAlphaComponent(0.45).setFill()
+        if selectionRect.isEmpty {
+            bounds.fill()
+            return
+        }
+
+        NSRect(x: bounds.minX, y: bounds.minY, width: bounds.width, height: max(0, selectionRect.minY - bounds.minY)).fill()
+        NSRect(x: bounds.minX, y: selectionRect.maxY, width: bounds.width, height: max(0, bounds.maxY - selectionRect.maxY)).fill()
+        NSRect(x: bounds.minX, y: selectionRect.minY, width: max(0, selectionRect.minX - bounds.minX), height: selectionRect.height).fill()
+        NSRect(x: selectionRect.maxX, y: selectionRect.minY, width: max(0, bounds.maxX - selectionRect.maxX), height: selectionRect.height).fill()
+
+        NSColor.systemYellow.setStroke()
+        let border = NSBezierPath(rect: selectionRect)
+        border.lineWidth = 2
+        border.stroke()
+
+        NSColor.systemYellow.setFill()
+        for handle in handleRects(for: selectionRect) {
+            let path = NSBezierPath(roundedRect: handle, xRadius: 2, yRadius: 2)
+            path.fill()
+        }
+
+        drawActionButtons()
+    }
+
+    func confirmButtonRect() -> NSRect {
+        guard !selectionRect.isEmpty else { return .zero }
+        let y = max(bounds.minY + actionButtonGap, selectionRect.minY + actionButtonGap)
+        let x = min(bounds.maxX - actionButtonSize - actionButtonGap, selectionRect.maxX - actionButtonSize - actionButtonGap)
+        return NSRect(x: x, y: y, width: actionButtonSize, height: actionButtonSize)
+    }
+
+    func cancelButtonRect() -> NSRect {
+        let confirm = confirmButtonRect()
+        guard !confirm.isEmpty else { return .zero }
+        return confirm.offsetBy(dx: -(actionButtonSize + actionButtonGap), dy: 0)
+    }
+
+    private func drawActionButtons() {
+        let confirm = confirmButtonRect()
+        let cancel = cancelButtonRect()
+        guard !confirm.isEmpty, !cancel.isEmpty else { return }
+
+        drawButtonBackground(cancel, color: NSColor.systemRed.withAlphaComponent(0.92))
+        drawButtonBackground(confirm, color: NSColor.systemGreen.withAlphaComponent(0.92))
+        drawX(in: cancel)
+        drawCheckmark(in: confirm)
+    }
+
+    private func drawButtonBackground(_ rect: NSRect, color: NSColor) {
+        color.setFill()
+        NSBezierPath(roundedRect: rect, xRadius: 5, yRadius: 5).fill()
+    }
+
+    private func drawX(in rect: NSRect) {
+        NSColor.white.setStroke()
+        let path = NSBezierPath()
+        path.lineWidth = 2.4
+        path.lineCapStyle = .round
+        path.move(to: NSPoint(x: rect.minX + 8, y: rect.minY + 8))
+        path.line(to: NSPoint(x: rect.maxX - 8, y: rect.maxY - 8))
+        path.move(to: NSPoint(x: rect.maxX - 8, y: rect.minY + 8))
+        path.line(to: NSPoint(x: rect.minX + 8, y: rect.maxY - 8))
+        path.stroke()
+    }
+
+    private func drawCheckmark(in rect: NSRect) {
+        NSColor.white.setStroke()
+        let path = NSBezierPath()
+        path.lineWidth = 2.6
+        path.lineCapStyle = .round
+        path.lineJoinStyle = .round
+        path.move(to: NSPoint(x: rect.minX + 7, y: rect.midY))
+        path.line(to: NSPoint(x: rect.midX - 1, y: rect.minY + 8))
+        path.line(to: NSPoint(x: rect.maxX - 7, y: rect.maxY - 8))
+        path.stroke()
+    }
+
+    private func handleRects(for rect: NSRect) -> [NSRect] {
+        let size: CGFloat = 8
+        let half = size / 2
+        let points = [
+            NSPoint(x: rect.minX, y: rect.minY),
+            NSPoint(x: rect.midX, y: rect.minY),
+            NSPoint(x: rect.maxX, y: rect.minY),
+            NSPoint(x: rect.minX, y: rect.midY),
+            NSPoint(x: rect.maxX, y: rect.midY),
+            NSPoint(x: rect.minX, y: rect.maxY),
+            NSPoint(x: rect.midX, y: rect.maxY),
+            NSPoint(x: rect.maxX, y: rect.maxY)
+        ]
+        return points.map { NSRect(x: $0.x - half, y: $0.y - half, width: size, height: size) }
+    }
+}
+
+private enum VideoCropDragMode {
+    case new
+    case move
+    case resizeLeft
+    case resizeRight
+    case resizeTop
+    case resizeBottom
+    case resizeTopLeft
+    case resizeTopRight
+    case resizeBottomLeft
+    case resizeBottomRight
+}
+
+private enum VideoCropActionButton {
+    case confirm
+    case cancel
+}
+
 class LargeImageView: NSView {
 
     var imageView: CustomLargeImageView!
     
     var snapshotQueue = [NSView?]()
     var videoView: LargeAVPlayerView!
+    var mpvVideoView: FlowMPVVideoView!
+    var mpvPlayer: MPVPlayerBackend?
+    var isUsingMPVPlayer = false
     // var videoPlayer: AVPlayer?
     var playerItem: AVPlayerItem?
     var queuePlayer: AVQueuePlayer?
@@ -35,6 +168,17 @@ class LargeImageView: NSView {
     
     private var volumeObservation: NSKeyValueObservation?
     private var blackOverlayView: NSView?
+    private var isSelectingVideoCrop = false
+    private var videoCropStartPoint: NSPoint?
+    private var videoCropSelectionRect: NSRect = .zero
+    private var videoCropOverlayView: VideoCropOverlayView?
+    private var wasPlayingBeforeVideoCropSelection = false
+    private var videoCropDragMode: VideoCropDragMode?
+    private var videoCropDragOriginalRect: NSRect = .zero
+    private var pendingVideoCropActionButton: VideoCropActionButton?
+    var isInVideoCropSelectionMode: Bool {
+        isSelectingVideoCrop
+    }
     
     var videoControlsView: VideoPlayerControlsView!
     private var periodicTimeObserver: Any?
@@ -101,6 +245,8 @@ class LargeImageView: NSView {
     }
     
     private func commonInit() {
+        wantsLayer = true
+
         imageView = CustomLargeImageView(frame: self.bounds)
         imageView.imageScaling = .scaleAxesIndependently
         imageView.wantsLayer = true
@@ -116,6 +262,11 @@ class LargeImageView: NSView {
         videoView.videoGravity = .resizeAspect
         videoView.isHidden = true
         self.addSubview(videoView)
+
+        mpvVideoView = FlowMPVVideoView(frame: self.bounds)
+        mpvVideoView.autoresizingMask = [.width, .height]
+        mpvVideoView.isHidden = true
+        self.addSubview(mpvVideoView)
         
         volumeObservation = queuePlayer?.observe(\.volume, options: [.new, .old]) { [weak self] _, change in
             guard let self = self,
@@ -582,8 +733,72 @@ class LargeImageView: NSView {
         self.trackingAreas.forEach { self.removeTrackingArea($0) }
         setupMouseTracking()
     }
+
+    var videoCurrentTimeSeconds: Double {
+        if isUsingMPVPlayer {
+            return mpvPlayer?.currentTime ?? 0
+        }
+        return CMTimeGetSeconds(queuePlayer?.currentTime() ?? .zero)
+    }
+
+    var videoDurationSeconds: Double {
+        if isUsingMPVPlayer {
+            return mpvPlayer?.duration ?? 0
+        }
+        return CMTimeGetSeconds(queuePlayer?.currentItem?.duration ?? .zero)
+    }
+
+    var videoIsPlaying: Bool {
+        if isUsingMPVPlayer {
+            return mpvPlayer?.isPlaying == true
+        }
+        return queuePlayer?.rate ?? 0 > 0
+    }
+
+    var videoVolume: Float {
+        get {
+            if isUsingMPVPlayer {
+                return mpvPlayer?.volume ?? globalVar.videoVolume
+            }
+            return queuePlayer?.volume ?? globalVar.videoVolume
+        }
+        set {
+            let bounded = max(0, min(1, newValue))
+            if isUsingMPVPlayer {
+                mpvPlayer?.volume = bounded
+                saveVolumeChange()
+                videoControlsView.updateVolumeUI()
+            } else {
+                queuePlayer?.volume = bounded
+            }
+        }
+    }
+
+    func seekVideo(to seconds: Double) {
+        if isUsingMPVPlayer {
+            mpvPlayer?.seek(to: seconds)
+        } else {
+            let targetTime = CMTimeMakeWithSeconds(seconds, preferredTimescale: 600)
+            queuePlayer?.seek(to: targetTime, toleranceBefore: .zero, toleranceAfter: .zero)
+        }
+    }
+
+    func setVideoPaused(_ paused: Bool) {
+        if isUsingMPVPlayer {
+            mpvPlayer?.setPaused(paused)
+        } else if paused {
+            queuePlayer?.pause()
+        } else {
+            queuePlayer?.rate = globalVar.videoPlaybackRate
+        }
+    }
     
     func pauseOrResumeVideo() {
+        if isUsingMPVPlayer {
+            setVideoPaused(videoIsPlaying)
+            videoControlsView.updatePlayPauseIcon()
+            return
+        }
         if let queuePlayer = queuePlayer {
             if queuePlayer.timeControlStatus == .playing {
                 queuePlayer.pause()
@@ -595,6 +810,10 @@ class LargeImageView: NSView {
     }
     
     func pauseVideo() {
+        if isUsingMPVPlayer {
+            setVideoPaused(true)
+            return
+        }
         if let queuePlayer = queuePlayer {
             if queuePlayer.timeControlStatus == .playing {
                 queuePlayer.pause()
@@ -603,6 +822,10 @@ class LargeImageView: NSView {
     }
     
     func resumeVideo() {
+        if isUsingMPVPlayer {
+            setVideoPaused(false)
+            return
+        }
         if let queuePlayer = queuePlayer {
             if queuePlayer.timeControlStatus == .paused {
                 queuePlayer.rate = globalVar.videoPlaybackRate
@@ -611,8 +834,8 @@ class LargeImageView: NSView {
     }
 
     func specifyABPlayPositionA(){
-        if let queuePlayer = queuePlayer {
-            abPlayPositionA = queuePlayer.currentTime()
+        if isUsingMPVPlayer || queuePlayer != nil {
+            abPlayPositionA = CMTime(seconds: videoCurrentTimeSeconds, preferredTimescale: 600)
             videoControlsView.updateABMarkers()
             if abPlayPositionA != nil && abPlayPositionB != nil {
                 if CMTimeGetSeconds(abPlayPositionA!) > CMTimeGetSeconds(abPlayPositionB!) {
@@ -628,8 +851,8 @@ class LargeImageView: NSView {
     }
 
     func specifyABPlayPositionB(){
-        if let queuePlayer = queuePlayer {
-            abPlayPositionB = queuePlayer.currentTime()
+        if isUsingMPVPlayer || queuePlayer != nil {
+            abPlayPositionB = CMTime(seconds: videoCurrentTimeSeconds, preferredTimescale: 600)
             videoControlsView.updateABMarkers()
             if abPlayPositionA != nil && abPlayPositionB != nil {
                 if CMTimeGetSeconds(abPlayPositionA!) > CMTimeGetSeconds(abPlayPositionB!) {
@@ -646,7 +869,7 @@ class LargeImageView: NSView {
 
     func specifyABPlayPositionAuto(){
         if file.type != .video {return}
-        if let queuePlayer = queuePlayer {
+        if isUsingMPVPlayer || queuePlayer != nil {
             if abPlayPositionA == nil {
                 specifyABPlayPositionA()
             } else if abPlayPositionB == nil {
@@ -659,9 +882,8 @@ class LargeImageView: NSView {
 
     func saveCurrentPlayPosition(){
         if globalVar.videoPlayRememberPosition,
-        let currentURL = currentPlayingURL,
-           let currentTime = queuePlayer?.currentTime() {
-            UserDefaults.standard.set(currentTime.seconds, forKey: "videoPosition_\(currentURL.absoluteString)")
+        let currentURL = currentPlayingURL {
+            UserDefaults.standard.set(videoCurrentTimeSeconds, forKey: "videoPosition_\(currentURL.absoluteString)")
         }
     }
     
@@ -669,7 +891,7 @@ class LargeImageView: NSView {
         if globalVar.videoPlayRememberPosition {
             saveCurrentPlayPosition()
         }
-        restorePlayPosition = savePosition ? queuePlayer?.currentTime() : nil
+        restorePlayPosition = savePosition ? CMTime(seconds: videoCurrentTimeSeconds, preferredTimescale: 600) : nil
         restorePlayURL = savePosition ? currentPlayingURL : nil
         if !savePosition {
             abPlayPositionA = nil
@@ -677,8 +899,12 @@ class LargeImageView: NSView {
         }
         videoOrderId += 1
         videoView.isHidden = true
+        mpvVideoView.isHidden = true
         videoControlsView.hideControlsImmediately()
         stopPeriodicTimeObserver()
+        mpvPlayer?.stop()
+        mpvPlayer = nil
+        isUsingMPVPlayer = false
         hideUnsupportedVideoOverlay()
         if let observer = videoEndObserver {
             NotificationCenter.default.removeObserver(observer)
@@ -732,7 +958,7 @@ class LargeImageView: NSView {
             }
 
             if reload || reloadForAB {
-                restorePlayPosition = queuePlayer?.currentTime()
+                restorePlayPosition = CMTime(seconds: videoCurrentTimeSeconds, preferredTimescale: 600)
                 restorePlayURL = currentPlayingURL
             }
             
@@ -740,13 +966,17 @@ class LargeImageView: NSView {
                 NotificationCenter.default.removeObserver(observer)
                 videoEndObserver = nil
             }
+            mpvPlayer?.stop()
+            mpvPlayer = nil
+            isUsingMPVPlayer = false
+            mpvVideoView.isHidden = true
             playerLooper?.disableLooping()
             playerLooper = nil
             queuePlayer?.removeAllItems()
             playerItem = nil
             videoView.controlsStyle = .none
             videoOrderId += 1
-            videoView.isHidden = false
+            videoView.isHidden = true
             pausedBySeek = false
             isVideoMetadataUpdated = false
             if !reloadForAB {
@@ -760,10 +990,48 @@ class LargeImageView: NSView {
                 updateVideoMetadata(url: url)
             }
 
+            var finalABRange: ClosedRange<Double>?
+            if let positionA = abPlayPositionA?.seconds,
+               let positionB = abPlayPositionB?.seconds,
+               positionA < positionB {
+                finalABRange = positionA...positionB
+            }
+
+            if let mpvPlayer = MPVPlayerBackend(renderView: mpvVideoView) {
+                let shouldLoop = !(globalVar.videoPlaySequentialPlay && abPlayPositionA == nil && abPlayPositionB == nil)
+                let didLoad = mpvPlayer.load(
+                    url: url,
+                    startTime: restorePlayURL == url ? restorePlayPosition?.seconds : nil,
+                    volume: globalVar.videoVolume,
+                    rate: globalVar.videoPlaybackRate,
+                    rotation: file.rotate,
+                    abRange: finalABRange,
+                    loop: shouldLoop,
+                    endHandler: { [weak self] in
+                        guard let self = self else { return }
+                        if globalVar.videoPlaySequentialPlay && self.abPlayPositionA == nil && self.abPlayPositionB == nil {
+                            getViewController(self)?.nextLargeImage(isShowReachEndPrompt: true, firstShowThumb: true)
+                        }
+                    }
+                )
+                if didLoad {
+                    self.mpvPlayer = mpvPlayer
+                    isUsingMPVPlayer = true
+                    currentPlayingURL = url
+                    mpvVideoView.isHidden = false
+                    startPeriodicTimeObserver()
+                    checkPlayerItemStatus(id: videoOrderId)
+                    return
+                }
+            }
+
+            videoView.isHidden = false
             if let timeRange = getCommonTimeRange(url: url) {
                 playerItem = AVPlayerItem(url: url)
                 if let playerItem = playerItem,
                    let queuePlayer = queuePlayer {
+                    playerItem.preferredForwardBufferDuration = 5
+                    queuePlayer.automaticallyWaitsToMinimizeStalling = true
                     
                     // 根据 file.rotate 设置视频旋转角度
                     // Set video rotation angle based on file.rotate
@@ -781,7 +1049,12 @@ class LargeImageView: NSView {
                         composition.renderSize = rotation == 90 || rotation == 270 ?
                             CGSize(width: videoTrack.naturalSize.height, height: videoTrack.naturalSize.width) :
                             videoTrack.naturalSize
-                        composition.frameDuration = CMTime(value: 1, timescale: 30)
+                        let frameRate = videoTrack.nominalFrameRate
+                        if frameRate > 0 {
+                            composition.frameDuration = CMTime(value: 1000, timescale: CMTimeScale(frameRate * 1000))
+                        } else {
+                            composition.frameDuration = CMTime(value: 1, timescale: 60)
+                        }
                         
                         let instruction = AVMutableVideoCompositionInstruction()
                         instruction.timeRange = CMTimeRange(start: .zero, duration: .positiveInfinity)
@@ -869,8 +1142,31 @@ class LargeImageView: NSView {
     
     private func checkPlayerItemStatus(id: Int) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { [weak self] in
-            guard let self = self, let playerItem = self.playerItem else { return }
+            guard let self = self else { return }
             if id != videoOrderId { return }
+
+            if isUsingMPVPlayer {
+                if mpvPlayer?.duration ?? 0 > 0 || mpvPlayer?.currentTime ?? 0 > 0 {
+                    restorePlayPosition = nil
+                    restorePlayURL = nil
+                    while snapshotQueue.count > 0{
+                        snapshotQueue.first??.removeFromSuperview()
+                        snapshotQueue.removeFirst()
+                    }
+                    if abPlayPositionA != nil && abPlayPositionB != nil && lastActionTriggerdReload == "ABPlay" {
+                        showInfo(NSLocalizedString("A-B Loop Active", comment: "（视频）A-B循环启用"))
+                        lastActionTriggerdReload = nil
+                    } else if lastActionTriggerdReload == "Rotate" {
+                        showInfo(String(format: NSLocalizedString("Rotate %d°", comment: "（视频）旋转%d°"), file.rotate*90))
+                        lastActionTriggerdReload = nil
+                    }
+                } else {
+                    checkPlayerItemStatus(id: id)
+                }
+                return
+            }
+
+            guard self.playerItem != nil else { return }
             
             // log("playerItem.status: ", playerItem.status.rawValue)
             
@@ -941,20 +1237,15 @@ class LargeImageView: NSView {
 //            return
 //        }
 
-        guard let player = queuePlayer else { 
-            return 
-        }
-        
-        // 获取视频总时长
-        // Get total video duration
-        guard let duration = player.currentItem?.duration else { 
+        let durationSeconds = videoDurationSeconds
+        guard durationSeconds.isFinite && durationSeconds > 0 else {
             return 
         }
         
         // 计算实际可播放时长
         // Calculate actual playable duration
         var startTime: Double = 0
-        var endTime = CMTimeGetSeconds(duration)
+        var endTime = durationSeconds
         
         // 如果设置了AB播放点,使用AB点之间的时长
         // If AB playback points are set, use duration between AB points
@@ -977,8 +1268,7 @@ class LargeImageView: NSView {
         
         // 获取当前播放时间
         // Get current playback time
-        let currentTime = player.currentTime()
-        let currentSeconds = CMTimeGetSeconds(currentTime)
+        let currentSeconds = videoCurrentTimeSeconds
         
         // 计算目标时间,确保在有效范围内
         // Calculate target time, ensure within valid range
@@ -990,22 +1280,28 @@ class LargeImageView: NSView {
            CMTimeGetSeconds(abPlayPositionA!) < CMTimeGetSeconds(abPlayPositionB!) {
             targetSeconds = max(startTime, min(endTime, targetSeconds))
         } else {
-            targetSeconds = max(0, min(CMTimeGetSeconds(duration), targetSeconds))
+            targetSeconds = max(0, min(durationSeconds, targetSeconds))
         }
         
         // 暂停
         // Pause
-        if player.timeControlStatus == .playing {
+        if videoIsPlaying {
             pausedBySeek = true
             pauseVideo()
         }
         
-        // 转换为CMTime并执行跳转
-        let targetTime = CMTimeMakeWithSeconds(Float64(targetSeconds), preferredTimescale: 600)
-        player.seek(to: targetTime, toleranceBefore: .zero, toleranceAfter: .zero)
+        seekVideo(to: targetSeconds)
     }
 
     func seekVideoByFrame(direction: Int) {
+        if isUsingMPVPlayer {
+            let fps = 60.0
+            let seekDuration = direction > 0 ? 1.0 / fps : -1.0 / fps
+            pauseVideo()
+            seekVideo(to: videoCurrentTimeSeconds + seekDuration)
+            return
+        }
+
         guard let player = queuePlayer,
               let asset = player.currentItem?.asset else {
             return
@@ -1039,8 +1335,7 @@ class LargeImageView: NSView {
             targetSeconds = max(0, min(CMTimeGetSeconds(duration), targetSeconds))
         }
         
-        let targetTime = CMTimeMakeWithSeconds(targetSeconds, preferredTimescale: 600)
-        player.seek(to: targetTime, toleranceBefore: .zero, toleranceAfter: .zero)
+        seekVideo(to: targetSeconds)
         
         // 显示帧信息
         // Display frame information
@@ -1049,14 +1344,12 @@ class LargeImageView: NSView {
     }
     
     func seekVideo(direction: Int) {
-        guard let player = queuePlayer,
-              let duration = player.currentItem?.duration else {
+        let totalSeconds = videoDurationSeconds
+        guard totalSeconds.isFinite && totalSeconds > 0 else {
             return
         }
         
-        let totalSeconds = CMTimeGetSeconds(duration)
-        let currentTime = player.currentTime()
-        let currentSeconds = CMTimeGetSeconds(currentTime)
+        let currentSeconds = videoCurrentTimeSeconds
         
         var minBound = 0.0
         var maxBound = totalSeconds
@@ -1076,19 +1369,16 @@ class LargeImageView: NSView {
         var targetSeconds = currentSeconds + seconds
         targetSeconds = max(minBound, min(maxBound, targetSeconds))
         
-        let targetTime = CMTimeMakeWithSeconds(Float64(targetSeconds), preferredTimescale: 600)
-        player.seek(to: targetTime, toleranceBefore: .zero, toleranceAfter: .zero)
+        seekVideo(to: targetSeconds)
     }
     
     func seekVideoBySeconds(seconds: Double) {
-        guard let player = queuePlayer,
-              let duration = player.currentItem?.duration else {
+        let totalSeconds = videoDurationSeconds
+        guard totalSeconds.isFinite && totalSeconds > 0 else {
             return
         }
         
-        let totalSeconds = CMTimeGetSeconds(duration)
-        let currentTime = player.currentTime()
-        let currentSeconds = CMTimeGetSeconds(currentTime)
+        let currentSeconds = videoCurrentTimeSeconds
         
         var minBound = 0.0
         var maxBound = totalSeconds
@@ -1101,16 +1391,13 @@ class LargeImageView: NSView {
         var targetSeconds = currentSeconds + seconds
         targetSeconds = max(minBound, min(maxBound, targetSeconds))
         
-        let targetTime = CMTimeMakeWithSeconds(Float64(targetSeconds), preferredTimescale: 600)
-        player.seek(to: targetTime, toleranceBefore: .zero, toleranceAfter: .zero)
+        seekVideo(to: targetSeconds)
     }
 
     func adjustVolume(by delta: Float) {
-        guard let player = queuePlayer else { return }
-        
         // 获取当前音量并计算新音量
         // Get current volume and calculate new volume
-        var newVolume = round((player.volume + delta) * 100) / 100
+        var newVolume = round((videoVolume + delta) * 100) / 100
         
         // 限制音量在0-1之间
         // Limit volume between 0-1
@@ -1118,7 +1405,7 @@ class LargeImageView: NSView {
         
         // 设置新音量
         // Set new volume
-        player.volume = newVolume
+        videoVolume = newVolume
         
         // 显示音量信息
         // Display volume information
@@ -1135,8 +1422,7 @@ class LargeImageView: NSView {
     }
 
     func saveVolumeChange() {
-        guard let player = queuePlayer else { return }
-        globalVar.videoVolume = player.volume
+        globalVar.videoVolume = videoVolume
         UserDefaults.standard.set(globalVar.videoVolume, forKey: "videoVolume")
     }
     
@@ -1146,7 +1432,9 @@ class LargeImageView: NSView {
         let rate = Float(sender.tag) / 100.0
         globalVar.videoPlaybackRate = rate
         UserDefaults.standard.set(rate, forKey: "videoPlaybackRate")
-        if let player = queuePlayer, player.rate > 0 {
+        if isUsingMPVPlayer {
+            mpvPlayer?.setRate(rate)
+        } else if let player = queuePlayer, player.rate > 0 {
             player.rate = rate
         }
     }
@@ -1175,8 +1463,19 @@ class LargeImageView: NSView {
     
     func startPeriodicTimeObserver() {
         stopPeriodicTimeObserver()
+
+        if isUsingMPVPlayer {
+            periodicTimeObserver = Timer.scheduledTimer(withTimeInterval: 1.0 / 15.0, repeats: true) { [weak self] _ in
+                guard let self = self else { return }
+                let current = CMTime(seconds: self.videoCurrentTimeSeconds, preferredTimescale: 600)
+                let duration = CMTime(seconds: self.videoDurationSeconds, preferredTimescale: 600)
+                guard CMTimeGetSeconds(duration).isFinite else { return }
+                self.videoControlsView.updateProgress(currentTime: current, duration: duration)
+            }
+            return
+        }
         
-        let interval = CMTime(seconds: 1.0 / 120.0, preferredTimescale: 120)
+        let interval = CMTime(seconds: 1.0 / 15.0, preferredTimescale: 600)
         periodicTimeObserver = queuePlayer?.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
             guard let self = self,
                   let player = self.queuePlayer,
@@ -1190,6 +1489,11 @@ class LargeImageView: NSView {
     }
     
     func stopPeriodicTimeObserver() {
+        if let timer = periodicTimeObserver as? Timer {
+            timer.invalidate()
+            periodicTimeObserver = nil
+            return
+        }
         if let observer = periodicTimeObserver {
             queuePlayer?.removeTimeObserver(observer)
             periodicTimeObserver = nil
@@ -1197,12 +1501,217 @@ class LargeImageView: NSView {
     }
     
     func showVideoControls() {
-        guard file.type == .video, !videoView.isHidden, queuePlayer?.currentItem != nil else { return }
+        guard file.type == .video, ((isUsingMPVPlayer && !mpvVideoView.isHidden) || (!videoView.isHidden && queuePlayer?.currentItem != nil)) else { return }
         videoControlsView.showControls()
     }
     
     func hideVideoControls() {
         videoControlsView.hideControls()
+    }
+
+    func beginVideoCropSelectionMode() {
+        guard file.type == .video, ((isUsingMPVPlayer && !mpvVideoView.isHidden) || !videoView.isHidden) else { return }
+
+        isSelectingVideoCrop = true
+        videoCropStartPoint = nil
+        videoCropSelectionRect = .zero
+        wasPlayingBeforeVideoCropSelection = videoIsPlaying
+        pauseVideo()
+        videoControlsView.hideControls()
+        ensureVideoCropOverlayLayer()
+        updateVideoCropOverlay(selectionRect: .zero)
+        showInfo(NSLocalizedString("Drag to select video crop area", comment: "拖动选择视频裁剪区域"))
+    }
+
+    private func cancelVideoCropSelectionMode() {
+        guard isSelectingVideoCrop else { return }
+        isSelectingVideoCrop = false
+        videoCropStartPoint = nil
+        videoCropDragMode = nil
+        pendingVideoCropActionButton = nil
+        videoCropSelectionRect = .zero
+        videoCropOverlayView?.removeFromSuperview()
+        videoCropOverlayView = nil
+        if wasPlayingBeforeVideoCropSelection {
+            resumeVideo()
+        }
+    }
+
+    func cancelVideoCropSelection() {
+        cancelVideoCropSelectionMode()
+    }
+
+    func confirmVideoCropSelection() {
+        finishVideoCropSelectionMode()
+    }
+
+    private func finishVideoCropSelectionMode() {
+        guard isSelectingVideoCrop else { return }
+        let selectedRect = videoCropSelectionRect
+        isSelectingVideoCrop = false
+        videoCropStartPoint = nil
+        videoCropDragMode = nil
+        pendingVideoCropActionButton = nil
+        videoCropSelectionRect = .zero
+        videoCropOverlayView?.removeFromSuperview()
+        videoCropOverlayView = nil
+
+        guard let cropRect = makeVideoCropRect(fromSelectionRect: selectedRect) else {
+            showInfo(NSLocalizedString("Crop area is too small", comment: "裁剪区域太小"))
+            if wasPlayingBeforeVideoCropSelection {
+                resumeVideo()
+            }
+            return
+        }
+
+        getViewController(self)?.handleCropCurrentVideo(selection: cropRect)
+    }
+
+    private func ensureVideoCropOverlayLayer() {
+        guard videoCropOverlayView == nil else { return }
+        let overlay = VideoCropOverlayView(frame: bounds)
+        overlay.autoresizingMask = [.width, .height]
+        overlay.wantsLayer = true
+        addSubview(overlay, positioned: .above, relativeTo: videoView)
+        videoCropOverlayView = overlay
+    }
+
+    private func updateVideoCropOverlay(selectionRect: NSRect) {
+        ensureVideoCropOverlayLayer()
+        videoCropOverlayView?.frame = bounds
+        videoCropOverlayView?.selectionRect = selectionRect
+    }
+
+    private func videoContentFrameInSelf() -> NSRect? {
+        let originalSize = file.originalSize ?? file.imageInfo?.size
+        guard let originalSize = originalSize,
+              originalSize.width > 0,
+              originalSize.height > 0 else {
+            return nil
+        }
+        return AVMakeRect(aspectRatio: originalSize, insideRect: videoView.frame)
+    }
+
+    private func makeVideoCropRect(fromSelectionRect selectionRect: NSRect) -> ViewController.VideoCropRect? {
+        guard let contentFrame = videoContentFrameInSelf(),
+              let originalSize = file.originalSize ?? file.imageInfo?.size else {
+            return nil
+        }
+
+        let clipped = selectionRect.intersection(contentFrame)
+        guard clipped.width >= 4, clipped.height >= 4 else { return nil }
+
+        var x = Int(((clipped.minX - contentFrame.minX) / contentFrame.width * originalSize.width).rounded(.down))
+        var y = Int(((contentFrame.maxY - clipped.maxY) / contentFrame.height * originalSize.height).rounded(.down))
+        var width = Int((clipped.width / contentFrame.width * originalSize.width).rounded(.down))
+        var height = Int((clipped.height / contentFrame.height * originalSize.height).rounded(.down))
+
+        x = max(0, min(x, Int(originalSize.width) - 2))
+        y = max(0, min(y, Int(originalSize.height) - 2))
+        width = max(2, min(width, Int(originalSize.width) - x))
+        height = max(2, min(height, Int(originalSize.height) - y))
+
+        x -= x % 2
+        y -= y % 2
+        width -= width % 2
+        height -= height % 2
+
+        guard width >= 2, height >= 2 else { return nil }
+        return ViewController.VideoCropRect(x: x, y: y, width: width, height: height)
+    }
+
+    private func videoCropDragMode(at point: NSPoint) -> VideoCropDragMode {
+        let rect = videoCropSelectionRect
+        guard !rect.isEmpty else { return .new }
+
+        let tolerance: CGFloat = 12
+        let nearLeft = abs(point.x - rect.minX) <= tolerance
+        let nearRight = abs(point.x - rect.maxX) <= tolerance
+        let nearBottom = abs(point.y - rect.minY) <= tolerance
+        let nearTop = abs(point.y - rect.maxY) <= tolerance
+        let expanded = rect.insetBy(dx: -tolerance, dy: -tolerance)
+
+        guard expanded.contains(point) else { return .new }
+
+        if nearLeft && nearTop { return .resizeTopLeft }
+        if nearRight && nearTop { return .resizeTopRight }
+        if nearLeft && nearBottom { return .resizeBottomLeft }
+        if nearRight && nearBottom { return .resizeBottomRight }
+        if nearLeft { return .resizeLeft }
+        if nearRight { return .resizeRight }
+        if nearTop { return .resizeTop }
+        if nearBottom { return .resizeBottom }
+        if rect.contains(point) { return .move }
+        return .new
+    }
+
+    private func adjustedVideoCropRect(to point: NSPoint, in contentFrame: NSRect) -> NSRect {
+        guard let startPoint = videoCropStartPoint,
+              let mode = videoCropDragMode else {
+            return .zero
+        }
+
+        let clampedPoint = NSPoint(
+            x: min(max(point.x, contentFrame.minX), contentFrame.maxX),
+            y: min(max(point.y, contentFrame.minY), contentFrame.maxY)
+        )
+        let minSize: CGFloat = 4
+        var rect = videoCropDragOriginalRect
+
+        switch mode {
+        case .new:
+            rect = NSRect(
+                x: min(startPoint.x, clampedPoint.x),
+                y: min(startPoint.y, clampedPoint.y),
+                width: abs(clampedPoint.x - startPoint.x),
+                height: abs(clampedPoint.y - startPoint.y)
+            )
+        case .move:
+            let dx = clampedPoint.x - startPoint.x
+            let dy = clampedPoint.y - startPoint.y
+            rect.origin.x = min(max(videoCropDragOriginalRect.origin.x + dx, contentFrame.minX), contentFrame.maxX - rect.width)
+            rect.origin.y = min(max(videoCropDragOriginalRect.origin.y + dy, contentFrame.minY), contentFrame.maxY - rect.height)
+        case .resizeLeft, .resizeTopLeft, .resizeBottomLeft:
+            rect.origin.x = min(clampedPoint.x, videoCropDragOriginalRect.maxX - minSize)
+            rect.size.width = videoCropDragOriginalRect.maxX - rect.origin.x
+            if mode == .resizeTopLeft {
+                rect.size.height = max(minSize, min(clampedPoint.y, contentFrame.maxY) - videoCropDragOriginalRect.minY)
+            } else if mode == .resizeBottomLeft {
+                rect.origin.y = min(clampedPoint.y, videoCropDragOriginalRect.maxY - minSize)
+                rect.size.height = videoCropDragOriginalRect.maxY - rect.origin.y
+            }
+        case .resizeRight, .resizeTopRight, .resizeBottomRight:
+            rect.size.width = max(minSize, clampedPoint.x - videoCropDragOriginalRect.minX)
+            if mode == .resizeTopRight {
+                rect.size.height = max(minSize, min(clampedPoint.y, contentFrame.maxY) - videoCropDragOriginalRect.minY)
+            } else if mode == .resizeBottomRight {
+                rect.origin.y = min(clampedPoint.y, videoCropDragOriginalRect.maxY - minSize)
+                rect.size.height = videoCropDragOriginalRect.maxY - rect.origin.y
+            }
+        case .resizeTop:
+            rect.size.height = max(minSize, clampedPoint.y - videoCropDragOriginalRect.minY)
+        case .resizeBottom:
+            rect.origin.y = min(clampedPoint.y, videoCropDragOriginalRect.maxY - minSize)
+            rect.size.height = videoCropDragOriginalRect.maxY - rect.origin.y
+        }
+
+        rect.origin.x = max(contentFrame.minX, min(rect.origin.x, contentFrame.maxX - minSize))
+        rect.origin.y = max(contentFrame.minY, min(rect.origin.y, contentFrame.maxY - minSize))
+        rect.size.width = max(minSize, min(rect.width, contentFrame.maxX - rect.origin.x))
+        rect.size.height = max(minSize, min(rect.height, contentFrame.maxY - rect.origin.y))
+        return rect
+    }
+
+    private func videoCropActionButton(at point: NSPoint) -> VideoCropActionButton? {
+        guard let overlay = videoCropOverlayView,
+              !videoCropSelectionRect.isEmpty else { return nil }
+        if overlay.confirmButtonRect().contains(point) {
+            return .confirm
+        }
+        if overlay.cancelButtonRect().contains(point) {
+            return .cancel
+        }
+        return nil
     }
     
     func enableBlackBg() {
@@ -1449,7 +1958,11 @@ class LargeImageView: NSView {
     
     @objc func actOpenWithExternalPlayer() {
         guard let url = URL(string: file.path) else { return }
-        NSWorkspace.shared.open(url)
+        if file.type == .video {
+            openVideoWithPreferredExternalPlayer(url)
+        } else {
+            NSWorkspace.shared.open(url)
+        }
     }
     
     func getCurrentImageOriginalSizeInScreenScale() -> NSSize? {
@@ -1489,7 +2002,7 @@ class LargeImageView: NSView {
     override func mouseMoved(with event: NSEvent) {
         super.mouseMoved(with: event)
         
-        if file.type == .video && !videoView.isHidden {
+        if file.type == .video && ((isUsingMPVPlayer && !mpvVideoView.isHidden) || !videoView.isHidden) {
             showVideoControls()
         }
         
@@ -1524,6 +2037,27 @@ class LargeImageView: NSView {
     }
     
     override func mouseDown(with event: NSEvent) {
+        if isSelectingVideoCrop {
+            guard !isEventInVideoControls(event) else { return }
+            let location = self.convert(event.locationInWindow, from: nil)
+            if let actionButton = videoCropActionButton(at: location) {
+                pendingVideoCropActionButton = actionButton
+                return
+            }
+            guard let contentFrame = videoContentFrameInSelf(),
+                  contentFrame.contains(location) else { return }
+            pendingVideoCropActionButton = nil
+            videoCropStartPoint = location
+            videoCropDragMode = videoCropDragMode(at: location)
+            videoCropDragOriginalRect = videoCropSelectionRect
+            if videoCropDragMode == .new {
+                videoCropSelectionRect = .zero
+                videoCropDragOriginalRect = .zero
+                updateVideoCropOverlay(selectionRect: .zero)
+            }
+            return
+        }
+
         if isEventInVideoControls(event) { return }
 
         // 临时按住左键也能缩放
@@ -1596,6 +2130,36 @@ class LargeImageView: NSView {
     }
     
     override func mouseUp(with event: NSEvent) {
+        if isSelectingVideoCrop {
+            guard !isEventInVideoControls(event) else { return }
+            let location = self.convert(event.locationInWindow, from: nil)
+            if let pending = pendingVideoCropActionButton {
+                pendingVideoCropActionButton = nil
+                if videoCropActionButton(at: location) == pending {
+                    switch pending {
+                    case .confirm:
+                        finishVideoCropSelectionMode()
+                    case .cancel:
+                        cancelVideoCropSelectionMode()
+                    }
+                }
+                return
+            }
+            if videoCropStartPoint == nil {
+                return
+            }
+            videoCropStartPoint = nil
+            if makeVideoCropRect(fromSelectionRect: videoCropSelectionRect) != nil {
+                showInfo(NSLocalizedString("Use the check button to crop, drag again to adjust", comment: "点击对号裁剪，重新拖动可调整"))
+            } else {
+                videoCropSelectionRect = .zero
+                updateVideoCropOverlay(selectionRect: .zero)
+                showInfo(NSLocalizedString("Crop area is too small", comment: "裁剪区域太小"))
+            }
+            videoCropDragMode = nil
+            return
+        }
+
         if isEventInVideoControls(event) { return }
 
         if !(getViewController(self)!.publicVar.isRightMouseDown) {
@@ -1672,6 +2236,17 @@ class LargeImageView: NSView {
     }
     
     override func mouseDragged(with event: NSEvent) {
+        if isSelectingVideoCrop {
+            pendingVideoCropActionButton = nil
+            guard videoCropStartPoint != nil,
+                  let contentFrame = videoContentFrameInSelf() else { return }
+            let currentPoint = self.convert(event.locationInWindow, from: nil)
+            let rect = adjustedVideoCropRect(to: currentPoint, in: contentFrame)
+            videoCropSelectionRect = rect
+            updateVideoCropOverlay(selectionRect: rect)
+            return
+        }
+
         if isEventInVideoControls(event) { return }
         guard let lastLocation = lastDragLocation else { return }
         if isInOcrState && !getViewController(self)!.publicVar.isRightMouseDown {return}
@@ -1766,12 +2341,17 @@ class LargeImageView: NSView {
     }
     
     override func rightMouseDown(with event: NSEvent) {
+        if isSelectingVideoCrop {
+            cancelVideoCropSelectionMode()
+            return
+        }
         getViewController(self)!.publicVar.isRightMouseDown = true
         mouseDown(with: event)
         // super.rightMouseDown(with: event)  // 继续传递事件
     }
 
     override func rightMouseUp(with event: NSEvent) {
+        if isSelectingVideoCrop { return }
         mouseUp(with: event)
         getViewController(self)!.publicVar.isRightMouseDown = false
         
@@ -1874,6 +2454,8 @@ class LargeImageView: NSView {
 
                 let playbackRateItem = menu.addItem(withTitle: NSLocalizedString("Playback Speed", comment: "播放速度"), action: nil, keyEquivalent: "")
                 playbackRateItem.submenu = buildPlaybackRateSubmenu()
+
+                menu.addItem(withTitle: NSLocalizedString("Crop Video Size...", comment: "裁剪视频尺寸..."), action: #selector(actCropVideoSize), keyEquivalent: "")
             }
 
             menu.addItem(NSMenuItem.separator())
@@ -2237,6 +2819,10 @@ class LargeImageView: NSView {
         } else {
             doRotateL()
         }
+    }
+
+    @objc func actCropVideoSize() {
+        getViewController(self)?.handleBatchCropSelectedVideos()
     }
     
     func doRotateR() {

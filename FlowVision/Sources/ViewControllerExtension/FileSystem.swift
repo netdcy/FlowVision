@@ -202,6 +202,130 @@ extension ViewController {
             }
         }
     }
+
+    private func isArchiveExtension(_ ext: String) -> Bool {
+        let archiveExtensions: Set<String> = ["zip", "cbz", "tar", "tgz", "tbz", "tbz2", "txz", "tar.gz", "tar.bz2", "tar.xz"]
+        return archiveExtensions.contains(ext.lowercased())
+    }
+
+    func isSupportedArchiveURL(_ url: URL) -> Bool {
+        let name = url.lastPathComponent.lowercased()
+        if name.hasSuffix(".tar.gz") || name.hasSuffix(".tar.bz2") || name.hasSuffix(".tar.xz") {
+            return true
+        }
+        return isArchiveExtension(url.pathExtension.lowercased())
+    }
+
+    func getArchiveVirtualFolderURL(_ archiveURL: URL) -> URL? {
+        let safePath = archiveURL.absoluteString.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? ""
+        if safePath.isEmpty { return nil }
+        return URL(string: "\(VIRTUAL_ARCHIVE_PREFIX)/\(safePath)/")
+    }
+
+    private func decodeArchiveURL(from virtualArchiveURL: URL) -> URL? {
+        return parseVirtualArchivePath(virtualArchiveURL.absoluteString)?.archiveURL
+    }
+
+    private func makeVirtualArchiveEntryURL(archiveURL: URL, entryPath: String) -> URL? {
+        guard let root = getArchiveVirtualFolderURL(archiveURL) else { return nil }
+        let encodedEntryPath = entryPath.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? entryPath
+        return URL(string: "\(root.absoluteString)\(encodedEntryPath)")
+    }
+
+    private func resolveArchiveImageEntries(for archiveURL: URL) -> [String] {
+        let archivePath = archiveURL.absoluteString
+        if let cached = archiveImageEntryCache[archivePath] {
+            return cached
+        }
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/bsdtar")
+        process.arguments = ["-tf", archiveURL.path]
+        let stdOut = Pipe()
+        let stdErr = Pipe()
+        process.standardOutput = stdOut
+        process.standardError = stdErr
+        do {
+            try process.run()
+        } catch {
+            log("Failed to list archive entries: \(error)", level: .error)
+            return []
+        }
+        
+        // Read stdout first to avoid potential pipe blocking on very large listing output.
+        let outputData = stdOut.fileHandleForReading.readDataToEndOfFile()
+        process.waitUntilExit()
+
+        guard process.terminationStatus == 0 else {
+            if let errText = String(data: stdErr.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8), !errText.isEmpty {
+                log("Failed to list archive entries: \(errText)", level: .error)
+            }
+            return []
+        }
+
+        let output = String(data: outputData, encoding: .utf8) ?? ""
+        var entries: [String] = []
+        for rawLine in output.components(separatedBy: .newlines) {
+            let line = rawLine.trimmingCharacters(in: .whitespacesAndNewlines)
+            if line.isEmpty { continue }
+            let decodedLine = decodeBsdtarEscapedPath(line)
+            if decodedLine.hasSuffix("/") { continue }
+            let ext = URL(fileURLWithPath: decodedLine).pathExtension.lowercased()
+            if globalVar.HandledImageAndRawExtensions.contains(ext) {
+                entries.append(decodedLine)
+            }
+        }
+        entries.sort { $0.localizedStandardCompare($1) == .orderedAscending }
+        archiveImageEntryCache[archivePath] = entries
+        return entries
+    }
+
+    private func loadVirtualFolderContents(_ folderURL: URL) -> [URL] {
+        if folderURL.path == "/VirtualFinderTagsFolder" {
+            return []
+        }
+        if folderURL.path == "/VirtualFavoritesFolder" {
+            var result: [URL] = []
+            var seen = Set<String>()
+            for favoritePath in globalVar.myFavoritesArray {
+                guard let url = URL(string: favoritePath) else { continue }
+                if seen.contains(url.absoluteString) { continue }
+                var isDirectory: ObjCBool = false
+                if FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory), isDirectory.boolValue {
+                    seen.insert(url.absoluteString)
+                    result.append(url)
+                }
+            }
+            return result
+        }
+        if folderURL.path == "/VirtualHistoryFolder" {
+            var result: [URL] = []
+            var seen = Set<String>()
+            for historyPath in publicVar.folderStepStack {
+                guard let url = URL(string: historyPath) else { continue }
+                if isVirtualFolderPath(url.absoluteString) { continue }
+                if seen.contains(url.absoluteString) { continue }
+                var isDirectory: ObjCBool = false
+                if FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory), isDirectory.boolValue {
+                    seen.insert(url.absoluteString)
+                    result.append(url)
+                }
+            }
+            return result
+        }
+        if folderURL.path.hasPrefix("/VirtualArchiveFolder") {
+            guard let archiveURL = decodeArchiveURL(from: folderURL) else { return [] }
+            let entries = resolveArchiveImageEntries(for: archiveURL)
+            return entries.compactMap { makeVirtualArchiveEntryURL(archiveURL: archiveURL, entryPath: $0) }
+        }
+        return []
+    }
+
+    @discardableResult
+    func openArchiveAsVirtualFolder(_ archiveURL: URL) -> Bool {
+        guard let virtualURL = getArchiveVirtualFolderURL(archiveURL) else { return false }
+        switchDirByDirection(direction: .zero, dest: virtualURL.absoluteString, stackDeep: 0)
+        return true
+    }
     
     func isExifSortTimeExceedCancel(folderURL: URL, imageCount: Int, videoCount: Int) -> Bool {
         let networkTimeConsume: Double = Double(imageCount+videoCount)/10.0
@@ -270,11 +394,13 @@ extension ViewController {
                 }
                 dirURLCacheParameters = curDirURLCacheParameters
                 
-                isInSameDir = !publicVar.isRecursiveMode && !folderURL.path.hasPrefix("/VirtualFinderTagsFolder")
+                isInSameDir = !publicVar.isRecursiveMode && !isVirtualFolderPath(folderURL.absoluteString)
                 if dirURLCache.isEmpty {
                     if folderURL.path.hasPrefix("/VirtualFinderTagsFolder") {
                         let tagName = folderURL.lastPathComponent
                         scanVirtualFiles(at: folderURL, contents: &dirURLCache, properties: properties, tagName: tagName)
+                    } else if isVirtualFolderPath(folderURL.absoluteString) {
+                        dirURLCache = loadVirtualFolderContents(folderURL)
                     }else if publicVar.isRecursiveMode {
                         scanFiles(at: folderURL, contents: &dirURLCache, properties: properties)
                     }else{
@@ -351,6 +477,9 @@ extension ViewController {
         // 过滤出目录列表（含指向目录的替身）
         // Filter out directory list (including aliases pointing to directories)
         var subFolders = contents.filter { url in
+            if isVirtualArchiveEntryPath(url.absoluteString) {
+                return false
+            }
             if let isDirectoryResourceValue = try? url.resourceValues(forKeys: [.isDirectoryKey]),
                isDirectoryResourceValue.isDirectory == true {
                 return true
@@ -377,6 +506,9 @@ extension ViewController {
         var imageCount=0
         var searchCount=0
         var fileContents = contents.filter { url in
+            if isVirtualArchiveEntryPath(url.absoluteString) {
+                return true
+            }
             guard let isDirectoryResourceValue = try? url.resourceValues(forKeys: [.isDirectoryKey]), let isDirectory = isDirectoryResourceValue.isDirectory else {
                 return false
             }
@@ -394,13 +526,17 @@ extension ViewController {
         for file in fileContents {
             let aliasValues = try? file.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey])
             let isAlias = aliasValues?.isAliasFile == true
+            let effectiveURL: URL
             let effectiveExt: String
             if isAlias, let resolved = try? URL(resolvingAliasFileAt: file) {
+                effectiveURL = resolved
                 effectiveExt = resolved.pathExtension.lowercased()
             } else {
+                effectiveURL = file
                 effectiveExt = file.pathExtension.lowercased()
             }
-            if publicVar.HandledFileExtensions.contains(effectiveExt) || publicVar.isShowAllTypeFile {
+            let shouldShowArchive = globalVar.showArchiveFileType && isSupportedArchiveURL(effectiveURL)
+            if publicVar.HandledFileExtensions.contains(effectiveExt) || publicVar.isShowAllTypeFile || shouldShowArchive {
                 filesUrlInFolder.append(file)
             }
             // 不将替身文件统计为图像或视频
@@ -544,34 +680,40 @@ extension ViewController {
                     // 文件在前i个，目录在后面
                     // Files in first i items, directories after
                     if i < fileCount {
-                        let resourceValues = try filesUrlInFolder[i].resourceValues(forKeys: Set(properties))
-                        if let tmp = resourceValues.isAliasFile {
-                            isAlias=tmp
+                        let currentURL = filesUrlInFolder[i]
+                        if isVirtualArchiveEntryPath(currentURL.absoluteString) {
+                            // Virtual archive entries are streamed from archive; skip FS attributes.
+                            // Their sort fallback remains name/path based.
+                        } else {
+                            let resourceValues = try currentURL.resourceValues(forKeys: Set(properties))
+                            if let tmp = resourceValues.isAliasFile {
+                                isAlias=tmp
+                            }
+                            if let tmp = resourceValues.fileSize {
+                                fileSize=tmp
+                                fileSortKey.size=tmp
+                            }
+                            if let tmp = resourceValues.creationDate {
+                                createDate=tmp
+                                fileSortKey.createDate=tmp
+                            }
+                            if let tmp = resourceValues.contentModificationDate {
+                                modDate=tmp
+                                fileSortKey.modDate=tmp
+                            }
+                            if let tmp = resourceValues.addedToDirectoryDate {
+                                addDate=tmp
+                                fileSortKey.addDate=tmp
+                            }
+                            if let isUbiquitousItem = resourceValues.isUbiquitousItem,
+                               isUbiquitousItem,
+                               let downloadingStatus = resourceValues.ubiquitousItemDownloadingStatus,
+                               downloadingStatus != .current {
+                                doNotActualRead=true
+                            }
+                            let tags = (try? currentURL.resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? []
+                            finderTags = tags
                         }
-                        if let tmp = resourceValues.fileSize {
-                            fileSize=tmp
-                            fileSortKey.size=tmp
-                        }
-                        if let tmp = resourceValues.creationDate {
-                            createDate=tmp
-                            fileSortKey.createDate=tmp
-                        }
-                        if let tmp = resourceValues.contentModificationDate {
-                            modDate=tmp
-                            fileSortKey.modDate=tmp
-                        }
-                        if let tmp = resourceValues.addedToDirectoryDate {
-                            addDate=tmp
-                            fileSortKey.addDate=tmp
-                        }
-                        if let isUbiquitousItem = resourceValues.isUbiquitousItem,
-                           isUbiquitousItem,
-                           let downloadingStatus = resourceValues.ubiquitousItemDownloadingStatus,
-                           downloadingStatus != .current {
-                            doNotActualRead=true
-                        }
-                        let tags = (try? filesUrlInFolder[i].resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? []
-                        finderTags = tags
                         // finderTags = resourceValues.tagNames ?? []
                     // 目录
                     // Directory
@@ -848,7 +990,7 @@ extension ViewController {
                 if !FileManager.default.fileExists(atPath: path.dropLast().replacingOccurrences(of: "file://", with: "").removingPercentEncoding!) {
                     if path == "file:///VirtualFinderTagsFolder/" {
                         collectionView.showFolderInfo(NSLocalizedString("Please select a specific tag", comment: "请选择具体的标签"))
-                    } else if !path.hasPrefix("file:///VirtualFinderTagsFolder") {
+                    } else if !isVirtualFolderPath(path) {
                         collectionView.showFolderInfo(NSLocalizedString("Directory does not exist", comment: "目录不存在"))
                     }
                 }
@@ -1045,7 +1187,7 @@ extension ViewController {
         fileDB.lock()
         let curFolder = fileDB.curFolder
         fileDB.unlock()
-        if curFolder.hasPrefix("file:///VirtualFinderTagsFolder") || !publicVar.finderTagFilters.isEmpty || !publicVar.ratingFilters.isEmpty {
+        if isVirtualFolderPath(curFolder) || !publicVar.finderTagFilters.isEmpty || !publicVar.ratingFilters.isEmpty {
             if rawdirection == .left || rawdirection == .up_left || rawdirection == .down_left
                 || rawdirection == .right || rawdirection == .up_right || rawdirection == .down_right {
                 return
@@ -1131,6 +1273,16 @@ extension ViewController {
         // 跳转父级目录
         // Jump to parent directory
         if direction == .up {
+            // In virtual archive view, Command+Up should leave archive and go to
+            // the real parent directory of the archive file (e.g. SMB folder).
+            if isVirtualArchivePath(curFolder),
+               let parsed = parseVirtualArchivePath(curFolder) {
+                let realParent = parsed.archiveURL.deletingLastPathComponent().absoluteString
+                if !realParent.isEmpty {
+                    switchDirByDirection(direction: .zero, dest: realParent, skip: true, stackDeep: stackDeep+1)
+                    return
+                }
+            }
             fileDB.lock()
             let newFolderPath=URL(string: fileDB.curFolder)!.deletingLastPathComponent().absoluteString
             fileDB.unlock()

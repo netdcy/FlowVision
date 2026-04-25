@@ -1,0 +1,136 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version, for example v1.7.2"
+        required: true
+        type: string
+      draft:
+        description: "Create release as draft"
+        required: false
+        default: false
+        type: boolean
+      prerelease:
+        description: "Mark release as prerelease"
+        required: false
+        default: false
+        type: boolean
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build macOS DMG and publish GitHub Release
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout FlowVision
+        uses: actions/checkout@v4
+        with:
+          path: FlowVision
+
+      - name: Checkout Settings dependency
+        uses: actions/checkout@v4
+        with:
+          repository: sindresorhus/Settings
+          path: Settings
+
+      - name: Checkout BTree dependency
+        uses: actions/checkout@v4
+        with:
+          repository: attaswift/BTree
+          path: BTree
+
+      - name: Download FFmpegKit XCFrameworks
+        shell: bash
+        env:
+          FFMPEG_KIT_URL: https://github.com/netdcy/ffmpeg-kit/releases/download/v6.0/ffmpeg-kit-full-gpl-6.0-macos-xcframework.zip
+        run: |
+          set -euo pipefail
+          mkdir -p ffmpeg-kit-build/bundle-apple-xcframework-macos
+          curl --fail --location --retry 3 --output ffmpeg-kit-build/ffmpeg-kit-full-gpl-6.0-macos-xcframework.zip "$FFMPEG_KIT_URL"
+          unzip -q ffmpeg-kit-build/ffmpeg-kit-full-gpl-6.0-macos-xcframework.zip -d ffmpeg-kit-build/bundle-apple-xcframework-macos
+
+      - name: Resolve release version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            VERSION="${GITHUB_REF_NAME}"
+          else
+            VERSION="${{ inputs.version }}"
+          fi
+          VERSION="${VERSION#refs/tags/}"
+          if [[ -z "$VERSION" ]]; then
+            echo "Release version is required." >&2
+            exit 1
+          fi
+          if [[ "$VERSION" != v* ]]; then
+            VERSION="v$VERSION"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "dmg_name=FlowVision-${VERSION}-macOS" >> "$GITHUB_OUTPUT"
+
+      - name: Build DMG
+        working-directory: FlowVision
+        env:
+          ENABLE_CODESIGN: "0"
+          CONFIGURATION: Release
+          APP_NAME: FlowVision
+          DMG_NAME: ${{ steps.version.outputs.dmg_name }}
+          XCODEBUILD_EXTRA_ARGS: "CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="
+        run: ./build_dmg.sh
+
+      - name: Create ZIP
+        working-directory: FlowVision
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP_PATH="$(find build/DerivedData/Build/Products/Release -maxdepth 1 -type d -name '*.app' | head -n 1)"
+          if [[ -z "${APP_PATH:-}" ]]; then
+            echo "App bundle not found." >&2
+            exit 1
+          fi
+          mkdir -p dist
+          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "dist/${{ steps.version.outputs.dmg_name }}.zip"
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlowVision-${{ steps.version.outputs.version }}-macOS
+          path: |
+            FlowVision/dist/*.dmg
+            FlowVision/dist/*.zip
+
+      - name: Publish GitHub Release
+        working-directory: FlowVision
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          DRAFT: ${{ inputs.draft || false }}
+          PRERELEASE: ${{ inputs.prerelease || false }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          FLAGS=""
+          if [[ "$DRAFT" == "true" ]]; then
+            FLAGS="$FLAGS --draft"
+          fi
+          if [[ "$PRERELEASE" == "true" ]]; then
+            FLAGS="$FLAGS --prerelease"
+          fi
+
+          if gh release view "$VERSION" >/dev/null 2>&1; then
+            gh release upload "$VERSION" dist/*.dmg dist/*.zip --clobber
+          else
+            # shellcheck disable=SC2086
+            gh release create "$VERSION" dist/*.dmg dist/*.zip --title "FlowVision $VERSION" --generate-notes $FLAGS
+          fi

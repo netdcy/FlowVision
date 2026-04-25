@@ -636,12 +636,10 @@ class TreeViewModel {
     }
     
     func hasSubdirectory(at folderURL: URL) -> Bool {
-        if folderURL.path.hasPrefix("/VirtualFinderTagsFolder") {
-            if folderURL.path == "/VirtualFinderTagsFolder" {
-                return true
-            }else{
-                return false
-            }
+        if folderURL.path.hasPrefix("/VirtualFinderTagsFolder")
+            || folderURL.path.hasPrefix("/VirtualFavoritesFolder")
+            || folderURL.path.hasPrefix("/VirtualHistoryFolder") {
+            return folderURL.lastPathComponent.hasPrefix("Virtual")
         }
         
         let fileManager = FileManager.default
@@ -677,6 +675,29 @@ class TreeViewModel {
                         contents.append(tagURL)
                     }
                 }
+            } else if folderURL.path == "/VirtualFavoritesFolder" {
+                let allFavorites = globalVar.myFavoritesArray.compactMap { URL(string: $0) }
+                let existingFavorites = allFavorites.filter { url in
+                    if url.path == "/" { return true }
+                    var isDirectory: ObjCBool = false
+                    return FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) && isDirectory.boolValue
+                }
+                contents = existingFavorites
+            } else if folderURL.path == "/VirtualHistoryFolder" {
+                let history = viewController.publicVar.folderStepStack
+                var seen = Set<String>()
+                var historyFolders: [URL] = []
+                for path in history {
+                    guard let url = URL(string: path) else { continue }
+                    if isVirtualFolderPath(url.absoluteString) { continue }
+                    if seen.contains(url.absoluteString) { continue }
+                    var isDirectory: ObjCBool = false
+                    if FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory), isDirectory.boolValue {
+                        historyFolders.append(url)
+                        seen.insert(url.absoluteString)
+                    }
+                }
+                contents = historyFolders
             } else if folderURL.path != "root" {
                 contents = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: [.isDirectoryKey, .isUbiquitousItemKey, .isHiddenKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey], options: [])
             }else{
@@ -716,7 +737,7 @@ class TreeViewModel {
             // 过滤隐藏文件
             // Filter hidden files
             contents = contents.filter { url in
-                if url.path.hasPrefix("/VirtualFinderTagsFolder") { return true }
+                if isVirtualFolderPath(url.absoluteString) { return true }
 
                 // 获取隐藏属性
                 // Get hidden attribute
@@ -743,7 +764,7 @@ class TreeViewModel {
             // 过滤出目录列表
             // Filter out directory list
             var subFolders = contents.filter { url in
-                if url.path.hasPrefix("/VirtualFinderTagsFolder") { return true }
+                if isVirtualFolderPath(url.absoluteString) { return true }
                 guard let isDirectoryResourceValue = try? url.resourceValues(forKeys: [.isDirectoryKey]), let isDirectory = isDirectoryResourceValue.isDirectory else {
                     return false
                 }
@@ -754,7 +775,9 @@ class TreeViewModel {
             // Sort
             // 卷列表保持字母序
             // Volume list maintains alphabetical order
-            if folderURL.path.hasPrefix("/VirtualFinderTagsFolder") {
+            if folderURL.path.hasPrefix("/VirtualFinderTagsFolder")
+                || folderURL.path.hasPrefix("/VirtualFavoritesFolder")
+                || folderURL.path.hasPrefix("/VirtualHistoryFolder") {
                 // 不排序，保持 FinderTag.all 的顺序
                 // No sorting, keep FinderTag.all order
             } else if folderURL.path == "root" {
@@ -808,7 +831,11 @@ class TreeViewModel {
 
             if folderURL.path == "root" {
                 let finderTagsURL = URL(string: "file:///VirtualFinderTagsFolder/")!
+                let favoritesURL = URL(string: "file:///VirtualFavoritesFolder/")!
+                let historyURL = URL(string: "file:///VirtualHistoryFolder/")!
                 subFolders.insert(finderTagsURL, at: 0)
+                subFolders.insert(historyURL, at: 0)
+                subFolders.insert(favoritesURL, at: 0)
             }
 
             if globalVar.autoHideToolbar && folderURL.path == "root" {
@@ -832,6 +859,10 @@ class TreeViewModel {
                     }else{
                         
                     }
+                } else if subFolder.absoluteString == "file:///VirtualFavoritesFolder/" {
+                    name = NSLocalizedString("Favorites", comment: "收藏")
+                } else if subFolder.absoluteString == "file:///VirtualHistoryFolder/" {
+                    name = NSLocalizedString("History", comment: "历史")
                 }
                 var newNode = TreeNode(name: name, fullPath: fullPath)
                 

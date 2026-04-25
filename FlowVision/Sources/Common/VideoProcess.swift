@@ -15,9 +15,10 @@ class NoHitAVPlayerView: AVPlayerView {
 }
 
 class LargeAVPlayerView: AVPlayerView {
-//    override func hitTest(_ point: NSPoint) -> NSView? {
-//        return nil // superview?.hitTest(convert(point, to: superview))
-//    }
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        return nil
+    }
+
     override func scrollWheel(with event: NSEvent) {
         // 不响应滚动事件，直接传递给下一个
         // Don't respond to scroll events, pass directly to next responder
@@ -83,4 +84,3 @@ func getCommonTimeRange(url: URL) -> CMTimeRange? {
     // If no audio track, use video track's time range directly
     return videoTrack.timeRange
 }
-

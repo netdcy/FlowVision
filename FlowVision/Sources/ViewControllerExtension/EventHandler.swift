@@ -184,6 +184,12 @@ extension ViewController {
         publicVar.setFileExtensions()
         refreshCollectionView(needLoadThumbPriority: true)
     }
+    
+    func toggleShowArchiveFileType() {
+        globalVar.showArchiveFileType.toggle()
+        UserDefaults.standard.set(globalVar.showArchiveFileType, forKey: "showArchiveFileType")
+        refreshCollectionView(needLoadThumbPriority: true)
+    }
 
     func togglePanWhenZoomed(){
         publicVar.isPanWhenZoomed.toggle()

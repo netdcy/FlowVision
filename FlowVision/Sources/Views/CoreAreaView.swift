@@ -15,6 +15,11 @@ class CoreAreaView: NSView {
     private var scanProgressLabel: NSTextField?
     var onScanCancel: (() -> Void)?
     
+    private var operationOverlayView: NSView?
+    private var operationMessageLabel: NSTextField?
+    private var operationProgressBar: NSProgressIndicator?
+    private var operationHideWorkItem: DispatchWorkItem?
+    
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         commonInit()
@@ -125,6 +130,144 @@ class CoreAreaView: NSView {
         container.isHidden = true
         scanProgressView = container
         scanProgressLabel = label
+    }
+    
+    // MARK: - Operation Overlay (Toast / Progress)
+    
+    func showOperationToast(_ message: String, autoHide: Double = 2.0) {
+        setupOperationOverlayIfNeeded()
+        guard let overlay = operationOverlayView,
+              let label = operationMessageLabel,
+              let progress = operationProgressBar else { return }
+        
+        operationHideWorkItem?.cancel()
+        label.stringValue = message
+        progress.isHidden = true
+        
+        showOperationOverlayAnimatedIfNeeded(overlay)
+        if autoHide > 0 {
+            let work = DispatchWorkItem { [weak self] in
+                self?.hideOperationOverlay()
+            }
+            operationHideWorkItem = work
+            DispatchQueue.main.asyncAfter(deadline: .now() + autoHide, execute: work)
+        }
+    }
+    
+    func showOperationProgress(_ message: String, progress: Double) {
+        setupOperationOverlayIfNeeded()
+        guard let overlay = operationOverlayView,
+              let label = operationMessageLabel,
+              let progressBar = operationProgressBar else { return }
+        
+        operationHideWorkItem?.cancel()
+        label.stringValue = message
+        progressBar.isHidden = false
+        if progressBar.isIndeterminate {
+            progressBar.stopAnimation(nil)
+            progressBar.isIndeterminate = false
+        }
+        progressBar.doubleValue = min(max(progress, 0), 1) * 100.0
+        showOperationOverlayAnimatedIfNeeded(overlay)
+    }
+
+    func showOperationIndeterminate(_ message: String) {
+        setupOperationOverlayIfNeeded()
+        guard let overlay = operationOverlayView,
+              let label = operationMessageLabel,
+              let progressBar = operationProgressBar else { return }
+
+        operationHideWorkItem?.cancel()
+        label.stringValue = message
+        progressBar.isHidden = false
+        progressBar.isIndeterminate = true
+        progressBar.startAnimation(nil)
+        showOperationOverlayAnimatedIfNeeded(overlay)
+    }
+    
+    func hideOperationOverlay(delayed: Double = 0) {
+        operationHideWorkItem?.cancel()
+        guard let overlay = operationOverlayView, !overlay.isHidden else { return }
+        let hide = {
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.25
+                overlay.animator().alphaValue = 0
+            }) {
+                self.operationProgressBar?.stopAnimation(nil)
+                self.operationProgressBar?.isIndeterminate = false
+                overlay.isHidden = true
+            }
+        }
+        if delayed > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delayed) { hide() }
+        } else {
+            hide()
+        }
+    }
+    
+    private func setupOperationOverlayIfNeeded() {
+        if operationOverlayView != nil { return }
+        
+        let container = NSView()
+        container.wantsLayer = true
+        container.layer?.backgroundColor = NSColor.windowBackgroundColor.withAlphaComponent(0.95).cgColor
+        container.layer?.cornerRadius = 8
+        container.layer?.borderColor = NSColor.separatorColor.withAlphaComponent(0.6).cgColor
+        container.layer?.borderWidth = 1
+        container.translatesAutoresizingMaskIntoConstraints = false
+        
+        let label = NSTextField(labelWithString: "")
+        label.textColor = .labelColor
+        label.font = NSFont.systemFont(ofSize: 12, weight: .medium)
+        label.lineBreakMode = .byTruncatingMiddle
+        label.maximumNumberOfLines = 1
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        let progressBar = NSProgressIndicator()
+        progressBar.isIndeterminate = false
+        progressBar.minValue = 0
+        progressBar.maxValue = 100
+        progressBar.controlSize = .small
+        progressBar.style = .bar
+        progressBar.translatesAutoresizingMaskIntoConstraints = false
+        progressBar.isHidden = true
+        
+        container.addSubview(label)
+        container.addSubview(progressBar)
+        addSubview(container)
+        
+        NSLayoutConstraint.activate([
+            container.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            container.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
+            container.widthAnchor.constraint(lessThanOrEqualToConstant: 420),
+            container.widthAnchor.constraint(greaterThanOrEqualToConstant: 260),
+            
+            label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 12),
+            label.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -12),
+            label.topAnchor.constraint(equalTo: container.topAnchor, constant: 10),
+            
+            progressBar.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 12),
+            progressBar.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -12),
+            progressBar.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 8),
+            progressBar.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -10),
+            progressBar.heightAnchor.constraint(equalToConstant: 10),
+        ])
+        
+        container.isHidden = true
+        operationOverlayView = container
+        operationMessageLabel = label
+        operationProgressBar = progressBar
+    }
+    
+    private func showOperationOverlayAnimatedIfNeeded(_ overlay: NSView) {
+        if overlay.isHidden {
+            overlay.isHidden = false
+            overlay.alphaValue = 0
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.2
+                overlay.animator().alphaValue = 1
+            }
+        }
     }
     
     override func awakeFromNib() {

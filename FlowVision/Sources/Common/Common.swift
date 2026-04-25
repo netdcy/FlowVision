@@ -129,6 +129,244 @@ func getFileSchemeAbsPath(_ path: String) -> String {
     return pathWithScheme
 }
 
+let VIRTUAL_FINDER_TAGS_PREFIX = "file:///VirtualFinderTagsFolder"
+let VIRTUAL_FAVORITES_PREFIX = "file:///VirtualFavoritesFolder"
+let VIRTUAL_HISTORY_PREFIX = "file:///VirtualHistoryFolder"
+let VIRTUAL_ARCHIVE_PREFIX = "file:///VirtualArchiveFolder"
+
+@discardableResult
+func openVideoWithPreferredExternalPlayer(_ url: URL) -> Bool {
+    if globalVar.preferIINAForExternalVideoPlayer,
+       let iinaURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.colliderli.iina") {
+        NSWorkspace.shared.open([url], withApplicationAt: iinaURL, configuration: NSWorkspace.OpenConfiguration())
+        return true
+    }
+    NSWorkspace.shared.open(url)
+    return true
+}
+
+func isVirtualFolderPath(_ path: String) -> Bool {
+    return path.hasPrefix(VIRTUAL_FINDER_TAGS_PREFIX)
+    || path.hasPrefix(VIRTUAL_FAVORITES_PREFIX)
+    || path.hasPrefix(VIRTUAL_HISTORY_PREFIX)
+    || path.hasPrefix(VIRTUAL_ARCHIVE_PREFIX)
+}
+
+func isReadOnlyVirtualFolderPath(_ path: String) -> Bool {
+    return isVirtualFolderPath(path)
+}
+
+func isVirtualArchivePath(_ path: String) -> Bool {
+    return path.hasPrefix(VIRTUAL_ARCHIVE_PREFIX)
+}
+
+func isVirtualArchiveRootPath(_ path: String) -> Bool {
+    guard isVirtualArchivePath(path) else { return false }
+    let prefix = "\(VIRTUAL_ARCHIVE_PREFIX)/"
+    guard path.hasPrefix(prefix) else { return false }
+    let remain = String(path.dropFirst(prefix.count))
+    return !remain.isEmpty && !remain.contains("/")
+}
+
+func isVirtualArchiveEntryPath(_ path: String) -> Bool {
+    guard isVirtualArchivePath(path) else { return false }
+    let prefix = "\(VIRTUAL_ARCHIVE_PREFIX)/"
+    guard path.hasPrefix(prefix) else { return false }
+    let remain = String(path.dropFirst(prefix.count))
+    let comps = remain.split(separator: "/", omittingEmptySubsequences: true)
+    return comps.count >= 2
+}
+
+func parseVirtualArchivePath(_ path: String) -> (archiveURL: URL, entryPath: String?)? {
+    let prefix = "\(VIRTUAL_ARCHIVE_PREFIX)/"
+    guard path.hasPrefix(prefix) else { return nil }
+    let remain = String(path.dropFirst(prefix.count))
+    guard !remain.isEmpty else { return nil }
+    let comps = remain.split(separator: "/", maxSplits: 1, omittingEmptySubsequences: true)
+    guard let encodedArchive = comps.first else {
+        return nil
+    }
+    let archiveAbsPath = String(encodedArchive).removingPercentEncoding ?? String(encodedArchive)
+    let archiveURL: URL?
+    if let parsed = URL(string: archiveAbsPath) {
+        archiveURL = parsed
+    } else if archiveAbsPath.hasPrefix("file://") {
+        let rawPath = String(archiveAbsPath.dropFirst("file://".count)).removingPercentEncoding
+            ?? String(archiveAbsPath.dropFirst("file://".count))
+        archiveURL = URL(fileURLWithPath: rawPath)
+    } else {
+        archiveURL = nil
+    }
+    guard let archiveURL else { return nil }
+    if comps.count == 1 {
+        return (archiveURL, nil)
+    }
+    let encodedEntryPath = String(comps[1])
+    let entryPath = encodedEntryPath.removingPercentEncoding ?? encodedEntryPath
+    return (archiveURL, entryPath)
+}
+
+private let archiveEntryDataCache = NSCache<NSString, NSData>()
+
+private func bsdtarEscapedPathBytes(_ text: String) -> [UInt8] {
+    let chars = Array(text.utf8)
+    var out: [UInt8] = []
+    var i = 0
+    while i < chars.count {
+        let c = chars[i]
+        if c == 92, i + 1 < chars.count { // '\'
+            // Octal form: \ooo
+            if i + 3 < chars.count,
+               chars[i + 1] >= 48, chars[i + 1] <= 55,
+               chars[i + 2] >= 48, chars[i + 2] <= 55,
+               chars[i + 3] >= 48, chars[i + 3] <= 55 {
+                let value = Int(chars[i + 1] - 48) * 64
+                    + Int(chars[i + 2] - 48) * 8
+                    + Int(chars[i + 3] - 48)
+                out.append(UInt8(value))
+                i += 4
+                continue
+            }
+            // Common escapes
+            let n = chars[i + 1]
+            switch n {
+            case 92: out.append(92) // \\
+            case 110: out.append(10) // \n
+            case 114: out.append(13) // \r
+            case 116: out.append(9) // \t
+            default:
+                out.append(n)
+            }
+            i += 2
+            continue
+        }
+        out.append(c)
+        i += 1
+    }
+    return out
+}
+
+func decodeBsdtarEscapedPath(_ text: String) -> String {
+    let bytes = bsdtarEscapedPathBytes(text)
+    if let decoded = String(bytes: bytes, encoding: .utf8) {
+        return decoded
+    }
+    if let decoded = String(data: Data(bytes), encoding: .shiftJIS) {
+        return decoded
+    }
+    return text
+}
+
+func encodeBsdtarEscapedPath(_ text: String, encoding: String.Encoding = .utf8) -> String {
+    guard let data = text.data(using: encoding) else { return text }
+    var result = ""
+    for byte in data {
+        if byte >= 0x80 || byte == 0x5C {
+            result += String(format: "\\%03o", byte)
+        } else {
+            result.append(Character(UnicodeScalar(byte)))
+        }
+    }
+    return result
+}
+
+func getArchiveEntryData(archiveURL: URL, entryPath: String) -> Data? {
+    let cacheKey = "\(archiveURL.absoluteString)|\(entryPath)" as NSString
+    if let cached = archiveEntryDataCache.object(forKey: cacheKey) {
+        return Data(referencing: cached)
+    }
+    
+    // Try decoded path first, then bsdtar-escaped fallback for legacy zip name encoding output.
+    var candidatePaths: [String] = []
+    let decoded = decodeBsdtarEscapedPath(entryPath)
+    candidatePaths.append(decoded)
+    if decoded != entryPath {
+        candidatePaths.append(entryPath)
+    } else {
+        let escaped = encodeBsdtarEscapedPath(entryPath)
+        if escaped != entryPath {
+            candidatePaths.append(escaped)
+        }
+        let shiftJISEscaped = encodeBsdtarEscapedPath(entryPath, encoding: .shiftJIS)
+        if shiftJISEscaped != entryPath && !candidatePaths.contains(shiftJISEscaped) {
+            candidatePaths.append(shiftJISEscaped)
+        }
+    }
+    
+    for candidate in candidatePaths {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/bsdtar")
+        process.arguments = ["-xOf", archiveURL.path, candidate]
+        let stdOut = Pipe()
+        let stdErr = Pipe()
+        process.standardOutput = stdOut
+        process.standardError = stdErr
+        
+        do {
+            try process.run()
+        } catch {
+            log("Archive stream failed: \(error)", level: .error)
+            continue
+        }
+        
+        // Read stdout first to avoid pipe deadlock on large entries.
+        let data = stdOut.fileHandleForReading.readDataToEndOfFile()
+        process.waitUntilExit()
+        
+        if process.terminationStatus == 0 {
+            archiveEntryDataCache.setObject(data as NSData, forKey: cacheKey)
+            return data
+        }
+        
+        if let err = String(data: stdErr.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8), !err.isEmpty {
+            log("Archive stream failed(candidate=\(candidate)): \(err)", level: .warn)
+        }
+    }
+    
+    return nil
+}
+
+func getArchiveEntryDataIfNeeded(url: URL) -> Data? {
+    guard let parsed = parseVirtualArchivePath(url.absoluteString),
+          let entryPath = parsed.entryPath else {
+        return nil
+    }
+    return getArchiveEntryData(archiveURL: parsed.archiveURL, entryPath: entryPath)
+}
+
+private func normalizeFavoriteFolderPath(_ rawPath: String) -> String? {
+    guard let rawURL = URL(string: getFileSchemeAbsPath(rawPath)) else { return nil }
+    if rawURL.hasDirectoryPath {
+        return rawURL.absoluteString
+    }
+    return rawURL.deletingLastPathComponent().absoluteString
+}
+
+@discardableResult
+func addFavoritePath(_ rawPath: String) -> Bool {
+    guard let folderPath = normalizeFavoriteFolderPath(rawPath), !folderPath.isEmpty else { return false }
+    if globalVar.myFavoritesArray.contains(folderPath) {
+        return false
+    }
+    globalVar.myFavoritesArray.append(folderPath)
+    UserDefaults.standard.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
+    return true
+}
+
+@discardableResult
+func removeFavoritePath(_ rawPath: String) -> Bool {
+    guard let folderPath = normalizeFavoriteFolderPath(rawPath), !folderPath.isEmpty else { return false }
+    guard let index = globalVar.myFavoritesArray.firstIndex(of: folderPath) else { return false }
+    globalVar.myFavoritesArray.remove(at: index)
+    UserDefaults.standard.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
+    return true
+}
+
+func isFavoritePath(_ rawPath: String) -> Bool {
+    guard let folderPath = normalizeFavoriteFolderPath(rawPath), !folderPath.isEmpty else { return false }
+    return globalVar.myFavoritesArray.contains(folderPath)
+}
+
 func getFileSchemeAbsParentFolderPath(_ path: String) -> String {
     var pathNoScheme = path.hasPrefix("file://") ? String(path.dropFirst("file://".count)) : path
     pathNoScheme = pathNoScheme.removingPercentEncoding!.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
@@ -331,7 +569,8 @@ func showInformationLong(title: String, attributedMessage: NSAttributedString, w
     let alert = NSAlert()
     alert.messageText = title
     alert.alertStyle = .informational
-    alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
+    let okButton = alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
+    okButton.keyEquivalent = "\u{1b}"
     alert.icon = NSImage(named: NSImage.infoName)
     
     // 创建滚动视图

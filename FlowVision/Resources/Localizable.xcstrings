@@ -1071,6 +1071,9 @@
         }
       }
     },
+    "Add Current Folder to Favorites" : {
+      "comment" : "收藏当前目录"
+    },
     "Add Separator" : {
       "comment" : "添加分隔线",
       "localizations" : {
@@ -1177,6 +1180,9 @@
           }
         }
       }
+    },
+    "Add to Favorites" : {
+      "comment" : "添加到收藏"
     },
     "Added Date" : {
       "comment" : "添加日期",
@@ -2140,6 +2146,9 @@
           }
         }
       }
+    },
+    "Archive" : {
+      "comment" : "压缩包"
     },
     "Are you sure you want to move xxx to xxx?" : {
       "comment" : "确定要移动 xxx 到 xxx?",
@@ -5886,6 +5895,32 @@
         }
       }
     },
+    "Collected %d files" : {
+      "comment" : "已归集 %d 个文件"
+    },
+    "Collected %d files (%d failed)" : {
+      "comment" : "已归集 %d 个文件（%d 个失败）",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Collected %1$d files (%2$d failed)"
+          }
+        }
+      }
+    },
+    "Compressing... %d%%" : {
+      "comment" : "压缩中... %d%%"
+    },
+    "Compressing... 0%" : {
+      "comment" : "压缩中... 0%"
+    },
+    "Compression complete" : {
+      "comment" : "压缩完成"
+    },
+    "Compression failed." : {
+      "comment" : "压缩失败。"
+    },
     "Continue" : {
       "comment" : "继续",
       "localizations" : {
@@ -6634,6 +6669,41 @@
           }
         }
       }
+    },
+    "Crop area is too small" : {
+      "comment" : "裁剪区域太小"
+    },
+    "Crop complete" : {
+      "comment" : "裁剪完成"
+    },
+    "Crop complete, failed: %d" : {
+      "comment" : "裁剪完成，失败：%d"
+    },
+    "Crop Size" : {
+      "comment" : "裁剪尺寸"
+    },
+    "Crop Video Size" : {
+      "comment" : "裁剪视频尺寸"
+    },
+    "Crop Video Size..." : {
+      "comment" : "裁剪视频尺寸..."
+    },
+    "Cropping %@" : {
+      "comment" : "裁剪中 %@"
+    },
+    "Cropping %d/%d: %@" : {
+      "comment" : "裁剪中 %d/%d: %@",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Cropping %1$d/%2$d: %3$@"
+          }
+        }
+      }
+    },
+    "Cropping... %d%%" : {
+      "comment" : "裁剪中... %d%%"
     },
     "Current Filter" : {
       "comment" : "当前过滤",
@@ -7490,6 +7560,12 @@
           }
         }
       }
+    },
+    "Default compression password is empty." : {
+      "comment" : "默认压缩密码为空。"
+    },
+    "Default compression password is empty. Please set it in Settings." : {
+      "comment" : "默认压缩密码为空，请先在设置中配置。"
     },
     "Default Thumbnail Size" : {
       "comment" : "默认缩略图大小",
@@ -8454,6 +8530,9 @@
         }
       }
     },
+    "Drag to select video crop area" : {
+      "comment" : "拖动选择视频裁剪区域"
+    },
     "Edit Mode" : {
       "comment" : "编辑模式",
       "localizations" : {
@@ -9310,6 +9389,9 @@
         }
       }
     },
+    "Encrypt ZIP" : {
+      "comment" : "加密压缩 ZIP"
+    },
     "Enlarge the Thumbnails" : {
       "comment" : "放大缩略图",
       "localizations" : {
@@ -9737,6 +9819,9 @@
           }
         }
       }
+    },
+    "Enter the target crop width and height in pixels. The video will be center-cropped and the original file will be replaced." : {
+      "comment" : "输入目标裁剪宽高（像素）。视频将居中裁剪并替换原文件。"
     },
     "Eraser" : {
       "comment" : "橡皮擦",
@@ -13376,6 +13461,36 @@
         }
       }
     },
+    "Extraction failed." : {
+      "comment" : "解压失败。"
+    },
+    "Failed to capture current video frame." : {
+      "comment" : "抓取当前视频帧失败。"
+    },
+    "Failed to copy some files: %@" : {
+      "comment" : "部分文件复制失败：%@"
+    },
+    "Failed to create collection folder." : {
+      "comment" : "创建归集文件夹失败。"
+    },
+    "Failed to crop some videos: %@" : {
+      "comment" : "部分视频裁剪失败：%@"
+    },
+    "Failed to crop video." : {
+      "comment" : "视频裁剪失败。"
+    },
+    "Failed to encode captured frame." : {
+      "comment" : "编码截图失败。"
+    },
+    "Failed to execute zip." : {
+      "comment" : "执行压缩失败。"
+    },
+    "Failed to extract some archives: %@" : {
+      "comment" : "部分压缩包解压失败：%@"
+    },
+    "Failed to rotate some files: %@" : {
+      "comment" : "部分文件旋转失败：%@"
+    },
     "Failed to set this app as the default for some file types:\n" : {
       "comment" : "未能将此应用设置为某些文件类型的默认应用程序：\n",
       "localizations" : {
@@ -13484,7 +13599,7 @@
       }
     },
     "Favorites" : {
-      "comment" : "收藏夹",
+      "comment" : "收藏\n收藏夹",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -15837,6 +15952,9 @@
         }
       }
     },
+    "Frame Saved" : {
+      "comment" : "视频帧已保存"
+    },
     "gen-thumb-info" : {
       "comment" : "对于高清缩略图的说明...",
       "localizations" : {
@@ -17014,6 +17132,9 @@
         }
       }
     },
+    "Height" : {
+      "comment" : "高度"
+    },
     "Highlighter" : {
       "comment" : "荧光笔",
       "localizations" : {
@@ -17120,6 +17241,9 @@
           }
         }
       }
+    },
+    "History" : {
+      "comment" : "历史"
     },
     "Image" : {
       "comment" : "图像",
@@ -21722,6 +21846,15 @@
         }
       }
     },
+    "No files found in subfolders." : {
+      "comment" : "子文件夹中未找到可归集文件。"
+    },
+    "No files to rename in current folder." : {
+      "comment" : "当前目录没有可重命名的文件。"
+    },
+    "No files were collected from subfolders." : {
+      "comment" : "未能从子文件夹中归集到文件。"
+    },
     "No Rating" : {
       "comment" : "无评级",
       "localizations" : {
@@ -24504,6 +24637,9 @@
         }
       }
     },
+    "Password cannot be empty." : {
+      "comment" : "密码不能为空。"
+    },
     "Paste" : {
       "comment" : "粘贴",
       "localizations" : {
@@ -24824,6 +24960,9 @@
           }
         }
       }
+    },
+    "Photo Folder 1 does not exist or is not a folder." : {
+      "comment" : "图片文件夹1不存在或不是文件夹。"
     },
     "Pin Window" : {
       "comment" : "置顶",
@@ -25146,6 +25285,15 @@
         }
       }
     },
+    "Please enter a valid video crop size." : {
+      "comment" : "请输入有效的视频裁剪尺寸。"
+    },
+    "Please input ZIP password:" : {
+      "comment" : "请输入 ZIP 密码："
+    },
+    "Please open a video first." : {
+      "comment" : "请先打开一个视频。"
+    },
     "Please select a specific tag" : {
       "comment" : "请选择具体的标签",
       "localizations" : {
@@ -25252,6 +25400,27 @@
           }
         }
       }
+    },
+    "Please select archive files first." : {
+      "comment" : "请先选择压缩包文件。"
+    },
+    "Please select at least one image or video first." : {
+      "comment" : "请先选择至少一个图片或视频。"
+    },
+    "Please select at least one video first." : {
+      "comment" : "请先选择至少一个视频。"
+    },
+    "Please select folders only." : {
+      "comment" : "请仅选择文件夹。"
+    },
+    "Please select items from the same folder." : {
+      "comment" : "请在同一目录下选择要压缩的项目。"
+    },
+    "Please set Photo Folder 1 in Settings first." : {
+      "comment" : "请先在设置中配置图片文件夹1。"
+    },
+    "Please set Video Folder 2 in Settings first." : {
+      "comment" : "请先在设置中配置视频文件夹2。"
     },
     "Portable Browsing Mode" : {
       "comment" : "便携浏览模式",
@@ -26109,6 +26278,9 @@
         }
       }
     },
+    "Profile Switching:" : {
+      "comment" : "配置切换："
+    },
     "qrcode-recog-fail" : {
       "comment" : "未能识别到二维码",
       "localizations" : {
@@ -26322,6 +26494,9 @@
           }
         }
       }
+    },
+    "Quick Rename" : {
+      "comment" : "快速重命名"
     },
     "Quick Search" : {
       "comment" : "快速搜索",
@@ -28784,6 +28959,9 @@
         }
       }
     },
+    "Remove from Favorites" : {
+      "comment" : "取消收藏"
+    },
     "Rename" : {
       "comment" : "重命名",
       "localizations" : {
@@ -29319,6 +29497,26 @@
         }
       }
     },
+    "Restore complete" : {
+      "comment" : "还原完成"
+    },
+    "Restore Video Rotation" : {
+      "comment" : "还原视频旋转"
+    },
+    "Restoring %d/%d: %@" : {
+      "comment" : "还原中 %d/%d: %@",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Restoring %1$d/%2$d: %3$@"
+          }
+        }
+      }
+    },
+    "Restoring... %d%%" : {
+      "comment" : "还原中... %d%%"
+    },
     "Reverse Filter" : {
       "comment" : "反转筛选",
       "localizations" : {
@@ -29533,6 +29731,9 @@
         }
       }
     },
+    "Rotate" : {
+      "comment" : "旋转"
+    },
     "Rotate %d°" : {
       "comment" : "（视频）旋转%d°",
       "localizations" : {
@@ -29639,6 +29840,9 @@
           }
         }
       }
+    },
+    "Rotate 180°" : {
+      "comment" : "旋转180°"
     },
     "Rotate Clockwise" : {
       "comment" : "顺时针旋转",
@@ -29747,6 +29951,9 @@
         }
       }
     },
+    "Rotate Clockwise 90°" : {
+      "comment" : "顺时针旋转90°"
+    },
     "Rotate Counterclockwise" : {
       "comment" : "逆时针旋转",
       "localizations" : {
@@ -29853,6 +30060,32 @@
           }
         }
       }
+    },
+    "Rotate Counterclockwise 90°" : {
+      "comment" : "逆时针旋转90°"
+    },
+    "Rotate Selected Media" : {
+      "comment" : "旋转选中的媒体"
+    },
+    "Rotating %d/%d: %@" : {
+      "comment" : "旋转中 %d/%d: %@",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Rotating %1$d/%2$d: %3$@"
+          }
+        }
+      }
+    },
+    "Rotating... %d%%" : {
+      "comment" : "旋转中... %d%%"
+    },
+    "Rotation complete" : {
+      "comment" : "旋转完成"
+    },
+    "Rotation complete, failed: %d" : {
+      "comment" : "旋转完成，失败：%d"
     },
     "Save" : {
       "comment" : "保存",
@@ -40768,6 +41001,9 @@
         }
       }
     },
+    "Use the check button to crop, drag again to adjust" : {
+      "comment" : "点击对号裁剪，重新拖动可调整"
+    },
     "Video" : {
       "comment" : "视频",
       "localizations" : {
@@ -40874,6 +41110,12 @@
           }
         }
       }
+    },
+    "Video crop size must be at least 2 pixels." : {
+      "comment" : "视频裁剪尺寸至少需要 2 像素。"
+    },
+    "Video Folder 2 does not exist or is not a folder." : {
+      "comment" : "视频文件夹2不存在或不是文件夹。"
     },
     "video-dimensions" : {
       "comment" : "视频尺寸",
@@ -43015,6 +43257,12 @@
         }
       }
     },
+    "Virtual entries are not supported for this operation." : {
+      "comment" : "该操作不支持虚拟目录或压缩包内虚拟条目。"
+    },
+    "Virtual entries cannot be compressed." : {
+      "comment" : "虚拟目录或压缩包内虚拟条目不支持压缩。"
+    },
     "Volume" : {
       "comment" : "音量",
       "localizations" : {
@@ -43228,6 +43476,9 @@
           }
         }
       }
+    },
+    "Width" : {
+      "comment" : "宽度"
     },
     "Window Title" : {
       "comment" : "窗口标题",
@@ -43763,6 +44014,51 @@
           }
         }
       }
+    },
+    "使用默认密码加密压缩" : {
+      "comment" : "使用默认密码加密压缩"
+    },
+    "加密压缩..." : {
+      "comment" : "加密压缩..."
+    },
+    "压缩为 ZIP" : {
+      "comment" : "压缩为 ZIP"
+    },
+    "压缩并删除源文件" : {
+      "comment" : "压缩并删除源文件"
+    },
+    "快速压缩" : {
+      "comment" : "快速压缩"
+    },
+    "快速重命名" : {
+      "comment" : "quick rename undo"
+    },
+    "批量重命名" : {
+      "comment" : "batch rename undo"
+    },
+    "提取子文件夹文件并归集" : {
+      "comment" : "提取子文件夹文件并归集"
+    },
+    "无法完成重命名，目标已存在：%@" : {
+      "comment" : "rename undo conflict"
+    },
+    "显示压缩文件" : {
+      "comment" : "显示压缩文件"
+    },
+    "解压到当前目录" : {
+      "comment" : "解压到当前目录"
+    },
+    "解压并删除压缩包" : {
+      "comment" : "解压并删除压缩包"
+    },
+    "返回上一级目录" : {
+      "comment" : "返回上一级目录"
+    },
+    "重命名" : {
+      "comment" : "rename undo"
+    },
+    "重命名失败：%@" : {
+      "comment" : "rename failed"
     }
   },
   "version" : "1.0"

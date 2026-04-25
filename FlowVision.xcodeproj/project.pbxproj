@@ -72,6 +72,7 @@
 		F7A075582BA1D717009C47A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F7A075572BA1D717009C47A6 /* Assets.xcassets */; };
 		F7A0755B2BA1D717009C47A6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F7A075592BA1D717009C47A6 /* Main.storyboard */; };
 		F7AA00012F9E000000AA0001 /* VideoPlayerControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AA00002F9E000000AA0001 /* VideoPlayerControlsView.swift */; };
+		40694BBD27B5D5464D319BAE /* MPVPlayerBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = B513CF896032F495D8769284 /* MPVPlayerBackend.swift */; };
 		F7AAA8BD2D9BD1F2007CE330 /* VideoProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AAA8BC2D9BD1ED007CE330 /* VideoProcess.swift */; };
 		F7AC30052D37E26B00F48AEF /* CustomPathControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AC30042D37E25800F48AEF /* CustomPathControl.swift */; };
 		F7C2DEB82C4E6AE9003DF765 /* Settings in Frameworks */ = {isa = PBXBuildFile; productRef = F7C2DEB72C4E6AE9003DF765 /* Settings */; };
@@ -175,6 +176,7 @@
 		F7790ED52BA5FB6A00406D35 /* CustomCollectionViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewItem.swift; sourceTree = "<group>"; };
 		F7790ED62BA5FB6A00406D35 /* CustomCollectionViewItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomCollectionViewItem.xib; sourceTree = "<group>"; };
 		F78960F12BDCC26B00C2571B /* LargeImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeImageView.swift; sourceTree = "<group>"; };
+		B513CF896032F495D8769284 /* MPVPlayerBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPVPlayerBackend.swift; sourceTree = "<group>"; };
 		F78960F52BDFFE9200C2571B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F78D1A692D432DCE00741908 /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/Main.xcstrings; sourceTree = "<group>"; };
 		F78D1A872D4CF31D00741908 /* GeneralSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = GeneralSettingsViewController.xib; path = Base.lproj/CustomSettingsViewController.xib; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 				F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */,
 				F78960F12BDCC26B00C2571B /* LargeImageView.swift */,
 				F73865D42C37B9B800837FE4 /* Layout.swift */,
+				B513CF896032F495D8769284 /* MPVPlayerBackend.swift */,
 				F7AA00002F9E000000AA0001 /* VideoPlayerControlsView.swift */,
 			);
 			path = Views;
@@ -485,6 +488,7 @@
 				F7790ED72BA5FB6A00406D35 /* CustomCollectionViewItem.swift in Sources */,
 				F7663C162F222AAC0028DF35 /* ImageEditingView.swift in Sources */,
 				F7AA00012F9E000000AA0001 /* VideoPlayerControlsView.swift in Sources */,
+				40694BBD27B5D5464D319BAE /* MPVPlayerBackend.swift in Sources */,
 				F74D555C2F0E501200C9AB85 /* EventHandler.swift in Sources */,
 				F74D55522F0E46D200C9AB85 /* Search.swift in Sources */,
 				F7FED5F32F7D0B1100E35164 /* Tagging.swift in Sources */,
@@ -730,6 +734,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 20260422;
+				DEVELOPMENT_TEAM = M6WQA48PJ2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FlowVision/Info.plist;
@@ -763,7 +768,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 20260422;
-				DEVELOPMENT_TEAM = M9PR3WG2FN;
+				DEVELOPMENT_TEAM = M6WQA48PJ2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FlowVision/Info.plist;

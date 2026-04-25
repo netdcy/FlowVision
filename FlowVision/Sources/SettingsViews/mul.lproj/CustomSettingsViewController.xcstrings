@@ -1190,108 +1190,108 @@
       }
     },
     "Jbl-Lw-mRw.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Since macOS natively supports only video formats like \\\"mp4\\\", \\\"mov\\\", \\\"m2ts\\\", \\\"ts\\\", \\\"mpeg\\\", \\\"mpg\\\", \\\"m4v\\\", and \\\"vob\\\", other formats still need to be played using an external player.\"; ObjectID = \"Jbl-Lw-mRw\";",
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"When the internal player is disabled, videos are opened with IINA first if installed, otherwise with the system default player.\"; ObjectID = \"Jbl-Lw-mRw\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "نظرًا لأن macOS يدعم فقط تنسيقات الفيديو مثل \"mp4\" و\"mov\" و\"m2ts\" و\"ts\" و\"mpeg\" و\"mpg\" و\"m4v\" و\"vob\"، فلا تزال هناك حاجة لاستخدام مشغل خارجي لتشغيل التنسيقات الأخرى."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Da macOS von Haus aus nur Videoformate wie „mp4“, „mov“, „m2ts“, „ts“, „mpeg“, „mpg“, „m4v“ und „vob“ unterstützt, müssen andere Formate weiterhin mit einem externen Player abgespielt werden."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Since macOS natively supports only video formats like \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", and \"vob\", other formats still need to be played using an external player."
+            "value" : "When the internal player is disabled, videos are opened with IINA first if installed, otherwise with the system default player."
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Dado que macOS solo admite de forma nativa formatos de video como \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" y \"vob\", otros formatos aún necesitan reproducirse usando un reproductor externo"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "macOS ne prenant en charge que les formats vidéo tels que \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" et \"vob\", d'autres formats doivent encore être lus avec un lecteur externe."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Poiché macOS supporta nativamente solo formati video come \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" e \"vob\", gli altri formati devono ancora essere riprodotti utilizzando un lettore esterno."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "macOSは「mp4」、「mov」、「m2ts」、「ts」、「mpeg」、「mpg」、「m4v」、「vob」などのビデオフォーマットのみをネイティブにサポートしているため、他のフォーマットは外部プレーヤーを使用して再生する必要があります"
           }
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "macOS는 \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\"와 같은 비디오 형식만 기본적으로 지원하므로 다른 형식은 외부 플레이어를 사용하여 재생해야 합니다"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Aangezien macOS van nature alleen videoformaten zoals \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" en \"vob\" ondersteunt, moeten andere formaten nog steeds worden afgespeeld met een externe speler."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Ponieważ macOS natywnie obsługuje tylko formaty wideo takie jak \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" i \"vob\", inne formaty nadal muszą być odtwarzane za pomocą zewnętrznego odtwarzacza."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Como o macOS suporta nativamente apenas formatos de vídeo como \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" e \"vob\", outros formatos ainda precisam ser reproduzidos usando um player externo."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Como o macOS suporta nativamente apenas formatos de vídeo como \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" e \"vob\", outros formatos ainda precisam ser reproduzidos usando um player externo."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Поскольку macOS изначально поддерживает только видеоформаты такие как \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" и \"vob\", другие форматы все же необходимо воспроизводить с помощью внешнего плеера."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Eftersom macOS inbyggt endast stödjer videoformat som \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" och \"vob\", behöver andra format fortfarande spelas upp med en extern spelare"
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "macOS, \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\" ve \"vob\" gibi video formatlarını yerel olarak desteklediğinden, diğer formatların harici bir oynatıcı kullanılarak oynatılması gerekmektedir."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "由于macOS原生仅支持 \"mp4\", \"mov\", \"m2ts\", \"ts\", \"mpeg\", \"mpg\", \"m4v\", \"vob\" 视频，其它格式仍需使用外部播放器播放。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "由於 macOS 僅原生支持 \"mp4\"、\"mov\"、\"m2ts\"、\"ts\"、\"mpeg\"、\"mpg\"、\"m4v\" 和 \"vob\" 等視頻格式，其他格式仍需使用外部播放器播放"
           }
         }

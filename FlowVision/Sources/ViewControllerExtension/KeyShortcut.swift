@@ -8,6 +8,115 @@ import Cocoa
 
 extension ViewController {
     
+    private func isConfiguredFolderCopyShortcutTriggered(_ configuredShortcut: String, characters: String, specialKey: NSEvent.SpecialKey, noModifierKey: Bool) -> Bool {
+        guard noModifierKey else { return false }
+        
+        let shortcut = configuredShortcut.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        if shortcut.isEmpty { return false }
+        
+        switch shortcut {
+        case "F1": return specialKey == .f1
+        case "F2": return specialKey == .f2
+        case "F3": return specialKey == .f3
+        case "F4": return specialKey == .f4
+        case "F5": return specialKey == .f5
+        case "F6": return specialKey == .f6
+        case "F7": return specialKey == .f7
+        case "F8": return specialKey == .f8
+        case "F9": return specialKey == .f9
+        case "F10": return specialKey == .f10
+        case "F11": return specialKey == .f11
+        case "F12": return specialKey == .f12
+        default:
+            return characters.uppercased() == shortcut
+        }
+    }
+
+    private func isPhotoFolder1CopyShortcutTriggered(characters: String, specialKey: NSEvent.SpecialKey, noModifierKey: Bool) -> Bool {
+        isConfiguredFolderCopyShortcutTriggered(globalVar.photoFolder1CopyShortcut, characters: characters, specialKey: specialKey, noModifierKey: noModifierKey)
+    }
+
+    private func isPhotoFolder2CopyShortcutTriggered(characters: String, specialKey: NSEvent.SpecialKey, noModifierKey: Bool) -> Bool {
+        isConfiguredFolderCopyShortcutTriggered(globalVar.photoFolder2CopyShortcut, characters: characters, specialKey: specialKey, noModifierKey: noModifierKey)
+    }
+    
+    @discardableResult
+    private func enterSelectedFolderFromKeyboard() -> Bool {
+        guard let selectedURL = publicVar.selectedUrls().first else { return false }
+        
+        var targetFolderURL: URL? = nil
+        if selectedURL.hasDirectoryPath {
+            targetFolderURL = selectedURL
+        } else if let values = try? selectedURL.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
+                  values.isAliasFile == true,
+                  let resolved = try? URL(resolvingAliasFileAt: selectedURL),
+                  resolved.hasDirectoryPath {
+            targetFolderURL = resolved
+        }
+        
+        guard let folderURL = targetFolderURL else { return false }
+        switchDirByDirection(direction: .zero, dest: folderURL.absoluteString, stackDeep: 0)
+        return true
+    }
+    
+    @discardableResult
+    private func openSelectedItemFromKeyboard() -> Bool {
+        guard !publicVar.isInLargeView,
+              publicVar.isCollectionViewFirstResponder,
+              let indexPath = collectionView.selectionIndexPaths.min() else {
+            return false
+        }
+        
+        openLargeImage(indexPath)
+        return true
+    }
+    
+    @discardableResult
+    private func triggerRightClickContextMenuFromKeyboard() -> Bool {
+        guard let window = view.window else { return false }
+        
+        let targetView: NSView
+        if let selectedIndexPath = collectionView.selectionIndexPaths.first,
+           let item = collectionView.item(at: selectedIndexPath) as? CustomCollectionViewItem {
+            targetView = item.view
+        } else {
+            targetView = collectionView
+        }
+        
+        let localCenter = NSPoint(x: targetView.bounds.midX, y: targetView.bounds.midY)
+        let windowPoint = targetView.convert(localCenter, to: nil)
+        let timestamp = ProcessInfo.processInfo.systemUptime
+        
+        guard let downEvent = NSEvent.mouseEvent(
+            with: .rightMouseDown,
+            location: windowPoint,
+            modifierFlags: [],
+            timestamp: timestamp,
+            windowNumber: window.windowNumber,
+            context: nil,
+            eventNumber: 0,
+            clickCount: 1,
+            pressure: 1.0
+        ),
+              let upEvent = NSEvent.mouseEvent(
+                with: .rightMouseUp,
+                location: windowPoint,
+                modifierFlags: [],
+                timestamp: timestamp + 0.01,
+                windowNumber: window.windowNumber,
+                context: nil,
+                eventNumber: 1,
+                clickCount: 1,
+                pressure: 0.0
+              ) else {
+            return false
+        }
+        
+        targetView.rightMouseDown(with: downEvent)
+        targetView.rightMouseUp(with: upEvent)
+        return true
+    }
+    
     func KeyShortcutManager (event: NSEvent) -> NSEvent?
     {
         // 检查事件的窗口是否是当前窗口，如果不是、也非弹窗状态，就不处理，事件继续传递
@@ -43,6 +152,14 @@ extension ViewController {
         
         let characters = (event.charactersIgnoringModifiers ?? "").lowercased()
         let specialKey = event.specialKey ?? .f30
+
+        if publicVar.isInLargeView && largeImageView.isInVideoCropSelectionMode {
+            if event.keyCode == 53 {
+                largeImageView.cancelVideoCropSelection()
+                return nil
+            }
+            return event
+        }
 
         // 把按键信息打印出来，用于调试不同键盘的键值差异
         // var modifierStrings: [String] = []
@@ -102,6 +219,19 @@ extension ViewController {
                 }
             }
         }
+
+        // 主界面撤销 / 重做
+        // Undo / redo in normal browsing state
+        if publicVar.isKeyEventEnabled && isCommandPressed && !isAltPressed && !isCtrlPressed {
+            if characters == "z" && !isShiftPressed {
+                NSApp.sendAction(Selector(("undo:")), to: nil, from: nil)
+                return nil
+            }
+            if characters == "z" && isShiftPressed {
+                NSApp.sendAction(Selector(("redo:")), to: nil, from: nil)
+                return nil
+            }
+        }
         
         // 防止过快触发事件
         // Prevent events from triggering too quickly
@@ -143,6 +273,27 @@ extension ViewController {
         }
         
         if publicVar.isKeyEventEnabled {
+            // 自定义快捷键：复制到图片文件夹1
+            // Custom shortcut: copy to Photo Folder 1
+            if publicVar.isCollectionViewFirstResponder &&
+               isPhotoFolder1CopyShortcutTriggered(characters: characters, specialKey: specialKey, noModifierKey: noModifierKey) {
+                handleCopyToPhotoFolder1()
+                return nil
+            }
+
+            // 自定义快捷键：复制视频到文件夹2
+            // Custom shortcut: copy video to Folder 2
+            if isPhotoFolder2CopyShortcutTriggered(characters: characters, specialKey: specialKey, noModifierKey: noModifierKey) {
+                if publicVar.isInLargeView,
+                   largeImageView.file.type == .video {
+                    handleCopyCurrentVideoToPhotoFolder2()
+                    return nil
+                }
+                if publicVar.isCollectionViewFirstResponder {
+                    handleCopySelectedVideosToPhotoFolder2()
+                    return nil
+                }
+            }
             
             // 检查按键是否是 "A" 键
             // Check if key is "A"
@@ -354,6 +505,16 @@ extension ViewController {
                 }
                 return nil
             }
+
+            // 检查按键是否是 Command+"E" 键（视频截图到当前文件夹）
+            // Check if key is Command+"E" (capture current video frame to current folder)
+            if characters == "e" && isOnlyCommandPressed {
+                if publicVar.isInLargeView,
+                   largeImageView.file.type == .video {
+                    handleCaptureCurrentVideoFrameToCurrentFolder()
+                    return nil
+                }
+            }
             
             // 检查按键是否是 Command+⬅️➡️ 键
             // Check if key is Command+⬅️➡️
@@ -368,15 +529,47 @@ extension ViewController {
                         largeImageView.seekVideoByFrame(direction: isRTL_Cmd ? -1 : 1)
                     }
                     return nil
+                } else if !publicVar.isInLargeView,
+                          specialKey == .rightArrow {
+                    // Keyboard equivalent of mouse right click context menu.
+                    if triggerRightClickContextMenuFromKeyboard() {
+                        return nil
+                    }
+                }
+            }
+
+            // 检查按键是否是 Shift+⬅️➡️ 键（视频切换上/下文件）
+            // Check if key is Shift+⬅️➡️ (video switch previous/next file)
+            if (specialKey == .leftArrow || specialKey == .rightArrow) && isOnlyShiftPressed {
+                if globalVar.videoShiftArrowSwitchFile,
+                   publicVar.isInLargeView,
+                   largeImageView.file.type == .video {
+                    if specialKey == .leftArrow {
+                        previousLargeImage()
+                    } else {
+                        nextLargeImage()
+                    }
+                    return nil
                 }
             }
             
-            // 检查按键是否是 Command+⬆️ 键
-            // Check if key is Command+⬆️
-            if (specialKey == .upArrow && isOnlyCommandPressed) || (specialKey == .home && noModifierKey) {
-                if publicVar.isInLargeView{
+            // 检查按键是否是 Command+⬆️ 键（查看时退出查看，缩略图时返回上一级目录）
+            // Check if key is Command+⬆️ (exit large view, or go to parent folder)
+            if specialKey == .upArrow && isOnlyCommandPressed {
+                if publicVar.isInLargeView {
+                    closeLargeImage(0)
+                } else {
+                    switchDirByDirection(direction: .up, stackDeep: 0)
+                }
+                return nil
+            }
+            
+            // 检查按键是否是 Home 键（滚动到顶部）
+            // Check if key is Home key (scroll to top)
+            if specialKey == .home && noModifierKey {
+                if publicVar.isInLargeView {
                     locateLargeImage(direction: -2)
-                }else{
+                } else {
                     if let scrollView = collectionView.enclosingScrollView {
                         scrollView.contentView.scroll(to: NSPoint(x: 0, y: 0))
                         scrollView.reflectScrolledClipView(scrollView.contentView)
@@ -388,12 +581,19 @@ extension ViewController {
                 return nil
             }
             
-            // 检查按键是否是 Command+⬇️ 键
-            // Check if key is Command+⬇️
-            if (specialKey == .downArrow && isOnlyCommandPressed) || (specialKey == .end && noModifierKey) {
-                if publicVar.isInLargeView{
-                    locateLargeImage(direction: 2)
-                }else{
+            // 检查按键是否是 Command+⬇️ 键（打开选中文件/进入选中文件夹）
+            // Check if key is Command+⬇️ (open selected item, or enter selected folder)
+            if specialKey == .downArrow && isOnlyCommandPressed {
+                if publicVar.isInLargeView {
+                    return nil
+                } else {
+                    if enterSelectedFolderFromKeyboard() {
+                        return nil
+                    }
+                    if openSelectedItemFromKeyboard() {
+                        return nil
+                    }
+                    // Fallback: keep original behavior when selection is not a folder.
                     if let scrollView = collectionView.enclosingScrollView {
                         let newOrigin = NSPoint(x: 0, y: collectionView.bounds.height - scrollView.contentSize.height)
                         scrollView.contentView.scroll(to: newOrigin)
@@ -401,6 +601,22 @@ extension ViewController {
                         DispatchQueue.main.async { [weak self] in
                             self?.setLoadThumbPriority(ifNeedVisable: true)
                         }
+                    }
+                }
+                return nil
+            }
+            
+            // 检查按键是否是 End 键
+            // Check if key is End key
+            if specialKey == .end && noModifierKey {
+                if publicVar.isInLargeView {
+                    locateLargeImage(direction: 2)
+                } else if let scrollView = collectionView.enclosingScrollView {
+                    let newOrigin = NSPoint(x: 0, y: collectionView.bounds.height - scrollView.contentSize.height)
+                    scrollView.contentView.scroll(to: newOrigin)
+                    scrollView.reflectScrolledClipView(scrollView.contentView)
+                    DispatchQueue.main.async { [weak self] in
+                        self?.setLoadThumbPriority(ifNeedVisable: true)
                     }
                 }
                 return nil
@@ -922,17 +1138,6 @@ extension ViewController {
                     return nil
                 }else{
                     adjustThumbSizeByDirection(direction: 0)
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 "N" 键
-            // Check if key is "N"
-            if characters == "n" && noModifierKey {
-                // 如果焦点在CollectionView
-                // If focus is in CollectionView
-                if publicVar.isCollectionViewFirstResponder{
-                    handleCopyToDownload()
                     return nil
                 }
             }

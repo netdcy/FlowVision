@@ -115,11 +115,23 @@ extension ViewController {
         
         // 标签
         // Tags
-        if path.hasPrefix("file:///VirtualFinderTagsFolder") {
+        if path.hasPrefix(VIRTUAL_FINDER_TAGS_PREFIX) {
             if path == "file:///VirtualFinderTagsFolder/" {
                 targetPaths = [NSLocalizedString("Finder Tags", comment: "Finder标签")]
             }else{
                 targetPaths = [NSLocalizedString("Finder Tags", comment: "Finder标签"), URL(string: path)!.lastPathComponent]
+            }
+        } else if path.hasPrefix(VIRTUAL_FAVORITES_PREFIX) {
+            if path == "file:///VirtualFavoritesFolder/" {
+                targetPaths = [NSLocalizedString("Favorites", comment: "收藏")]
+            } else if let url = URL(string: path) {
+                targetPaths = [NSLocalizedString("Favorites", comment: "收藏"), url.lastPathComponent]
+            }
+        } else if path.hasPrefix(VIRTUAL_HISTORY_PREFIX) {
+            if path == "file:///VirtualHistoryFolder/" {
+                targetPaths = [NSLocalizedString("History", comment: "历史")]
+            } else if let url = URL(string: path) {
+                targetPaths = [NSLocalizedString("History", comment: "历史"), url.lastPathComponent]
             }
         }
         

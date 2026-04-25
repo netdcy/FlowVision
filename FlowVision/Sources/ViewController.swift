@@ -412,6 +412,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     var dirURLCache: [URL] = []
     var dirURLCacheParameters: Any = []
+    var archiveImageEntryCache: [String: [String]] = [:]
 
     // 加载进度条
     // Loading progress bar
@@ -2169,7 +2170,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
         // 虚拟Finder标签目录不监听
         // VirtualFinderTagsFolder directory doesn't listen
-        if path.hasPrefix("/VirtualFinderTagsFolder") {
+        if isVirtualFolderPath("file://\(path)") {
             return
         }
         

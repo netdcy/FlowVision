@@ -118,7 +118,7 @@ class CustomCollectionView: NSCollectionView {
                     }
 
                     let curFolder = getViewController(self)!.fileDB.curFolder
-                    let isVirtualFinderTagsFolder = curFolder.hasPrefix("file:///VirtualFinderTagsFolder")
+                    let isReadOnlyVirtualFolder = isReadOnlyVirtualFolderPath(curFolder)
                     
                     // 弹出菜单
                     // Show context menu
@@ -126,16 +126,22 @@ class CustomCollectionView: NSCollectionView {
                     menu.autoenablesItems = false
                     
                     let actionItemOpenInFinder = menu.addItem(withTitle: NSLocalizedString("Open in Finder", comment: "在Finder中打开"), action: #selector(actOpenInFinder), keyEquivalent: "")
-                    actionItemOpenInFinder.isEnabled = !isVirtualFinderTagsFolder
+                    actionItemOpenInFinder.isEnabled = !isReadOnlyVirtualFolder
+
+                    if isFavoritePath(curFolder) {
+                        menu.addItem(withTitle: NSLocalizedString("Remove from Favorites", comment: "取消收藏"), action: #selector(actRemoveFromFavorites), keyEquivalent: "")
+                    } else {
+                        menu.addItem(withTitle: NSLocalizedString("Add Current Folder to Favorites", comment: "收藏当前目录"), action: #selector(actAddCurrentFolderToFavorites), keyEquivalent: "")
+                    }
                     
                     menu.addItem(NSMenuItem.separator())
 
                     let actionItemPaste = menu.addItem(withTitle: NSLocalizedString("Paste", comment: "粘贴"), action: #selector(actPaste), keyEquivalent: "v")
-                    actionItemPaste.isEnabled = canPasteOrMove && !isVirtualFinderTagsFolder
+                    actionItemPaste.isEnabled = canPasteOrMove && !isReadOnlyVirtualFolder
                     
                     let actionItemMove = menu.addItem(withTitle: NSLocalizedString("Move Here", comment: "移动到此"), action: #selector(actMove), keyEquivalent: "v")
                     actionItemMove.keyEquivalentModifierMask = [.command,.option]
-                    actionItemMove.isEnabled = canPasteOrMove && !isVirtualFinderTagsFolder
+                    actionItemMove.isEnabled = canPasteOrMove && !isReadOnlyVirtualFolder
 
                     menu.addItem(NSMenuItem.separator())
 
@@ -146,7 +152,7 @@ class CustomCollectionView: NSCollectionView {
                     // let actionItemCopyPath = menu.addItem(withTitle: NSLocalizedString("Copy Path", comment: "复制路径"), action: #selector(actCopyPath), keyEquivalent: "")
                     
                     let actionItemOpenInTerminal = menu.addItem(withTitle: NSLocalizedString("Open in Terminal", comment: "在终端中打开"), action: #selector(actOpenInTerminal), keyEquivalent: "")
-                    actionItemOpenInTerminal.isEnabled = !isVirtualFinderTagsFolder
+                    actionItemOpenInTerminal.isEnabled = !isReadOnlyVirtualFolder
                     
                     menu.addItem(NSMenuItem.separator())
             
@@ -155,7 +161,7 @@ class CustomCollectionView: NSCollectionView {
                     let newMenu = NSMenu()
                     let newMenuItem = NSMenuItem(title: NSLocalizedString("New", comment: "新建"), action: nil, keyEquivalent: "")
                     newMenuItem.submenu = newMenu
-                    newMenuItem.isEnabled = !isVirtualFinderTagsFolder
+                    newMenuItem.isEnabled = !isReadOnlyVirtualFolder
                     
                     // 添加新建文件夹选项
                     // Add new folder option
@@ -193,6 +199,20 @@ class CustomCollectionView: NSCollectionView {
     @objc func actOpenInFinder() {
         if let folderURL=getViewController(self)?.fileDB.curFolder {
             NSWorkspace.shared.open(URL(string: folderURL)!)
+        }
+    }
+
+    @objc func actAddCurrentFolderToFavorites() {
+        guard let folderURL = getViewController(self)?.fileDB.curFolder else { return }
+        if addFavoritePath(folderURL) {
+            getViewController(self)?.refreshTreeView()
+        }
+    }
+
+    @objc func actRemoveFromFavorites() {
+        guard let folderURL = getViewController(self)?.fileDB.curFolder else { return }
+        if removeFavoritePath(folderURL) {
+            getViewController(self)?.refreshTreeView()
         }
     }
     

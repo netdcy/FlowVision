@@ -9,6 +9,27 @@ import AVFoundation
 import Vision
 import SDWebImageWebPCoder
 
+private func loadDataForImageURL(_ url: URL) -> Data? {
+    if let archiveData = getArchiveEntryDataIfNeeded(url: url) {
+        return archiveData
+    }
+    return try? Data(contentsOf: url)
+}
+
+private func loadImageSourceSmart(url: URL, options: CFDictionary? = nil) -> CGImageSource? {
+    if let data = getArchiveEntryDataIfNeeded(url: url) {
+        return CGImageSourceCreateWithData(data as CFData, options)
+    }
+    return CGImageSourceCreateWithURL(url as CFURL, options)
+}
+
+private func loadNSImageSmart(url: URL) -> NSImage? {
+    if let data = getArchiveEntryDataIfNeeded(url: url) {
+        return NSImage(data: data)
+    }
+    return NSImage(contentsOf: url)
+}
+
 extension NSImage {
     func rotated(by degrees: CGFloat) -> NSImage {
         if degrees == 0 { return self }
@@ -919,7 +940,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         // 使用原图的格式
         // Use original image format
         if ["gif", "svg"].contains(url.pathExtension.lowercased()) {
-            return NSImage(contentsOf: url)
+            return loadNSImageSmart(url: url)
         }
         // 若指定了大小则特殊处理
         // Special handling if size is specified
@@ -937,7 +958,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
 
         let myOptions = [kCGImageSourceShouldCache : kCFBooleanFalse] as CFDictionary;
         
-        guard let myImageSource = CGImageSourceCreateWithURL(url as NSURL, myOptions) else {
+        guard let myImageSource = loadImageSourceSmart(url: url, options: myOptions) else {
             log("Image source is NULL.", level: .warn);
             // return getFileTypeIcon(url: url)
             return nil
@@ -1002,7 +1023,7 @@ func getFullExifThumbnail(url: URL, size oriSize: NSSize? = nil, rotate: Int = 0
 
     let myOptions = [kCGImageSourceShouldCache : kCFBooleanFalse] as CFDictionary;
     
-    guard let myImageSource = CGImageSourceCreateWithURL(url as NSURL, myOptions) else {
+    guard let myImageSource = loadImageSourceSmart(url: url, options: myOptions) else {
         log("Image source is NULL.", level: .warn);
         // return getFileTypeIcon(url: url)
         return nil
@@ -1086,7 +1107,7 @@ func newOrientation(currentOrientation: Int, rotate: Int) -> Int {
 func getAnimateImage(url: URL, size: NSSize? = nil, rotate: Int = 0) -> NSImage? {
     
     if ["webp"].contains(url.pathExtension.lowercased()) && rotate == 0 {
-        if let data = try? Data(contentsOf: url),
+        if let data = loadDataForImageURL(url),
            let source = CGImageSourceCreateWithData(data as CFData, nil),
            CGImageSourceGetCount(source) > 1 {
             var options:[SDImageCoderOption: Any] = [:]
@@ -1100,10 +1121,10 @@ func getAnimateImage(url: URL, size: NSSize? = nil, rotate: Int = 0) -> NSImage?
     }
 
     if ["png"].contains(url.pathExtension.lowercased()) && rotate == 0 {
-        if let data = try? Data(contentsOf: url),
+        if let data = loadDataForImageURL(url),
            let source = CGImageSourceCreateWithData(data as CFData, nil),
            CGImageSourceGetCount(source) > 1 {
-            return NSImage(contentsOf: url)
+            return loadNSImageSmart(url: url)
         }
     }
     
@@ -1128,7 +1149,7 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0, isRawUseEm
         return animateImage
     }
     
-    guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil),
+    guard let imageSource = loadImageSourceSmart(url: url, options: nil),
           let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
     else {
         print("Failed when imageSource:",url.absoluteString.removingPercentEncoding!)
@@ -1742,7 +1763,7 @@ func getImageInfo(url: URL, needMetadata: Bool) -> ImageInfo? {
         if let thumb = getImageThumb(url: url) {return ImageInfo(thumb.size)}
         return nil
     }else if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()){
-        guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
+        guard let imageSource = loadImageSourceSmart(url: url, options: nil) else { return nil }
         guard let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as? [String: Any] else { return nil }
         guard let width = imageProperties[kCGImagePropertyPixelWidth as String] as? CGFloat,
               let height = imageProperties[kCGImagePropertyPixelHeight as String] as? CGFloat else { return nil }
@@ -2108,7 +2129,7 @@ func formatExifData(_ imageProperties: [String: Any], isVideo: Bool, needWarp: B
 }
 
 func readRating(from imageURL: URL) -> Int? {
-    guard let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, nil) else { return nil }
+    guard let imageSource = loadImageSourceSmart(url: imageURL) else { return nil }
     guard let metadata = CGImageSourceCopyMetadataAtIndex(imageSource, 0, nil) else { return nil }
     
     //let namespace = "http://ns.adobe.com/xap/1.0/"
@@ -2307,12 +2328,12 @@ class LargeImageProcessor {
                 if let animateImage = getAnimateImage(url: url, rotate: rotate) {
                     image = animateImage
                 } else {
-                    image = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
+                    image = loadNSImageSmart(url: url)?.rotated(by: CGFloat(-90*rotate))
                 }
             }else{
                 image = getResizedImage(url: url, size: size, rotate: rotate, isRawUseEmbeddedThumb: isRawUseEmbeddedThumb)
                 if image == nil {
-                    image = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
+                    image = loadNSImageSmart(url: url)?.rotated(by: CGFloat(-90*rotate))
                 }
             }
             

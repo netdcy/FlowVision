@@ -446,17 +446,16 @@ class VideoPlayerControlsView: NSView {
     }
     
     func updateABMarkers() {
-        guard let player = largeImageView?.queuePlayer,
-              let duration = player.currentItem?.duration else {
+        guard let largeImageView = largeImageView else {
             abMarkerA.isHidden = true
             abMarkerB.isHidden = true
             return
         }
-        let total = CMTimeGetSeconds(duration)
+        let total = largeImageView.videoDurationSeconds
         guard total.isFinite && total > 0 else { return }
         let progressWidth = progressBarBackground.bounds.width
         
-        if let posA = largeImageView?.abPlayPositionA {
+        if let posA = largeImageView.abPlayPositionA {
             let fracA = CGFloat(CMTimeGetSeconds(posA) / total)
             abMarkerAConstraint.constant = progressWidth * max(0, min(1, fracA))
             abMarkerA.isHidden = false
@@ -464,7 +463,7 @@ class VideoPlayerControlsView: NSView {
             abMarkerA.isHidden = true
         }
         
-        if let posB = largeImageView?.abPlayPositionB {
+        if let posB = largeImageView.abPlayPositionB {
             let fracB = CGFloat(CMTimeGetSeconds(posB) / total)
             abMarkerBConstraint.constant = progressWidth * max(0, min(1, fracB))
             abMarkerB.isHidden = false
@@ -575,8 +574,8 @@ class VideoPlayerControlsView: NSView {
         
         if expandedProgressFrame.contains(location) {
             isDraggingProgress = true
-            wasPlayingBeforeDrag = largeImageView?.queuePlayer?.timeControlStatus == .playing
-            largeImageView?.queuePlayer?.pause()
+            wasPlayingBeforeDrag = largeImageView?.videoIsPlaying == true
+            largeImageView?.setVideoPaused(true)
             seekToPosition(at: location)
         }
     }
@@ -593,7 +592,7 @@ class VideoPlayerControlsView: NSView {
         if isDraggingProgress {
             isDraggingProgress = false
             if wasPlayingBeforeDrag {
-                largeImageView?.queuePlayer?.play()
+                largeImageView?.setVideoPaused(false)
             }
             updatePlayPauseIcon()
             
@@ -627,37 +626,36 @@ class VideoPlayerControlsView: NSView {
     // MARK: - Progress Bar Interaction
     
     private func seekToPosition(at location: NSPoint) {
-        guard let player = largeImageView?.queuePlayer,
-              let duration = player.currentItem?.duration else { return }
+        guard let largeImageView = largeImageView else { return }
         
         let progressFrame = progressBarBackground.frame
         let relativeX = max(0, min(location.x - progressFrame.origin.x, progressFrame.width))
         let fraction = relativeX / progressFrame.width
         
-        let totalDuration = CMTimeGetSeconds(duration)
+        let totalDuration = largeImageView.videoDurationSeconds
+        guard totalDuration.isFinite && totalDuration > 0 else { return }
         var targetSeconds = totalDuration * Double(fraction)
         
-        if let posA = largeImageView?.abPlayPositionA, let posB = largeImageView?.abPlayPositionB,
+        if let posA = largeImageView.abPlayPositionA, let posB = largeImageView.abPlayPositionB,
            CMTimeGetSeconds(posA) < CMTimeGetSeconds(posB) {
             targetSeconds = max(CMTimeGetSeconds(posA), min(CMTimeGetSeconds(posB), targetSeconds))
         }
         
         let clampedFraction = CGFloat(targetSeconds / totalDuration)
-        let targetTime = CMTimeMakeWithSeconds(targetSeconds, preferredTimescale: 600)
-        player.seek(to: targetTime, toleranceBefore: .zero, toleranceAfter: .zero)
+        largeImageView.seekVideo(to: targetSeconds)
         
         updateProgress(fraction: clampedFraction)
     }
     
     private func updateHoverTime(at location: NSPoint) {
-        guard let player = largeImageView?.queuePlayer,
-              let duration = player.currentItem?.duration else { return }
+        guard let largeImageView = largeImageView else { return }
         
         let progressFrame = progressBarBackground.frame
         let relativeX = max(0, min(location.x - progressFrame.origin.x, progressFrame.width))
         let fraction = relativeX / progressFrame.width
         
-        let totalDuration = CMTimeGetSeconds(duration)
+        let totalDuration = largeImageView.videoDurationSeconds
+        guard totalDuration.isFinite && totalDuration > 0 else { return }
         let hoverSeconds = totalDuration * Double(fraction)
         hoverTimeLabel.stringValue = formatTime(hoverSeconds)
         hoverTimeContainer.isHidden = false
@@ -670,28 +668,28 @@ class VideoPlayerControlsView: NSView {
     // MARK: - Actions
     
     @objc private func skipBackwardTapped() {
-        guard let player = largeImageView?.queuePlayer else { return }
-        let current = CMTimeGetSeconds(player.currentTime())
+        guard let largeImageView = largeImageView else { return }
+        let current = largeImageView.videoCurrentTimeSeconds
         var minBound = 0.0
-        if let posA = largeImageView?.abPlayPositionA, let posB = largeImageView?.abPlayPositionB,
+        if let posA = largeImageView.abPlayPositionA, let posB = largeImageView.abPlayPositionB,
            CMTimeGetSeconds(posA) < CMTimeGetSeconds(posB) {
             minBound = CMTimeGetSeconds(posA)
         }
         let target = max(minBound, current - 15)
-        player.seek(to: CMTimeMakeWithSeconds(target, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
+        largeImageView.seekVideo(to: target)
     }
     
     @objc private func skipForwardTapped() {
-        guard let player = largeImageView?.queuePlayer,
-              let duration = player.currentItem?.duration else { return }
-        let current = CMTimeGetSeconds(player.currentTime())
-        var maxBound = CMTimeGetSeconds(duration)
-        if let posA = largeImageView?.abPlayPositionA, let posB = largeImageView?.abPlayPositionB,
+        guard let largeImageView = largeImageView else { return }
+        let current = largeImageView.videoCurrentTimeSeconds
+        var maxBound = largeImageView.videoDurationSeconds
+        guard maxBound.isFinite && maxBound > 0 else { return }
+        if let posA = largeImageView.abPlayPositionA, let posB = largeImageView.abPlayPositionB,
            CMTimeGetSeconds(posA) < CMTimeGetSeconds(posB) {
             maxBound = CMTimeGetSeconds(posB)
         }
         let target = min(maxBound, current + 15)
-        player.seek(to: CMTimeMakeWithSeconds(target, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
+        largeImageView.seekVideo(to: target)
     }
     
     @objc private func playPauseTapped() {
@@ -700,20 +698,19 @@ class VideoPlayerControlsView: NSView {
     }
     
     @objc private func volumeButtonTapped() {
-        guard let player = largeImageView?.queuePlayer else { return }
+        guard let largeImageView = largeImageView else { return }
         
-        if player.volume > 0 {
-            volumeBeforeMute = player.volume
-            player.volume = 0
+        if largeImageView.videoVolume > 0 {
+            volumeBeforeMute = largeImageView.videoVolume
+            largeImageView.videoVolume = 0
         } else {
-            player.volume = volumeBeforeMute > 0 ? volumeBeforeMute : 1.0
+            largeImageView.videoVolume = volumeBeforeMute > 0 ? volumeBeforeMute : 1.0
         }
         updateVolumeUI()
     }
     
     @objc private func volumeSliderChanged(_ sender: NSSlider) {
-        guard let player = largeImageView?.queuePlayer else { return }
-        player.volume = Float(sender.doubleValue)
+        largeImageView?.videoVolume = Float(sender.doubleValue)
         updateVolumeIcon()
     }
     
@@ -750,20 +747,18 @@ class VideoPlayerControlsView: NSView {
     }
     
     func updatePlayPauseIcon() {
-        guard let player = largeImageView?.queuePlayer else { return }
-        let symbolName = player.rate > 0 ? "pause.fill" : "play.fill"
+        let symbolName = largeImageView?.videoIsPlaying == true ? "pause.fill" : "play.fill"
         playPauseButton.image = NSImage(systemSymbolName: symbolName, accessibilityDescription: nil)
     }
     
     func updateVolumeUI() {
-        guard let player = largeImageView?.queuePlayer else { return }
-        volumeSlider.doubleValue = Double(player.volume)
+        guard let largeImageView = largeImageView else { return }
+        volumeSlider.doubleValue = Double(largeImageView.videoVolume)
         updateVolumeIcon()
     }
     
     private func updateVolumeIcon() {
-        guard let player = largeImageView?.queuePlayer else { return }
-        let symbolName = player.volume <= 0 ? "speaker.slash.fill" : "speaker.2.fill"
+        let symbolName = largeImageView?.videoVolume ?? 0 <= 0 ? "speaker.slash.fill" : "speaker.2.fill"
         volumeButton.image = NSImage(systemSymbolName: symbolName, accessibilityDescription: nil)
     }
     

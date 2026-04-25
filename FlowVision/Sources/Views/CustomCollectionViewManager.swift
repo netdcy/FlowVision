@@ -7,14 +7,14 @@ import Foundation
 import Cocoa
 
 class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout {
-    
+
     var fileDB: DatabaseModel
     var lastSelectedIndexPath: IndexPath?
-    
+
     init(fileDB: DatabaseModel) {
         self.fileDB = fileDB
     }
-    
+
     func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
         fileDB.lock()
         defer{fileDB.unlock()}
@@ -23,7 +23,7 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
         }
         return 0
     }
-    
+
     func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem {
         let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "CustomCollectionViewItem"), for: indexPath) as! CustomCollectionViewItem
 
@@ -32,15 +32,15 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
             item.configureWithImage(file)
         }
         fileDB.unlock()
-        
+
         return item
     }
-    
+
     func collectionView(_ collectionView: NSCollectionView, didEndDisplaying item: NSCollectionViewItem, forRepresentedObjectAt indexPath: IndexPath) {
 //        (item as! ImageCollectionViewItem).imageViewObj?.image?.recache()
 //        (item as! ImageCollectionViewItem).imageViewObj?.image=nil
     }
-    
+
     func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
         for indexPath in indexPaths{
             // 注意：下面这句当item不在视野内时为nil
@@ -54,8 +54,9 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
 //            fileDB.unlock()
         }
         // log("Selected numbers:"+String(indexPaths.count))
+        getViewController(collectionView)?.publicVar.updateToolbar()
     }
-    
+
     func collectionView(_ collectionView: NSCollectionView, didDeselectItemsAt indexPaths: Set<IndexPath>) {
         for indexPath in indexPaths {
             // 注意：下面这句当item不在视野内时为nil
@@ -71,6 +72,7 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
 //            fileDB.unlock()
         }
         // log("Deselected numbers:"+String(indexPaths.count))
+        getViewController(collectionView)?.publicVar.updateToolbar()
     }
     func collectionView(_ collectionView: NSCollectionView, layout collectionViewLayout: NSCollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> NSSize {
         fileDB.lock()
@@ -80,7 +82,7 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
         }
         return DEFAULT_SIZE
     }
-    
+
     func collectionView(_ collectionView: NSCollectionView, pasteboardWriterForItemAt indexPath: IndexPath) -> NSPasteboardWriting? {
         fileDB.lock()
         defer{fileDB.unlock()}
@@ -91,17 +93,17 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
         }
         return pasteboardItem
     }
-    
+
     func collectionView(_ collectionView: NSCollectionView, shouldSelectItemsAt indexPaths: Set<IndexPath>) -> Set<IndexPath> {
         guard let indexPath = indexPaths.first else { return [] }
-        
+
         // Check if the Shift key is pressed or no selection
         if NSEvent.modifierFlags.contains(.shift), let lastIndexPath = lastSelectedIndexPath, collectionView.selectionIndexPaths.count >= 1 {
             // Calculate the range of items to select
             let startIndex = min(lastIndexPath.item, indexPath.item)
             let endIndex = max(lastIndexPath.item, indexPath.item)
             let indexSet = IndexSet(startIndex...endIndex)
-            
+
             // Create new index paths for the range
             let newSelectedIndexPaths = indexSet.map { IndexPath(item: $0, section: indexPath.section) }
             return Set(newSelectedIndexPaths)
@@ -111,14 +113,13 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
             return indexPaths
         }
     }
-    
+
     func collectionView(_ collectionView: NSCollectionView, shouldDeselectItemsAt indexPaths: Set<IndexPath>) -> Set<IndexPath> {
         guard let indexPath = indexPaths.first else { return [] }
-        
+
         // TODO
-        
+
         return indexPaths
     }
 
 }
-
