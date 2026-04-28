@@ -1110,9 +1110,45 @@ func getAnimateImage(url: URL, size: NSSize? = nil, rotate: Int = 0) -> NSImage?
     return nil
 }
 
-func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0, isRawUseEmbeddedThumb: Bool) -> NSImage? {
+private let pixelPerfectUpscaleSourceMaxDimension: CGFloat = 2048
+private let pixelPerfectUpscaleSourceMaxPixels: CGFloat = 4_194_304
+private let pixelPerfectUpscaleOutputMaxPixels: CGFloat = 16_777_216
+
+func shouldUsePixelPerfectUpscaledImage(originalPixelSize: NSSize, targetSize: NSSize, screenScale: CGFloat) -> Bool {
+    let targetPixelWidth = round(targetSize.width * max(screenScale, 1))
+    let targetPixelHeight = round(targetSize.height * max(screenScale, 1))
+    let originalPixelCount = originalPixelSize.width * originalPixelSize.height
+    let targetPixelCount = targetPixelWidth * targetPixelHeight
+
+    guard targetPixelWidth >= originalPixelSize.width,
+          targetPixelHeight >= originalPixelSize.height else {
+        return false
+    }
+
+    guard max(originalPixelSize.width, originalPixelSize.height) <= pixelPerfectUpscaleSourceMaxDimension,
+          originalPixelCount <= pixelPerfectUpscaleSourceMaxPixels,
+          targetPixelCount <= pixelPerfectUpscaleOutputMaxPixels else {
+        return false
+    }
+
+    return true
+}
+
+func getPixelPerfectUpscaledImage(url: URL, size: NSSize, rotate: Int = 0, isRawUseEmbeddedThumb: Bool, screenScale: CGFloat) -> NSImage? {
+    return getResizedImage(
+        url: url,
+        size: size,
+        rotate: rotate,
+        isRawUseEmbeddedThumb: isRawUseEmbeddedThumb,
+        interpolationQuality: .none,
+        renderScale: max(screenScale, 1)
+    )
+}
+
+func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0, isRawUseEmbeddedThumb: Bool, interpolationQuality: CGInterpolationQuality = .high, renderScale: CGFloat = 2) -> NSImage? {
     
     let size: NSSize = NSSize(width: round(oriSize.width), height: round(oriSize.height))
+    let effectiveRenderScale = max(renderScale, 1)
 
     // 根据配置优先尝试使用Exif内嵌缩略图
     // Try to use Exif embedded thumbnail first according to configuration
@@ -1150,9 +1186,9 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0, isRawUseEm
     case 5, 6, 7, 8:
         // 图像旋转90度或270度
         // Image rotated 90 or 270 degrees
-        pointSize = CGSize(width: size.height * 2, height: size.width * 2)
+        pointSize = CGSize(width: size.height * effectiveRenderScale, height: size.width * effectiveRenderScale)
     default:
-        pointSize = CGSize(width: size.width * 2, height: size.height * 2)
+        pointSize = CGSize(width: size.width * effectiveRenderScale, height: size.height * effectiveRenderScale)
     }
     
 
@@ -1211,7 +1247,7 @@ func getResizedImage(url: URL, size oriSize: NSSize, rotate: Int = 0, isRawUseEm
                             bytesPerRow: 0,
                             space: colorSpace,
                             bitmapInfo: adjustedBitmapInfo)
-    context?.interpolationQuality = .high
+    context?.interpolationQuality = interpolationQuality
 
     // 调整原点到中心并应用旋转
     // Adjust origin to center and apply rotation
@@ -2257,8 +2293,8 @@ class LargeImageProcessor {
 //        return getResizedImage(url: url, size: size, rotate: rotate)
 //    }
     
-    static func getImageCache(url: URL, size: NSSize, rotate: Int = 0, ver: Int, useOriginalImage: Bool, isHDR: Bool, isRawUseEmbeddedThumb: Bool, needWaitWhenSame: Bool = true) -> NSImage? {
-        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)_embeded\(isRawUseEmbeddedThumb)" as NSString
+    static func getImageCache(url: URL, size: NSSize, rotate: Int = 0, ver: Int, useOriginalImage: Bool, isHDR: Bool, isRawUseEmbeddedThumb: Bool, pixelPerfectUpscale: Bool = false, screenScale: CGFloat = 2, needWaitWhenSame: Bool = true) -> NSImage? {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)_embeded\(isRawUseEmbeddedThumb)_ppu\(pixelPerfectUpscale)_scale\(Int(round(screenScale * 100)))" as NSString
         // print(cacheKey)
         
         // 先检查缓存中是否已有图像（包括nil情况）
@@ -2305,7 +2341,11 @@ class LargeImageProcessor {
                     image = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
                 }
             }else{
-                image = getResizedImage(url: url, size: size, rotate: rotate, isRawUseEmbeddedThumb: isRawUseEmbeddedThumb)
+                if pixelPerfectUpscale {
+                    image = getPixelPerfectUpscaledImage(url: url, size: size, rotate: rotate, isRawUseEmbeddedThumb: isRawUseEmbeddedThumb, screenScale: screenScale)
+                } else {
+                    image = getResizedImage(url: url, size: size, rotate: rotate, isRawUseEmbeddedThumb: isRawUseEmbeddedThumb)
+                }
                 if image == nil {
                     image = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
                 }
@@ -2334,8 +2374,8 @@ class LargeImageProcessor {
     
     // 检查缓存中是否有图像（且不是nil）
     // Check if image exists in cache (and is not nil)
-    static func isImageCached(url: URL, size: NSSize, rotate: Int = 0, ver: Int, isHDR: Bool, isRawUseEmbeddedThumb: Bool) -> Bool {
-        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)_embeded\(isRawUseEmbeddedThumb)" as NSString
+    static func isImageCached(url: URL, size: NSSize, rotate: Int = 0, ver: Int, isHDR: Bool, isRawUseEmbeddedThumb: Bool, pixelPerfectUpscale: Bool = false, screenScale: CGFloat = 2) -> Bool {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)_embeded\(isRawUseEmbeddedThumb)_ppu\(pixelPerfectUpscale)_scale\(Int(round(screenScale * 100)))" as NSString
         if let cachedWrapper = cache.object(forKey: cacheKey) {
             return cachedWrapper.image != nil
         }
@@ -2344,8 +2384,8 @@ class LargeImageProcessor {
     
     // 检查缓存中是否有图像，有的话则返回
     // Check if image exists in cache, return it if found
-    static func isImageCachedAndGet(url: URL, size: NSSize, rotate: Int = 0, ver: Int, isHDR: Bool, isRawUseEmbeddedThumb: Bool) -> NSImage? {
-        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)_embeded\(isRawUseEmbeddedThumb)" as NSString
+    static func isImageCachedAndGet(url: URL, size: NSSize, rotate: Int = 0, ver: Int, isHDR: Bool, isRawUseEmbeddedThumb: Bool, pixelPerfectUpscale: Bool = false, screenScale: CGFloat = 2) -> NSImage? {
+        let cacheKey = "\(url.absoluteString)_\(size.width)x\(size.height)_\(rotate)_v\(ver)_hdr\(isHDR)_embeded\(isRawUseEmbeddedThumb)_ppu\(pixelPerfectUpscale)_scale\(Int(round(screenScale * 100)))" as NSString
         if let cachedWrapper = cache.object(forKey: cacheKey) {
             return cachedWrapper.image
         }
