@@ -655,11 +655,16 @@ extension ViewController {
             // Integer scaling
             largeSize = NSSize(width: round(largeSize.width), height: round(largeSize.height))
             
+            let pixelPerfectUpscale = globalVar.pixelPerfectImageScaling &&
+                !isHDR &&
+                !["gif", "svg", "ai"].contains(url.pathExtension.lowercased()) &&
+                shouldUsePixelPerfectUpscaledImage(originalPixelSize: originalSize, targetSize: largeSize, screenScale: scale)
+
             // 不进行过大缩放，内存炸了
             // Do not perform excessive scaling, memory will explode
             var doNotGenResized=false
             if largeSize.width*scale>=originalSize.width && largeSize.height*scale>=originalSize.height {
-                doNotGenResized=true
+                doNotGenResized = !pixelPerfectUpscale
             }
             
             // 如果RAW使用Exif内嵌缩略图，则不使用原图（进行缩放）
@@ -676,7 +681,7 @@ extension ViewController {
 
             DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 guard let self = self else { return }
-                _ = LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: 0, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb, needWaitWhenSame: false)
+                _ = LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: 0, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb, pixelPerfectUpscale: pixelPerfectUpscale && !doNotGenResized, screenScale: scale, needWaitWhenSame: false)
             }
             
         }
@@ -736,6 +741,7 @@ extension ViewController {
         }
         
         largeImageView.file=file
+        largeImageView.refreshPixelPerfectRendering()
         largeImageView.refreshFinderTagDots()
         largeImageView.refreshRatingStars()
 
@@ -814,6 +820,13 @@ extension ViewController {
                 largeSize=NSSize(width: originalSize.width/scale, height: originalSize.height/scale)
             }
             
+            if globalVar.pixelPerfectImageScaling &&
+               !publicVar.isZoomLocked &&
+               (publicVar.isLargeImageFitWindow || triggeredByLongPress),
+               let pixelPerfectSize = largeImageView.pixelPerfectFitSize(maxBounds: maxBounds.size) {
+                largeSize = pixelPerfectSize
+            }
+            
             // 缩放锁定
             // Zoom lock
             if !isByZoom && publicVar.isZoomLocked,
@@ -833,11 +846,17 @@ extension ViewController {
             // Integer scaling
             largeSize = NSSize(width: round(largeSize.width), height: round(largeSize.height))
             
+            let pixelPerfectUpscale = globalVar.pixelPerfectImageScaling &&
+                !isHDR &&
+                rotate == 0 &&
+                !["gif", "svg", "ai"].contains(url.pathExtension.lowercased()) &&
+                shouldUsePixelPerfectUpscaledImage(originalPixelSize: originalSize, targetSize: largeSize, screenScale: scale)
+
             // 不进行过大缩放，内存炸了
             // Do not perform excessive scaling, memory will explode
             var doNotGenResized=false
             if largeSize.width*scale>=originalSize.width && largeSize.height*scale>=originalSize.height {
-                doNotGenResized=true
+                doNotGenResized = !pixelPerfectUpscale
             }
             
             // 但如果是旋转，还是缩放占用更小
@@ -887,7 +906,8 @@ extension ViewController {
             
             // 检查是否有大图缓存
             // Check for large image cache
-            var preGetImageCache = file.type == .image ? LargeImageProcessor.isImageCachedAndGet(url: url, size: largeSize, rotate: rotate, ver: file.ver, isHDR: isHDR, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb) : nil
+            let usePixelPerfectUpscale = pixelPerfectUpscale && !doNotGenResized
+            var preGetImageCache = file.type == .image ? LargeImageProcessor.isImageCachedAndGet(url: url, size: largeSize, rotate: rotate, ver: file.ver, isHDR: isHDR, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb, pixelPerfectUpscale: usePixelPerfectUpscale, screenScale: scale) : nil
             if forceRefresh {preGetImageCache = nil}
             let isImageCached = preGetImageCache != nil
             
@@ -958,7 +978,7 @@ extension ViewController {
                     // Rendering at actual target resolution has poor quality, observed that double interpolation on 1080P screen renders similar to using original image directly, so even if scale==1, size here is not divided by 2
                     var largeImage: NSImage?
                     if resetSize && !forceRefresh {
-                        largeImage=LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb)
+                        largeImage=LargeImageProcessor.getImageCache(url: url, size: largeSize, rotate: rotate, ver: file.ver, useOriginalImage: doNotGenResized, isHDR: isHDR, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb, pixelPerfectUpscale: usePixelPerfectUpscale, screenScale: scale)
                     }else{
                         if isHDR {
                             largeImage = getHDRImage(url: url, size: doNotGenResized ? nil : largeSize, rotate: rotate)
@@ -971,7 +991,11 @@ extension ViewController {
                                 largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))
                             }
                         }else{
-                            largeImage = getResizedImage(url: url, size: largeSize, rotate: rotate, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb)
+                            if usePixelPerfectUpscale {
+                                largeImage = getPixelPerfectUpscaledImage(url: url, size: largeSize, rotate: rotate, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb, screenScale: scale)
+                            } else {
+                                largeImage = getResizedImage(url: url, size: largeSize, rotate: rotate, isRawUseEmbeddedThumb: publicVar.isRawUseEmbeddedThumb)
+                            }
                             if largeImage == nil {
                                 lastResizeFailed = true
                                 largeImage = NSImage(contentsOf: url)?.rotated(by: CGFloat(-90*rotate))

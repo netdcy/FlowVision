@@ -202,6 +202,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let scrollMouseWheelToZoom = UserDefaults.standard.value(forKey: "scrollMouseWheelToZoom") as? Bool {
             globalVar.scrollMouseWheelToZoom = scrollMouseWheelToZoom
         }
+        if let pixelPerfectImageScaling = UserDefaults.standard.value(forKey: "pixelPerfectImageScaling") as? Bool {
+            globalVar.pixelPerfectImageScaling = pixelPerfectImageScaling
+        }
         if let scrollSensitivity = UserDefaults.standard.value(forKey: "scrollSensitivity") as? Double {
             globalVar.scrollSensitivity = scrollSensitivity
         }
@@ -1261,4 +1264,3 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         getMainViewController()?.toggleSearchOverlay()
     }
 }
-

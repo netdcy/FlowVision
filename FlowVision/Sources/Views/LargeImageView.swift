@@ -105,6 +105,7 @@ class LargeImageView: NSView {
         imageView.imageScaling = .scaleAxesIndependently
         imageView.wantsLayer = true
         imageView.animates=true
+        imageView.isPixelPerfectEnabled = globalVar.pixelPerfectImageScaling
         self.addSubview(imageView)
 
         videoView = LargeAVPlayerView(frame: self.bounds)
@@ -1284,6 +1285,64 @@ class LargeImageView: NSView {
         }
     }
     
+    func refreshPixelPerfectRendering() {
+        imageView.isPixelPerfectEnabled = globalVar.pixelPerfectImageScaling
+        imageView.needsDisplay = true
+    }
+    
+    private func pixelPerfectBaseSize() -> NSSize? {
+        let size = customZoomSize()
+        guard size.width > 0, size.height > 0 else { return nil }
+        return size
+    }
+    
+    func pixelPerfectFitSize(maxBounds: NSSize) -> NSSize? {
+        guard globalVar.pixelPerfectImageScaling,
+              let baseSize = pixelPerfectBaseSize() else { return nil }
+        
+        let multiplier = floor(min(maxBounds.width / baseSize.width, maxBounds.height / baseSize.height))
+        guard multiplier >= 1 else { return nil }
+        
+        return NSSize(width: baseSize.width * multiplier, height: baseSize.height * multiplier)
+    }
+    
+    private func nextPixelPerfectZoomSize(direction: Int) -> NSSize? {
+        guard globalVar.pixelPerfectImageScaling,
+              let baseSize = pixelPerfectBaseSize() else { return nil }
+        
+        let ratio = imageView.frame.width / baseSize.width
+        if direction > 0 {
+            let nextMultiplier = max(1, Int(floor(ratio + 0.0001)) + 1)
+            return NSSize(width: baseSize.width * CGFloat(nextMultiplier), height: baseSize.height * CGFloat(nextMultiplier))
+        } else if direction < 0, ratio > 1 {
+            let nextMultiplier = max(1, Int(ceil(ratio - 0.0001)) - 1)
+            return NSSize(width: baseSize.width * CGFloat(nextMultiplier), height: baseSize.height * CGFloat(nextMultiplier))
+        }
+        
+        return nil
+    }
+    
+    private func setZoomSize(_ newSize: NSSize, anchor locationInImageView: NSPoint) {
+        let zoomFactorWidth = newSize.width / imageView.frame.width
+        let zoomFactorHeight = newSize.height / imageView.frame.height
+        
+        imageView.frame.size = newSize
+        imageView.frame.origin.x -= locationInImageView.x * (zoomFactorWidth - 1)
+        imageView.frame.origin.y -= locationInImageView.y * (zoomFactorHeight - 1)
+    }
+    
+    private func snapToNearestPixelPerfectZoom(anchor locationInImageView: NSPoint) {
+        guard globalVar.pixelPerfectImageScaling,
+              let baseSize = pixelPerfectBaseSize() else { return }
+        
+        let ratio = imageView.frame.width / baseSize.width
+        guard ratio >= 1 else { return }
+        
+        let snappedMultiplier = max(1, Int(round(ratio)))
+        let snappedSize = NSSize(width: baseSize.width * CGFloat(snappedMultiplier), height: baseSize.height * CGFloat(snappedMultiplier))
+        setZoomSize(snappedSize, anchor: locationInImageView)
+    }
+    
     func zoom(direction: Int = 0){
         if file.type == .video {return}
         
@@ -1302,25 +1361,41 @@ class LargeImageView: NSView {
         let locationInImageView = imageView.convert(locationInView, from: self)
         
         if direction > 0 {
-            if isExceedZoomLimit(enlarge: true, width: imageView.frame.size.width, height: imageView.frame.size.height){
-                return
+            if let pixelPerfectSize = nextPixelPerfectZoomSize(direction: direction) {
+                if isExceedZoomLimit(enlarge: true, width: pixelPerfectSize.width, height: pixelPerfectSize.height){
+                    return
+                }
+                hasZoomedByWheel=true
+                setZoomSize(pixelPerfectSize, anchor: locationInImageView)
+            } else {
+                if isExceedZoomLimit(enlarge: true, width: imageView.frame.size.width, height: imageView.frame.size.height){
+                    return
+                }
+                hasZoomedByWheel=true
+                
+                imageView.frame.size.width *= zoomFactor
+                imageView.frame.size.height *= zoomFactor
+                imageView.frame.origin.x -= (locationInImageView.x * (zoomFactor - 1))
+                imageView.frame.origin.y -= (locationInImageView.y * (zoomFactor - 1))
             }
-            hasZoomedByWheel=true
-            
-            imageView.frame.size.width *= zoomFactor
-            imageView.frame.size.height *= zoomFactor
-            imageView.frame.origin.x -= (locationInImageView.x * (zoomFactor - 1))
-            imageView.frame.origin.y -= (locationInImageView.y * (zoomFactor - 1))
         } else if direction < 0 {
-            if isExceedZoomLimit(enlarge: false, width: imageView.frame.size.width, height: imageView.frame.size.height){
-                return
+            if let pixelPerfectSize = nextPixelPerfectZoomSize(direction: direction) {
+                if isExceedZoomLimit(enlarge: false, width: pixelPerfectSize.width, height: pixelPerfectSize.height){
+                    return
+                }
+                hasZoomedByWheel=true
+                setZoomSize(pixelPerfectSize, anchor: locationInImageView)
+            } else {
+                if isExceedZoomLimit(enlarge: false, width: imageView.frame.size.width, height: imageView.frame.size.height){
+                    return
+                }
+                hasZoomedByWheel=true
+                
+                imageView.frame.size.width /= zoomFactor
+                imageView.frame.size.height /= zoomFactor
+                imageView.frame.origin.x += (locationInImageView.x * (1 - 1/zoomFactor))
+                imageView.frame.origin.y += (locationInImageView.y * (1 - 1/zoomFactor))
             }
-            hasZoomedByWheel=true
-            
-            imageView.frame.size.width /= zoomFactor
-            imageView.frame.size.height /= zoomFactor
-            imageView.frame.origin.x += (locationInImageView.x * (1 - 1/zoomFactor))
-            imageView.frame.origin.y += (locationInImageView.y * (1 - 1/zoomFactor))
         }
         
         // 同步编辑画布位置和大小
@@ -1352,13 +1427,7 @@ class LargeImageView: NSView {
             let zoomSize=customZoomSize()
             let locationInView = self.convert(point, from: nil)
             let locationInImageView = imageView.convert(locationInView, from: self)
-            
-            let zoomFactorWidth = zoomSize.width / imageView.frame.width
-            let zoomFactorHeight = zoomSize.height / imageView.frame.height
-            
-            imageView.frame.size = zoomSize
-            imageView.frame.origin.x -= (locationInImageView.x * (zoomFactorWidth - 1))
-            imageView.frame.origin.y -= (locationInImageView.y * (zoomFactorHeight - 1))
+            setZoomSize(zoomSize, anchor: locationInImageView)
             
             // 同步编辑画布位置和大小
             // Sync editing canvas position and size
@@ -1385,6 +1454,7 @@ class LargeImageView: NSView {
             }
         case .ended:
             initialScale *= magnification
+            snapToNearestPixelPerfectZoom(anchor: gesture.location(in: imageView))
             getViewController(self)?.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false, isByZoom: true)
         default:
             break
@@ -1934,25 +2004,41 @@ class LargeImageView: NSView {
             let locationInImageView = imageView.convert(locationInView, from: self)
             
             if event.deltaY > 0 {
-                if isExceedZoomLimit(enlarge: true, width: imageView.frame.size.width, height: imageView.frame.size.height){
-                    return
+                if let pixelPerfectSize = nextPixelPerfectZoomSize(direction: 1) {
+                    if isExceedZoomLimit(enlarge: true, width: pixelPerfectSize.width, height: pixelPerfectSize.height){
+                        return
+                    }
+                    hasZoomedByWheel=true
+                    setZoomSize(pixelPerfectSize, anchor: locationInImageView)
+                } else {
+                    if isExceedZoomLimit(enlarge: true, width: imageView.frame.size.width, height: imageView.frame.size.height){
+                        return
+                    }
+                    hasZoomedByWheel=true
+                    
+                    imageView.frame.size.width *= zoomFactor
+                    imageView.frame.size.height *= zoomFactor
+                    imageView.frame.origin.x -= (locationInImageView.x * (zoomFactor - 1))
+                    imageView.frame.origin.y -= (locationInImageView.y * (zoomFactor - 1))
                 }
-                hasZoomedByWheel=true
-                
-                imageView.frame.size.width *= zoomFactor
-                imageView.frame.size.height *= zoomFactor
-                imageView.frame.origin.x -= (locationInImageView.x * (zoomFactor - 1))
-                imageView.frame.origin.y -= (locationInImageView.y * (zoomFactor - 1))
             } else if event.deltaY < 0 {
-                if isExceedZoomLimit(enlarge: false, width: imageView.frame.size.width, height: imageView.frame.size.height){
-                    return
+                if let pixelPerfectSize = nextPixelPerfectZoomSize(direction: -1) {
+                    if isExceedZoomLimit(enlarge: false, width: pixelPerfectSize.width, height: pixelPerfectSize.height){
+                        return
+                    }
+                    hasZoomedByWheel=true
+                    setZoomSize(pixelPerfectSize, anchor: locationInImageView)
+                } else {
+                    if isExceedZoomLimit(enlarge: false, width: imageView.frame.size.width, height: imageView.frame.size.height){
+                        return
+                    }
+                    hasZoomedByWheel=true
+                    
+                    imageView.frame.size.width /= zoomFactor
+                    imageView.frame.size.height /= zoomFactor
+                    imageView.frame.origin.x += (locationInImageView.x * (1 - 1/zoomFactor))
+                    imageView.frame.origin.y += (locationInImageView.y * (1 - 1/zoomFactor))
                 }
-                hasZoomedByWheel=true
-                
-                imageView.frame.size.width /= zoomFactor
-                imageView.frame.size.height /= zoomFactor
-                imageView.frame.origin.x += (locationInImageView.x * (1 - 1/zoomFactor))
-                imageView.frame.origin.y += (locationInImageView.y * (1 - 1/zoomFactor))
             }
             // log(imageView.frame.size,imageView.frame.origin)
             

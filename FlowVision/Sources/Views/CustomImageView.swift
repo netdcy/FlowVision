@@ -193,6 +193,12 @@ class CustomThumbImageView: BorderedImageView {
 
 class CustomLargeImageView: IntegerImageView {
     var isMirroredH: Bool = false
+    var isPixelPerfectEnabled: Bool = false {
+        didSet {
+            layer?.magnificationFilter = isPixelPerfectEnabled ? .nearest : .linear
+            layer?.minificationFilter = isPixelPerfectEnabled ? .nearest : .linear
+        }
+    }
     
     override var image: NSImage? {
         get { return super.image }

@@ -1627,6 +1627,10 @@ extension WindowController: NSToolbarDelegate {
                 panWhenZoomed.keyEquivalentModifierMask = []
                 panWhenZoomed.state = viewController.publicVar.isPanWhenZoomed ? .on : .off
                 
+                let pixelPerfectScaling = menu.addItem(withTitle: NSLocalizedString("Pixel Perfect Scaling", comment: "像素完美缩放"), action: #selector(togglePixelPerfectScaling), keyEquivalent: "")
+                pixelPerfectScaling.keyEquivalentModifierMask = []
+                pixelPerfectScaling.state = globalVar.pixelPerfectImageScaling ? .on : .off
+                
                 let panZoomInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(panZoomInfo), keyEquivalent: "")
                 
                 // let customZoomRatio = menu.addItem(withTitle: NSLocalizedString("Custom Zoom Ratio...", comment: "自定义缩放比例..."), action: #selector(showCustomZoomRatioDialog), keyEquivalent: "")
@@ -1775,6 +1779,21 @@ extension WindowController: NSToolbarDelegate {
     @objc func togglePanWhenZoomed(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.togglePanWhenZoomed()
+    }
+    
+    @objc func togglePixelPerfectScaling(_ sender: NSMenuItem){
+        globalVar.pixelPerfectImageScaling.toggle()
+        UserDefaults.standard.set(globalVar.pixelPerfectImageScaling, forKey: "pixelPerfectImageScaling")
+        
+        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+            for windowController in appDelegate.windowControllers {
+                guard let viewController = windowController.contentViewController as? ViewController else { continue }
+                viewController.largeImageView.refreshPixelPerfectRendering()
+                if viewController.publicVar.isInLargeView && viewController.largeImageView.file.type == .image {
+                    viewController.changeLargeImage(firstShowThumb: false, resetSize: false, triggeredByLongPress: false, forceRefresh: true)
+                }
+            }
+        }
     }
     
     @objc func toggleRawUseEmbeddedThumb(_ sender: NSMenuItem){
