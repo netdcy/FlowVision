@@ -65,6 +65,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
 
         log("Start applicationWillFinishLaunching")
         // Start applicationWillFinishLaunching
+
+        // Load user shortcut bindings before any window opens.
+        ShortcutStore.shared.load()
         
         func generateRoundedArray() -> [Int] {
             var result: [Int] = []
@@ -252,7 +255,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
 
         log("Start applicationDidFinishLaunching")
         // Start applicationDidFinishLaunching
-        
+
         if windowControllers.count == 0 {
             _ = createNewWindow()
         }
@@ -261,9 +264,54 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
 //            Thread.sleep(forTimeInterval: 8)
 //            FFmpegKitWrapper.shared.loadFFmpegKitIfNeeded()
 //        }
-        
+
+        // Initial menu shortcut sync + observer for live rebinding.
+        syncMenuShortcuts()
+        NotificationCenter.default.addObserver(
+            forName: .shortcutsChanged, object: nil, queue: .main
+        ) { [weak self] note in
+            self?.syncMenuShortcuts(only: note.object as? ShortcutAction)
+        }
+
         log("End applicationDidFinishLaunching")
         // End applicationDidFinishLaunching
+    }
+
+    // MARK: - Shortcut menu sync
+
+    /// Walk every NSMenuItem under the main menu, applying `apply` to each one
+    /// (including nested submenus). Items with no submenu still receive the closure.
+    private func walkMenu(_ menu: NSMenu, _ apply: (NSMenuItem) -> Void) {
+        for item in menu.items {
+            apply(item)
+            if let sub = item.submenu { walkMenu(sub, apply) }
+        }
+    }
+
+    /// Refresh `keyEquivalent` and `keyEquivalentModifierMask` on every NSMenuItem
+    /// whose `identifier` matches a `ShortcutAction.rawValue`. Bare-letter chords
+    /// (Fn-only counts as bare) clear the menu shortcut so AppKit doesn't hijack
+    /// text-input events — those route exclusively through the NSEvent local monitor.
+    /// Pass an action to update a single item; pass nil for a full pass.
+    func syncMenuShortcuts(only action: ShortcutAction? = nil) {
+        guard let main = NSApp.mainMenu else { return }
+        walkMenu(main) { item in
+            guard let id = item.identifier?.rawValue,
+                  let target = ShortcutAction(rawValue: id) else { return }
+            if let action, target != action { return }
+            // Pick the first chord that has at least one real modifier (Fn alone
+            // doesn't qualify — would hijack text input via menu keyEquivalent).
+            let chord = ShortcutStore.shared.chords(for: target).first { c in
+                !c.modifiers.subtracting(.function).isEmpty
+            }
+            if let chord {
+                item.keyEquivalent = chord.character
+                item.keyEquivalentModifierMask = chord.modifiers.nsFlags
+            } else {
+                item.keyEquivalent = ""
+                item.keyEquivalentModifierMask = []
+            }
+        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
@@ -1085,6 +1133,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         let curFolder = getMainViewController()?.fileDB.curFolder
         getMainViewController()?.fileDB.unlock()
         createNewWindow(curFolder)
+    }
+
+    /// Receives the rebindable `windowNew` shortcut. Spawns a fresh window with
+    /// the user's home/last folder via the same path as the app's auto-launch.
+    @IBAction func fileNewWindow(_ sender: Any?) {
+        _ = createNewWindow()
     }
 
     @IBAction func reopenClosedTabs(_ sender: NSMenuItem){

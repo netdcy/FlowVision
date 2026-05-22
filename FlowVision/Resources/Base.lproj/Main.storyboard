@@ -54,7 +54,7 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
-                                        <menuItem title="Quit FlowVision" keyEquivalent="q" id="4sb-4s-VLi">
+                                        <menuItem title="Quit FlowVision" keyEquivalent="q" id="4sb-4s-VLi" identifier="quitApp">
                                             <connections>
                                                 <action selector="terminate:" target="Ady-hI-5gd" id="Te7-pn-YzF"/>
                                             </connections>
@@ -66,22 +66,22 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="File" id="bib-Uj-vzu">
                                     <items>
-                                        <menuItem title="New" hidden="YES" keyEquivalent="n" id="Was-JA-tGl">
+                                        <menuItem title="New" hidden="YES" keyEquivalent="n" id="Was-JA-tGl" identifier="windowNew">
                                             <connections>
                                                 <action selector="newDocument:" target="Ady-hI-5gd" id="4Si-XN-c54"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="New Tab" keyEquivalent="t" id="Rir-dR-V3t">
+                                        <menuItem title="New Tab" keyEquivalent="t" id="Rir-dR-V3t" identifier="windowNewTab">
                                             <connections>
                                                 <action selector="fileNewTab:" target="Voe-Tx-rLC" id="lvF-oG-YUt"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Reopen Closed Tabs" keyEquivalent="T" id="zBc-1w-QcQ">
+                                        <menuItem title="Reopen Closed Tabs" keyEquivalent="T" id="zBc-1w-QcQ" identifier="windowReopenClosedTab">
                                             <connections>
                                                 <action selector="reopenClosedTabs:" target="Voe-Tx-rLC" id="H1g-La-A9P"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="New Folder" hidden="YES" keyEquivalent="N" id="ExL-hL-CrO">
+                                        <menuItem title="New Folder" hidden="YES" keyEquivalent="N" id="ExL-hL-CrO" identifier="fileNewFolder">
                                             <connections>
                                                 <action selector="fileNewFolder:" target="Voe-Tx-rLC" id="cc6-GJ-16i"/>
                                             </connections>
@@ -110,7 +110,7 @@
                                             </menu>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
-                                        <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
+                                        <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG" identifier="windowClose">
                                             <connections>
                                                 <action selector="performClose:" target="Ady-hI-5gd" id="HmO-Ls-i7Q"/>
                                             </connections>
@@ -211,7 +211,7 @@ Gw
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="uyl-h8-XO2"/>
-                                        <menuItem title="Find…" tag="1" keyEquivalent="f" id="xsi-wT-VTt">
+                                        <menuItem title="Find…" tag="1" keyEquivalent="f" id="xsi-wT-VTt" identifier="searchToggleOverlay">
                                             <connections>
                                                 <action selector="showSearch:" target="Voe-Tx-rLC" id="Ug6-0o-NDH"/>
                                             </connections>
@@ -670,14 +670,14 @@ Gw
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="7XG-6M-HCO"/>
-                                        <menuItem title="Keep Current Window on Top" id="aEU-QL-iYf">
+                                        <menuItem title="Keep Current Window on Top" id="aEU-QL-iYf" identifier="windowToggleOnTop">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleOnTop:" target="Voe-Tx-rLC" id="27y-MO-y85"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="Zhg-cS-a8X"/>
-                                        <menuItem title="Sidebar" id="Yr6-zE-34v">
+                                        <menuItem title="Sidebar" id="Yr6-zE-34v" identifier="browserToggleSidebar">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleSidebar:" target="Voe-Tx-rLC" id="NhX-Zy-mzD"/>
@@ -691,33 +691,33 @@ Gw
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="hHG-It-Z2Z"/>
-                                        <menuItem title="Show Finder Tags and Ratings" id="pB9-hf-avc">
+                                        <menuItem title="Show Finder Tags and Ratings" id="pB9-hf-avc" identifier="toggleShowFinderTagsAndRating">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleShowFinderTagsAndRating:" target="Voe-Tx-rLC" id="5n0-hV-KdC"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="2Mq-tp-wyX"/>
-                                        <menuItem title="Lock Rotation" id="VCB-ff-DEq">
+                                        <menuItem title="Lock Rotation" id="VCB-ff-DEq" identifier="lockRotation">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleLockRotation:" target="Voe-Tx-rLC" id="yUY-s5-RRg"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Lock Zoom" id="rTb-Na-yZj">
+                                        <menuItem title="Lock Zoom" id="rTb-Na-yZj" identifier="lockZoom">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleLockZoom:" target="Voe-Tx-rLC" id="pl0-jg-XRg"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Lock Mirror" id="k1x-0c-asG">
+                                        <menuItem title="Lock Mirror" id="k1x-0c-asG" identifier="lockMirror">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleLockMirror:" target="Voe-Tx-rLC" id="xfX-DC-UrW"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="YV6-Oq-8KP"/>
-                                        <menuItem title="Activate Pan Scrolling After Zoom" id="kyz-IP-P6r">
+                                        <menuItem title="Activate Pan Scrolling After Zoom" id="kyz-IP-P6r" identifier="activatePanScroll">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleActivatePanScroll:" target="Voe-Tx-rLC" id="mVT-xn-lCY"/>
@@ -743,19 +743,19 @@ Gw
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="hya-9u-wKp"/>
-                                        <menuItem title="Show Hidden Files" keyEquivalent="." id="Tbh-PX-yFW">
+                                        <menuItem title="Show Hidden Files" keyEquivalent="." id="Tbh-PX-yFW" identifier="toggleHiddenFiles">
                                             <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                             <connections>
                                                 <action selector="toggleIsShowHiddenFile:" target="Voe-Tx-rLC" id="L0l-RG-uc0"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Show All Types of Files" keyEquivalent="," id="S31-Ni-z5u">
+                                        <menuItem title="Show All Types of Files" keyEquivalent="," id="S31-Ni-z5u" identifier="toggleAllFiles">
                                             <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                             <connections>
                                                 <action selector="toggleIsShowAllTypeFile:" target="Voe-Tx-rLC" id="85b-hE-Eij"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Show Image Files" id="3W1-Yw-Gn8">
+                                        <menuItem title="Show Image Files" id="3W1-Yw-Gn8" identifier="toggleImageFiles">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleIsShowImageFile:" target="Voe-Tx-rLC" id="syI-Zi-Pfz"/>
@@ -767,7 +767,7 @@ Gw
                                                 <action selector="toggleIsShowRawFile:" target="Voe-Tx-rLC" id="X8N-9P-LLi"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Show Video Files" id="UYl-gy-bK8">
+                                        <menuItem title="Show Video Files" id="UYl-gy-bK8" identifier="toggleVideoFiles">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleIsShowVideoFile:" target="Voe-Tx-rLC" id="6oF-pP-Qf9"/>
@@ -818,25 +818,25 @@ Gw
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="RXp-tl-oug"/>
-                                        <menuItem title="Justified View" id="rIE-So-qGu">
+                                        <menuItem title="Justified View" id="rIE-So-qGu" identifier="viewModeJustified">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="switchToJustifiedView:" target="Voe-Tx-rLC" id="CIx-MD-oRV"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Waterfall View" id="5Wy-TF-lsK">
+                                        <menuItem title="Waterfall View" id="5Wy-TF-lsK" identifier="viewModeWaterfall">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="switchToWaterfallView:" target="Voe-Tx-rLC" id="uH8-jM-S3p"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Grid View" id="SAw-E9-7Mm">
+                                        <menuItem title="Grid View" id="SAw-E9-7Mm" identifier="viewModeGrid">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="switchToGridView:" target="Voe-Tx-rLC" id="REh-gr-8sX"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Detail View" hidden="YES" id="aHz-iD-6dU">
+                                        <menuItem title="Detail View" hidden="YES" id="aHz-iD-6dU" identifier="viewModeDetail">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="switchToDetailView:" target="Voe-Tx-rLC" id="zaN-HG-aSJ"/>
@@ -862,7 +862,7 @@ Gw
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="fr4-Bv-rSB"/>
-                                        <menuItem title="Enter Full Screen" keyEquivalent="f" id="4J7-dP-txa">
+                                        <menuItem title="Enter Full Screen" keyEquivalent="f" id="4J7-dP-txa" identifier="windowToggleFullscreen">
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
                                                 <action selector="toggleFullScreen:" target="Ady-hI-5gd" id="dU3-MA-1Rq"/>

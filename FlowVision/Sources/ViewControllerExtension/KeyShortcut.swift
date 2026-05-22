@@ -1,993 +1,780 @@
 //
-//  KeyShutcut.swift
+//  KeyShortcut.swift
 //  FlowVision
+//
+//  Dispatcher: receives NSEvent keyDowns, matches against ShortcutStore.reverseIndex,
+//  fires the appropriate action handler. Non-rebindable text-input branches
+//  (quick-search, OCR/rename text ops) are handled before lookup.
 //
 
 import Foundation
 import Cocoa
 
 extension ViewController {
-    
-    func KeyShortcutManager (event: NSEvent) -> NSEvent?
-    {
-        // 检查事件的窗口是否是当前窗口，如果不是、也非弹窗状态，就不处理，事件继续传递
-        // Check if event's window is current window, if not and not popup state, don't process, continue passing event
+
+    func KeyShortcutManager(event: NSEvent) -> NSEvent? {
+        // Window-active gate (preserved).
         if event.window != self.view.window && publicVar.isKeyEventEnabled {
             return event
         }
-        
-        // 获取修饰键
-        // Get modifier keys
-        let modifierFlags = event.modifierFlags
-        // 检测是否按下了 Control 键
-        // Detect if Control key is pressed
-        let isCtrlPressed = modifierFlags.contains(.control)
-        // 检测是否按下了 Command 键
-        // Detect if Command key is pressed
-        let isCommandPressed = modifierFlags.contains(.command)
-        // 检测是否按下了 Option 键
-        // Detect if Option key is pressed
-        let isAltPressed = modifierFlags.contains(.option)
-        // 检测是否按下了 Shift 键
-        // Detect if Shift key is pressed
-        let isShiftPressed = modifierFlags.contains(.shift)
-        // 检测是否按下了 Fn 键 (部分按键例如方向键按下时此值也为true)
-        // Detect if Fn key is pressed (some keys like arrow keys also set this to true)
-        let isFnPressed = modifierFlags.contains(.function)
-        
-        let noModifierKey = !isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
-        let isOnlyCommandPressed = isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
-        let isOnlyAltPressed = !isCommandPressed && isAltPressed && !isCtrlPressed && !isShiftPressed
-        let isOnlyCtrlPressed = !isCommandPressed && !isAltPressed && isCtrlPressed && !isShiftPressed
-        let isOnlyShiftPressed = !isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed
-        
-        let characters = (event.charactersIgnoringModifiers ?? "").lowercased()
-        let specialKey = event.specialKey ?? .f30
 
-        // 把按键信息打印出来，用于调试不同键盘的键值差异
-        // var modifierStrings: [String] = []
-        // if isCommandPressed { modifierStrings.append("Command") }
-        // if isAltPressed { modifierStrings.append("Option") }
-        // if isCtrlPressed { modifierStrings.append("Control") }
-        // if isShiftPressed { modifierStrings.append("Shift") }
-        // if isFnPressed { modifierStrings.append("Fn") }
-        // let modifierDescription = modifierStrings.isEmpty ? "None" : modifierStrings.joined(separator: "+")
-        // log("Key Event Debug - characters: \(characters), keyCode: \(event.keyCode), specialKey: \(specialKey), modifierFlags: \(modifierFlags.rawValue), Modifiers: \(modifierDescription)", level: .debug)
-        
-        // 快速搜索
-        // Quick search
-        if publicVar.isKeyEventEnabled && characters.count == 1 && (characters.first!.isLetter || characters.first!.isNumber) && noModifierKey {
-            if !publicVar.isInLargeView {
-                if quickSearchState || globalVar.useQuickSearch {
-                    quickSearch(characters)
-                    return nil
-                }
-            }
-        }
-        
-        // 快速搜索唤起键
-        // Quick search activation key
-        if publicVar.isKeyEventEnabled && characters == "q" && noModifierKey {
-            if !publicVar.isInLargeView {
-                if !quickSearchState && !globalVar.useQuickSearch {
-                    quickSearch("backspace")
-                    return nil
-                }
-            }
-        }
-        
-        // 快速搜索删除键
-        // Quick search delete key
-        if publicVar.isKeyEventEnabled && specialKey == .delete && noModifierKey {
-            if !publicVar.isInLargeView {
-                if quickSearchState {
-                    quickSearch("backspace")
-                    return nil
-                }
-                if globalVar.useQuickSearch {
-                    return nil
-                }
-            }
-        }
-        
-        // 快速搜索Esc退出键
-        // Quick search Esc exit key
-        if publicVar.isKeyEventEnabled && event.keyCode == 53 {
-            if !publicVar.isInLargeView {
-                if quickSearchState {
-                    quickSearchText = ""
-                    quickSearchState = false
-                    coreAreaView.hideInfo(force: true)
-                    return nil
-                }
-            }
-        }
-        
-        // 防止过快触发事件
-        // Prevent events from triggering too quickly
+        // Non-rebindable text-input branches run first and short-circuit.
+        if handleNonRebindable(event) { return nil }
+
+        // OCR / rename text-system fallthrough (Home/End cursor + Cmd+ACVXZ).
+        // Preserves prior behavior at lines 953-988 of legacy KeyShortcut.swift.
+        if handleTextSystemFallthrough(event) { return nil }
+
+        // 0.1s debounce — held-down keys still rate-limited.
         if !publicVar.timer.intervalSafe(name: "keyEvent", second: 0.1) {
             return event
         }
-        
-        if publicVar.isInSearchState || publicVar.isKeyEventEnabled {
-            // 检查按键是否是 Command+Shift+"R" 键
-            // Check if key is Command+Shift+"R"
-            if characters == "r" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
-                if !publicVar.isInLargeView{
-                    toggleRecursiveMode()
-                    return nil
-                }
-            }
-            // 检查按键是否是 Command+Shift+"F" 键
-            // Check if key is Command+Shift+"F"
-            if characters == "f" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
-                if !publicVar.isInLargeView{
-                    toggleRecursiveContainFolder()
-                    return nil
-                }
-            }
-            // 检查按键是否是 Command+Shift+"T" 键
-            // Check if key is Command+Shift+"T"
-            if characters == "t" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
-                handleReopenClosedTabs()
-                return nil
-            }
-            // 检查按键是否是 F3 键
-            // Check if key is F3
-            if specialKey == .f3 {
-                if !publicVar.isInLargeView{
-                    toggleSearchOverlay()
-                    return nil
-                }
-            }
+
+        // Non-rebindable browser navigation: outline-row arrows, collection-grid
+        // findClosestItem arrows, Tab focus swap, F2/Enter rename, Enter-to-open.
+        // These pre-empt chord dispatch because they're context-dynamic (selection
+        // geometry, first-responder identity, isEnterKeyToOpen setting) rather
+        // than fixed bindings.
+        if handleNonRebindableNavigation(event) { return nil }
+
+        let chord = KeyChord(event: event)
+        let candidates = ShortcutStore.shared.reverseIndex[chord] ?? []
+
+        for action in candidates where stateGateOpen(for: action) && scopeMatches(action.scope) {
+            if dispatch(action) { return nil }
         }
-        
-        if publicVar.isKeyEventEnabled {
-            
-            // 检查按键是否是 "A" 键
-            // Check if key is "A"
-            // RTL: A/D swap large image and folder direction
-            let isRTL_AD = view.userInterfaceLayoutDirection == .rightToLeft
-            if characters == "a" && noModifierKey {
-                if publicVar.isInLargeView{
-                    isRTL_AD ? nextLargeImage() : previousLargeImage()
-                }else{
-                    closeLargeImage(0)
-                    switchDirByDirection(direction: isRTL_AD ? .right : .left, stackDeep: 0)
-                }
-                return nil
-            }
-            // 检查按键是否是 "D" 键
-            // Check if key is "D"
-            if characters == "d" && noModifierKey {
-                if publicVar.isInLargeView{
-                    isRTL_AD ? previousLargeImage() : nextLargeImage()
-                }else{
-                    closeLargeImage(0)
-                    switchDirByDirection(direction: isRTL_AD ? .left : .right, stackDeep: 0)
-                }
-                return nil
-            }
-            // 检查按键是否是 "W" 键
-            // Check if key is "W"
-            if characters == "w" && noModifierKey {
-                if publicVar.isInLargeView{
-                    largeImageView.zoom(direction: +1)
-                }else{
-                    closeLargeImage(0)
-                    switchDirByDirection(direction: .up, stackDeep: 0)
-                }
-                return nil
-            }
-            
-            // 检查按键是否是 "Z" 键
-            // Check if key is "Z"
-            if characters == "z" && noModifierKey {
-                if publicVar.isInLargeView{
-                    largeImageView.zoom100()
-                }
-            }
-            
-            // 检查按键是否是 "X" 键
-            // Check if key is "X"
-            if characters == "x" && noModifierKey {
-                if publicVar.isInLargeView{
-                    largeImageView.zoomFit()
-                }
-            }
-            
-            // 检查按键是否是 "S" 键
-            // Check if key is "S"
-            if characters == "s" && noModifierKey {
-                if publicVar.isInLargeView{
-                    largeImageView.zoom(direction: -1)
-                }else{
-                    closeLargeImage(0)
-                    switchDirByDirection(direction: .down, stackDeep: 0)
-                }
-                return nil
-            }
-            
-            // 检查按键是否是 "Q"
-            // Check if key is "Q"
-            if characters == "q" && noModifierKey {
-                if publicVar.isInLargeView{
-                    largeImageView.actRotateL()
-                }
-                return nil
-            }
-            
-            // 检查按键是否是 "E"
-            // Check if key is "E"
-            if characters == "e" && noModifierKey {
-                if publicVar.isInLargeView{
-                    largeImageView.actRotateR()
-                }else{
-                    switchDirByDirection(direction: .down_right, stackDeep: 0)
-                }
-                return nil
-            }
-            
-            // 检查按键是否是 "R" 键
-            // Check if key is "R"
-            if characters == "r" && noModifierKey {
-                // 如果焦点在OutlineView
-                // If focus is in OutlineView
-                if publicVar.isOutlineViewFirstResponder{
+        return event
+    }
+
+    // MARK: - Helpers
+
+    private func stateGateOpen(for action: ShortcutAction) -> Bool {
+        action.firesDuringSearch
+            ? (publicVar.isInSearchState || publicVar.isKeyEventEnabled)
+            : publicVar.isKeyEventEnabled
+    }
+
+    private func scopeMatches(_ s: ContextScope) -> Bool {
+        switch s {
+        case .browserOnly: return !publicVar.isInLargeView
+        case .viewerOnly:  return  publicVar.isInLargeView
+        case .both:        return true
+        }
+    }
+
+    private var isInFullScreen: Bool {
+        view.window?.styleMask.contains(.fullScreen) == true
+    }
+
+    /// Returns true if the event was consumed by a non-rebindable text-input branch.
+    /// Mirrors quick-search input from the legacy dispatcher head.
+    func handleNonRebindable(_ event: NSEvent) -> Bool {
+        let modifierFlags = event.modifierFlags
+        let isCommandPressed = modifierFlags.contains(.command)
+        let isAltPressed     = modifierFlags.contains(.option)
+        let isCtrlPressed    = modifierFlags.contains(.control)
+        let isShiftPressed   = modifierFlags.contains(.shift)
+        let noModifierKey    = !isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
+        let characters = (event.charactersIgnoringModifiers ?? "").lowercased()
+        let specialKey = event.specialKey ?? .f30
+
+        // Quick-search letter/digit text input
+        if publicVar.isKeyEventEnabled && characters.count == 1
+            && (characters.first!.isLetter || characters.first!.isNumber) && noModifierKey
+            && !publicVar.isInLargeView
+            && (quickSearchState || globalVar.useQuickSearch) {
+            quickSearch(characters)
+            return true
+        }
+
+        // Quick-search backspace
+        if publicVar.isKeyEventEnabled && specialKey == .delete && noModifierKey
+            && !publicVar.isInLargeView {
+            if quickSearchState { quickSearch("backspace"); return true }
+            if globalVar.useQuickSearch { return true }
+        }
+
+        // Quick-search Esc
+        if publicVar.isKeyEventEnabled && event.keyCode == KeyChord.escKeyCode
+            && !publicVar.isInLargeView && quickSearchState {
+            quickSearchText = ""
+            quickSearchState = false
+            coreAreaView.hideInfo(force: true)
+            return true
+        }
+        return false
+    }
+
+    /// Non-rebindable browser navigation. Returns true if consumed.
+    /// Mirrors legacy KeyShortcut.swift behavior at lines 499-529, 733-743, and
+    /// 745-865: F2/Enter rename, Tab focus swap, outline arrows + space/enter
+    /// expand-toggle, collection-view findClosestItem arrows.
+    private func handleNonRebindableNavigation(_ event: NSEvent) -> Bool {
+        // Suppress navigation while a modal text field (rename, OCR) owns the
+        // key window — legacy kept the entire block inside `isKeyEventEnabled`.
+        guard publicVar.isKeyEventEnabled else { return false }
+
+        let modifierFlags = event.modifierFlags
+        let isCommandPressed = modifierFlags.contains(.command)
+        let isAltPressed     = modifierFlags.contains(.option)
+        let isCtrlPressed    = modifierFlags.contains(.control)
+        let isShiftPressed   = modifierFlags.contains(.shift)
+        let noModifierKey    = !isCommandPressed && !isAltPressed && !isCtrlPressed && !isShiftPressed
+        let isOnlyShiftPressed = !isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed
+        let characters = (event.charactersIgnoringModifiers ?? "").lowercased()
+        let specialKey = event.specialKey ?? .f30
+
+        // F2 / Enter: rename when F2 OR (Enter && !isEnterKeyToOpen);
+        // otherwise (Enter && isEnterKeyToOpen) → close viewer / open large.
+        if (specialKey == .f2 || specialKey == .carriageReturn || specialKey == .enter)
+            && noModifierKey {
+            if specialKey == .f2 || !globalVar.isEnterKeyToOpen {
+                if publicVar.isOutlineViewFirstResponder {
                     outlineView.actRename(isByKeyboard: true)
-                    return nil
+                    return true
                 }
-                
-                // 如果焦点在CollectionView
-                // If focus is in CollectionView
-                if publicVar.isCollectionViewFirstResponder{
-                    handleRename(urls: publicVar.selectedUrls())
-                    return nil
+                if publicVar.isCollectionViewFirstResponder {
+                    _ = handleRename(urls: publicVar.selectedUrls())
+                    return true
                 }
-            }
-            
-            // 检查按键是否是 "," 键
-            // Check if key is ","
-            if characters == "," && noModifierKey {
-                if publicVar.isInLargeView,
-                   largeImageView.file.type == .video {
-                    largeImageView.specifyABPlayPositionA()
-                }
-                return nil
-            }
-            
-            // 检查按键是否是 "." 键
-            // Check if key is "."
-            if characters == "." && noModifierKey {
-                if publicVar.isInLargeView,
-                   largeImageView.file.type == .video {
-                    largeImageView.specifyABPlayPositionB()
-                }
-                return nil
-            }
-
-            // 检查按键是否是 "J" 键
-            // Check if key is "J"
-            if characters == "j" && noModifierKey {
-                if publicVar.isInLargeView,
-                   largeImageView.file.type == .video {
-                    largeImageView.actRememberPlayPosition()
-                }
-                return nil
-            }
-            
-            // 检查按键是否是 "K" 键
-            // Check if key is "K"
-            if characters == "k" && noModifierKey {
-                if publicVar.isInLargeView,
-                   largeImageView.file.type == .video {
-                    largeImageView.actABPlay()
-                }
-                return nil
-            }
-
-            // 检查按键是否是 "L" 键
-            // Check if key is "L"
-            if characters == "l" && noModifierKey {
-                if publicVar.isInLargeView,
-                   largeImageView.file.type == .video {
-                    largeImageView.actSequentialPlay()
-                }
-                return nil
-            }
-            
-            // 检查按键是否是 Cmd + "R" / F5 键
-            // Check if key is Cmd + "R" / F5
-            if (characters == "r" && isOnlyCommandPressed) || specialKey == .f5 {
-                handleUserRefresh()
-                return nil
-            }
-            
-            // 检查按键是否是 Command+[ 键
-            // Check if key is Command+[
-            if characters == "[" && isOnlyCommandPressed {
-                if publicVar.isInLargeView{
-                    previousLargeImage()
-                } else {
-                    switchDirByDirection(direction: .back, stackDeep: 0)
-                }
-                return nil
-            }
-            
-            // 检查按键是否是 Command+] 键
-            // Check if key is Command+]
-            if characters == "]" && isOnlyCommandPressed {
-                if publicVar.isInLargeView{
-                    nextLargeImage()
-                } else {
-                    switchDirByDirection(direction: .forward, stackDeep: 0)
-                }
-                return nil
-            }
-
-            // 检查按键是否是 Command+Shift+"N" 键
-            // Check if key is Command+Shift+"N"
-            if characters == "n" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
-                if !publicVar.isInLargeView{
-                    _ = handleNewFolder()
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 Command+Shift+"V" 键
-            // Check if key is Command+Shift+"V"
-            if characters == "v" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed {
-                if !publicVar.isInLargeView{
-                    toggleAutoPlayVisibleVideo()
-                    return nil
-                }
-            }
-
-            // 检查按键是否是 Command+Shift+"E" 键
-            // Check if key is Command+Shift+"E"
-            if characters == "e" && isCommandPressed && !isAltPressed && !isCtrlPressed && isShiftPressed && EDIT_FEATURE_ENABLED {
-                if publicVar.isInLargeView{
-                    largeImageView.enterEditMode(){ editedImage in
-                        // editedImage 是编辑完成后的图片
-                        self.largeImageView.imageView.image = editedImage
-                    }
-                }
-                return nil
-            }
-            
-            // 检查按键是否是 Command+⬅️➡️ 键
-            // Check if key is Command+⬅️➡️
-            // RTL: swap frame seek direction
-            if (specialKey == .leftArrow || specialKey == .rightArrow) && isOnlyCommandPressed {
-                if publicVar.isInLargeView,
-                   largeImageView.file.type == .video {
-                    let isRTL_Cmd = view.userInterfaceLayoutDirection == .rightToLeft
-                    if specialKey == .leftArrow {
-                        largeImageView.seekVideoByFrame(direction: isRTL_Cmd ? 1 : -1)
-                    }else{
-                        largeImageView.seekVideoByFrame(direction: isRTL_Cmd ? -1 : 1)
-                    }
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 Command+⬆️ 键
-            // Check if key is Command+⬆️
-            if (specialKey == .upArrow && isOnlyCommandPressed) || (specialKey == .home && noModifierKey) {
-                if publicVar.isInLargeView{
-                    locateLargeImage(direction: -2)
-                }else{
-                    if let scrollView = collectionView.enclosingScrollView {
-                        scrollView.contentView.scroll(to: NSPoint(x: 0, y: 0))
-                        scrollView.reflectScrolledClipView(scrollView.contentView)
-                        DispatchQueue.main.async { [weak self] in
-                            self?.setLoadThumbPriority(ifNeedVisable: true)
-                        }
-                    }
-                }
-                return nil
-            }
-            
-            // 检查按键是否是 Command+⬇️ 键
-            // Check if key is Command+⬇️
-            if (specialKey == .downArrow && isOnlyCommandPressed) || (specialKey == .end && noModifierKey) {
-                if publicVar.isInLargeView{
-                    locateLargeImage(direction: 2)
-                }else{
-                    if let scrollView = collectionView.enclosingScrollView {
-                        let newOrigin = NSPoint(x: 0, y: collectionView.bounds.height - scrollView.contentSize.height)
-                        scrollView.contentView.scroll(to: newOrigin)
-                        scrollView.reflectScrolledClipView(scrollView.contentView)
-                        DispatchQueue.main.async { [weak self] in
-                            self?.setLoadThumbPriority(ifNeedVisable: true)
-                        }
-                    }
-                }
-                return nil
-            }
-            
-            // 检查按键是否是 Opt+⬆️ 键
-            // Check if key is Opt+⬆️
-            if (specialKey == .upArrow && isOnlyAltPressed) || (specialKey == .pageUp && noModifierKey) {
-                if !publicVar.isInLargeView{
-                    if let scrollView = collectionView.enclosingScrollView {
-                        let currentOrigin = scrollView.contentView.bounds.origin
-                        let pageHeight = scrollView.contentSize.height
-                        
-                        // Calculate the new y position by subtracting the page height from the current y position.
-                        let newY = max(currentOrigin.y - pageHeight, 0)
-                        let newOrigin = NSPoint(x: currentOrigin.x, y: newY)
-                        
-                        // Scroll to the new origin
-                        scrollView.contentView.scroll(to: newOrigin)
-                        scrollView.reflectScrolledClipView(scrollView.contentView)
-                        
-                        DispatchQueue.main.async { [weak self] in
-                            self?.setLoadThumbPriority(ifNeedVisable: true)
-                        }
-                    }
-                    return nil
-                }
-            }
-            
-            
-            // 检查按键是否是 Opt+⬇️ 键
-            // Check if key is Opt+⬇️
-            if (specialKey == .downArrow && isOnlyAltPressed) || (specialKey == .pageDown && noModifierKey) {
-                if !publicVar.isInLargeView{
-                    if let scrollView = collectionView.enclosingScrollView {
-                        let currentOrigin = scrollView.contentView.bounds.origin
-                        let pageHeight = scrollView.contentSize.height
-                        
-                        // Calculate the new y position by adding the page height to the current y position.
-                        let newY = min(currentOrigin.y + pageHeight, collectionView.bounds.height - pageHeight)
-                        let newOrigin = NSPoint(x: currentOrigin.x, y: newY)
-                        
-                        // Scroll to the new origin
-                        scrollView.contentView.scroll(to: newOrigin)
-                        scrollView.reflectScrolledClipView(scrollView.contentView)
-                        
-                        DispatchQueue.main.async { [weak self] in
-                            self?.setLoadThumbPriority(ifNeedVisable: true)
-                        }
-                    }
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 Esc 键
-            // Check if key is Esc
-            if event.keyCode == 53 {
-                //                    self.view.window?.close()
-                if publicVar.isInLargeView{
+            } else {
+                if publicVar.isInLargeView {
                     closeLargeImage(0)
-                    return nil
-                }else{
-                    if publicVar.isCollectionViewFirstResponder{
-                        collectionView.deselectAll(nil)
-                    }
-                    return nil
+                    return true
+                }
+                if let indexPath = collectionView.selectionIndexPaths.min(),
+                   publicVar.isCollectionViewFirstResponder {
+                    openLargeImage(indexPath)
+                    return true
                 }
             }
-            
-            // 检查按键是否是 Delete(117) Backspace(51) 键
-            // Check if key is Delete(117) Backspace(51)
-            if specialKey == .delete || specialKey == .backspace || specialKey == .deleteForward {
-                // 如果焦点在OutlineView
-                // If focus is on OutlineView
-                if publicVar.isOutlineViewFirstResponder{
-                    outlineView.actDelete(isByKeyboard: true, isShowPrompt: !isCommandPressed)
-                    return nil
-                }
-                // 如果焦点在CollectionView
-                // If focus is on CollectionView
-                if publicVar.isCollectionViewFirstResponder{
-                    handleDelete(isShowPrompt: !isCommandPressed)
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 Opt + 回车、小键盘回车 键
-            // Check if key is Opt + Enter, numpad Enter
-            if (specialKey == .carriageReturn || specialKey == .enter) && isOnlyAltPressed {
-                if let window = view.window {
-                    window.toggleFullScreen(nil)
-                }
-                return nil
-            }
-            
-            // 检查按键是否是 F2、回车、小键盘回车 键
-            // Check if key is F2, Enter, numpad Enter
-            if (specialKey == .f2 || specialKey == .carriageReturn || specialKey == .enter) && noModifierKey {
-                if specialKey == .f2 || !globalVar.isEnterKeyToOpen {
-                    // 如果焦点在OutlineView
-                    // If focus is in OutlineView
-                    if publicVar.isOutlineViewFirstResponder{
-                        outlineView.actRename(isByKeyboard: true)
-                        return nil
-                    }
-                    
-                    // 如果焦点在CollectionView
-                    // If focus is in CollectionView
-                    if publicVar.isCollectionViewFirstResponder{
-                        handleRename(urls: publicVar.selectedUrls())
-                        return nil
-                    }
-                }else{
-                    if publicVar.isInLargeView{
-                        closeLargeImage(0)
-                        return nil
-                    }else{
-                        if let indexPath = collectionView.selectionIndexPaths.min() {
-                            if publicVar.isCollectionViewFirstResponder{
-                                openLargeImage(indexPath)
-                                return nil
-                            }
-                        }
-                    }
-                }
-            }
-            
-            // 检查按键是否是 空格 键
-            // Check if key is Space
-            if characters == " " && noModifierKey {
-                if publicVar.isInLargeView{
-                    if largeImageView.file.type == .video {
-                        largeImageView.pauseOrResumeVideo()
-                    }else{
-                        closeLargeImage(0)
-                    }
-                    return nil
-                }else{
-                    if let indexPath = collectionView.selectionIndexPaths.min() {
-                        if publicVar.isCollectionViewFirstResponder{
-                            openLargeImage(indexPath)
-                            return nil
-                        }
-                    }
-                }
-            }
-            
-            //                // 检查按键是否是 1、1(小键盘) 键
-            //                if event.keyCode == 18 || event.keyCode == 83 {
-            //                    switchToJustifiedView()
-            //                }
-            //                // 检查按键是否是 2、2(小键盘) 键
-            //                if event.keyCode == 19 || event.keyCode == 84 {
-            //                    switchToWaterfallView()
-            //                }
-            //                // 检查按键是否是 3、3(小键盘) 键
-            //                if event.keyCode == 20 || event.keyCode == 85 {
-            //                    switchToGridView()
-            //                }
-            //                // 检查按键是否是 4、4(小键盘) 键
-            //                if event.keyCode == 21 || event.keyCode == 86 {
-            //                    switchToDetailView()
-            //                }
-            
-            // 检查按键是否是 12345 键
-            // Check if key is 12345
-            if (["1","2","3","4","5"].contains(characters)) && noModifierKey {
-                if view.window?.styleMask.contains(.fullScreen) == true {
-                    return nil
-                }
-                if characters == "1" { // 1
-                    adjustWindowMaximize()
-                    return nil
-                }else if characters == "2"{ // 2
-                    adjustWindowSuitable()
-                    return nil
-                }else if characters == "5"{ // 5
-                    adjustWindowToCenter()
-                    return nil
-                }else{
-                    if publicVar.isInLargeView {
-                        if characters == "3"{ // 3
-                            adjustWindowImageActual()
-                            return nil
-                        }else if characters == "4"{ // 4
-                            adjustWindowImageCurrent()
-                            return nil
-                        }
-                    }
-                }
-            }
-
-            // 检查按键是否是 Command+1~9 键
-            // Check if key is Command+1~9
-            if ["1","2","3","4","5","6","7","8","9"].contains(characters) && isOnlyCommandPressed {
-                if publicVar.isCollectionViewFirstResponder {
-                    let index = Int(characters)! - 1
-                    handleToggleFinderTag(FinderTag.all[index].name)
-                    return nil
-                }
-            }
-
-            // 检查按键是否是 Command+Shift+1~9 键
-            // Check if key is Command+Shift+1~9
-            // if ["1","2","3","4","5","6","7","8","9"].contains(characters) && isCommandPressed && isShiftPressed && !isAltPressed && !isCtrlPressed {
-            //     if publicVar.isCollectionViewFirstResponder {
-            //         let index = Int(characters)! - 1
-            //         toggleFinderTagFilter(index)
-            //         return nil
-            //     }
-            // }
-
-            // 检查按键是否是 Control+1~5 键
-            // Check if key is Command+1~5
-            if ["1","2","3","4","5","0"].contains(characters) && isOnlyCtrlPressed {
-                if publicVar.isCollectionViewFirstResponder {
-                    let index = Int(characters)!
-                    handleRating(rating: index)
-                    return nil
-                }
-            }
-
-            // 检查按键是否是 Control+Shift+1~5 键
-            // Check if key is Control+Shift+1~5
-            // if ["1","2","3","4","5","0"].contains(characters) && isCtrlPressed && isShiftPressed && !isAltPressed && !isCommandPressed {
-            //     if publicVar.isCollectionViewFirstResponder {
-            //         let index = Int(characters)!
-            //         toggleRatingFilter(index)
-            //         return nil
-            //     }
-            // }
-            
-            // 检查按键是否是 Opt+1~9 键
-            // Check if key is Opt+1~9
-            if (["1","2","3","4","5","6","7","8","9"].contains(characters)) && isOnlyAltPressed {
-                if !publicVar.isInLargeView {
-                    useCustomProfile(characters)
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 Cmd+Opt+1~9 键
-            // Check if key is Cmd+Opt+1~9
-            if (["1","2","3","4","5","6","7","8","9"].contains(characters)) && isCommandPressed && isAltPressed && !isCtrlPressed && !isShiftPressed {
-                if !publicVar.isInLargeView {
-                    setCustomProfileTo(characters)
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 "U"
-            // Check if key is "U"
-            if characters == "u" && noModifierKey {
-                if publicVar.isInLargeView {
-                    handleGetInfo()
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 "I"
-            // Check if key is "I"
-            if characters == "i" && noModifierKey {
-                if publicVar.isInLargeView{
-                    largeImageView.actShowExif()
-                    return nil
-                }else{
-                    if publicVar.isOutlineViewFirstResponder{
-                        outlineView.actGetInfo(isByKeyboard: true)
-                        return nil
-                    }
-                    if publicVar.isCollectionViewFirstResponder{
-                        handleGetInfo()
-                        return nil
-                    }
-                }
-            }
-            
-            // 检查按键是否是 "O"
-            // Check if key is "O"
-            if characters == "o" && noModifierKey {
-                if publicVar.isInLargeView{
-                    largeImageView.actOCR()
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 "P"
-            // Check if key is "P"
-            if characters == "p" && noModifierKey {
-                if publicVar.isInLargeView{
-                    largeImageView.actQRCode()
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 ➡️、⬇️、PageDown 键
-            // Check if key is ➡️, ⬇️, PageDown
-            let isRTL = view.userInterfaceLayoutDirection == .rightToLeft
-            if (specialKey == .rightArrow || specialKey == .downArrow || specialKey == .pageDown || specialKey == .next) && noModifierKey {
-                if publicVar.isInLargeView{
-                    if largeImageView.file.type == .video && specialKey == .rightArrow {
-                        // RTL: right arrow = backward
-                        largeImageView.seekVideo(direction: isRTL ? -1 : 1)
-                    } else if specialKey == .rightArrow && isRTL {
-                        previousLargeImage()
-                    } else {
-                        nextLargeImage()
-                    }
-                    return nil
-                }
-            }
-            // 检查按键是否是 ⬅️、⬆️、PageUp 键
-            // Check if key is ⬅️, ⬆️, PageUp
-            if (specialKey == .leftArrow || specialKey == .upArrow || specialKey == .pageUp || specialKey == .prev) && noModifierKey {
-                if publicVar.isInLargeView{
-                    if largeImageView.file.type == .video && specialKey == .leftArrow {
-                        // RTL: left arrow = forward
-                        largeImageView.seekVideo(direction: isRTL ? 1 : -1)
-                    } else if specialKey == .leftArrow && isRTL {
-                        nextLargeImage()
-                    } else {
-                        previousLargeImage()
-                    }
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 Tab 键
-            // Check if key is Tab
-            if specialKey == .tab && noModifierKey {
-                if !publicVar.isInLargeView{
-                    if publicVar.isOutlineViewFirstResponder{
-                        view.window?.makeFirstResponder(collectionView)
-                        return nil
-                    }else if publicVar.isCollectionViewFirstResponder{
-                        view.window?.makeFirstResponder(outlineView)
-                        return nil
-                    }
-                }
-            }
-            
-            // 检查按键是否是 "⬅️➡️⬆️⬇️" 或 Space/Enter 键
-            // Check if key is "⬅️➡️⬆️⬇️" or Space/Enter
-            if (specialKey == .leftArrow || specialKey == .rightArrow || specialKey == .upArrow || specialKey == .downArrow || characters == " " || ((specialKey == .carriageReturn || specialKey == .enter) && globalVar.isEnterKeyToOpen))
-                && (noModifierKey || isOnlyShiftPressed) {
-                if !publicVar.isInLargeView{
-                    // 如果焦点在OutlineView
-                    // If focus is in OutlineView
-                    if publicVar.isOutlineViewFirstResponder{
-                        if let outlineView = outlineView {
-                            let selectedRow=outlineView.selectedRow
-                            // ⬆️
-                            if specialKey == .upArrow {
-                                if selectedRow > 0 {
-                                    let previousRow = selectedRow - 1
-                                    outlineView.selectRowIndexes(IndexSet(integer: previousRow), byExtendingSelection: false)
-                                    // 可选：滚动视图以确保选中的项可见
-                                    // Optional: Scroll view to ensure selected item is visible
-                                    outlineView.scrollRowToVisible(previousRow)
-                                }
-                                // ⬇️
-                            } else if specialKey == .downArrow {
-                                if selectedRow != -1 && selectedRow < outlineView.numberOfRows - 1 {
-                                    let nextRow = selectedRow + 1
-                                    outlineView.selectRowIndexes(IndexSet(integer: nextRow), byExtendingSelection: false)
-                                    // 可选：滚动视图以确保选中的项可见
-                                    // Optional: Scroll view to ensure selected item is visible
-                                    outlineView.scrollRowToVisible(nextRow)
-                                }
-                                // ⬅️➡️、Space/Enter
-                                // ⬅️➡️, Space/Enter
-                            }else {
-                                // 获取行对应的条目
-                                // Get item corresponding to row
-                                if let item = outlineView.item(atRow: selectedRow) {
-                                    if outlineView.isExpandable(item) {
-                                        if outlineView.isItemExpanded(item) {
-                                            outlineView.collapseItem(item)
-                                        } else {
-                                            outlineView.expandItem(item)
-                                        }
-                                    }
-                                }
-                            }
-                            return nil
-                        }
-                    }
-                    
-                    // 如果焦点在CollectionView
-                    // If focus is in CollectionView
-                    if publicVar.isCollectionViewFirstResponder{
-                        if let collectionView = collectionView,
-                           let scrollView = collectionView.enclosingScrollView,
-                           // 有选中项
-                           // Has selected items
-                            !collectionView.selectionIndexPaths.isEmpty
-                        {
-                            if specialKey == .leftArrow || specialKey == .rightArrow || specialKey == .upArrow || specialKey == .downArrow {
-                                let sortedIndexPaths = collectionView.selectionIndexPaths.sorted()
-                                var currentIndexPath = sortedIndexPaths.first!
-                                if specialKey == .rightArrow || specialKey == .downArrow {
-                                    currentIndexPath = sortedIndexPaths.last!
-                                }
-                                
-                                // 存储当前滚动位置，因为findClosestItem期间会多次滚动
-                                // Store current scroll position, as findClosestItem will scroll multiple times
-                                let savedContentOffset = scrollView.contentView.bounds.origin
-                                
-                                var newIndexPath: IndexPath?
-                                newIndexPath = findClosestItem(currentIndexPath: currentIndexPath, direction: specialKey)
-                                
-                                // 还原滚动位置
-                                // Restore scroll position
-                                scrollView.contentView.setBoundsOrigin(savedContentOffset)
-                                scrollView.reflectScrolledClipView(scrollView.contentView)
-                                
-                                if let newIndexPath = newIndexPath {
-                                    if !(isCommandKeyPressed() || isShiftKeyPressed()) {
-                                        collectionView.deselectAll(nil)
-                                    }
-                                    if let toSelect = collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [newIndexPath]) {
-                                        collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
-                                        // collectionView.reloadData()
-                                        collectionView.selectItems(at: toSelect, scrollPosition: [])
-                                        collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: toSelect)
-                                        setLoadThumbPriority(ifNeedVisable: true)
-                                    }
-                                }
-                            }
-                            
-                            // 无选中项
-                            // No selected items
-                        }else if let collectionView = collectionView {
-                            
-                            var indexPaths = collectionView.indexPathsForVisibleItems()
-                            
-                            let visibleRectRaw = mainScrollView.contentView.visibleRect
-                            let scrollPos = visibleRectRaw.origin
-                            let scrollWidth = visibleRectRaw.width
-                            let scrollHeight = visibleRectRaw.height
-                            // 注意这里乘了1
-                            // Note: multiplied by 1 here
-                            let visibleRect = NSRect(origin: scrollPos, size: CGSize(width: scrollWidth, height: scrollHeight*1))
-                            indexPaths = indexPaths.filter { indexPath in
-                                let itemFrame = collectionView.layoutAttributesForItem(at: indexPath)?.frame ?? .zero
-                                return itemFrame.intersects(visibleRect)
-                            }
-                            let sortedIndexPaths = indexPaths.sorted { $0.item < $1.item }
-                            
-                            if let newIndexPath = sortedIndexPaths.first,
-                               let toSelect = collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [newIndexPath]) {
-                                collectionView.scrollToItems(at: [newIndexPath], scrollPosition: .nearestHorizontalEdge)
-                                // collectionView.reloadData()
-                                collectionView.selectItems(at: toSelect, scrollPosition: [])
-                                collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [newIndexPath])
-                                setLoadThumbPriority(ifNeedVisable: true)
-                            }
-                        }
-                        return nil
-                    }
-                }
-            }
-            
-            // 检查按键是否是 "F" 键
-            // Check if key is "F"
-            if characters == "f" && noModifierKey && !isFnPressed {
-                if publicVar.isInLargeView{
-                    largeImageView.actMirrorH()
-                }else{
-                    toggleSidebar()
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 "T" 键
-            // Check if key is "T"
-            if characters == "t" && noModifierKey {
-                toggleOnTop()
-                return nil
-            }
-            
-            // 检查按键是否是 -、-(小键盘) 键
-            // Check if key is -, -(numpad)
-            if characters == "-" && noModifierKey {
-                if publicVar.isInLargeView{
-                    if largeImageView.file.type == .video {
-                        largeImageView.decreaseVolume()
-                    }else{
-                        largeImageView.zoom(direction: -1)
-                    }
-                    return nil
-                }else{
-                    adjustThumbSizeByDirection(direction: -1)
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 +(=)、+(小键盘) 键
-            // Check if key is +(=), +(numpad)
-            if (characters == "=" || characters == "+") && noModifierKey {
-                if publicVar.isInLargeView {
-                    if largeImageView.file.type == .video {
-                        largeImageView.increaseVolume()
-                    }else{
-                        largeImageView.zoom(direction: +1)
-                    }
-                    return nil
-                }else{
-                    adjustThumbSizeByDirection(direction: +1)
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 0、0(小键盘) 键
-            // Check if key is 0, 0(numpad)
-            if characters == "0" && noModifierKey {
-                if publicVar.isInLargeView {
-                    changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: true)
-                    return nil
-                }else{
-                    adjustThumbSizeByDirection(direction: 0)
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 "N" 键
-            // Check if key is "N"
-            if characters == "n" && noModifierKey {
-                // 如果焦点在CollectionView
-                // If focus is in CollectionView
-                if publicVar.isCollectionViewFirstResponder{
-                    handleCopyToDownload()
-                    return nil
-                }
-            }
-            
-            // 检查按键是否是 "M" 键
-            // Check if key is "M"
-            if characters == "m" && noModifierKey {
-                // 如果焦点在CollectionView
-                // If focus is in CollectionView
-                if publicVar.isCollectionViewFirstResponder{
-                    handleMoveToDownload()
-                    return nil
-                }
-            }
-            
         }
-        
-        // 处理弹出重命名对话框、OCR状态的 Home/End 光标移动操作
-        // Handle Home/End cursor movement for rename dialog popup and OCR state
+
+        // Tab: swap focus between outline and collection view (browser only).
+        if specialKey == .tab && noModifierKey && !publicVar.isInLargeView {
+            if publicVar.isOutlineViewFirstResponder {
+                view.window?.makeFirstResponder(collectionView)
+                return true
+            }
+            if publicVar.isCollectionViewFirstResponder {
+                view.window?.makeFirstResponder(outlineView)
+                return true
+            }
+        }
+
+        // Arrow keys + space + enter-to-open in browser views.
+        let isArrow = specialKey == .leftArrow || specialKey == .rightArrow
+            || specialKey == .upArrow || specialKey == .downArrow
+        let isSpace = characters == " "
+        let isEnterToOpen = (specialKey == .carriageReturn || specialKey == .enter)
+            && globalVar.isEnterKeyToOpen
+        guard (isArrow || isSpace || isEnterToOpen)
+              && (noModifierKey || isOnlyShiftPressed)
+              && !publicVar.isInLargeView else {
+            return false
+        }
+
+        // Outline branch: arrows navigate rows, ← → / space / enter toggle expand.
+        if publicVar.isOutlineViewFirstResponder, let outlineView {
+            let selectedRow = outlineView.selectedRow
+            if specialKey == .upArrow {
+                if selectedRow > 0 {
+                    let previousRow = selectedRow - 1
+                    outlineView.selectRowIndexes(IndexSet(integer: previousRow),
+                                                  byExtendingSelection: false)
+                    outlineView.scrollRowToVisible(previousRow)
+                }
+            } else if specialKey == .downArrow {
+                if selectedRow != -1 && selectedRow < outlineView.numberOfRows - 1 {
+                    let nextRow = selectedRow + 1
+                    outlineView.selectRowIndexes(IndexSet(integer: nextRow),
+                                                  byExtendingSelection: false)
+                    outlineView.scrollRowToVisible(nextRow)
+                }
+            } else if let item = outlineView.item(atRow: selectedRow),
+                      outlineView.isExpandable(item) {
+                if outlineView.isItemExpanded(item) {
+                    outlineView.collapseItem(item)
+                } else {
+                    outlineView.expandItem(item)
+                }
+            }
+            return true
+        }
+
+        // Collection branch: only arrows. Space / Enter fall through to chord
+        // dispatch so the user-rebindable `viewerOpenFromSelection` action wins.
+        guard publicVar.isCollectionViewFirstResponder && isArrow,
+              let collectionView,
+              let scrollView = collectionView.enclosingScrollView else {
+            return false
+        }
+
+        if !collectionView.selectionIndexPaths.isEmpty {
+            let sortedIndexPaths = collectionView.selectionIndexPaths.sorted()
+            var currentIndexPath = sortedIndexPaths.first!
+            if specialKey == .rightArrow || specialKey == .downArrow {
+                currentIndexPath = sortedIndexPaths.last!
+            }
+            // findClosestItem scrolls multiple times internally; snapshot and
+            // restore the scroll position so the user doesn't see a jitter.
+            let savedContentOffset = scrollView.contentView.bounds.origin
+            let newIndexPath = findClosestItem(currentIndexPath: currentIndexPath,
+                                                direction: specialKey)
+            scrollView.contentView.setBoundsOrigin(savedContentOffset)
+            scrollView.reflectScrolledClipView(scrollView.contentView)
+
+            if let newIndexPath {
+                if !(isCommandKeyPressed() || isShiftKeyPressed()) {
+                    collectionView.deselectAll(nil)
+                }
+                if let toSelect = collectionView.delegate?.collectionView?(collectionView,
+                                                                            shouldSelectItemsAt: [newIndexPath]) {
+                    collectionView.scrollToItems(at: [newIndexPath],
+                                                  scrollPosition: .nearestHorizontalEdge)
+                    collectionView.selectItems(at: toSelect, scrollPosition: [])
+                    collectionView.delegate?.collectionView?(collectionView,
+                                                              didSelectItemsAt: toSelect)
+                    setLoadThumbPriority(ifNeedVisable: true)
+                }
+            }
+            return true
+        }
+
+        // No selection: pick first visible item as anchor.
+        let visibleRect = mainScrollView.contentView.visibleRect
+        let visiblePaths = collectionView.indexPathsForVisibleItems().filter { ip in
+            (collectionView.layoutAttributesForItem(at: ip)?.frame ?? .zero).intersects(visibleRect)
+        }
+        if let newIndexPath = visiblePaths.sorted(by: { $0.item < $1.item }).first,
+           let toSelect = collectionView.delegate?.collectionView?(collectionView,
+                                                                    shouldSelectItemsAt: [newIndexPath]) {
+            collectionView.scrollToItems(at: [newIndexPath],
+                                          scrollPosition: .nearestHorizontalEdge)
+            collectionView.selectItems(at: toSelect, scrollPosition: [])
+            collectionView.delegate?.collectionView?(collectionView,
+                                                      didSelectItemsAt: [newIndexPath])
+            setLoadThumbPriority(ifNeedVisable: true)
+        }
+        return true
+    }
+
+    /// Text-system fallthrough for rename dialog / OCR state. Returns true if consumed.
+    private func handleTextSystemFallthrough(_ event: NSEvent) -> Bool {
+        let isOnlyCommandPressed = event.modifierFlags.contains(.command)
+            && !event.modifierFlags.contains(.option)
+            && !event.modifierFlags.contains(.control)
+            && !event.modifierFlags.contains(.shift)
+        let specialKey = event.specialKey ?? .f30
+
         if !publicVar.isKeyEventEnabled || largeImageView.isInOcrState {
             if specialKey == .home {
                 NSApp.keyWindow?.firstResponder?.moveToBeginningOfDocument(nil)
-                return nil
+                return true
             }
             if specialKey == .end {
                 NSApp.keyWindow?.firstResponder?.moveToEndOfDocument(nil)
-                return nil
+                return true
             }
         }
 
-        // 处理弹出重命名对话框、OCR状态的复制粘贴、撤销操作
-        // Handle copy/paste and undo operations for rename dialog popup and OCR state
         if (!publicVar.isKeyEventEnabled || largeImageView.isInOcrState) && isOnlyCommandPressed {
-            switch event.charactersIgnoringModifiers {
+            // Lowercased so Caps Lock doesn't break Cmd+ACVXZ.
+            switch event.charactersIgnoringModifiers?.lowercased() {
             case "a":
                 NSApp.sendAction(#selector(NSText.selectAll(_:)), to: nil, from: nil)
-                return nil
+                return true
             case "c":
                 NSApp.sendAction(#selector(NSText.copy(_:)), to: nil, from: nil)
-                return nil
+                return true
             case "v":
                 NSApp.sendAction(#selector(NSText.paste(_:)), to: nil, from: nil)
-                return nil
+                return true
             case "x":
                 NSApp.sendAction(#selector(NSText.cut(_:)), to: nil, from: nil)
-                return nil
+                return true
             case "z":
                 NSApp.sendAction(Selector(("undo:")), to: nil, from: nil)
-                return nil
+                return true
             default:
                 break
             }
         }
-        
-        return event
-        // return nil
+        return false
+    }
+
+    // MARK: - Dispatch table
+
+    /// One case per ShortcutAction. Returns true on handled, false when the bound chord
+    /// fired but the contextual gate (e.g. CollectionView focus) didn't open — caller
+    /// continues to next candidate or lets event propagate.
+    func dispatch(_ action: ShortcutAction) -> Bool {
+        let isRTL = view.userInterfaceLayoutDirection == .rightToLeft
+
+        switch action {
+
+        // MARK: Browser nav
+        //
+        // scope=browserOnly already gates these cases on !isInLargeView, so the
+        // defensive closeLargeImage(0) calls present in the legacy dispatcher
+        // are redundant here.
+        case .browserDirLeft:
+            switchDirByDirection(direction: isRTL ? .right : .left, stackDeep: 0)
+            return true
+        case .browserDirRight:
+            switchDirByDirection(direction: isRTL ? .left : .right, stackDeep: 0)
+            return true
+        case .browserDirUp:
+            switchDirByDirection(direction: .up, stackDeep: 0)
+            return true
+        case .browserDirDown:
+            switchDirByDirection(direction: .down, stackDeep: 0)
+            return true
+        case .browserDirDownRight:
+            switchDirByDirection(direction: .down_right, stackDeep: 0)
+            return true
+        case .browserBack:
+            switchDirByDirection(direction: .back, stackDeep: 0)
+            return true
+        case .browserForward:
+            switchDirByDirection(direction: .forward, stackDeep: 0)
+            return true
+        case .browserScrollTop:
+            if let scrollView = collectionView.enclosingScrollView {
+                scrollView.contentView.scroll(to: NSPoint(x: 0, y: 0))
+                scrollView.reflectScrolledClipView(scrollView.contentView)
+                DispatchQueue.main.async { [weak self] in
+                    self?.setLoadThumbPriority(ifNeedVisable: true)
+                }
+            }
+            return true
+        case .browserScrollBottom:
+            if let scrollView = collectionView.enclosingScrollView {
+                let newOrigin = NSPoint(x: 0,
+                                         y: collectionView.bounds.height - scrollView.contentSize.height)
+                scrollView.contentView.scroll(to: newOrigin)
+                scrollView.reflectScrolledClipView(scrollView.contentView)
+                DispatchQueue.main.async { [weak self] in
+                    self?.setLoadThumbPriority(ifNeedVisable: true)
+                }
+            }
+            return true
+        case .browserPageUp:
+            if let scrollView = collectionView.enclosingScrollView {
+                let currentOrigin = scrollView.contentView.bounds.origin
+                let pageHeight = scrollView.contentSize.height
+                let newY = max(currentOrigin.y - pageHeight, 0)
+                scrollView.contentView.scroll(to: NSPoint(x: currentOrigin.x, y: newY))
+                scrollView.reflectScrolledClipView(scrollView.contentView)
+                DispatchQueue.main.async { [weak self] in
+                    self?.setLoadThumbPriority(ifNeedVisable: true)
+                }
+            }
+            return true
+        case .browserPageDown:
+            if let scrollView = collectionView.enclosingScrollView {
+                let currentOrigin = scrollView.contentView.bounds.origin
+                let pageHeight = scrollView.contentSize.height
+                let newY = min(currentOrigin.y + pageHeight,
+                                collectionView.bounds.height - pageHeight)
+                scrollView.contentView.scroll(to: NSPoint(x: currentOrigin.x, y: newY))
+                scrollView.reflectScrolledClipView(scrollView.contentView)
+                DispatchQueue.main.async { [weak self] in
+                    self?.setLoadThumbPriority(ifNeedVisable: true)
+                }
+            }
+            return true
+        case .browserDeselect:
+            if publicVar.isCollectionViewFirstResponder {
+                collectionView.deselectAll(nil)
+            }
+            return true
+        case .browserToggleSidebar:
+            NSApp.sendAction(#selector(AppDelegate.toggleSidebar(_:)), to: nil, from: nil)
+            return true
+
+        // MARK: Viewer nav
+        case .viewerPrev:
+            isRTL ? nextLargeImage() : previousLargeImage()
+            return true
+        case .viewerNext:
+            isRTL ? previousLargeImage() : nextLargeImage()
+            return true
+        case .viewerLocateFirst:
+            locateLargeImage(direction: -2)
+            return true
+        case .viewerLocateLast:
+            locateLargeImage(direction: 2)
+            return true
+        case .viewerClose:
+            closeLargeImage(0)
+            return true
+        case .viewerOpenFromSelection:
+            guard let indexPath = collectionView.selectionIndexPaths.min(),
+                  publicVar.isCollectionViewFirstResponder else { return false }
+            openLargeImage(indexPath)
+            return true
+
+        // MARK: Viewer ops
+        case .viewerZoomIn:
+            if largeImageView.file.type == .video {
+                largeImageView.increaseVolume()
+            } else {
+                largeImageView.zoom(direction: +1)
+            }
+            return true
+        case .viewerZoomOut:
+            if largeImageView.file.type == .video {
+                largeImageView.decreaseVolume()
+            } else {
+                largeImageView.zoom(direction: -1)
+            }
+            return true
+        case .viewerZoom100:
+            largeImageView.zoom100()
+            return true
+        case .viewerZoomFit:
+            largeImageView.zoomFit()
+            return true
+        case .viewerZoomReset:
+            changeLargeImage(firstShowThumb: false, resetSize: true, triggeredByLongPress: true)
+            return true
+        case .viewerRotateLeft:
+            largeImageView.actRotateL()
+            return true
+        case .viewerRotateRight:
+            largeImageView.actRotateR()
+            return true
+        case .viewerMirrorH:
+            largeImageView.actMirrorH()
+            return true
+        case .viewerOCR:
+            largeImageView.actOCR()
+            return true
+        case .viewerQRCode:
+            largeImageView.actQRCode()
+            return true
+        case .viewerGetInfo:
+            handleGetInfo()
+            return true
+        case .viewerShowExif:
+            largeImageView.actShowExif()
+            return true
+        case .viewerEditMode:
+            guard EDIT_FEATURE_ENABLED else { return false }
+            largeImageView.enterEditMode { [weak self] editedImage in
+                self?.largeImageView.imageView.image = editedImage
+            }
+            return true
+
+        // MARK: Video
+        case .videoPauseResume:
+            if largeImageView.file.type == .video {
+                largeImageView.pauseOrResumeVideo()
+            } else {
+                closeLargeImage(0)
+            }
+            return true
+        case .videoSeekFwd:
+            // Folded: video → seek; image → next image. Mirrors legacy ← / →
+            // behavior so a default ←/→ chord works as "prev / next" on images.
+            if largeImageView.file.type == .video {
+                largeImageView.seekVideo(direction: isRTL ? -1 : 1)
+            } else {
+                isRTL ? previousLargeImage() : nextLargeImage()
+            }
+            return true
+        case .videoSeekBack:
+            if largeImageView.file.type == .video {
+                largeImageView.seekVideo(direction: isRTL ? 1 : -1)
+            } else {
+                isRTL ? nextLargeImage() : previousLargeImage()
+            }
+            return true
+        case .videoSeekFrameFwd:
+            guard largeImageView.file.type == .video else { return false }
+            largeImageView.seekVideoByFrame(direction: isRTL ? -1 : 1)
+            return true
+        case .videoSeekFrameBack:
+            guard largeImageView.file.type == .video else { return false }
+            largeImageView.seekVideoByFrame(direction: isRTL ? 1 : -1)
+            return true
+        case .videoSetA:
+            guard largeImageView.file.type == .video else { return false }
+            largeImageView.specifyABPlayPositionA()
+            return true
+        case .videoSetB:
+            guard largeImageView.file.type == .video else { return false }
+            largeImageView.specifyABPlayPositionB()
+            return true
+        case .videoABPlay:
+            guard largeImageView.file.type == .video else { return false }
+            largeImageView.actABPlay()
+            return true
+        case .videoSequentialPlay:
+            guard largeImageView.file.type == .video else { return false }
+            largeImageView.actSequentialPlay()
+            return true
+        case .videoRememberPosition:
+            guard largeImageView.file.type == .video else { return false }
+            largeImageView.actRememberPlayPosition()
+            return true
+
+        // MARK: Window
+        case .windowMaximize:
+            guard !isInFullScreen else { return false }
+            adjustWindowMaximize()
+            return true
+        case .windowSuitable:
+            guard !isInFullScreen else { return false }
+            adjustWindowSuitable()
+            return true
+        case .windowImageActual:
+            guard !isInFullScreen else { return false }
+            adjustWindowImageActual()
+            return true
+        case .windowImageCurrent:
+            guard !isInFullScreen else { return false }
+            adjustWindowImageCurrent()
+            return true
+        case .windowCenter:
+            guard !isInFullScreen else { return false }
+            adjustWindowToCenter()
+            return true
+        case .windowToggleFullscreen:
+            view.window?.toggleFullScreen(nil)
+            return true
+        case .windowToggleOnTop:
+            NSApp.sendAction(#selector(AppDelegate.toggleOnTop(_:)), to: nil, from: nil)
+            return true
+        case .windowRefresh:
+            handleUserRefresh()
+            return true
+        case .windowNew:
+            NSApp.sendAction(#selector(AppDelegate.fileNewWindow(_:)), to: nil, from: nil)
+            return true
+        case .windowNewTab:
+            NSApp.sendAction(#selector(AppDelegate.fileNewTab(_:)), to: nil, from: nil)
+            return true
+        case .windowClose, .windowCloseTab:
+            view.window?.performClose(nil)
+            return true
+        case .windowReopenClosedTab:
+            handleReopenClosedTabs()
+            return true
+        case .quitApp:
+            NSApp.terminate(nil)
+            return true
+
+        // MARK: File ops
+        case .fileRename:
+            if publicVar.isOutlineViewFirstResponder {
+                outlineView.actRename(isByKeyboard: true)
+                return true
+            }
+            if publicVar.isCollectionViewFirstResponder {
+                handleRename(urls: publicVar.selectedUrls())
+                return true
+            }
+            return false
+        case .fileDelete:
+            if publicVar.isOutlineViewFirstResponder {
+                outlineView.actDelete(isByKeyboard: true, isShowPrompt: true)
+                return true
+            }
+            if publicVar.isCollectionViewFirstResponder {
+                _ = handleDelete(isShowPrompt: true)
+                return true
+            }
+            return false
+        case .fileDeleteNoPrompt:
+            if publicVar.isOutlineViewFirstResponder {
+                outlineView.actDelete(isByKeyboard: true, isShowPrompt: false)
+                return true
+            }
+            if publicVar.isCollectionViewFirstResponder {
+                _ = handleDelete(isShowPrompt: false)
+                return true
+            }
+            return false
+        case .fileNewFolder:
+            _ = handleNewFolder()
+            return true
+        case .fileCopyToDownload:
+            guard publicVar.isCollectionViewFirstResponder else { return false }
+            handleCopyToDownload()
+            return true
+        case .fileMoveToDownload:
+            guard publicVar.isCollectionViewFirstResponder else { return false }
+            handleMoveToDownload()
+            return true
+        case .fileGetInfo:
+            if publicVar.isOutlineViewFirstResponder {
+                outlineView.actGetInfo(isByKeyboard: true)
+                return true
+            }
+            if publicVar.isCollectionViewFirstResponder {
+                handleGetInfo()
+                return true
+            }
+            return false
+
+        // MARK: Thumb size
+        case .thumbSizeUp:
+            adjustThumbSizeByDirection(direction: +1)
+            return true
+        case .thumbSizeDown:
+            adjustThumbSizeByDirection(direction: -1)
+            return true
+        case .thumbSizeReset:
+            adjustThumbSizeByDirection(direction: 0)
+            return true
+
+        // MARK: View mode
+        case .viewModeJustified:
+            NSApp.sendAction(#selector(AppDelegate.switchToJustifiedView(_:)), to: nil, from: nil)
+            return true
+        case .viewModeWaterfall:
+            NSApp.sendAction(#selector(AppDelegate.switchToWaterfallView(_:)), to: nil, from: nil)
+            return true
+        case .viewModeGrid:
+            NSApp.sendAction(#selector(AppDelegate.switchToGridView(_:)), to: nil, from: nil)
+            return true
+        case .viewModeDetail:
+            NSApp.sendAction(#selector(AppDelegate.switchToDetailView(_:)), to: nil, from: nil)
+            return true
+
+        // MARK: Visibility toggles
+        case .toggleHiddenFiles:
+            NSApp.sendAction(#selector(AppDelegate.toggleIsShowHiddenFile(_:)), to: nil, from: nil)
+            return true
+        case .toggleImageFiles:
+            NSApp.sendAction(#selector(AppDelegate.toggleIsShowImageFile(_:)), to: nil, from: nil)
+            return true
+        case .toggleRawFiles:
+            NSApp.sendAction(#selector(AppDelegate.toggleIsShowRawFile(_:)), to: nil, from: nil)
+            return true
+        case .toggleVideoFiles:
+            NSApp.sendAction(#selector(AppDelegate.toggleIsShowVideoFile(_:)), to: nil, from: nil)
+            return true
+        case .toggleAllFiles:
+            NSApp.sendAction(#selector(AppDelegate.toggleIsShowAllTypeFile(_:)), to: nil, from: nil)
+            return true
+        case .toggleShowFinderTagsAndRating:
+            NSApp.sendAction(#selector(AppDelegate.toggleShowFinderTagsAndRating(_:)), to: nil, from: nil)
+            return true
+        case .toggleRawUseEmbeddedThumb:
+            NSApp.sendAction(#selector(AppDelegate.toggleRawUseEmbeddedThumb(_:)), to: nil, from: nil)
+            return true
+        case .toggleAutoPlayVideo:
+            toggleAutoPlayVisibleVideo()
+            return true
+
+        // MARK: Viewer behavior
+        case .lockRotation:
+            NSApp.sendAction(#selector(AppDelegate.toggleLockRotation(_:)), to: nil, from: nil)
+            return true
+        case .lockZoom:
+            NSApp.sendAction(#selector(AppDelegate.toggleLockZoom(_:)), to: nil, from: nil)
+            return true
+        case .lockMirror:
+            NSApp.sendAction(#selector(AppDelegate.toggleLockMirror(_:)), to: nil, from: nil)
+            return true
+        case .activatePanScroll:
+            NSApp.sendAction(#selector(AppDelegate.toggleActivatePanScroll(_:)), to: nil, from: nil)
+            return true
+
+        // MARK: Rating (only when CollectionView focused — matches legacy gate)
+        case .rating0, .rating1, .rating2, .rating3, .rating4, .rating5:
+            guard publicVar.isCollectionViewFirstResponder,
+                  let rating = action.ratingValue else { return false }
+            handleRating(rating: rating)
+            return true
+
+        // MARK: Finder tags (only when CollectionView focused)
+        case .tag1, .tag2, .tag3, .tag4, .tag5, .tag6, .tag7, .tag8, .tag9:
+            guard publicVar.isCollectionViewFirstResponder,
+                  let index = action.tagIndex,
+                  index < FinderTag.all.count else { return false }
+            handleToggleFinderTag(FinderTag.all[index].name)
+            return true
+
+        // MARK: Profile use / save. scope=browserOnly handles the
+        // !isInLargeView gate; only the slot lookup needs to be unwrapped here.
+        case .profileUse1, .profileUse2, .profileUse3, .profileUse4, .profileUse5,
+             .profileUse6, .profileUse7, .profileUse8, .profileUse9:
+            guard let slot = action.profileSlot else { return false }
+            useCustomProfile(String(slot))
+            return true
+        case .profileSave1, .profileSave2, .profileSave3, .profileSave4, .profileSave5,
+             .profileSave6, .profileSave7, .profileSave8, .profileSave9:
+            guard let slot = action.profileSlot else { return false }
+            setCustomProfileTo(String(slot))
+            return true
+
+        // MARK: Search
+        case .searchToggleOverlay:
+            toggleSearchOverlay()
+            return true
+        case .searchToggleRecursive:
+            toggleRecursiveMode()
+            return true
+        case .searchToggleRecursiveFolder:
+            toggleRecursiveContainFolder()
+            return true
+
+        // MARK: Quick search
+        case .quickSearchActivate:
+            guard !quickSearchState, !globalVar.useQuickSearch else { return false }
+            quickSearch("backspace")
+            return true
+        }
+    }
+}
+
+private extension ShortcutAction {
+    /// 1-based slot for profile use/save actions; nil for any non-profile case.
+    var profileSlot: Int? {
+        switch self {
+        case .profileUse1, .profileSave1: return 1
+        case .profileUse2, .profileSave2: return 2
+        case .profileUse3, .profileSave3: return 3
+        case .profileUse4, .profileSave4: return 4
+        case .profileUse5, .profileSave5: return 5
+        case .profileUse6, .profileSave6: return 6
+        case .profileUse7, .profileSave7: return 7
+        case .profileUse8, .profileSave8: return 8
+        case .profileUse9, .profileSave9: return 9
+        default: return nil
+        }
+    }
+
+    /// 0..5 rating value for rating actions; nil otherwise.
+    var ratingValue: Int? {
+        switch self {
+        case .rating0: return 0
+        case .rating1: return 1
+        case .rating2: return 2
+        case .rating3: return 3
+        case .rating4: return 4
+        case .rating5: return 5
+        default: return nil
+        }
+    }
+
+    /// 0-based index into `FinderTag.all` for tag actions; nil otherwise.
+    var tagIndex: Int? {
+        switch self {
+        case .tag1: return 0
+        case .tag2: return 1
+        case .tag3: return 2
+        case .tag4: return 3
+        case .tag5: return 4
+        case .tag6: return 5
+        case .tag7: return 6
+        case .tag8: return 7
+        case .tag9: return 8
+        default: return nil
+        }
     }
 }
