@@ -81,6 +81,11 @@
 		F7F600482E1E095500ED8536 /* FinderTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F600472E1E094A00ED8536 /* FinderTag.swift */; };
 		F7FAE0012F6BA00000FAE001 /* FavoritesPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */; };
 		F7FED5F32F7D0B1100E35164 /* Tagging.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FED5F22F7D0B0E00E35164 /* Tagging.swift */; };
+		F7CD001C2F0E000000C9AB85 /* KeyChord.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CD001B2F0E000000C9AB85 /* KeyChord.swift */; };
+		F7CD00302F0E000000C9AB85 /* ShortcutMatching.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CD002F2F0E000000C9AB85 /* ShortcutMatching.swift */; };
+		F7CD001E2F0E000000C9AB85 /* ShortcutAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CD001D2F0E000000C9AB85 /* ShortcutAction.swift */; };
+		F7CD00202F0E000000C9AB85 /* ShortcutStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CD001F2F0E000000C9AB85 /* ShortcutStore.swift */; };
+		F7CD00222F0E000000C9AB85 /* ShortcutRecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CD00212F0E000000C9AB85 /* ShortcutRecorderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -197,6 +202,11 @@
 		F7F600472E1E094A00ED8536 /* FinderTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderTag.swift; sourceTree = "<group>"; };
 		F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesPopoverViewController.swift; sourceTree = "<group>"; };
 		F7FED5F22F7D0B0E00E35164 /* Tagging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tagging.swift; sourceTree = "<group>"; };
+		F7CD001B2F0E000000C9AB85 /* KeyChord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChord.swift; sourceTree = "<group>"; };
+		F7CD002F2F0E000000C9AB85 /* ShortcutMatching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutMatching.swift; sourceTree = "<group>"; };
+		F7CD001D2F0E000000C9AB85 /* ShortcutAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutAction.swift; sourceTree = "<group>"; };
+		F7CD001F2F0E000000C9AB85 /* ShortcutStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutStore.swift; sourceTree = "<group>"; };
+		F7CD00212F0E000000C9AB85 /* ShortcutRecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutRecorderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -274,11 +284,24 @@
 				F7790ECB2BA5CA9200406D35 /* WindowController.swift */,
 				F7A075552BA1D716009C47A6 /* ViewController.swift */,
 				F770988F2F0E3C5400E7D164 /* ViewControllerExtension */,
+				F7CD001A2F0E000000C9AB85 /* Shortcuts */,
 				F73865DC2C37BD7F00837FE4 /* Common */,
 				F7C2DEB92C4E6BB2003DF765 /* SettingsViews */,
 				F73865E92C37C3EA00837FE4 /* Views */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		F7CD001A2F0E000000C9AB85 /* Shortcuts */ = {
+			isa = PBXGroup;
+			children = (
+				F7CD001B2F0E000000C9AB85 /* KeyChord.swift */,
+				F7CD002F2F0E000000C9AB85 /* ShortcutMatching.swift */,
+				F7CD001D2F0E000000C9AB85 /* ShortcutAction.swift */,
+				F7CD001F2F0E000000C9AB85 /* ShortcutStore.swift */,
+				F7CD00212F0E000000C9AB85 /* ShortcutRecorderView.swift */,
+			);
+			path = Shortcuts;
 			sourceTree = "<group>";
 		};
 		F754F3C62C10393700A25D12 /* Frameworks */ = {
@@ -526,6 +549,11 @@
 				F74D554E2F0E459C00C9AB85 /* WindowManagement.swift in Sources */,
 				F73865D32C37B97500837FE4 /* CustomCollectionView.swift in Sources */,
 				F74D555E2F0E52F800C9AB85 /* ArrowKeyLocate.swift in Sources */,
+				F7CD001C2F0E000000C9AB85 /* KeyChord.swift in Sources */,
+				F7CD00302F0E000000C9AB85 /* ShortcutMatching.swift in Sources */,
+				F7CD001E2F0E000000C9AB85 /* ShortcutAction.swift in Sources */,
+				F7CD00202F0E000000C9AB85 /* ShortcutStore.swift in Sources */,
+				F7CD00222F0E000000C9AB85 /* ShortcutRecorderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
