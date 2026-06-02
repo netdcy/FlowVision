@@ -32,7 +32,6 @@ final class ShortcutStore {
     private var clearedExplicitly: Set<ShortcutAction> = []
 
     private let defaultsKey   = "shortcutBindings.v2"
-    private let legacyKeyV1   = "shortcutBindings.v1"
 
     // MARK: - Wire format v2
 
@@ -66,33 +65,6 @@ final class ShortcutStore {
         }
     }
 
-    // MARK: - Wire format v1 (legacy single-chord)
-
-    private struct WireV1: Codable {
-        let version: Int?
-        let entries: [EntryV1]
-    }
-
-    private struct EntryV1: Codable {
-        let action: ShortcutAction?
-        let chord: KeyChord?
-
-        enum CodingKeys: String, CodingKey { case action, chord }
-
-        init(from decoder: Decoder) throws {
-            let c = try decoder.container(keyedBy: CodingKeys.self)
-            let raw = try? c.decode(String.self, forKey: .action)
-            self.action = raw.flatMap { ShortcutAction(rawValue: $0) }
-            self.chord = try? c.decodeIfPresent(KeyChord.self, forKey: .chord)
-        }
-
-        func encode(to encoder: Encoder) throws {
-            var c = encoder.container(keyedBy: CodingKeys.self)
-            try c.encode(action?.rawValue, forKey: .action)
-            try c.encode(chord, forKey: .chord)
-        }
-    }
-
     // MARK: - Public API
 
     /// Returns the active chord list for an action: stored value if present,
@@ -110,14 +82,6 @@ final class ShortcutStore {
         if let data = UserDefaults.standard.data(forKey: defaultsKey),
            let wire = try? JSONDecoder().decode(Wire.self, from: data) {
             applyV2(wire)
-        } else if let data = UserDefaults.standard.data(forKey: legacyKeyV1),
-                  let wire = try? JSONDecoder().decode(WireV1.self, from: data) {
-            applyV1(wire)
-            // Only drop the legacy blob once we've successfully written v2.
-            // If persist() fails, leave v1 in place so the next launch can retry.
-            if persist() {
-                UserDefaults.standard.removeObject(forKey: legacyKeyV1)
-            }
         }
         rebuildIndex()
     }
@@ -130,17 +94,6 @@ final class ShortcutStore {
                 clearedExplicitly.insert(a)
             } else {
                 bindings[a] = entry.chords
-            }
-        }
-    }
-
-    private func applyV1(_ wire: WireV1) {
-        for entry in wire.entries {
-            guard let a = entry.action else { continue }
-            if let chord = entry.chord {
-                bindings[a] = [chord]
-            } else {
-                clearedExplicitly.insert(a)
             }
         }
     }
