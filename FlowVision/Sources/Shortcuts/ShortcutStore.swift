@@ -21,10 +21,13 @@ final class ShortcutStore {
     /// disjoint — enforced by conflict UI in the settings pane, not by the store).
     private(set) var reverseIndex: [KeyChord: [ShortcutAction]] = [:]
 
-    /// Layout-aware fallback index keyed on produced glyph rather than physical keyCode.
-    /// Consulted only when `reverseIndex` misses, so it never overrides a physical match
-    /// (zero regression for US/ANSI and Dvorak/Colemak). Fixes ISO layouts where +, -, =
-    /// move physical position or sit behind Option/AltGr. See issue #16 / ShortcutMatching.
+    /// Layout-aware index keyed on produced glyph rather than physical keyCode. The dispatcher
+    /// consults this *before* `reverseIndex` and lets a glyph match win (see
+    /// `ShortcutMatching.order`), because on ISO layouts the physical key under a moved symbol
+    /// is often bound to the opposite action. Fixes issue #16 (+, -, = move position or sit
+    /// behind Option/AltGr). On US/ANSI glyph and keyCode agree, so behavior is unchanged —
+    /// except shifted symbols now resolve too (e.g. Shift+= → '+' → '=' → zoom-in), which the
+    /// keyCode-only path could not match.
     private(set) var semanticIndex: [ShortcutMatching.SemKey: [ShortcutAction]] = [:]
 
     /// Actions the user has wiped completely. Distinguishes "user cleared all"
@@ -223,8 +226,9 @@ final class ShortcutStore {
         semanticIndex = sem
     }
 
-    /// Layout-aware fallback lookup. Returns actions whose recorded glyph matches one of
-    /// the glyphs this key event produced. Call only after `reverseIndex` misses.
+    /// Layout-aware lookup. Returns actions whose recorded glyph matches one of the glyphs
+    /// this key event produced. The dispatcher merges these ahead of `reverseIndex` matches
+    /// via `ShortcutMatching.order`.
     func semanticCandidates(characters: String?,
                             ignoringModifiers: String?,
                             modifiers: Modifiers) -> [ShortcutAction] {

@@ -42,8 +42,10 @@ extension ViewController {
         // Layout-aware matching. The glyph the key actually produced (semantic) outranks
         // the physical keyCode: on ISO layouts the physical key under a moved symbol is
         // often bound to the opposite action — e.g. Norwegian '+' sits on the US '-' key,
-        // whose keyCode is bound to zoom-out (issue #16). On US/ANSI both agree, so this is
-        // a no-op there and for special keys (no glyph) it falls through to physical.
+        // whose keyCode is bound to zoom-out (issue #16). On US/ANSI glyph and keyCode agree
+        // (so existing bindings are unchanged), but shifted symbols now resolve too — e.g.
+        // Shift+= → '+' → '=' → zoom-in, which keyCode-only matching missed. Special keys
+        // (no glyph) yield no semantic candidates and fall through to physical.
         let semantic = ShortcutStore.shared.semanticCandidates(
             characters: event.characters,
             ignoringModifiers: event.charactersIgnoringModifiers,

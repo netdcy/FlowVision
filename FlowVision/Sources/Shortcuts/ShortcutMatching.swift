@@ -54,16 +54,16 @@ enum ShortcutMatching {
 
     /// Glyphs a key event produced, equivalence-expanded.
     ///
-    /// Prefers the literal `characters` (carries the real glyph including Option/AltGr and
-    /// Shift symbols). Only falls back to `charactersIgnoringModifiers` when the literal is
-    /// empty (dead keys, pure modifiers) — using both unconditionally would leak the base-layer
-    /// digit (Nordic Option+0 reports characters="=" but ignoringModifiers="0") and falsely
-    /// fire the zoom-reset binding.
+    /// Resolves the glyph with the same rule the recorder uses (`recordedCharacter`) so a
+    /// keypress at dispatch produces exactly the glyph its binding was indexed under. That
+    /// rule prefers the literal `characters` (carries Option/AltGr and Shift symbols) but
+    /// rejects control codes and empties — using the literal unconditionally would both leak
+    /// the base-layer digit (Nordic Option+0 reports characters="=" but ignoringModifiers="0",
+    /// falsely firing zoom-reset) and emit control codes for Ctrl combos.
     static func producedChars(characters: String?, ignoringModifiers: String?) -> Set<String> {
-        let literal = (characters ?? "").lowercased()
-        let base = literal.isEmpty ? (ignoringModifiers ?? "").lowercased() : literal
-        guard !base.isEmpty else { return [] }
-        return expand([base])
+        let glyph = recordedCharacter(literal: characters, ignoringModifiers: ignoringModifiers)
+        guard !glyph.isEmpty else { return [] }
+        return expand([glyph])
     }
 
     /// Glyph to persist when recording a chord, kept symmetric with `producedChars` so a
