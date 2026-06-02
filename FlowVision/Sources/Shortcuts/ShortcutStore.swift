@@ -21,6 +21,12 @@ final class ShortcutStore {
     /// disjoint — enforced by conflict UI in the settings pane, not by the store).
     private(set) var reverseIndex: [KeyChord: [ShortcutAction]] = [:]
 
+    /// Layout-aware fallback index keyed on produced glyph rather than physical keyCode.
+    /// Consulted only when `reverseIndex` misses, so it never overrides a physical match
+    /// (zero regression for US/ANSI and Dvorak/Colemak). Fixes ISO layouts where +, -, =
+    /// move physical position or sit behind Option/AltGr. See issue #16 / ShortcutMatching.
+    private(set) var semanticIndex: [ShortcutMatching.SemKey: [ShortcutAction]] = [:]
+
     /// Actions the user has wiped completely. Distinguishes "user cleared all"
     /// from "never persisted" so defaults don't sneak back after a reset-empty.
     private var clearedExplicitly: Set<ShortcutAction> = []
@@ -243,15 +249,44 @@ final class ShortcutStore {
 
     private func rebuildIndex() {
         var idx: [KeyChord: [ShortcutAction]] = [:]
+        var sem: [ShortcutMatching.SemKey: [ShortcutAction]] = [:]
         for action in ShortcutAction.allCases {
             // Dedupe within an action so intra-action chord duplicates
             // don't show up twice in reverseIndex[chord].
             var seen: Set<KeyChord> = []
+            var seenSem: Set<ShortcutMatching.SemKey> = []
             for chord in chords(for: action) where seen.insert(chord).inserted {
                 idx[chord, default: []].append(action)
+                // Index the recorded glyph for the semantic fallback. Special keys
+                // (arrows, Esc, …) record an empty character and are physical-only.
+                guard !chord.character.isEmpty else { continue }
+                let key = ShortcutMatching.key(char: chord.character, mods: chord.modifiers)
+                if seenSem.insert(key).inserted {
+                    sem[key, default: []].append(action)
+                }
             }
         }
         reverseIndex = idx
+        semanticIndex = sem
+    }
+
+    /// Layout-aware fallback lookup. Returns actions whose recorded glyph matches one of
+    /// the glyphs this key event produced. Call only after `reverseIndex` misses.
+    func semanticCandidates(characters: String?,
+                            ignoringModifiers: String?,
+                            modifiers: Modifiers) -> [ShortcutAction] {
+        let glyphs = ShortcutMatching.producedChars(characters: characters,
+                                                    ignoringModifiers: ignoringModifiers)
+        guard !glyphs.isEmpty else { return [] }
+        var out: [ShortcutAction] = []
+        var seen: Set<ShortcutAction> = []
+        for glyph in glyphs {
+            let key = ShortcutMatching.key(char: glyph, mods: modifiers)
+            for action in semanticIndex[key] ?? [] where seen.insert(action).inserted {
+                out.append(action)
+            }
+        }
+        return out
     }
 
     @discardableResult

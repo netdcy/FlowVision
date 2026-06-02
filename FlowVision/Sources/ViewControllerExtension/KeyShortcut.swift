@@ -38,7 +38,18 @@ extension ViewController {
         if handleNonRebindableNavigation(event) { return nil }
 
         let chord = KeyChord(event: event)
-        let candidates = ShortcutStore.shared.reverseIndex[chord] ?? []
+
+        // Layout-aware matching. The glyph the key actually produced (semantic) outranks
+        // the physical keyCode: on ISO layouts the physical key under a moved symbol is
+        // often bound to the opposite action — e.g. Norwegian '+' sits on the US '-' key,
+        // whose keyCode is bound to zoom-out (issue #16). On US/ANSI both agree, so this is
+        // a no-op there and for special keys (no glyph) it falls through to physical.
+        let semantic = ShortcutStore.shared.semanticCandidates(
+            characters: event.characters,
+            ignoringModifiers: event.charactersIgnoringModifiers,
+            modifiers: chord.modifiers)
+        let physical = ShortcutStore.shared.reverseIndex[chord] ?? []
+        let candidates = ShortcutMatching.order(semantic: semantic, physical: physical)
 
         for action in candidates where stateGateOpen(for: action) && scopeMatches(action.scope) {
             if dispatch(action) { return nil }

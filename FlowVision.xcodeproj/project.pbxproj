@@ -82,6 +82,7 @@
 		F7FAE0012F6BA00000FAE001 /* FavoritesPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */; };
 		F7FED5F32F7D0B1100E35164 /* Tagging.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FED5F22F7D0B0E00E35164 /* Tagging.swift */; };
 		F7CD001C2F0E000000C9AB85 /* KeyChord.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CD001B2F0E000000C9AB85 /* KeyChord.swift */; };
+		F7CD00302F0E000000C9AB85 /* ShortcutMatching.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CD002F2F0E000000C9AB85 /* ShortcutMatching.swift */; };
 		F7CD001E2F0E000000C9AB85 /* ShortcutAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CD001D2F0E000000C9AB85 /* ShortcutAction.swift */; };
 		F7CD00202F0E000000C9AB85 /* ShortcutStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CD001F2F0E000000C9AB85 /* ShortcutStore.swift */; };
 		F7CD00222F0E000000C9AB85 /* ShortcutRecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CD00212F0E000000C9AB85 /* ShortcutRecorderView.swift */; };
@@ -202,6 +203,7 @@
 		F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesPopoverViewController.swift; sourceTree = "<group>"; };
 		F7FED5F22F7D0B0E00E35164 /* Tagging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tagging.swift; sourceTree = "<group>"; };
 		F7CD001B2F0E000000C9AB85 /* KeyChord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChord.swift; sourceTree = "<group>"; };
+		F7CD002F2F0E000000C9AB85 /* ShortcutMatching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutMatching.swift; sourceTree = "<group>"; };
 		F7CD001D2F0E000000C9AB85 /* ShortcutAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutAction.swift; sourceTree = "<group>"; };
 		F7CD001F2F0E000000C9AB85 /* ShortcutStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutStore.swift; sourceTree = "<group>"; };
 		F7CD00212F0E000000C9AB85 /* ShortcutRecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutRecorderView.swift; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 			isa = PBXGroup;
 			children = (
 				F7CD001B2F0E000000C9AB85 /* KeyChord.swift */,
+				F7CD002F2F0E000000C9AB85 /* ShortcutMatching.swift */,
 				F7CD001D2F0E000000C9AB85 /* ShortcutAction.swift */,
 				F7CD001F2F0E000000C9AB85 /* ShortcutStore.swift */,
 				F7CD00212F0E000000C9AB85 /* ShortcutRecorderView.swift */,
@@ -547,6 +550,7 @@
 				F73865D32C37B97500837FE4 /* CustomCollectionView.swift in Sources */,
 				F74D555E2F0E52F800C9AB85 /* ArrowKeyLocate.swift in Sources */,
 				F7CD001C2F0E000000C9AB85 /* KeyChord.swift in Sources */,
+				F7CD00302F0E000000C9AB85 /* ShortcutMatching.swift in Sources */,
 				F7CD001E2F0E000000C9AB85 /* ShortcutAction.swift in Sources */,
 				F7CD00202F0E000000C9AB85 /* ShortcutStore.swift in Sources */,
 				F7CD00222F0E000000C9AB85 /* ShortcutRecorderView.swift in Sources */,

@@ -59,7 +59,11 @@ struct KeyChord: Codable {
 
     init(event: NSEvent) {
         self.keyCode = event.keyCode
-        self.character = (event.charactersIgnoringModifiers ?? "").lowercased()
+        // Prefer the produced glyph so Option/AltGr symbols (Nordic '=' = Option+0) record
+        // correctly and stay symmetric with semantic dispatch. See ShortcutMatching.
+        self.character = ShortcutMatching.recordedCharacter(
+            literal: event.characters,
+            ignoringModifiers: event.charactersIgnoringModifiers)
         var m = Modifiers(event.modifierFlags)
         if Self.isImplicitFn(event.keyCode) { m.remove(.function) }
         self.modifiers = m
