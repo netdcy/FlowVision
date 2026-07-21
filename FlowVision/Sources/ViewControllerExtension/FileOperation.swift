@@ -1014,7 +1014,11 @@ extension ViewController {
                 } else {
                     var appleScriptURLs = ""
                     for url in urlsToDelete {
-                        let escapedPath = url.path.replacingOccurrences(of: "\"", with: "\\\"")
+                        let escapedPath = url.path
+                            .replacingOccurrences(of: "\\", with: "\\\\")
+                            .replacingOccurrences(of: "\"", with: "\\\"")
+                            //.replacingOccurrences(of: "\n", with: "\\n")
+                            //.replacingOccurrences(of: "\r", with: "\\r")
                         appleScriptURLs += "\"\(escapedPath)\" as POSIX file, "
                     }
                     
@@ -1614,19 +1618,19 @@ extension ViewController {
                 
                 // 第二步：将所有文件改成临时文件名
                 // Step 2: Rename all files to temporary names
-                var tempNames: [(tempUrl: URL, finalUrl: URL)] = []
+                var tempNames: [(tempUrl: URL, finalUrl: URL, originalUrl: URL)] = []
                 for (index, item) in finalNames.enumerated() {
                     let tempName = "temp_rename_\(UUID().uuidString)"
                     let tempUrl = item.originalUrl.deletingLastPathComponent().appendingPathComponent(tempName)
                     
                     do {
                         try FileManager.default.moveItem(at: item.originalUrl, to: tempUrl)
-                        tempNames.append((tempUrl: tempUrl, finalUrl: item.finalUrl))
+                        tempNames.append((tempUrl: tempUrl, finalUrl: item.finalUrl, originalUrl: item.originalUrl))
                     } catch {
                         // 如果临时重命名失败，回滚之前的临时重命名
                         // If temporary rename fails, rollback previous temporary renames
                         for prevTemp in tempNames {
-                            try? FileManager.default.moveItem(at: prevTemp.tempUrl, to: finalNames[tempNames.count].originalUrl)
+                            try? FileManager.default.moveItem(at: prevTemp.tempUrl, to: prevTemp.originalUrl)
                         }
                         log("Failed to create temp name: \(error)", level: .error)
                         allSuccess = false
