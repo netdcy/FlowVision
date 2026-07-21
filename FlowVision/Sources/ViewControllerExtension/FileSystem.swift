@@ -13,6 +13,24 @@ private class ScanCancelHandler: NSObject {
     @objc func cancel(_ sender: Any?) { onCancel?() }
 }
 
+private final class FileInfoScanState {
+    private let lock = NSLock()
+    private var cancelled = false
+
+    func cancel() {
+        lock.lock()
+        cancelled = true
+        lock.unlock()
+    }
+
+    func isCancelled() -> Bool {
+        lock.lock()
+        let value = cancelled
+        lock.unlock()
+        return value
+    }
+}
+
 extension ViewController {
     
     func scanFiles(at folderURL: URL, contents: inout [URL], properties: [URLResourceKey]) {
@@ -114,7 +132,7 @@ extension ViewController {
                     lock.unlock()
                     
                     let now = Date()
-                    if now.timeIntervalSince(lastUpdateTime) >= 0.3 {
+                    if now.timeIntervalSince(lastUpdateTime) >= 0.25 {
                         lastUpdateTime = now
                         DispatchQueue.main.async {
                             statusLabel.stringValue = String(format: NSLocalizedString("scanned-files-progress", comment: "已扫描 %d 个文件，其中图像 %d 个，视频 %d 个"), fc, ic, vc)
@@ -1271,20 +1289,51 @@ extension ViewController {
     }
     
     class FolderStatisticInfo {
-        var folderCount = 0
-        var fileCount = 0
-        var imageCount = 0
-        var videoCount = 0
-        var totalSize = 0
-        
-        // var description: String {
-        //     let text = String(format: NSLocalizedString("statistic-content", comment: "(统计内容)"),folderCount,fileCount,imageCount,videoCount,readableFileSize(totalSize))
-        //     return text
-        // }
+        struct Snapshot {
+            let folderCount: Int
+            let fileCount: Int
+            let imageCount: Int
+            let videoCount: Int
+            let totalSize: Int
+        }
 
-        var descriptionOneLine: String {
-            let text = String(format: NSLocalizedString("statistic-content-one-line", comment: "(统计内容一行)"),fileCount,readableFileSize(totalSize))
-            return text
+        private let lock = NSLock()
+        private var folderCount = 0
+        private var fileCount = 0
+        private var imageCount = 0
+        private var videoCount = 0
+        private var totalSize = 0
+
+        func snapshot() -> Snapshot {
+            lock.lock()
+            let result = Snapshot(
+                folderCount: folderCount,
+                fileCount: fileCount,
+                imageCount: imageCount,
+                videoCount: videoCount,
+                totalSize: totalSize
+            )
+            lock.unlock()
+            return result
+        }
+
+        func addFolder(size: Int = 0) {
+            lock.lock()
+            folderCount += 1
+            totalSize += size
+            lock.unlock()
+        }
+
+        func addFile(pathExtension: String, size: Int) {
+            lock.lock()
+            fileCount += 1
+            if globalVar.HandledImageAndRawExtensions.contains(pathExtension) {
+                imageCount += 1
+            } else if globalVar.HandledVideoExtensions.contains(pathExtension) {
+                videoCount += 1
+            }
+            totalSize += size
+            lock.unlock()
         }
     }
     
@@ -1452,33 +1501,66 @@ extension ViewController {
         }
 
         let stat = FolderStatisticInfo()
-        runFolderStatisticScanWithProgress(
-            statusProvider: { stat.descriptionOneLine },
-            work: { [weak self] isCancelled, onProgress in
-                self?.getFolderStatistic(resolvedUrl, result: stat, isCancelled: isCancelled, onProgress: onProgress)
-            }
-        )
-
         let sections: [FileInfoSection] = [
             FileInfoSection(title: NSLocalizedString("General", comment: "通用"), kind: .keyValue(generalPairs)),
             FileInfoSection(title: NSLocalizedString("Statistics", comment: "统计信息"), kind: .keyValue(folderStatisticPairs(stat))),
         ]
 
         let header = buildHeaderForFolder(url: url, resolvedUrl: resolvedUrl, isAlias: isAlias, aliasTypeLabel: aliasTypeLabel)
+        let scanState = FileInfoScanState()
 
-        FileInfoWindowController.show(
+        let controller = FileInfoWindowController.show(
             header: header,
             sections: sections,
             revealURLs: [url],
-            anchorWindow: view.window
+            anchorWindow: view.window,
+            onClose: { scanState.cancel() }
+        )
+
+        startFolderStatisticScan(
+            state: scanState,
+            controller: controller,
+            makeSections: { [weak self] in
+                guard let self = self else { return sections }
+                return [
+                    FileInfoSection(title: NSLocalizedString("General", comment: "通用"), kind: .keyValue(generalPairs)),
+                    FileInfoSection(title: NSLocalizedString("Statistics", comment: "统计信息"), kind: .keyValue(self.folderStatisticPairs(stat))),
+                ]
+            },
+            work: { [weak self] isCancelled, onProgress in
+                self?.getFolderStatistic(resolvedUrl, result: stat, isCancelled: isCancelled, onProgress: onProgress)
+            }
         )
     }
 
     private func presentMultiSelectionInfo(urls: [URL]) {
         let stat = FolderStatisticInfo()
-        runFolderStatisticScanWithProgress(
-            statusProvider: { stat.descriptionOneLine },
+        let sections: [FileInfoSection] = [
+            FileInfoSection(title: NSLocalizedString("Statistics", comment: "统计信息"), kind: .keyValue(folderStatisticPairs(stat))),
+        ]
+
+        let header = buildHeaderForMultiSelection(urls: urls)
+        let scanState = FileInfoScanState()
+
+        let controller = FileInfoWindowController.show(
+            header: header,
+            sections: sections,
+            revealURLs: urls,
+            anchorWindow: view.window,
+            onClose: { scanState.cancel() }
+        )
+
+        startFolderStatisticScan(
+            state: scanState,
+            controller: controller,
+            makeSections: { [weak self] in
+                guard let self = self else { return sections }
+                return [
+                    FileInfoSection(title: NSLocalizedString("Statistics", comment: "统计信息"), kind: .keyValue(self.folderStatisticPairs(stat))),
+                ]
+            },
             work: { [weak self] isCancelled, onProgress in
+                var lastProgressTime = Date.distantPast
                 for url in urls {
                     if isCancelled() { return }
                     var isDirectory: ObjCBool = false
@@ -1488,46 +1570,24 @@ extension ViewController {
                         if isAlias {
                             let resolvedUrl = try? URL(resolvingAliasFileAt: url)
                             if let resolved = resolvedUrl, resolved.hasDirectoryPath {
-                                stat.folderCount += 1
-                                stat.totalSize += aliasSize
+                                stat.addFolder(size: aliasSize)
                             } else {
-                                stat.fileCount += 1
                                 let ext = (resolvedUrl ?? url).pathExtension.lowercased()
-                                if globalVar.HandledImageAndRawExtensions.contains(ext) {
-                                    stat.imageCount += 1
-                                } else if globalVar.HandledVideoExtensions.contains(ext) {
-                                    stat.videoCount += 1
-                                }
-                                stat.totalSize += aliasSize
+                                stat.addFile(pathExtension: ext, size: aliasSize)
                             }
                         } else if isDirectory.boolValue {
-                            stat.folderCount += 1
+                            stat.addFolder()
                             self?.getFolderStatistic(url, result: stat, isCancelled: isCancelled, onProgress: onProgress)
                         } else {
-                            stat.fileCount += 1
-                            if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
-                                stat.imageCount += 1
-                            } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
-                                stat.videoCount += 1
-                            }
-                            stat.totalSize += aliasSize
+                            stat.addFile(pathExtension: url.pathExtension.lowercased(), size: aliasSize)
                         }
+                    }
+                    if Date().timeIntervalSince(lastProgressTime) >= 0.25 {
+                        lastProgressTime = Date()
+                        onProgress()
                     }
                 }
             }
-        )
-
-        let sections: [FileInfoSection] = [
-            FileInfoSection(title: NSLocalizedString("Statistics", comment: "统计信息"), kind: .keyValue(folderStatisticPairs(stat))),
-        ]
-
-        let header = buildHeaderForMultiSelection(urls: urls)
-
-        FileInfoWindowController.show(
-            header: header,
-            sections: sections,
-            revealURLs: urls,
-            anchorWindow: view.window
         )
     }
 
@@ -1613,6 +1673,7 @@ extension ViewController {
     }
 
     private func folderStatisticPairs(_ stat: FolderStatisticInfo) -> [(String, String)] {
+        let stat = stat.snapshot()
         return [
             (NSLocalizedString("Folders", comment: "目录"), "\(stat.folderCount)"),
             (NSLocalizedString("Files", comment: "文件"), "\(stat.fileCount)"),
@@ -1620,6 +1681,25 @@ extension ViewController {
             (NSLocalizedString("Videos", comment: "视频"), "\(stat.videoCount)"),
             (NSLocalizedString("Total Size", comment: "总大小"), readableFileSize(stat.totalSize)),
         ]
+    }
+
+    private func startFolderStatisticScan(
+        state: FileInfoScanState,
+        controller: FileInfoWindowController,
+        makeSections: @escaping () -> [FileInfoSection],
+        work: @escaping (_ isCancelled: () -> Bool, _ onProgress: @escaping () -> Void) -> Void
+    ) {
+        let publish: () -> Void = { [weak controller] in
+            DispatchQueue.main.async {
+                guard !state.isCancelled() else { return }
+                controller?.updateSections(makeSections())
+            }
+        }
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            work(state.isCancelled, publish)
+            publish()
+        }
     }
 
     private func jsonDumpString(_ dictionary: [String: Any]) -> String {
@@ -1688,127 +1768,6 @@ extension ViewController {
         return FileInfoHeader(icon: icon, title: title, subtitle: "")
     }
     
-    private func runFolderStatisticScanWithProgress(
-        statusProvider: @escaping () -> String,
-        work: @escaping (_ isCancelled: () -> Bool, _ onProgress: @escaping () -> Void) -> Void
-    ) {
-        let lock = NSLock()
-        var isCancelled = false
-        var scanDone = false
-        
-        let panelWidth: CGFloat = 360
-        let panelHeight: CGFloat = 110
-        let panel = NSPanel(
-            contentRect: NSRect(x: 0, y: 0, width: panelWidth, height: panelHeight),
-            styleMask: [.titled],
-            backing: .buffered,
-            defer: true
-        )
-        panel.title = NSLocalizedString("Scan Prompt", comment: "扫描提示")
-        panel.isFloatingPanel = true
-        panel.center()
-        panel.standardWindowButton(.closeButton)?.isHidden = true
-        panel.standardWindowButton(.miniaturizeButton)?.isHidden = true
-        panel.standardWindowButton(.zoomButton)?.isHidden = true
-        
-        let contentView = NSView(frame: NSRect(x: 0, y: 0, width: panelWidth, height: panelHeight))
-        
-        let progressIndicator = NSProgressIndicator(frame: NSRect(x: 20, y: 72, width: panelWidth - 40, height: 20))
-        progressIndicator.style = .bar
-        progressIndicator.isIndeterminate = true
-        contentView.addSubview(progressIndicator)
-        
-        let statusLabel = NSTextField(labelWithString: "")
-        statusLabel.frame = NSRect(x: 20, y: 44, width: panelWidth - 40, height: 20)
-        statusLabel.font = NSFont.systemFont(ofSize: 12)
-        statusLabel.alignment = .natural
-        statusLabel.lineBreakMode = .byTruncatingTail
-        contentView.addSubview(statusLabel)
-        
-        let cancelButton = NSButton(title: NSLocalizedString("Stop", comment: "停止"), target: nil, action: nil)
-        cancelButton.frame = NSRect(x: (panelWidth - 80) / 2, y: 10, width: 80, height: 24)
-        cancelButton.bezelStyle = .rounded
-        cancelButton.keyEquivalent = "\u{1b}"
-        contentView.addSubview(cancelButton)
-        
-        panel.contentView = contentView
-        
-        var modalStopped = false
-        var didEnterModal = false
-        
-        let cancelHandler = ScanCancelHandler()
-        cancelHandler.onCancel = {
-            lock.lock()
-            isCancelled = true
-            lock.unlock()
-            if !modalStopped {
-                modalStopped = true
-                DispatchQueue.main.async {
-                    NSApp.stopModal()
-                }
-            }
-        }
-        cancelButton.target = cancelHandler
-        cancelButton.action = #selector(ScanCancelHandler.cancel(_:))
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            work(
-                {
-                    lock.lock()
-                    let c = isCancelled
-                    lock.unlock()
-                    return c
-                },
-                {
-                    DispatchQueue.main.async {
-                        statusLabel.stringValue = statusProvider()
-                    }
-                }
-            )
-            
-            lock.lock()
-            scanDone = true
-            lock.unlock()
-            
-            DispatchQueue.main.async {
-                if didEnterModal && !modalStopped {
-                    modalStopped = true
-                    DispatchQueue.main.async {
-                        NSApp.stopModal()
-                    }
-                }
-            }
-        }
-        
-        // Wait up to X seconds for scan to finish before showing the panel
-        let showPanelDelay: TimeInterval = 2.0
-        let waitStart = Date()
-        while Date().timeIntervalSince(waitStart) < showPanelDelay {
-            lock.lock()
-            let done = scanDone
-            lock.unlock()
-            if done { break }
-            Thread.sleep(forTimeInterval: 0.05)
-        }
-        
-        lock.lock()
-        let needsModal = !scanDone
-        lock.unlock()
-        
-        if needsModal {
-            didEnterModal = true
-            statusLabel.stringValue = statusProvider()
-            progressIndicator.startAnimation(nil)
-            
-            let storeIsKeyEventEnabled = publicVar.isKeyEventEnabled
-            publicVar.isKeyEventEnabled = false
-            NSApp.runModal(for: panel)
-            publicVar.isKeyEventEnabled = storeIsKeyEventEnabled
-            panel.close()
-            withExtendedLifetime(cancelHandler) {}
-        }
-    }
-    
     func getFolderStatistic(_ folderURL: URL, result: FolderStatisticInfo, isCancelled: () -> Bool = { false }, onProgress: (() -> Void)? = nil) {
         let properties: [URLResourceKey] = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .isAliasFileKey]
         let options:FileManager.DirectoryEnumerationOptions = [] // [.skipsHiddenFiles]
@@ -1818,54 +1777,30 @@ extension ViewController {
             return true
         })
 
-        // var result = StatisticInfo()
-        let scanInterval: TimeInterval = 4.0
-        var startDate = Date()
-        var lastProgressTime = Date()
+        var lastProgressTime = Date.distantPast
         
         while let url = enumerator?.nextObject() as? URL {
             if isCancelled() { break }
-            if let onProgress = onProgress, Date().timeIntervalSince(lastProgressTime) >= 0.3 {
-                lastProgressTime = Date()
-                onProgress()
-            }
             let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) ?? false
             let isAlias = (try? url.resourceValues(forKeys: [.isAliasFileKey]).isAliasFile) ?? false
             let fileSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
 
             if isAlias && !isDirectory {
                 if let resolved = try? URL(resolvingAliasFileAt: url), resolved.hasDirectoryPath {
-                    result.folderCount += 1
-                    result.totalSize += fileSize
+                    result.addFolder(size: fileSize)
                 } else {
-                    result.fileCount += 1
-                    if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
-                        result.imageCount += 1
-                    } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
-                        result.videoCount += 1
-                    }
-                    result.totalSize += fileSize
+                    result.addFile(pathExtension: url.pathExtension.lowercased(), size: fileSize)
                 }
             } else if !isDirectory {
-                result.fileCount += 1
-                if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
-                    result.imageCount += 1
-                } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
-                    result.videoCount += 1
-                }
-                result.totalSize += fileSize
+                result.addFile(pathExtension: url.pathExtension.lowercased(), size: fileSize)
             } else {
-                result.folderCount += 1
+                result.addFolder()
             }
-            
-            // let elapsedTime = Date().timeIntervalSince(startDate)
-            // if elapsedTime >= scanInterval {
-            //     let shouldContinue = showScanAlert(fileCount: result.fileCount, imageCount: result.imageCount, videoCount: result.videoCount)
-            //     if !shouldContinue {
-            //         break
-            //     }
-            //     startDate = Date()
-            // }
+
+            if let onProgress = onProgress, Date().timeIntervalSince(lastProgressTime) >= 0.25 {
+                lastProgressTime = Date()
+                onProgress()
+            }
         }
     }
 }

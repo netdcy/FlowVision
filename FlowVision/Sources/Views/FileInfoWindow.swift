@@ -29,13 +29,16 @@ struct FileInfoSection {
 final class FileInfoWindowController: NSWindowController, NSWindowDelegate {
 
     private static var openControllers: [FileInfoWindowController] = []
+    private var onClose: (() -> Void)?
 
+    @discardableResult
     static func show(
         header: FileInfoHeader,
         sections: [FileInfoSection],
         revealURLs: [URL]? = nil,
-        anchorWindow: NSWindow? = nil
-    ) {
+        anchorWindow: NSWindow? = nil,
+        onClose: (() -> Void)? = nil
+    ) -> FileInfoWindowController {
         let vc = FileInfoViewController(header: header, sections: sections, revealURLs: revealURLs)
 
         let initialSize = NSSize(width: FileInfoLayout.windowWidth, height: 500)
@@ -64,6 +67,7 @@ final class FileInfoWindowController: NSWindowController, NSWindowDelegate {
         window.contentMaxSize = contentRect.size
 
         let controller = FileInfoWindowController(window: window)
+        controller.onClose = onClose
         window.delegate = controller
 
         // Cascade placement based on number of already-open info windows
@@ -84,9 +88,16 @@ final class FileInfoWindowController: NSWindowController, NSWindowDelegate {
         openControllers.append(controller)
         controller.showWindow(nil)
         window.makeKeyAndOrderFront(nil)
+        return controller
+    }
+
+    func updateSections(_ sections: [FileInfoSection]) {
+        (window?.contentViewController as? FileInfoViewController)?.updateSections(sections)
     }
 
     func windowWillClose(_ notification: Notification) {
+        onClose?()
+        onClose = nil
         Self.openControllers.removeAll { $0 === self }
     }
 }
@@ -107,7 +118,7 @@ enum FileInfoLayout {
 final class FileInfoViewController: NSViewController {
 
     private let header: FileInfoHeader
-    private let sections: [FileInfoSection]
+    private var sections: [FileInfoSection]
     private let revealURLs: [URL]?
 
     private var stackView: NSStackView!
@@ -174,6 +185,13 @@ final class FileInfoViewController: NSViewController {
         stackView.layoutSubtreeIfNeeded()
         let stackHeight = stackView.fittingSize.height
         return FileInfoLayout.headerHeight + 1 + stackHeight + 1 + FileInfoLayout.buttonBarHeight
+    }
+
+    func updateSections(_ sections: [FileInfoSection]) {
+        self.sections = sections
+        guard isViewLoaded else { return }
+        rebuildSectionViews()
+        view.layoutSubtreeIfNeeded()
     }
 
     override func cancelOperation(_ sender: Any?) {
@@ -256,16 +274,6 @@ final class FileInfoViewController: NSViewController {
         )
         stack.translatesAutoresizingMaskIntoConstraints = false
 
-        for section in sections {
-            let sectionView = FileInfoSectionView(section: section)
-            stack.addArrangedSubview(sectionView)
-            NSLayoutConstraint.activate([
-                sectionView.widthAnchor.constraint(
-                    equalToConstant: FileInfoLayout.windowWidth - FileInfoLayout.horizontalPadding * 2
-                )
-            ])
-        }
-
         let document = FlippedView()
         document.translatesAutoresizingMaskIntoConstraints = false
         document.addSubview(stack)
@@ -280,7 +288,26 @@ final class FileInfoViewController: NSViewController {
         scroll.documentView = document
         self.stackView = stack
         self.scrollView = scroll
+        rebuildSectionViews()
         return scroll
+    }
+
+    private func rebuildSectionViews() {
+        guard stackView != nil else { return }
+        for view in stackView.arrangedSubviews {
+            stackView.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+
+        for section in sections {
+            let sectionView = FileInfoSectionView(section: section)
+            stackView.addArrangedSubview(sectionView)
+            NSLayoutConstraint.activate([
+                sectionView.widthAnchor.constraint(
+                    equalToConstant: FileInfoLayout.windowWidth - FileInfoLayout.horizontalPadding * 2
+                )
+            ])
+        }
     }
 
     private func makeButtonBar() -> NSView {
