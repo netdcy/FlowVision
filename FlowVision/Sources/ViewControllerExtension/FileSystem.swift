@@ -123,7 +123,7 @@ extension ViewController {
                     fileCount += 1
                     if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
                         imageCount += 1
-                    } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
+                    } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) && isNotFalseTsVideoFile(url) {
                         videoCount += 1
                     }
                     let fc = fileCount
@@ -427,7 +427,8 @@ extension ViewController {
             } else {
                 effectiveExt = file.pathExtension.lowercased()
             }
-            if publicVar.HandledFileExtensions.contains(effectiveExt) || publicVar.isShowAllTypeFile {
+            let isNotFalseTsVideoFile = isNotFalseTsVideoFile(file)
+            if (publicVar.HandledFileExtensions.contains(effectiveExt) && isNotFalseTsVideoFile) || publicVar.isShowAllTypeFile {
                 filesUrlInFolder.append(file)
             }
             // 不将替身文件统计为图像或视频
@@ -439,10 +440,10 @@ extension ViewController {
             if publicVar.HandledImageAndRawExtensions.contains(file.pathExtension.lowercased()) {
                 imageCount+=1
             }
-            if publicVar.HandledVideoExtensions.contains(file.pathExtension.lowercased()) {
+            if publicVar.HandledVideoExtensions.contains(file.pathExtension.lowercased()) && isNotFalseTsVideoFile {
                 videoCount+=1
             }
-            if publicVar.HandledSearchExtensions.contains(file.pathExtension.lowercased()) && isNotFalseTsVideoFile(file) {
+            if publicVar.HandledSearchExtensions.contains(file.pathExtension.lowercased()) && isNotFalseTsVideoFile {
                 searchCount+=1
             }
         }
@@ -690,6 +691,7 @@ extension ViewController {
             for ele in fileDB.db[SortKeyDir(folderpath)]!.files{
                 ele.1.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
                 ele.1.canBeCalcued = false
+                let isNotFalseTsVideoFile = isNotFalseTsVideoFile(URL(string: ele.1.path)!)
                 if !ele.1.isDir{
                     ele.1.ext=URL(string: ele.1.path)!.pathExtension.lowercased()
                     if ele.1.isAlias {
@@ -698,7 +700,7 @@ extension ViewController {
                             ele.1.aliasActualExt = resolved.pathExtension.lowercased()
                             if globalVar.HandledImageAndRawExtensions.contains(ele.1.aliasActualExt) {
                                 ele.1.aliasActualType = .image
-                            } else if globalVar.HandledVideoExtensions.contains(ele.1.aliasActualExt) {
+                            } else if globalVar.HandledVideoExtensions.contains(ele.1.aliasActualExt) && isNotFalseTsVideoFile {
                                 ele.1.aliasActualType = .video
                             } else {
                                 ele.1.aliasActualType = .other
@@ -713,7 +715,7 @@ extension ViewController {
                         ele.1.idInImageAndVideo = idInImageAndVideo
                         idInImage += 1
                         idInImageAndVideo += 1
-                    }else if globalVar.HandledVideoExtensions.contains(ele.1.ext) {
+                    }else if globalVar.HandledVideoExtensions.contains(ele.1.ext) && isNotFalseTsVideoFile {
                         ele.1.type = .video
                         ele.1.idInImageAndVideo = idInImageAndVideo
                         idInImageAndVideo += 1
@@ -1397,7 +1399,7 @@ extension ViewController {
 
         let ext = resolvedUrl.pathExtension.lowercased()
         let isImage = globalVar.HandledImageAndRawExtensions.contains(ext)
-        let isVideo = globalVar.HandledVideoExtensions.contains(ext)
+        let isVideo = globalVar.HandledVideoExtensions.contains(ext) && isNotFalseTsVideoFile(resolvedUrl)
         if isImage || isVideo {
             file.imageInfo = getImageInfo(url: resolvedUrl, needMetadata: true)
         }

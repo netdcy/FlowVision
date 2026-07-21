@@ -191,7 +191,7 @@ class SortKey: Comparable {
                     sortKey.rating = rating
                 }
             }
-            if globalVar.HandledVideoExtensions.contains(ext) {
+            if globalVar.HandledVideoExtensions.contains(ext) && isNotFalseTsVideoFile(URL(string: sortKey.path)!) {
                 if let (width,height,date) = getVideoResolutionAndDateFFmpeg(for: URL(string: sortKey.path)!) {
                     sortKey.exifPixel = width*height
                     if let date = date {

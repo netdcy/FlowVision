@@ -1347,7 +1347,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             if isDir {
                 _ = appDelegate.createNewWindow(path, openInBackground: openInBackground)
             } else if globalVar.HandledImageAndRawExtensions.contains(ext) ||
-                      (globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(ext)) {
+                      (globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(ext) && isNotFalseTsVideoFile(resolvedUrl)) {
                 if let windowController = appDelegate.createNewWindow(path, isLaunchFromFile: true, openInBackground: openInBackground) {
                     appDelegate.openImageInTargetWindow(path, windowController: windowController)
                 }

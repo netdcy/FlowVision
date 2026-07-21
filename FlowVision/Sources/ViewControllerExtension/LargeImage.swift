@@ -222,7 +222,7 @@ extension ViewController {
                 if resolved.hasDirectoryPath {
                     switchDirByDirection(direction: .zero, dest: resolvedAbsPath, stackDeep: 0)
                 } else if globalVar.HandledImageAndRawExtensions.contains(resolved.pathExtension.lowercased()) ||
-                    (globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(resolved.pathExtension.lowercased())) {
+                    (globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(resolved.pathExtension.lowercased()) && isNotFalseTsVideoFile(resolved)) {
                     if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
                         if let windowController = appDelegate.createNewWindow(resolvedAbsPath, isLaunchFromFile: true) {
                             appDelegate.openImageInTargetWindow(resolvedAbsPath, windowController: windowController)
@@ -238,7 +238,7 @@ extension ViewController {
                 switchDirByDirection(direction: .zero, dest: item.file.path, stackDeep: 0)
             }
             else if !globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) &&
-                !(globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(item.file.ext)) {
+                !(globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(item.file.ext) && isNotFalseTsVideoFile(url)) {
                 NSWorkspace.shared.open(url)
             }else{
                 if largeImageView.isHidden {
@@ -457,7 +457,7 @@ extension ViewController {
                     if publicVar.HandledImageAndRawExtensions.contains(ext) {
                         fallbackImageCount += count
                     }
-                    if publicVar.HandledVideoExtensions.contains(ext) {
+                    if publicVar.HandledVideoExtensions.contains(ext) && isNotFalseTsVideoFile(URL(string: file.path)!) {
                         fallbackVideoCount += count
                     }
                 }
@@ -726,7 +726,7 @@ extension ViewController {
             file.ext=URL(string: file.path)!.pathExtension.lowercased()
             if globalVar.HandledImageAndRawExtensions.contains(file.ext) {
                 file.type = .image
-            }else if globalVar.HandledVideoExtensions.contains(file.ext) {
+            }else if globalVar.HandledVideoExtensions.contains(file.ext) && isNotFalseTsVideoFile(URL(string: file.path)!) {
                 file.type = .video
             }else{
                 file.type = .other
