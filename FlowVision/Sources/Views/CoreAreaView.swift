@@ -36,7 +36,7 @@ class CoreAreaView: NSView {
         ])
     }
     
-    func showInfo(_ info: String, timeOut: Double = 1.0, duration: Double = INFO_VIEW_DURATION, cannotBeCleard: Bool = true) {
+    func showInfo(_ info: String, timeOut: Double = 1.0, duration: Double = INFO_VIEW_DURATION, cannotBeCleard: Bool) {
         infoView.showInfo(text: info, timeOut: timeOut, duration: duration)
         self.cannotBeCleard = cannotBeCleard
     }

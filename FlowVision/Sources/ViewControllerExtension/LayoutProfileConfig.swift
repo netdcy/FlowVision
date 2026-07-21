@@ -82,12 +82,12 @@ extension ViewController {
     // 以下是切换自定义配置
     // Below is switching custom configuration
     func setCustomProfileTo(_ styleName: String){
-        coreAreaView.showInfo(String(format: NSLocalizedString("save-to-custom-profile", comment: "保存到自定义配置"), styleName), timeOut: 1)
+        coreAreaView.showInfo(String(format: NSLocalizedString("save-to-custom-profile", comment: "保存到自定义配置"), styleName), timeOut: 1, cannotBeCleard: true)
         publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_"+styleName)
     }
     
     func useCustomProfile(_ styleName: String){
-        coreAreaView.showInfo(String(format: NSLocalizedString("switch-to-custom-profile", comment: "切换至自定义配置"), styleName), timeOut: 1)
+        coreAreaView.showInfo(String(format: NSLocalizedString("switch-to-custom-profile", comment: "切换至自定义配置"), styleName), timeOut: 1, cannotBeCleard: true)
         let newStyle = CustomProfile.loadFromUserDefaults(withKey: "CustomStyle_v2_"+styleName)
         
         // 布局类型

@@ -106,9 +106,9 @@ extension ViewController {
         UserDefaults.standard.set(globalVar.portableMode, forKey: "portableMode")
         adjustWindowPortable(firstShowThumb: false, animate: true)
         if globalVar.portableMode {
-            coreAreaView.showInfo(NSLocalizedString("Portable Mode: On", comment: "便携模式：开启"))
+            coreAreaView.showInfo(NSLocalizedString("Portable Mode: On", comment: "便携模式：开启"), cannotBeCleard: true)
         }else{
-            coreAreaView.showInfo(NSLocalizedString("Portable Mode: Off", comment: "便携模式：关闭"))
+            coreAreaView.showInfo(NSLocalizedString("Portable Mode: Off", comment: "便携模式：关闭"), cannotBeCleard: true)
         }
     }
     
