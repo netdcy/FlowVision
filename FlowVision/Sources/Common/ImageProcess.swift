@@ -237,6 +237,57 @@ extension CGImage {
 //    }
 // }
 
+func isNotFalseTsVideoFile(_ url: URL) -> Bool {
+    if url.pathExtension.lowercased() == "ts" || url.pathExtension.lowercased() == "mts" {
+        return !isProbablyTextFile(url)
+    }
+    return true
+}
+
+func isProbablyTextFile(_ url: URL) -> Bool {
+    let resourceValues = try? url.resourceValues(forKeys: [.fileSizeKey, .isUbiquitousItemKey, .ubiquitousItemDownloadingStatusKey])
+    if let fileSize = resourceValues?.fileSize,
+       fileSize < 100 * 1024 {
+        return true
+    }
+
+    if let isUbiquitousItem = resourceValues?.isUbiquitousItem,
+       isUbiquitousItem,
+       let downloadingStatus = resourceValues?.ubiquitousItemDownloadingStatus,
+       downloadingStatus != .current {
+        return false
+    }
+
+    guard let handle = try? FileHandle(forReadingFrom: url) else {
+        return false
+    }
+    defer { try? handle.close() }
+
+    let data = handle.readData(ofLength: 512)
+    if data.isEmpty { return true }
+
+    if data.starts(with: [0xEF, 0xBB, 0xBF])
+        || data.starts(with: [0xFF, 0xFE])
+        || data.starts(with: [0xFE, 0xFF]) {
+        return true
+    }
+
+    let maxControlByteCount = max(1, data.count / 20)
+    var controlByteCount = 0
+    for byte in data {
+        if byte == 0 {
+            return false
+        }
+        if byte != 9 && byte != 10 && byte != 13 && byte < 32 {
+            controlByteCount += 1
+            if controlByteCount > maxControlByteCount {
+                return false
+            }
+        }
+    }
+    return true
+}
+
 func getFileInfo(file: FileModel) {
     let fileManager = FileManager.default
     do {

@@ -442,7 +442,7 @@ extension ViewController {
             if publicVar.HandledVideoExtensions.contains(file.pathExtension.lowercased()) {
                 videoCount+=1
             }
-            if publicVar.HandledSearchExtensions.contains(file.pathExtension.lowercased()) {
+            if publicVar.HandledSearchExtensions.contains(file.pathExtension.lowercased()) && isNotFalseTsVideoFile(file) {
                 searchCount+=1
             }
         }
@@ -1324,12 +1324,17 @@ extension ViewController {
             lock.unlock()
         }
 
-        func addFile(pathExtension: String, size: Int) {
+        func addFile(url: URL, size: Int) {
+            let pathExtension = url.pathExtension.lowercased()
+            let isImage = globalVar.HandledImageAndRawExtensions.contains(pathExtension)
+            let isVideo = globalVar.HandledVideoExtensions.contains(pathExtension)
+                && isNotFalseTsVideoFile(url)
+
             lock.lock()
             fileCount += 1
-            if globalVar.HandledImageAndRawExtensions.contains(pathExtension) {
+            if isImage {
                 imageCount += 1
-            } else if globalVar.HandledVideoExtensions.contains(pathExtension) {
+            } else if isVideo {
                 videoCount += 1
             }
             totalSize += size
@@ -1572,14 +1577,13 @@ extension ViewController {
                             if let resolved = resolvedUrl, resolved.hasDirectoryPath {
                                 stat.addFolder(size: aliasSize)
                             } else {
-                                let ext = (resolvedUrl ?? url).pathExtension.lowercased()
-                                stat.addFile(pathExtension: ext, size: aliasSize)
+                                stat.addFile(url: resolvedUrl ?? url, size: aliasSize)
                             }
                         } else if isDirectory.boolValue {
                             stat.addFolder()
                             self?.getFolderStatistic(url, result: stat, isCancelled: isCancelled, onProgress: onProgress)
                         } else {
-                            stat.addFile(pathExtension: url.pathExtension.lowercased(), size: aliasSize)
+                            stat.addFile(url: url, size: aliasSize)
                         }
                     }
                     if Date().timeIntervalSince(lastProgressTime) >= 0.25 {
@@ -1789,10 +1793,10 @@ extension ViewController {
                 if let resolved = try? URL(resolvingAliasFileAt: url), resolved.hasDirectoryPath {
                     result.addFolder(size: fileSize)
                 } else {
-                    result.addFile(pathExtension: url.pathExtension.lowercased(), size: fileSize)
+                    result.addFile(url: url, size: fileSize)
                 }
             } else if !isDirectory {
-                result.addFile(pathExtension: url.pathExtension.lowercased(), size: fileSize)
+                result.addFile(url: url, size: fileSize)
             } else {
                 result.addFolder()
             }
