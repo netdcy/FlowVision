@@ -12,6 +12,7 @@ extension ViewController {
     
     func LRUMemRecord(path: String, count: Int){
         fileDB.lock()
+        defer { fileDB.unlock() }
         var index: Int?
         if LRUqueue.count > 0 {
             // 之前队首的最后访问时间记录为当前时间
@@ -31,7 +32,6 @@ extension ViewController {
             LRUqueue.remove(at: index)
         }
         LRUqueue.insert((path,DispatchTime.now(),count), at: 0)
-        fileDB.unlock()
     }
     
     func reportPhyMemoryUsage() -> Double {

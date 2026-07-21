@@ -349,6 +349,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var watchFileDescriptor: Int32 = -1
     var watchDispatchSource: DispatchSourceFileSystemObject?
     
+    // 所有读写都必须持有 fileDB.dblock。
+    // All accesses must be protected by fileDB.dblock.
     var LRUqueue = [(String,DispatchTime,Int)]()
     
     var largeImageLoadTask: DispatchWorkItem?
@@ -1758,16 +1760,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 
                 // log("Memory usage: "+String(memUse), level: .warn)
                 
-                if LRUqueue.count >= 1 {
-                    guard let lastLRUItem = LRUqueue.last else {continue}
-                    
+                fileDB.lock()
+                if let lastLRUItem = LRUqueue.last {
                     let overTime = (DispatchTime.now().uptimeNanoseconds-lastLRUItem.1.uptimeNanoseconds)/1000000000
                     let memUseLimit = globalVar.memUseLimit
-                    
-                    fileDB.lock()
-                    let curFolder=fileDB.curFolder
-                    let curFolderFileCount = fileDB.db[SortKeyDir(curFolder)]!.fileCount
-                    fileDB.unlock()
+                    let curFolder = fileDB.curFolder
+                    let curFolderVersion = fileDB.ver
                     
                     var totalCount = 0
                     for (_,_,count) in LRUqueue {
@@ -1794,10 +1792,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         // 由于先置目录再请求缩略图，所以此处可保证安全
                         // Safe here because directory is set before requesting thumbnails
                         
-                        if(lastLRUItem.0 != fileDB.curFolder){
+                        if(lastLRUItem.0 != curFolder){
                             // 不是当前目录
                             // Not current directory
-                            fileDB.lock()
                             // TODO: 为什么这里可能为null？
                             // TODO: Why this could be null?
                             if let dirModel = fileDB.db[SortKeyDir(lastLRUItem.0)] {
@@ -1817,6 +1814,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         }else{
                             // 是当前目录
                             // Is current directory
+                            // 不能持有 fileDB 锁同步切到主线程，否则主线程等待同一把锁时会死锁。
+                            // Do not synchronously enter the main queue while holding fileDB's lock.
+                            fileDB.unlock()
                             var indexPaths: Set<IndexPath> = []
                             var isInLargeView = false
                             var curImagePos = -1
@@ -1858,7 +1858,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             
                             if indexMax > indexMin {
                                 fileDB.lock()
-                                if let dirModel = fileDB.db[SortKeyDir(lastLRUItem.0)] {
+                                // 主线程查询期间目录可能已切换，只有快照仍然有效时才清理。
+                                // Commit only if the directory snapshot is still valid after the main-thread query.
+                                if fileDB.curFolder == lastLRUItem.0,
+                                   fileDB.ver == curFolderVersion,
+                                   LRUqueue.last?.0 == lastLRUItem.0,
+                                   let dirModel = fileDB.db[SortKeyDir(lastLRUItem.0)] {
                                     dirModel.isMemClearedToAvoidRemainingTask=true
                                     for fileModel in dirModel.files {
                                         // 如果不在任一范围内,才清除缩略图
@@ -1874,7 +1879,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             }
                         }
                         
+                    }else{
+                        fileDB.unlock()
                     }
+                }else{
+                    fileDB.unlock()
                 }
                 
             }
