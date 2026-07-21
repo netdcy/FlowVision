@@ -158,7 +158,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
     }
     
     @IBAction func autoHideToolbarToggled(_ sender: NSButton) {
-        UserDefaults.standard.set(sender.state, forKey: "autoHideToolbar")
+        UserDefaults.standard.set((sender.state == .on), forKey: "autoHideToolbar")
     }
 
     @IBAction func autoHideCursorWhenFullscreenToggled(_ sender: NSButton) {

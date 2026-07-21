@@ -2357,6 +2357,8 @@ class LargeImageView: NSView {
         }
         magnificationGesture = nil
         
+        snapshotTimer?.cancel()
+        snapshotTimer = nil
         longPressZoomTimer?.invalidate()
         longPressZoomTimer = nil
         wheelZoomRegenTimer?.invalidate()

@@ -2192,6 +2192,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             return
         }
         
+        stopWatchingDirectory()
         watchFileDescriptor = open(path, O_EVTONLY)
         guard watchFileDescriptor != -1 else {
             log("Failed to open directory, errno: \(errno)", level: .warn)
@@ -2234,8 +2235,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             
         }
         
+        let fd = watchFileDescriptor
         watchDispatchSource?.setCancelHandler {
-            close(self.watchFileDescriptor)
+            close(fd)
         }
         
         watchDispatchSource?.resume()

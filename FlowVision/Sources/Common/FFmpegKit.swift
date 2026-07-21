@@ -66,6 +66,7 @@ class FFmpegKitWrapper {
     func executeFFmpegCommand(_ command: [String]) -> Any? {
         loadFFmpegKitIfNeeded()
         lock.lock()
+        defer {lock.unlock()}
 
         let className = "FFmpegKit"
         let selectorName = "executeWithArguments:"
@@ -86,13 +87,13 @@ class FFmpegKitWrapper {
         
         let args = NSArray(array: command)
         
-        lock.unlock()
         return executeFunction(ffmpegKitClass, selector, args)
     }
     
     func executeFFprobeCommand(_ command: [String]) -> Any? {
         loadFFmpegKitIfNeeded()
         lock.lock()
+        defer {lock.unlock()}
         
         let className = "FFprobeKit"
         let selectorName = "executeWithArguments:"
@@ -113,13 +114,13 @@ class FFmpegKitWrapper {
         
         let args = NSArray(array: command)
         
-        lock.unlock()
         return executeFunction(ffprobeKitClass, selector, args)
     }
     
     func getReturnCode(from session: Any) -> Any? {
         loadFFmpegKitIfNeeded()
         lock.lock()
+        defer {lock.unlock()}
         
         let selectorName = "getReturnCode"
         let selector = sel_registerName(selectorName)
@@ -137,13 +138,13 @@ class FFmpegKitWrapper {
         typealias GetReturnCodeFunctionType = @convention(c) (AnyObject, Selector) -> Any?
         let getReturnCodeFunction = unsafeBitCast(methodIMP, to: GetReturnCodeFunctionType.self)
         
-        lock.unlock()
         return getReturnCodeFunction(session as AnyObject, selector)
     }
     
     func getOutput(from session: Any) -> String? {
         loadFFmpegKitIfNeeded()
         lock.lock()
+        defer {lock.unlock()}
         
         let selectorName = "getOutput"
         let selector = sel_registerName(selectorName)
@@ -161,13 +162,13 @@ class FFmpegKitWrapper {
         typealias GetOutputFunctionType = @convention(c) (AnyObject, Selector) -> String?
         let getOutputFunction = unsafeBitCast(methodIMP, to: GetOutputFunctionType.self)
         
-        lock.unlock()
         return getOutputFunction(session as AnyObject, selector)
     }
     
     func isSuccess(_ returnCode: Any?) -> Bool {
         loadFFmpegKitIfNeeded()
         lock.lock()
+        defer {lock.unlock()}
         
         let className = "ReturnCode"
         let selectorName = "isSuccess:"
@@ -186,7 +187,6 @@ class FFmpegKitWrapper {
         typealias IsSuccessFunctionType = @convention(c) (AnyClass, Selector, Any) -> Bool
         let isSuccessFunction = unsafeBitCast(methodIMP, to: IsSuccessFunctionType.self)
         
-        lock.unlock()
         return isSuccessFunction(returnCodeClass, selector, returnCode as Any)
     }
 }
