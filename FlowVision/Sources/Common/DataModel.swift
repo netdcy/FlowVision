@@ -545,6 +545,7 @@ class DirModel {
     // var searchVer: Int
     var folderCount: Int = 0
     var fileCount: Int = 0
+    var searchCount: Int = 0
     var imageCount: Int = 0
     var videoCount: Int = 0
     var isMemClearedToAvoidRemainingTask: Bool = false

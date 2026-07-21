@@ -155,6 +155,7 @@ extension ViewController {
     func toggleIsShowAllTypeFile(){
         publicVar.isShowAllTypeFile.toggle()
         UserDefaults.standard.set(publicVar.isShowAllTypeFile, forKey: "isShowAllTypeFile")
+        publicVar.setFileExtensions()
         var showText = NSLocalizedString("Not Show All Types of Files", comment: "不显示所有类型文件")
         if publicVar.isShowAllTypeFile {
             showText = NSLocalizedString("Show All Types of Files", comment: "显示所有类型文件")

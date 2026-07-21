@@ -245,14 +245,14 @@ class PublicVar{
 
     func setFileExtensions(){
         HandledImageAndRawExtensions = []
-        if self.isShowImageFile{
+        if self.isShowImageFile || self.isShowAllTypeFile {
             HandledImageAndRawExtensions += globalVar.HandledImageExtensions
         }
-        if self.isShowRawFile {
+        if self.isShowRawFile || self.isShowAllTypeFile {
             HandledImageAndRawExtensions += globalVar.HandledRawExtensions
         }
         HandledVideoExtensions = []
-        if self.isShowVideoFile {
+        if self.isShowVideoFile || self.isShowAllTypeFile {
             HandledVideoExtensions += globalVar.HandledVideoExtensions
         }
         HandledOtherExtensions = globalVar.HandledOtherExtensions

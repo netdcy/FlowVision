@@ -428,7 +428,7 @@ extension ViewController {
                 effectiveExt = file.pathExtension.lowercased()
             }
             let isNotFalseTsVideoFile = isNotFalseTsVideoFile(file)
-            if (publicVar.HandledFileExtensions.contains(effectiveExt) && isNotFalseTsVideoFile) || publicVar.isShowAllTypeFile {
+            if publicVar.isShowAllTypeFile || (publicVar.HandledFileExtensions.contains(effectiveExt) && isNotFalseTsVideoFile) {
                 filesUrlInFolder.append(file)
             }
             // 不将替身文件统计为图像或视频
@@ -443,7 +443,7 @@ extension ViewController {
             if publicVar.HandledVideoExtensions.contains(file.pathExtension.lowercased()) && isNotFalseTsVideoFile {
                 videoCount+=1
             }
-            if publicVar.HandledSearchExtensions.contains(file.pathExtension.lowercased()) && isNotFalseTsVideoFile {
+            if publicVar.isShowAllTypeFile || (publicVar.HandledSearchExtensions.contains(file.pathExtension.lowercased()) && isNotFalseTsVideoFile) {
                 searchCount+=1
             }
         }
@@ -468,7 +468,6 @@ extension ViewController {
         let fileCount=filesInFolder.count
         for folder in subFolders {
             filesInFolder.append(folder.absoluteString+"_FolderMark")
-            
         }
         
         // 标记当前节点
@@ -484,6 +483,7 @@ extension ViewController {
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.isFiltered = publicVar.isFilenameFilterOn
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.folderCount=subFolders.count
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.fileCount=fileCount
+            fileDB.db[SortKeyDir(folderURL.absoluteString)]!.searchCount=searchCount
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.imageCount=imageCount
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.videoCount=videoCount
         }
@@ -1252,7 +1252,7 @@ extension ViewController {
                     }
                 }
                 
-                if fileDB.db[curIndex].1.fileCount>0 && fileDB.db[curIndex].1.ver == fileDB.ver {
+                if fileDB.db[curIndex].1.searchCount>0 && fileDB.db[curIndex].1.ver == fileDB.ver {
                     break
                 }
             }

@@ -45,15 +45,15 @@ extension ViewController {
         let specialKey = event.specialKey ?? .f30
 
         // 把按键信息打印出来，用于调试不同键盘的键值差异
-        // var modifierStrings: [String] = []
-        // if isCommandPressed { modifierStrings.append("Command") }
-        // if isAltPressed { modifierStrings.append("Option") }
-        // if isCtrlPressed { modifierStrings.append("Control") }
-        // if isShiftPressed { modifierStrings.append("Shift") }
-        // if isFnPressed { modifierStrings.append("Fn") }
-        // let modifierDescription = modifierStrings.isEmpty ? "None" : modifierStrings.joined(separator: "+")
-        // log("Key Event Debug - characters: \(characters), keyCode: \(event.keyCode), specialKey: \(specialKey), modifierFlags: \(modifierFlags.rawValue), Modifiers: \(modifierDescription)", level: .debug)
-        
+        var modifierStrings: [String] = []
+        if isCommandPressed { modifierStrings.append("Command") }
+        if isAltPressed { modifierStrings.append("Option") }
+        if isCtrlPressed { modifierStrings.append("Control") }
+        if isShiftPressed { modifierStrings.append("Shift") }
+        if isFnPressed { modifierStrings.append("Fn") }
+        let modifierDescription = modifierStrings.isEmpty ? "None" : modifierStrings.joined(separator: "+")
+        log("Key Event Debug - characters: \(characters), keyCode: \(event.keyCode), specialKey: \(specialKey), modifierFlags: \(modifierFlags.rawValue), Modifiers: \(modifierDescription)", level: .debug)
+
         // 快速搜索
         // Quick search
         if publicVar.isKeyEventEnabled && characters.count == 1 && (characters.first!.isLetter || characters.first!.isNumber) && noModifierKey {
