@@ -1225,24 +1225,32 @@ extension WindowController: NSToolbarDelegate {
         self.favoritesPopover = popover
         
         guard let window = self.window, let contentView = window.contentView else { return }
+        guard let button = sender as? NSButton else { return }
         
         // Toolbar items sit above contentView; converting the button rect into contentView coords
         // often lands outside bounds, and NSPopover then won't appear. Clamp to the visible top edge.
         let b = contentView.bounds
-        let targetRectInContentView: NSRect
-        if let button = sender as? NSButton, button.window === window {
-            let rectInWindow = button.convert(button.bounds, to: nil)
-            var r = contentView.convert(rectInWindow, from: nil)
-            if !b.intersects(r) {
-                let midX = min(max(r.midX, b.minX + 20), b.maxX - 20)
-                r = contentView.isFlipped
-                    ? NSRect(x: midX - 0.5, y: b.minY + 1, width: 1, height: 1)
-                    : NSRect(x: midX - 0.5, y: b.maxY - 1, width: 1, height: 1)
-            }
-            targetRectInContentView = r
-            let preferredEdge: NSRectEdge = contentView.isFlipped ? .maxY : .minY
-            popover.show(relativeTo: targetRectInContentView, of: contentView, preferredEdge: preferredEdge)
+        let rectInWindow: NSRect
+        if button.window === window {
+            // Keep the original conversion path for a normal window.
+            rectInWindow = button.convert(button.bounds, to: nil)
+        } else if window.styleMask.contains(.fullScreen), let buttonWindow = button.window {
+            // AppKit may host full-screen toolbar items in a separate window.
+            let rectInButtonWindow = button.convert(button.bounds, to: nil)
+            rectInWindow = window.convertFromScreen(buttonWindow.convertToScreen(rectInButtonWindow))
+        } else {
+            return
         }
+
+        var targetRectInContentView = contentView.convert(rectInWindow, from: nil)
+        if !b.intersects(targetRectInContentView) {
+            let midX = min(max(targetRectInContentView.midX, b.minX + 20), b.maxX - 20)
+            targetRectInContentView = contentView.isFlipped
+                ? NSRect(x: midX - 0.5, y: b.minY + 1, width: 1, height: 1)
+                : NSRect(x: midX - 0.5, y: b.maxY - 1, width: 1, height: 1)
+        }
+        let preferredEdge: NSRectEdge = contentView.isFlipped ? .maxY : .minY
+        popover.show(relativeTo: targetRectInContentView, of: contentView, preferredEdge: preferredEdge)
     }
 
     @objc func taggingAction(_ sender: Any?) {
