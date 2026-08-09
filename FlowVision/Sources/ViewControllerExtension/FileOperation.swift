@@ -941,14 +941,10 @@ extension ViewController {
         alert.messageText = NSLocalizedString("Delete", comment: "删除")
         if isShiftPressed {
             alert.informativeText = NSLocalizedString("ask-to-delete-shift", comment: "你确定要将这些文件永久删除吗？此操作无法撤销。")
-        }else if VolumeManager.shared.isExternalVolume(urls.first!) {
-            alert.informativeText = NSLocalizedString("ask-to-delete-external", comment: "此目录不支持移动到废纸篓。将立即删除这些项目，此操作无法撤销。")
+        }else if ifHasPermission{
+            alert.informativeText = NSLocalizedString("ask-to-delete", comment: "你确定要将这些文件移动到废纸篓吗？")
         }else{
-            if ifHasPermission{
-                alert.informativeText = NSLocalizedString("ask-to-delete", comment: "你确定要将这些文件移动到废纸篓吗？")
-            }else{
-                alert.informativeText = NSLocalizedString("ask-to-delete-nopermission", comment: "你确定要将这些文件移动到废纸篓吗？(无权限)")
-            }
+            alert.informativeText = NSLocalizedString("ask-to-delete-nopermission", comment: "你确定要将这些文件移动到废纸篓吗？(无权限)")
         }
         alert.alertStyle = .warning
         alert.addButton(withTitle: NSLocalizedString("Delete", comment: "删除"))
@@ -958,7 +954,7 @@ extension ViewController {
         alert.icon = NSImage(named: NSImage.cautionName)
 
         var response: NSApplication.ModalResponse = .alertFirstButtonReturn
-        if isShowPrompt || !ifHasPermission || VolumeManager.shared.isExternalVolume(urls.first!) {
+        if isShowPrompt || !ifHasPermission {
             let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
             publicVar.isKeyEventEnabled=false
             response = alert.runModal()
