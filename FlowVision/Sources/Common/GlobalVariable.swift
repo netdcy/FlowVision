@@ -152,7 +152,7 @@ class GlobalVar{
         HandledSearchExtensions = HandledImageAndRawExtensions + HandledVideoExtensions
         // 目录缩略图
         // Folder thumbnails
-        HandledFolderThumbExtensions = HandledImageAndRawExtensions.filter{$0 != "svg"} + HandledVideoExtensions // + ["pdf"]
+        HandledFolderThumbExtensions = HandledImageAndRawExtensions + HandledVideoExtensions // + ["pdf"]
         // 使用个别特殊svg作为文件夹缩略图绘图元素会导致程序异常 'NSGenericException', reason: 'NaN point value'
         // Using certain special SVGs as folder thumbnail drawing elements will cause program exception 'NSGenericException', reason: 'NaN point value'
     }
