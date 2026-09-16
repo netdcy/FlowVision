@@ -745,7 +745,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             switchToActualSizeMenuItem.state = (mainViewController.publicVar.isLargeImageFitWindow == false) ? .on : .off
             switchToFitToWindowMenuItem.state = (mainViewController.publicVar.isLargeImageFitWindow == true) ? .on : .off
             
-            toggleSidebarMenuItem.state = (mainViewController.publicVar.profile.isDirTreeHidden == false) ? .on : .off
+            if let container = mainViewController.paneContainer, container.isSplit {
+                toggleSidebarMenuItem.state = container.isSharedSidebarVisible ? .on : .off
+            } else {
+                toggleSidebarMenuItem.state = (mainViewController.publicVar.profile.isDirTreeHidden == false) ? .on : .off
+            }
             toggleSidebarMenuItem.keyEquivalent="f"
             toggleSidebarMenuItem.keyEquivalentModifierMask=[]
             toggleSidebarMenuItem.isHidden = mainViewController.publicVar.isInLargeView

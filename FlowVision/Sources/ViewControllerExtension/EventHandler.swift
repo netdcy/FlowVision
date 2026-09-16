@@ -101,7 +101,17 @@ extension ViewController {
     }
 
     func toggleSidebar(){
+        // 分屏时目录树在窗口层级共享，切换的是那一棵，而不是窗格内部已收起的副本
+        // While split the folder tree is shared at window level, so toggle that one rather than the
+        // collapsed copy inside the pane
+        if let container = paneContainer, container.isSplit {
+            container.toggleSharedSidebar()
+            return
+        }
         hasManualToggleSidebar=true
+        // 用户亲自切换过，之后就不再自动改动本窗格的侧边栏
+        // The user took control, so stop auto adjusting this pane's sidebar from now on
+        isSidebarAutoHiddenAsSecondaryPane = false
         publicVar.profile.isDirTreeHidden.toggle()
         if !publicVar.profile.isDirTreeHidden{
             splitView.setPosition(270, ofDividerAt: 0)

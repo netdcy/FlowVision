@@ -129,6 +129,35 @@ extension ViewController {
         return coreAreaView.bounds.contains(point)
     }
 
+    // 仅改变本窗格的侧边栏，不写入UserDefaults，避免影响其它窗口
+    // Change only this pane's sidebar, without touching UserDefaults, so other windows are unaffected
+    func setSidebarHiddenForPane(_ hidden: Bool) {
+        publicVar.profile.isDirTreeHidden = hidden
+        hasManualToggleSidebar = true
+        splitView.setPosition(hidden ? 0 : 270, ofDividerAt: 0)
+    }
+
+    // 副窗格默认收起目录树：一个窗口保留一棵树，和双栏文件管理器的惯例一致，
+    // 也把宽度留给缩略图。用户可以对任意窗格单独打开它。
+    // A secondary pane starts with its folder tree collapsed: one tree per window, as dual pane file
+    // managers do, and the width goes to the thumbnails instead. The user can reopen it per pane.
+    func collapseSidebarAsSecondaryPane() {
+        guard !publicVar.profile.isDirTreeHidden else { return }
+        setSidebarHiddenForPane(true)
+        isSidebarAutoHiddenAsSecondaryPane = true
+    }
+
+    // 窗格独立成标签页时，把自动收起的目录树恢复回用户的偏好
+    // When a pane becomes its own tab again, restore the auto collapsed tree to the user's preference
+    func restoreSidebarIfAutoHidden() {
+        guard isSidebarAutoHiddenAsSecondaryPane else { return }
+        isSidebarAutoHiddenAsSecondaryPane = false
+        let preferred = CustomProfile.loadFromUserDefaults(withKey: "CustomStyle_v2_current").isDirTreeHidden
+        if !preferred {
+            setSidebarHiddenForPane(false)
+        }
+    }
+
     // MARK: - 分屏命令
     // MARK: - Split commands
 
@@ -160,6 +189,7 @@ extension ViewController {
         guard let container = paneContainer, container.isSplit else { return }
         guard let appDelegate = NSApplication.shared.delegate as? AppDelegate else { return }
         guard container.detachPane(self) != nil else { return }
+        restoreSidebarIfAutoHidden()
         _ = appDelegate.createWindowAdopting(pane: self)
     }
 
@@ -187,6 +217,7 @@ extension ViewController {
                 guard container.panes.count < PaneContainerViewController.maxPanes else { break }
                 if sourceContainer.detachPane(pane) != nil {
                     container.adoptPane(pane, makeActive: false)
+                    pane.collapseSidebarAsSecondaryPane()
                 }
             }
             sourceWindow.close()

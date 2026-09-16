@@ -370,6 +370,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     var hasManualToggleSidebar=false
     
+    // 作为副窗格被自动收起侧边栏时置位；用户自己切换过侧边栏后清除
+    // Set when the sidebar was auto collapsed because this is a secondary pane; cleared once the user toggles it themselves
+    var isSidebarAutoHiddenAsSecondaryPane = false
+    
+    // 目录树被提到窗口层级共享之前所在的父视图，用于之后放回原处
+    // The tree's superview before it was lifted to the window level shared sidebar, used to put it back
+    weak var outlineScrollViewHomeView: NSView?
     
     var eventMonitorKeyDown: Any?
     var eventMonitorLeftMouseDown: Any?

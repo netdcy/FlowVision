@@ -75,6 +75,21 @@ class PaneFocusIndicatorView: NSView {
     }
 }
 
+// 共享目录树的宿主。它位于窗口层级而不在任何窗格内，所以某个窗格进入大图/全屏时盖不住它。
+// 通过把响应链接到当前活动窗格，树上的右键菜单和导航依然作用于活动窗格。
+// Host for the shared folder tree. It lives at window level rather than inside any pane, so a pane
+// going large image / full screen cannot cover it. Splicing the responder chain to the active pane
+// keeps the tree's context menu and navigation acting on that pane.
+class SharedSidebarHostView: NSView {
+
+    weak var ownerPane: ViewController?
+
+    override var nextResponder: NSResponder? {
+        get { return ownerPane ?? super.nextResponder }
+        set { super.nextResponder = newValue }
+    }
+}
+
 // 分屏容器：作为窗口的contentViewController，承载一个或多个ViewController作为窗格
 // Pane container: acts as the window's contentViewController, hosting one or more ViewControllers as panes
 class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
@@ -85,7 +100,17 @@ class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
     static let maxPanes = 8
 
     let splitView = PaneSplitView()
+    // 外层分栏：左边是共享目录树，右边是并排的窗格
+    // Outer split: the shared folder tree on the left, the side by side panes on the right
+    let outerSplitView = NSSplitView()
+    private let sidebarHost = SharedSidebarHostView()
     private let focusIndicator = PaneFocusIndicatorView()
+
+    static let defaultSharedSidebarWidth: CGFloat = 270
+    private var sharedSidebarWidth = PaneContainerViewController.defaultSharedSidebarWidth
+    // 用户在分屏状态下手动收起了共享目录树
+    // The user collapsed the shared folder tree while split
+    private(set) var isSharedSidebarHidden = false
 
     // 从左到右（或从上到下）排列的窗格
     // Panes ordered left to right (or top to bottom)
@@ -112,13 +137,19 @@ class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
         let root = NSView(frame: NSRect(x: 0, y: 0, width: 1280, height: 720))
         root.autoresizingMask = [.width, .height]
 
-        splitView.frame = root.bounds
-        splitView.autoresizingMask = [.width, .height]
         splitView.isVertical = true
         splitView.dividerStyle = .thin
         splitView.arrangesAllSubviews = true
         splitView.delegate = self
-        root.addSubview(splitView)
+
+        outerSplitView.frame = root.bounds
+        outerSplitView.autoresizingMask = [.width, .height]
+        outerSplitView.isVertical = true
+        outerSplitView.dividerStyle = .thin
+        outerSplitView.arrangesAllSubviews = true
+        outerSplitView.delegate = self
+        root.addSubview(outerSplitView)
+        outerSplitView.addArrangedSubview(splitView)
 
         focusIndicator.isHidden = true
         root.addSubview(focusIndicator)
@@ -161,6 +192,7 @@ class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
         } else {
             updateFocusIndicator()
         }
+        updateSharedSidebar()
         notifyPanesOfLayoutChange()
     }
 
@@ -179,6 +211,7 @@ class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
         if let next = activePane {
             setActivePane(next)
         }
+        updateSharedSidebar()
         updateFocusIndicator()
         notifyPanesOfLayoutChange()
         return pane
@@ -228,6 +261,7 @@ class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
         }
 
         adoptPane(newPane, at: insertIndex)
+        newPane.collapseSidebarAsSecondaryPane()
 
         DispatchQueue.main.async {
             newPane.afterFinishLoad(openFolder)
@@ -271,6 +305,10 @@ class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
         updateFocusIndicator()
         guard changed else { return }
 
+        // 共享目录树跟随活动窗格
+        // The shared folder tree follows the active pane
+        updateSharedSidebar()
+
         if moveFocus, let window = view.window {
             let target: NSView = pane.publicVar.isInLargeView ? pane.largeImageView : pane.collectionView
             if window.firstResponder !== target {
@@ -305,6 +343,103 @@ class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
             }
         }
         return nil
+    }
+
+    // MARK: - 共享目录树
+    // MARK: - Shared folder tree
+
+    var isSharedSidebarVisible: Bool {
+        return sidebarHost.superview != nil
+    }
+
+    // 分屏时把活动窗格的目录树提到窗口层级；回到单窗格时再交还给它
+    // While split, lift the active pane's folder tree up to window level; hand it back at a single pane
+    func updateSharedSidebar() {
+        guard isSplit, !isSharedSidebarHidden, let active = activePane else {
+            teardownSharedSidebar()
+            return
+        }
+        if sidebarHost.superview == nil {
+            outerSplitView.insertArrangedSubview(sidebarHost, at: 0)
+            outerSplitView.adjustSubviews()
+            outerSplitView.setPosition(sharedSidebarWidth, ofDividerAt: 0)
+        }
+        hostTree(of: active)
+        // 窗口里只留共享的这一棵树，其余窗格内部的侧栏一律收起
+        // Keep only the shared tree in the window, every pane's own sidebar stays collapsed
+        for pane in panes where pane !== active {
+            pane.collapseSidebarAsSecondaryPane()
+        }
+    }
+
+    private func hostTree(of pane: ViewController) {
+        if sidebarHost.ownerPane === pane && pane.outlineScrollView?.superview === sidebarHost {
+            return
+        }
+        if let previous = sidebarHost.ownerPane, previous !== pane {
+            returnTree(to: previous)
+        }
+        // outlineScrollView是weak outlet，搬动期间必须由强引用持住，否则会被释放
+        // outlineScrollView is a weak outlet, a strong reference has to hold it across the move or it is deallocated
+        guard let scrollView: NSScrollView = pane.outlineScrollView else { return }
+        if pane.outlineScrollViewHomeView == nil {
+            pane.outlineScrollViewHomeView = scrollView.superview
+        }
+        scrollView.removeFromSuperview()
+        scrollView.frame = sidebarHost.bounds
+        scrollView.autoresizingMask = [.width, .height]
+        sidebarHost.addSubview(scrollView)
+        sidebarHost.ownerPane = pane
+        // 窗格内部的侧栏收起，树已经搬到窗口层级了
+        // Collapse the pane's own sidebar, its tree now lives at window level
+        pane.collapseSidebarAsSecondaryPane()
+        pane.outlineViewManager?.adjustColumnWidth()
+    }
+
+    private func returnTree(to pane: ViewController) {
+        guard let home = pane.outlineScrollViewHomeView else { return }
+        guard let scrollView: NSScrollView = pane.outlineScrollView else { return }
+        guard scrollView.superview === sidebarHost else { return }
+        scrollView.removeFromSuperview()
+        scrollView.frame = home.bounds
+        scrollView.autoresizingMask = [.width, .height]
+        home.addSubview(scrollView)
+    }
+
+    private func teardownSharedSidebar() {
+        if let owner = sidebarHost.ownerPane {
+            returnTree(to: owner)
+        }
+        sidebarHost.ownerPane = nil
+        if sidebarHost.superview != nil {
+            sharedSidebarWidth = max(120, sidebarHost.frame.width)
+            sidebarHost.removeFromSuperview()
+            outerSplitView.adjustSubviews()
+        }
+        // 每个窗格都把自己的侧栏要回去
+        // Every pane takes its own sidebar back
+        for pane in panes {
+            pane.restoreSidebarIfAutoHidden()
+        }
+    }
+
+    // 分屏状态下切换共享目录树的显示
+    // Toggle the shared folder tree while split
+    func toggleSharedSidebar() {
+        guard isSplit else { return }
+        if isSharedSidebarVisible {
+            isSharedSidebarHidden = true
+            if let owner = sidebarHost.ownerPane {
+                returnTree(to: owner)
+            }
+            sidebarHost.ownerPane = nil
+            sharedSidebarWidth = max(120, sidebarHost.frame.width)
+            sidebarHost.removeFromSuperview()
+            outerSplitView.adjustSubviews()
+        } else {
+            isSharedSidebarHidden = false
+            updateSharedSidebar()
+        }
     }
 
     // MARK: - 布局
@@ -354,10 +489,18 @@ class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
     // MARK: - NSSplitViewDelegate
 
     func splitView(_ splitView: NSSplitView, constrainMinCoordinate proposedMinimumPosition: CGFloat, ofSubviewAt dividerIndex: Int) -> CGFloat {
+        // 外层分栏的分隔条控制共享目录树的宽度
+        // The outer split's divider sizes the shared folder tree
+        if splitView === outerSplitView {
+            return 150
+        }
         return proposedMinimumPosition + PaneContainerViewController.minPaneSize
     }
 
     func splitView(_ splitView: NSSplitView, constrainMaxCoordinate proposedMaximumPosition: CGFloat, ofSubviewAt dividerIndex: Int) -> CGFloat {
+        if splitView === outerSplitView {
+            return min(450, max(150, splitView.bounds.width - PaneContainerViewController.minPaneSize))
+        }
         return proposedMaximumPosition - PaneContainerViewController.minPaneSize
     }
 
@@ -366,6 +509,9 @@ class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
     }
 
     func splitViewDidResizeSubviews(_ notification: Notification) {
+        if (notification.object as? NSSplitView) === outerSplitView, isSharedSidebarVisible {
+            sharedSidebarWidth = max(120, sidebarHost.frame.width)
+        }
         updateFocusIndicator()
     }
 }
