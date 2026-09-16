@@ -90,6 +90,57 @@ class SharedSidebarHostView: NSView {
     }
 }
 
+// 每个窗格右上角的关闭按钮。它画在容器层，因此窗格进入大图时依然点得到。
+// Close button at each pane's top right corner. It is drawn at container level, so it stays clickable
+// even when the pane is showing a large image.
+class PaneCloseButton: NSButton {
+
+    weak var pane: ViewController?
+    private var hoverTrackingArea: NSTrackingArea?
+
+    static let size: CGFloat = 18
+    private let restingAlpha: CGFloat = 0.45
+
+    init() {
+        super.init(frame: NSRect(x: 0, y: 0, width: PaneCloseButton.size, height: PaneCloseButton.size))
+        isBordered = false
+        bezelStyle = .circular
+        title = ""
+        wantsLayer = true
+        layer?.cornerRadius = PaneCloseButton.size / 2
+        layer?.backgroundColor = NSColor.black.withAlphaComponent(0.45).cgColor
+        if let symbol = NSImage(systemSymbolName: "xmark", accessibilityDescription: NSLocalizedString("Close Pane", comment: "关闭窗格")) {
+            image = symbol.withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 9, weight: .bold))
+        }
+        imageScaling = .scaleProportionallyDown
+        contentTintColor = .white
+        alphaValue = restingAlpha
+        toolTip = NSLocalizedString("Close Pane", comment: "关闭窗格")
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let existing = hoverTrackingArea {
+            removeTrackingArea(existing)
+        }
+        let area = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInKeyWindow], owner: self, userInfo: nil)
+        addTrackingArea(area)
+        hoverTrackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        animator().alphaValue = 1.0
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        animator().alphaValue = restingAlpha
+    }
+}
+
 // 分屏容器：作为窗口的contentViewController，承载一个或多个ViewController作为窗格
 // Pane container: acts as the window's contentViewController, hosting one or more ViewControllers as panes
 class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
@@ -105,6 +156,7 @@ class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
     let outerSplitView = NSSplitView()
     private let sidebarHost = SharedSidebarHostView()
     private let focusIndicator = PaneFocusIndicatorView()
+    private var paneCloseButtons: [PaneCloseButton] = []
 
     static let defaultSharedSidebarWidth: CGFloat = 270
     private var sharedSidebarWidth = PaneContainerViewController.defaultSharedSidebarWidth
@@ -193,6 +245,7 @@ class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
             updateFocusIndicator()
         }
         updateSharedSidebar()
+        rebuildPaneCloseButtons()
         notifyPanesOfLayoutChange()
     }
 
@@ -212,6 +265,7 @@ class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
             setActivePane(next)
         }
         updateSharedSidebar()
+        rebuildPaneCloseButtons()
         updateFocusIndicator()
         notifyPanesOfLayoutChange()
         return pane
@@ -462,9 +516,56 @@ class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
         updateFocusIndicator()
     }
 
+    // 分屏时每个窗格都有自己的关闭按钮，不必先切到那个窗格
+    // While split every pane carries its own close button, no need to switch to it first
+    private func rebuildPaneCloseButtons() {
+        for button in paneCloseButtons {
+            button.removeFromSuperview()
+        }
+        paneCloseButtons.removeAll()
+        guard isSplit else { return }
+        for pane in panes {
+            let button = PaneCloseButton()
+            button.pane = pane
+            button.target = self
+            button.action = #selector(paneCloseButtonClicked(_:))
+            view.addSubview(button)
+            paneCloseButtons.append(button)
+        }
+        layoutPaneCloseButtons()
+    }
+
+    private func layoutPaneCloseButtons() {
+        let inset: CGFloat = 8
+        for button in paneCloseButtons {
+            guard let pane = button.pane, pane.view.superview === splitView else {
+                button.isHidden = true
+                continue
+            }
+            button.isHidden = false
+            let frameInView = view.convert(pane.view.frame, from: splitView)
+            button.frame = NSRect(x: frameInView.maxX - PaneCloseButton.size - inset,
+                                  y: frameInView.maxY - PaneCloseButton.size - inset,
+                                  width: PaneCloseButton.size,
+                                  height: PaneCloseButton.size)
+            // 保证浮在窗格内容和焦点框之上
+            // Keep it above the pane content and the focus ring
+            if view.subviews.last !== button {
+                button.removeFromSuperview()
+                view.addSubview(button)
+            }
+        }
+    }
+
+    @objc private func paneCloseButtonClicked(_ sender: PaneCloseButton) {
+        guard let pane = sender.pane else { return }
+        closePane(pane)
+    }
+
     private func updateFocusIndicator() {
         guard isSplit, let active = activePane, active.view.superview === splitView else {
             focusIndicator.isHidden = true
+            layoutPaneCloseButtons()
             return
         }
         focusIndicator.isHidden = false
@@ -476,6 +577,7 @@ class PaneContainerViewController: NSViewController, NSSplitViewDelegate {
             focusIndicator.removeFromSuperview()
             view.addSubview(focusIndicator)
         }
+        layoutPaneCloseButtons()
     }
 
     // 窗格尺寸变化后重新计算瀑布流布局
