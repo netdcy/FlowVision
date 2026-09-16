@@ -30,6 +30,9 @@ extension ViewController {
     }
     
     func adjustWindowMaximize(){
+        // 分屏时窗格只占窗口的一部分，按图像尺寸改变整个窗口会同时影响其它窗格，因此跳过
+        // When split, a pane is only part of the window; resizing the whole window to fit one image would disturb the other panes
+        if isInSplitLayout { return }
         if let window = view.window {
             if !window.isZoomed {
                 window.zoom(nil)
@@ -113,6 +116,9 @@ extension ViewController {
     }
     
     func adjustWindowToCenter(animate: Bool = true) {
+        // 分屏时窗格只占窗口的一部分，按图像尺寸改变整个窗口会同时影响其它窗格，因此跳过
+        // When split, a pane is only part of the window; resizing the whole window to fit one image would disturb the other panes
+        if isInSplitLayout { return }
         if let window = view.window,
            let screen = window.screen {
             
@@ -140,6 +146,9 @@ extension ViewController {
     // ------------Below are indirect interfaces for adjusting window-----------
     
     func adjustWindowToRatio(animate: Bool, refRatio: (Double,Double)? = nil, isToCenter: Bool) {
+        // 分屏时窗格只占窗口的一部分，按图像尺寸改变整个窗口会同时影响其它窗格，因此跳过
+        // When split, a pane is only part of the window; resizing the whole window to fit one image would disturb the other panes
+        if isInSplitLayout { return }
         if let window = view.window {
             // 获取屏幕的可见区域
             // Get screen's visible area
@@ -225,6 +234,9 @@ extension ViewController {
     }
     
     func adjustWindowToImageRatio(refSize: NSSize?, firstShowThumb: Bool, animate: Bool, refRatio: (Double, Double)? = nil, justAdjustWindowFrame: Bool = false, isToCenter: Bool) {
+        // 分屏时窗格只占窗口的一部分，按图像尺寸改变整个窗口会同时影响其它窗格，因此跳过
+        // When split, a pane is only part of the window; resizing the whole window to fit one image would disturb the other panes
+        if isInSplitLayout { return }
         if let window = view.window,
            let screen = window.screen {
             
@@ -332,6 +344,9 @@ extension ViewController {
     }
     
     func adjustWindowTo(_ zoomSize: CGSize, firstShowThumb: Bool, animate: Bool, justAdjustWindowFrame: Bool = false, isToCenter: Bool) {
+        // 分屏时窗格只占窗口的一部分，按图像尺寸改变整个窗口会同时影响其它窗格，因此跳过
+        // When split, a pane is only part of the window; resizing the whole window to fit one image would disturb the other panes
+        if isInSplitLayout { return }
         if let window = view.window,
            let screen = window.screen {
             

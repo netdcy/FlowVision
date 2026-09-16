@@ -102,6 +102,8 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             
             let actionItemOpenInNewTab = menu.addItem(withTitle: NSLocalizedString("Open in New Tab", comment: "在新标签页中打开"), action: #selector(actOpenInNewTab), keyEquivalent: "")
 
+            let actionItemOpenInNewPane = menu.addItem(withTitle: NSLocalizedString("Open in New Pane", comment: "在新窗格中打开"), action: #selector(actOpenInNewPane), keyEquivalent: "")
+
             if curRightClickedPath.hasPrefix("file:///VirtualFinderTagsFolder") {
                 
             } else {
@@ -262,6 +264,13 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             // Hold Cmd when clicking the menu item to open in background
             _ = appDelegate.createNewWindow(url.absoluteString, openInBackground: NSEvent.modifierFlags.contains(.command))
         }
+    }
+
+    // 在当前窗口里新开一个并排窗格
+    // Open a new pane side by side in the current window
+    @objc func actOpenInNewPane() {
+        guard let url = URL(string: curRightClickedPath) else { return }
+        getViewController(self)?.splitPane(direction: .right, folder: url.absoluteString)
     }
 
     @objc func actOpenInFinder() {

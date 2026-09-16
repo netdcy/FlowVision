@@ -16,6 +16,12 @@ extension ViewController {
             return event
         }
         
+        // 分屏时，键盘事件只交给活动窗格，否则同一按键会被每个窗格各处理一次
+        // When split, only the active pane takes keyboard events, otherwise every pane would handle the same key
+        if !isActivePane && publicVar.isKeyEventEnabled {
+            return event
+        }
+        
         // 获取修饰键
         // Get modifier keys
         let modifierFlags = event.modifierFlags

@@ -171,7 +171,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
         UserDefaults.standard.set(globalVar.collectionViewItemShowTooltip, forKey: "collectionViewItemShowTooltip")
         if let appDelegate=NSApplication.shared.delegate as? AppDelegate {
             for windowController in appDelegate.windowControllers {
-                if let viewController = windowController.contentViewController as? ViewController {
+                for viewController in windowController.paneViewControllers {
                     if let visibleItems = viewController.collectionView.visibleItems() as? [CustomCollectionViewItem] {
                         for item in visibleItems {
                             item.setTooltip()

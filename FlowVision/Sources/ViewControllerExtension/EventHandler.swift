@@ -233,7 +233,7 @@ extension ViewController {
         if publicVar.autoPlayVisibleVideo {
             showText = NSLocalizedString("Auto Play Visible Video", comment: "自动播放可见视频")
         }
-        if let windowController = (view.window?.windowController) as? WindowController {
+        if isActivePane, let windowController = (view.window?.windowController) as? WindowController {
             windowController.updateToolbar()
         }
         coreAreaView.showInfo(showText, timeOut: 1.0, cannotBeCleard: true)

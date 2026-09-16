@@ -108,7 +108,7 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         UserDefaults.standard.set(globalVar.blackBgInFullScreen, forKey: "blackBgInFullScreen")
         if let appDelegate=NSApplication.shared.delegate as? AppDelegate {
             for windowController in appDelegate.windowControllers {
-                if let viewController = windowController.contentViewController as? ViewController {
+                for viewController in windowController.paneViewControllers {
                     viewController.largeImageView.determineBlackBg()
                 }
             }
@@ -131,7 +131,7 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         UserDefaults.standard.set(globalVar.blackBgInFullScreenForVideo, forKey: "blackBgInFullScreenForVideo")
         if let appDelegate=NSApplication.shared.delegate as? AppDelegate {
             for windowController in appDelegate.windowControllers {
-                if let viewController = windowController.contentViewController as? ViewController {
+                for viewController in windowController.paneViewControllers {
                     viewController.largeImageView.determineBlackBg()
                 }
             }
