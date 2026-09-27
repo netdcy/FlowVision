@@ -137,6 +137,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let autoHideCursorWhenFullscreen = UserDefaults.standard.value(forKey: "autoHideCursorWhenFullscreen") as? Bool {
             globalVar.autoHideCursorWhenFullscreen = autoHideCursorWhenFullscreen
         }
+        if let data = UserDefaults.standard.data(forKey: "separateSortOrders"),
+           let separateSortOrders = try? JSONDecoder().decode([String: FolderSortOrder].self, from: data) {
+            globalVar.separateSortOrders = separateSortOrders
+        }
         if let randomFolderThumb = UserDefaults.standard.value(forKey: "randomFolderThumb") as? Bool {
             globalVar.randomFolderThumb = randomFolderThumb
         }

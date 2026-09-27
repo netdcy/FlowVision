@@ -53,7 +53,7 @@ extension ViewController {
         }
     }
     
-    func changeSortType(sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool, doNotRefresh: Bool = false){
+    func changeSortType(sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool, doNotRefresh: Bool = false, alwaysChangeDefault: Bool = false){
         
         // Exif排序时间警告
         // Exif sort time warning
@@ -80,16 +80,61 @@ extension ViewController {
         }
         
         fileDB.lock()
-        publicVar.profile.sortType = sortType
-        publicVar.profile.isSortFolderFirst = isSortFolderFirst
-        publicVar.profile.isSortUseFullPath = isSortUseFullPath
-        publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
-        publicVar.randomSeed = Int.random(in: 0...Int.max)
+        // If Folder has separate sort order, change that; otherwise change global default (layout profiles always change global default)
+        if !alwaysChangeDefault && globalVar.separateSortOrders[fileDB.curFolder] != nil {
+            globalVar.separateSortOrders[fileDB.curFolder] = FolderSortOrder(sortType: sortType, isSortFolderFirst: isSortFolderFirst, isSortUseFullPath: isSortUseFullPath, randomSeed: Int.random(in: 0...Int.max))
+            saveSeparateSortOrders()
+        } else {
+            publicVar.profile.sortType = sortType
+            publicVar.profile.isSortFolderFirst = isSortFolderFirst
+            publicVar.profile.isSortUseFullPath = isSortUseFullPath
+            publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
+            publicVar.randomSeed = Int.random(in: 0...Int.max)
+        }
+        // Resort every cached folder whose order changed (folders with separate sort order keep those)
         for dirModel in fileDB.db {
-            dirModel.1.changeSortType(publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
+            let folderSortOrder = sortOrder(forFolder: dirModel.1.path)
+            if dirModel.1.sortOrder != folderSortOrder {
+                dirModel.1.changeSortType(folderSortOrder.sortType, isSortFolderFirst: folderSortOrder.isSortFolderFirst, isSortUseFullPath: folderSortOrder.isSortUseFullPath, randomSeed: folderSortOrder.randomSeed)
+            }
         }
         fileDB.unlock()
         if !doNotRefresh {
+            refreshCollectionView(dryRun: true, needLoadThumbPriority: true)
+        }
+    }
+    
+    // Sort order a folder should use (separate sort order if it has one, otherwise the global default)
+    func sortOrder(forFolder folder: String) -> FolderSortOrder {
+        return globalVar.separateSortOrders[folder] ?? FolderSortOrder(sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
+    }
+    
+    // Save folders that use separate sort order
+    func saveSeparateSortOrders() {
+        if let data = try? JSONEncoder().encode(globalVar.separateSortOrders) {
+            UserDefaults.standard.set(data, forKey: "separateSortOrders")
+        }
+    }
+    
+    // Toggle separate sort order, turning it on keeps the current order, turning it off resets it to the global default
+    func toggleSeparateSortOrder() {
+        fileDB.lock()
+        let curFolder = fileDB.curFolder
+        if globalVar.separateSortOrders[curFolder] == nil {
+            globalVar.separateSortOrders[curFolder] = sortOrder(forFolder: curFolder)
+        } else {
+            globalVar.separateSortOrders[curFolder] = nil
+        }
+        saveSeparateSortOrders()
+        // Turning it off may need a resort
+        let folderSortOrder = sortOrder(forFolder: curFolder)
+        var isResorted = false
+        if let dirModel = fileDB.db[SortKeyDir(curFolder)], dirModel.sortOrder != folderSortOrder {
+            dirModel.changeSortType(folderSortOrder.sortType, isSortFolderFirst: folderSortOrder.isSortFolderFirst, isSortUseFullPath: folderSortOrder.isSortUseFullPath, randomSeed: folderSortOrder.randomSeed)
+            isResorted = true
+        }
+        fileDB.unlock()
+        if isResorted {
             refreshCollectionView(dryRun: true, needLoadThumbPriority: true)
         }
     }
