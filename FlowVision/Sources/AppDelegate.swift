@@ -453,9 +453,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 // Open in the frontmost window
                 if globalVar.openFilesInCurrentWindow {
                     for window in NSApplication.shared.orderedWindows {
-                        if let windowController = window.windowController as? WindowController {
+                        if let windowController = window.windowController as? WindowController,
+                           let viewController = windowController.contentViewController as? ViewController {
                             windowController.showWindow(self)
+                            // Soften the transition
+                            let snapshot = captureSnapshot(of: viewController.coreAreaView)
+                            if let snapshot = snapshot {
+                                viewController.coreAreaView.addSubview(snapshot)
+                            }
+                            CATransaction.flush()
                             openImageInTargetWindow(file, windowController: windowController)
+                            NSAnimationContext.runAnimationGroup({ context in
+                                context.duration = 0.2
+                                snapshot?.animator().alphaValue = 0
+                            }, completionHandler: {
+                                snapshot?.removeFromSuperview()
+                            })
                             return
                         }
                     }
