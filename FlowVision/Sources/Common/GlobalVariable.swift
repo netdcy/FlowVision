@@ -100,6 +100,7 @@ class GlobalVar{
     var clickEdgeToSwitchImage = false
     var scrollMouseWheelToZoom = false
     var openLastFolder = true
+    var openFilesInCurrentWindow = false
     var homeFolder = "file:///"
     var keepFilterStateWhenSwitchFolder = false
     var dirTreeAutoExpand = true

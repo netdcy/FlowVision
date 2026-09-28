@@ -2269,6 +2269,114 @@
         }
       }
     },
+    "vCd-2a-RA4.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Open Files from Finder in Existing Window\"; ObjectID = \"vCd-2a-RA4\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فتح الملفات من Finder في نافذة موجودة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dateien aus dem Finder in vorhandenem Fenster öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Open Files from Finder in Existing Window"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir archivos del Finder en una ventana existente"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir les fichiers du Finder dans une fenêtre existante"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri i file del Finder in una finestra esistente"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finderからファイルを開くときに既存のウィンドウを使用"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder에서 파일을 열 때 기존 창 사용"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestanden uit Finder in bestaand venster openen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otwieraj pliki z Findera w istniejącym oknie"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir arquivos do Finder em uma janela existente"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Ficheiros do Finder numa Janela Existente"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открывать файлы из Finder в существующем окне"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öppna filer från Finder i befintligt fönster"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder'dan Açılan Dosyaları Mevcut Pencerede Aç"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从访达打开文件时使用已有窗口"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從 Finder 開啟檔案時使用已有窗口"
+          }
+        }
+      }
+    },
     "x5i-CI-gSv.title" : {
       "comment" : "Class = \"NSButtonCell\"; title = \"Open Permissions Settings\"; ObjectID = \"x5i-CI-gSv\";",
       "extractionState" : "extracted_with_value",

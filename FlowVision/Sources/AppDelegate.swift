@@ -114,6 +114,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let openLastFolder = UserDefaults.standard.value(forKey: "openLastFolder") as? Bool {
             globalVar.openLastFolder = openLastFolder
         }
+        if let openFilesInCurrentWindow = UserDefaults.standard.value(forKey: "openFilesInCurrentWindow") as? Bool {
+            globalVar.openFilesInCurrentWindow = openFilesInCurrentWindow
+        }
         if let homeFolder = UserDefaults.standard.value(forKey: "homeFolder") as? String {
             globalVar.homeFolder = homeFolder
         }
@@ -447,6 +450,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             if isDirectory{
                 _ = createNewWindow(file)
             }else{
+                // Open in the frontmost window
+                if globalVar.openFilesInCurrentWindow {
+                    for window in NSApplication.shared.orderedWindows {
+                        if let windowController = window.windowController as? WindowController {
+                            windowController.showWindow(self)
+                            openImageInTargetWindow(file, windowController: windowController)
+                            return
+                        }
+                    }
+                }
                 var useCreateWindowShowDelay = false
                 if windowControllers.count == 0 || globalVar.autoHideToolbar {
                     // 直到大图加载完毕后才显示窗口，用来减少首次启动的画面闪动
