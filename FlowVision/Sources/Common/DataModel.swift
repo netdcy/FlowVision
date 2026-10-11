@@ -55,7 +55,13 @@ class SortKey: Comparable {
     
     init(_ path: String, createDate: Date = Date(), modDate: Date = Date(), addDate: Date = Date() , size: Int = 0, isDir: Bool = false, isInSameDir: Bool = false, needGetProperties: Bool = false, sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool, randomSeed: Int) {
         self.path = path
-        self.pathCmp = path
+        // 仅规范化比较键，保留原路径用于文件读取，并保留转义的路径分隔符
+        // Normalize only the comparison key, preserving the original I/O path and escaped separators.
+        let allowedCharacters = CharacterSet.urlPathAllowed.subtracting(CharacterSet(charactersIn: "/"))
+        self.pathCmp = path.components(separatedBy: "/").map {
+            $0.removingPercentEncoding!.precomposedStringWithCanonicalMapping
+                .addingPercentEncoding(withAllowedCharacters: allowedCharacters)!
+        }.joined(separator: "/")
         self.createDate = createDate
         self.modDate = modDate
         self.addDate = addDate
@@ -133,7 +139,7 @@ class SortKey: Comparable {
     
     static func hashFunction(sortKey: SortKey, seed: Int) -> Int {
         var hasher = Hasher()
-        hasher.combine(sortKey.path)
+        hasher.combine(sortKey.pathCmp)
         hasher.combine(sortKey.addDate)
         hasher.combine(sortKey.createDate)
         hasher.combine(sortKey.modDate)
