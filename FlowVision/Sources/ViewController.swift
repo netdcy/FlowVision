@@ -450,6 +450,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var quickSearchText: String = ""
     var quickSearchState: Bool = false
     
+    override func swipe(with event: NSEvent) {
+        guard !publicVar.isInLargeView, event.deltaX != 0 else {
+            super.swipe(with: event)
+            return
+        }
+        switchDirByDirection(direction: event.deltaX > 0 ? .back : .forward, stackDeep: 0)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
