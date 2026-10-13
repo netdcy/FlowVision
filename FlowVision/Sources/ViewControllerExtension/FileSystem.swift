@@ -421,11 +421,12 @@ extension ViewController {
         for file in fileContents {
             let aliasValues = try? file.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey])
             let isAlias = aliasValues?.isAliasFile == true
+            let fileExt = file.pathExtension.lowercased()
             let effectiveExt: String
             if isAlias, let resolved = try? URL(resolvingAliasFileAt: file) {
                 effectiveExt = resolved.pathExtension.lowercased()
             } else {
-                effectiveExt = file.pathExtension.lowercased()
+                effectiveExt = fileExt
             }
             let isNotFalseTsVideoFile = isNotFalseTsVideoFile(file)
             if publicVar.isShowAllTypeFile || (publicVar.HandledFileExtensions.contains(effectiveExt) && isNotFalseTsVideoFile) {
@@ -433,17 +434,16 @@ extension ViewController {
             }
             // 不将替身文件统计为图像或视频
             // Do not count alias files as images or videos
-            if let values = try? file.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
-               values.isAliasFile == true {
+            if isAlias {
                 continue
             }
-            if publicVar.HandledImageAndRawExtensions.contains(file.pathExtension.lowercased()) {
+            if publicVar.HandledImageAndRawExtensions.contains(fileExt) {
                 imageCount+=1
             }
-            if publicVar.HandledVideoExtensions.contains(file.pathExtension.lowercased()) && isNotFalseTsVideoFile {
+            if publicVar.HandledVideoExtensions.contains(fileExt) && isNotFalseTsVideoFile {
                 videoCount+=1
             }
-            if publicVar.isShowAllTypeFile || (publicVar.HandledSearchExtensions.contains(file.pathExtension.lowercased()) && isNotFalseTsVideoFile) {
+            if publicVar.isShowAllTypeFile || (publicVar.HandledSearchExtensions.contains(fileExt) && isNotFalseTsVideoFile) {
                 searchCount+=1
             }
         }
@@ -548,6 +548,8 @@ extension ViewController {
         fileDB.lock()
         if !skip && (initURL != folderURL || direction == .zero) {
             let folderpath = folderURL.absoluteString
+            let dirModel = fileDB.db[SortKeyDir(folderpath)]!
+            let propertySet = Set(properties)
             // log(filesInFolder.count)
             for (i,filePath) in filesInFolder.enumerated(){
                 var fileSortKey:SortKeyFile
@@ -573,7 +575,7 @@ extension ViewController {
                     // 文件在前i个，目录在后面
                     // Files in first i items, directories after
                     if i < fileCount {
-                        let resourceValues = try filesUrlInFolder[i].resourceValues(forKeys: Set(properties))
+                        let resourceValues = try filesUrlInFolder[i].resourceValues(forKeys: propertySet)
                         if let tmp = resourceValues.isAliasFile {
                             isAlias=tmp
                         }
@@ -606,7 +608,7 @@ extension ViewController {
                     // 目录
                     // Directory
                     }else{
-                        let resourceValues = try subFolders[i-fileCount].resourceValues(forKeys: Set(properties))
+                        let resourceValues = try subFolders[i-fileCount].resourceValues(forKeys: propertySet)
                         if let tmp = resourceValues.isAliasFile {
                             isAlias=tmp
                         }
@@ -642,13 +644,13 @@ extension ViewController {
                     log("Error reading properties.")
                 }
                 // log("i:",i,"path:",fileSortKey.path.removingPercentEncoding)
-                let newFileModel=FileModel(path: fileSortKey.path, ver: fileDB.db[SortKeyDir(folderpath)]!.ver, isDir: isDir, isAlias: isAlias, fileSize: fileSize, createDate: createDate, modDate: modDate, addDate: addDate, doNotActualRead: doNotActualRead)
+                let newFileModel=FileModel(path: fileSortKey.path, ver: dirModel.ver, isDir: isDir, isAlias: isAlias, fileSize: fileSize, createDate: createDate, modDate: modDate, addDate: addDate, doNotActualRead: doNotActualRead)
                 newFileModel.finderTags = finderTags
                 newFileModel.isHidden = isHiddenFile
                 // log(fileSortKey.path)
-                if let file = fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] {
+                if let file = dirModel.files[fileSortKey] {
                     if file.path == fileSortKey.path {
-                        file.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
+                        file.ver = dirModel.ver
                         file.isDir=isDir
                         file.isAlias=isAlias
                         file.doNotActualRead=doNotActualRead
@@ -657,29 +659,29 @@ extension ViewController {
                         // 检查文件或文件夹是否有变化(文件夹fileSize为nil)
                         // Check if file or folder has changed (folder fileSize is nil)
                         if fileSize != file.fileSize || modDate != file.modDate {
-                            fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
+                            dirModel.files[fileSortKey] = newFileModel
                         }
                     }else{
                         // 大小写变化，需要删除再插入
                         // Case change, need to delete then insert
-                        fileDB.db[SortKeyDir(folderpath)]!.files.removeValue(forKey: fileSortKey)
-                        fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
+                        dirModel.files.removeValue(forKey: fileSortKey)
+                        dirModel.files[fileSortKey] = newFileModel
                     }
                 }else{
-                    fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
+                    dirModel.files[fileSortKey] = newFileModel
                 }
             }
             var keysToRemove: [SortKeyFile] = []
-            for ele in fileDB.db[SortKeyDir(folderpath)]!.files{
+            for ele in dirModel.files{
                 // log(ele.0.path.removingPercentEncoding)
-                if ele.1.ver != fileDB.db[SortKeyDir(folderpath)]!.ver {
+                if ele.1.ver != dirModel.ver {
                     ele.1.image=nil
                     ele.1.folderImages=[]
                     keysToRemove.append(ele.0)
                 }
             }
             for key in keysToRemove {
-                fileDB.db[SortKeyDir(folderpath)]!.files.removeValue(forKey: key)
+                dirModel.files.removeValue(forKey: key)
             }
         }
         
@@ -688,15 +690,17 @@ extension ViewController {
             var id=0
             var idInImage=0
             var idInImageAndVideo=0
-            for ele in fileDB.db[SortKeyDir(folderpath)]!.files{
-                ele.1.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
+            let dirModel = fileDB.db[SortKeyDir(folderpath)]!
+            for ele in dirModel.files{
+                ele.1.ver = dirModel.ver
                 ele.1.canBeCalcued = false
-                let isNotFalseTsVideoFile = isNotFalseTsVideoFile(URL(string: ele.1.path)!)
+                let fileURL = URL(string: ele.1.path)!
+                let isNotFalseTsVideoFile = isNotFalseTsVideoFile(fileURL)
                 if !ele.1.isDir{
-                    ele.1.ext=URL(string: ele.1.path)!.pathExtension.lowercased()
+                    ele.1.ext=fileURL.pathExtension.lowercased()
                     if ele.1.isAlias {
                         ele.1.type = .other
-                        if let resolved = try? URL(resolvingAliasFileAt: URL(string: ele.1.path)!) {
+                        if let resolved = try? URL(resolvingAliasFileAt: fileURL) {
                             ele.1.aliasActualExt = resolved.pathExtension.lowercased()
                             if globalVar.HandledImageAndRawExtensions.contains(ele.1.aliasActualExt) {
                                 ele.1.aliasActualType = .image
