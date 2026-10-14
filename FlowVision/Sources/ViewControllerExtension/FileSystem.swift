@@ -1281,6 +1281,18 @@ extension ViewController {
         
         if globalVar.dirTreeAutoExpand {
             treeReLocate(path: nextFolder, doCollapse: doCollapse, expandLast: expandLast)
+        } else {
+            // When "Follow Current Folder" is off, don't expand but select the folder if it's listed in the sidebar
+            var rowIndexes = IndexSet()
+            for row in 0..<outlineView.numberOfRows {
+                if let item = outlineView.item(atRow: row) as? TreeNode, item.fullPath == nextFolder {
+                    rowIndexes = IndexSet(integer: row)
+                    break
+                }
+            }
+            outlineViewManager.ifActWhenSelected=false
+            outlineView.selectRowIndexes(rowIndexes, byExtendingSelection: false)
+            outlineViewManager.ifActWhenSelected=true
         }
         
         log("Switch:",nextFolder.removingPercentEncoding!)
