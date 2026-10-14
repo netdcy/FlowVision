@@ -433,6 +433,114 @@
         }
       }
     },
+    "cOT-Gp-gE9.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Hide Cursor When Switching Images with Keyboard\"; ObjectID = \"cOT-Gp-gE9\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إخفاء المؤشر عند تبديل الصور بلوحة المفاتيح"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cursor beim Bildwechsel per Tastatur ausblenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Hide Cursor When Switching Images with Keyboard"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar cursor al cambiar de imagen con el teclado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer le curseur en changeant d'image au clavier"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nascondi il cursore cambiando immagine da tastiera"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キーボードで画像を切り替える時にカーソルを非表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키보드로 이미지 전환 시 커서 숨김"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cursor verbergen bij bladeren met toetsenbord"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukryj kursor przy zmianie obrazu klawiaturą"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar Cursor ao Trocar de Imagem pelo Teclado"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar o cursor ao mudar de imagem com o teclado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скрывать курсор при смене изображений клавиатурой"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dölj markör vid bildbyte med tangentbordet"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klavyeyle Görüntü Değiştirirken İmleci Gizle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按键切换图像时自动隐藏光标"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按鍵切換圖像時自動隱藏光標"
+          }
+        }
+      }
+    },
     "dB2-6s-xY8.title" : {
       "comment" : "Class = \"NSButtonCell\"; title = \"Quit Application When Closing Last Window\"; ObjectID = \"dB2-6s-xY8\";",
       "extractionState" : "extracted_with_value",
