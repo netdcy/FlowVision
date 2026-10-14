@@ -1683,8 +1683,7 @@ extension ViewController {
     }
     
     func applyCutItemsDimEffect() {
-        for window in NSApp.windows {
-            guard let vc = window.contentViewController as? ViewController else { continue }
+        for vc in getAllViewControllers() {
             for item in vc.collectionView.visibleItems() {
                 if let item = item as? CustomCollectionViewItem {
                     item.updateCutDimEffect()
@@ -1698,8 +1697,7 @@ extension ViewController {
         let hadCutItems = !globalVar.cutItemPaths.isEmpty
         globalVar.cutItemPaths.removeAll()
         if hadCutItems {
-            for window in NSApp.windows {
-                guard let vc = window.contentViewController as? ViewController else { continue }
+            for vc in getAllViewControllers() {
                 for item in vc.collectionView.visibleItems() {
                     if let item = item as? CustomCollectionViewItem {
                         item.updateCutDimEffect()

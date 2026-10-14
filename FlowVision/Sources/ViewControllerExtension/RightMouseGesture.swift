@@ -121,8 +121,10 @@ extension ViewController {
             // log("Gesture: ⬇️ ➡️")
 //            if doAction {switchDirByDirection(direction: .down_right, stackDeep: 0);gestureTriggeredSwitch=true}
 //            else{drawingView?.statusLabel.stringValue=NSLocalizedString("next-sibling", comment: "平级的下一个目录")}
-            if doAction {self.view.window?.performClose(nil)}
-            else{drawingView?.statusLabel.stringValue=NSLocalizedString("Close Tab", comment: "关闭标签页")}
+            // 分屏时先关闭当前窗格，只剩一个窗格时才关闭整个标签页
+            // When split this closes the current pane first; with a single pane left it closes the tab
+            if doAction {self.closeCurrentPaneOrWindow()}
+            else{drawingView?.statusLabel.stringValue = isInSplitLayout ? NSLocalizedString("Close Pane", comment: "关闭窗格") : NSLocalizedString("Close Tab", comment: "关闭标签页")}
 //        case (.down, .left):
 //            // log("Gesture: ⬇️ ⬅️")
 //            if doAction {switchDirByDirection(direction: .down_left, stackDeep: 0);gestureTriggeredSwitch=true}

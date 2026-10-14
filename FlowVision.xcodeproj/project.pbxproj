@@ -80,6 +80,8 @@
 		F7E0B31C2DBF0F55007CBD17 /* SDWebImageWebPCoder in Frameworks */ = {isa = PBXBuildFile; productRef = F7E0B31B2DBF0F55007CBD17 /* SDWebImageWebPCoder */; };
 		F7F600482E1E095500ED8536 /* FinderTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F600472E1E094A00ED8536 /* FinderTag.swift */; };
 		F7FAE0012F6BA00000FAE001 /* FavoritesPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */; };
+		FA0000032F00000100000003 /* SplitPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0000022F00000100000003 /* SplitPane.swift */; };
+		FA0000012F00000100000001 /* PaneContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0000002F00000100000001 /* PaneContainerViewController.swift */; };
 		F7FAE1012F6BA00000FAE101 /* FileInfoWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FAE1002F6BA00000FAE100 /* FileInfoWindow.swift */; };
 		F7FED5F32F7D0B1100E35164 /* Tagging.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FED5F22F7D0B0E00E35164 /* Tagging.swift */; };
 /* End PBXBuildFile section */
@@ -197,6 +199,8 @@
 		F7E65E342C09C7F100ACC4C0 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		F7F600472E1E094A00ED8536 /* FinderTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderTag.swift; sourceTree = "<group>"; };
 		F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesPopoverViewController.swift; sourceTree = "<group>"; };
+		FA0000022F00000100000003 /* SplitPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitPane.swift; sourceTree = "<group>"; };
+		FA0000002F00000100000001 /* PaneContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaneContainerViewController.swift; sourceTree = "<group>"; };
 		F7FAE1002F6BA00000FAE100 /* FileInfoWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileInfoWindow.swift; sourceTree = "<group>"; };
 		F7FED5F22F7D0B0E00E35164 /* Tagging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tagging.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -251,6 +255,7 @@
 				F795AC6D2C196B80004B487F /* CustomSplitView.swift */,
 				F73865E52C37C1AA00837FE4 /* DrawingView.swift */,
 				F7FAE0002F6BA00000FAE000 /* FavoritesPopoverViewController.swift */,
+				FA0000002F00000100000001 /* PaneContainerViewController.swift */,
 				F7FAE1002F6BA00000FAE100 /* FileInfoWindow.swift */,
 				F78960F12BDCC26B00C2571B /* LargeImageView.swift */,
 				F73865D42C37B9B800837FE4 /* Layout.swift */,
@@ -316,6 +321,7 @@
 				F76F6A642F5B15B200D798DC /* ProgressBar.swift */,
 				F74D55552F0E487800C9AB85 /* RightMouseGesture.swift */,
 				F74D55512F0E46D100C9AB85 /* Search.swift */,
+				FA0000022F00000100000003 /* SplitPane.swift */,
 				F7FED5F22F7D0B0E00E35164 /* Tagging.swift */,
 				F74D554D2F0E459600C9AB85 /* WindowManagement.swift */,
 			);
@@ -517,6 +523,8 @@
 				F72B1E702F713AF60056B19F /* DemoSettingsViewController.swift in Sources */,
 				F70F9FC32BAFE85D00C50CDD /* CustomCollectionViewManager.swift in Sources */,
 				F7FAE0012F6BA00000FAE001 /* FavoritesPopoverViewController.swift in Sources */,
+				FA0000032F00000100000003 /* SplitPane.swift in Sources */,
+				FA0000012F00000100000001 /* PaneContainerViewController.swift in Sources */,
 				F7FAE1012F6BA00000FAE101 /* FileInfoWindow.swift in Sources */,
 				F7A075542BA1D716009C47A6 /* AppDelegate.swift in Sources */,
 				F77098952F0E427800E7D164 /* FileOperation.swift in Sources */,

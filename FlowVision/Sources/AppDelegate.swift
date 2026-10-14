@@ -393,7 +393,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         
         // 获取 contentViewController 并调用其函数
         // Get contentViewController and call its function
-        if let viewController = windowController.contentViewController as? ViewController {
+        if let viewController = windowController.mainViewController {
             if let openFolder=openFolder{
                 viewController.fileDB.lock()
                 viewController.fileDB.curFolder=openFolder
@@ -413,6 +413,32 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         return windowController
     }
     
+    // 新建一个窗口/标签页，并用已有的窗格填充它（用于把窗格移出分屏）
+    // Create a new window / tab and fill it with an existing pane (used when moving a pane out of a split)
+    @discardableResult
+    func createWindowAdopting(pane: ViewController) -> WindowController? {
+        let storyboard = NSStoryboard(name: "Main", bundle: nil)
+        guard let windowController = storyboard.instantiateController(withIdentifier: "WindowController") as? WindowController else {
+            log("Cannot find WindowController in Main.storyboard", level: .error)
+            return nil
+        }
+        windowControllers.append(windowController)
+        globalVar.windowNum += 1
+        windowController.showWindow(self)
+
+        guard let container = windowController.paneContainer else { return windowController }
+        // 丢弃随窗口自动创建的空窗格，换成要移入的窗格
+        // Drop the placeholder pane the window created for itself and put the incoming pane in its place
+        for placeholder in container.panes {
+            container.detachPane(placeholder)
+            placeholder.largeImageView.prepareForDeinit()
+            placeholder.prepareForDeinit(recordClosedPath: false)
+        }
+        container.adoptPane(pane)
+        pane.setWindowTitle()
+        return windowController
+    }
+
     func removeWindowController(_ windowController: NSWindowController) {
         if let index = windowControllers.firstIndex(of: windowController) {
             windowControllers.remove(at: index)
@@ -477,7 +503,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
     
     func openImageInTargetWindow(_ openPath: String, windowController: NSWindowController){
-        guard let viewController = windowController.contentViewController as? ViewController else {return}
+        guard let viewController = windowController.mainViewController else {return}
         let folderPath=getFileSchemeAbsParentFolderPath(openPath)
         let path=getFileSchemeAbsPath(openPath)
         
@@ -719,7 +745,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             switchToActualSizeMenuItem.state = (mainViewController.publicVar.isLargeImageFitWindow == false) ? .on : .off
             switchToFitToWindowMenuItem.state = (mainViewController.publicVar.isLargeImageFitWindow == true) ? .on : .off
             
-            toggleSidebarMenuItem.state = (mainViewController.publicVar.profile.isDirTreeHidden == false) ? .on : .off
+            if let container = mainViewController.paneContainer, container.isSplit {
+                toggleSidebarMenuItem.state = container.isSharedSidebarVisible ? .on : .off
+            } else {
+                toggleSidebarMenuItem.state = (mainViewController.publicVar.profile.isDirTreeHidden == false) ? .on : .off
+            }
             toggleSidebarMenuItem.keyEquivalent="f"
             toggleSidebarMenuItem.keyEquivalentModifierMask=[]
             toggleSidebarMenuItem.isHidden = mainViewController.publicVar.isInLargeView
@@ -762,6 +792,26 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             }else{
                 return false
             }
+        }
+        // 分屏相关菜单项
+        // Split view menu items
+        if menuItem.action == #selector(closePane(_:)) {
+            return mainViewController.isInSplitLayout
+        }
+        if menuItem.action == #selector(movePaneToNewTab(_:))
+            || menuItem.action == #selector(toggleSplitDirection(_:))
+            || menuItem.action == #selector(equalizePanes(_:))
+            || menuItem.action == #selector(nextPane(_:))
+            || menuItem.action == #selector(previousPane(_:)) {
+            return mainViewController.isInSplitLayout
+        }
+        if menuItem.action == #selector(mergeTabsIntoSplitView(_:)) {
+            // 至少要有另一个窗口/标签页可以并入
+            // There has to be another window / tab to merge in
+            return NSApplication.shared.windows.contains { $0 !== mainViewController.view.window && $0.paneContainer != nil && $0.isVisible }
+        }
+        if menuItem.action == #selector(splitPaneRight(_:)) || menuItem.action == #selector(splitPaneDown(_:)) {
+            return (mainViewController.paneContainer?.panes.count ?? 0) < PaneContainerViewController.maxPanes
         }
         // 重新打开关闭的标签页
         // Reopen closed tabs
@@ -1106,6 +1156,45 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
 
     @IBAction func reopenClosedTabs(_ sender: NSMenuItem){
         getMainViewController()?.handleReopenClosedTabs()
+    }
+    
+    // MARK: - 分屏
+    // MARK: - Split view
+    
+    @IBAction func splitPaneRight(_ sender: NSMenuItem){
+        getMainViewController()?.splitPane(direction: .right)
+    }
+    
+    @IBAction func splitPaneDown(_ sender: NSMenuItem){
+        getMainViewController()?.splitPane(direction: .down)
+    }
+    
+    @IBAction func closePane(_ sender: NSMenuItem){
+        getMainViewController()?.closeCurrentPaneOrWindow()
+    }
+    
+    @IBAction func mergeTabsIntoSplitView(_ sender: NSMenuItem){
+        getMainViewController()?.mergeTabsIntoPanes()
+    }
+    
+    @IBAction func movePaneToNewTab(_ sender: NSMenuItem){
+        getMainViewController()?.movePaneToNewTab()
+    }
+    
+    @IBAction func toggleSplitDirection(_ sender: NSMenuItem){
+        getMainViewController()?.paneContainer?.toggleSplitDirection()
+    }
+    
+    @IBAction func equalizePanes(_ sender: NSMenuItem){
+        getMainViewController()?.equalizePanes()
+    }
+    
+    @IBAction func nextPane(_ sender: NSMenuItem){
+        getMainViewController()?.paneContainer?.activateNextPane(offset: 1)
+    }
+    
+    @IBAction func previousPane(_ sender: NSMenuItem){
+        getMainViewController()?.paneContainer?.activateNextPane(offset: -1)
     }
     
     @IBAction func fileNewFolder(_ sender: NSMenuItem){
