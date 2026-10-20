@@ -754,9 +754,7 @@ extension ViewController {
         let stop = NSSelectorFromString("_stopGestureScrollTracking")
         guard let behaviorIvar = class_getInstanceVariable(NSScrollView.self, "_scrollingBehavior"),
               let behavior = object_getIvar(mainScrollView, behaviorIvar) as? NSObject,
-              behavior.responds(to: stop),
-              // State 3 is momentum
-              behavior.value(forKey: "state") as? Int == 3 else { return }
+              behavior.responds(to: stop) else { return }
         _ = behavior.perform(stop)
     }
     
