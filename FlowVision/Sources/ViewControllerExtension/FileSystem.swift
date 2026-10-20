@@ -945,6 +945,7 @@ extension ViewController {
                     if ver != dirModel.ver {return}
                     
                     if curFolder == path {
+                        _ = restoreFolderScrollPos(folder: curFolder)
                         
                         if snapshotQueue.count > 0 {
                             let curTime = DispatchTime.now()
