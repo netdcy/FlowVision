@@ -80,6 +80,7 @@ extension ViewController {
     func treeReLocate(path: String, doCollapse: Bool, expandLast: Bool) {
         var path=path
         var isInExternal=false
+        var externalVolumeName: String?
         
         // 注：由于此函数获取的是volumeIsInternal属性为false的真外部卷，对于第二块硬盘、分区会没有，因此不再使用
         // Note: This function retrieves true external volumes where volumeIsInternal is false, which won't include second hard drives or partitions, so it's no longer used.
@@ -96,15 +97,20 @@ extension ViewController {
             for exUrl in urls {
                 if exUrl.absoluteString == "file:///" {continue}
                 if path.hasPrefix(exUrl.absoluteString) {
-                    path=exUrl.lastPathComponent+"/"+path.replacingOccurrences(of: exUrl.absoluteString, with: "")
+                    // Keep the raw volume name separate from the URL-encoded relative path.
+                    externalVolumeName = exUrl.lastPathComponent
+                    path = String(path.dropFirst(exUrl.absoluteString.count))
                     isInExternal=true
                     break
                 }
             }
         }
 
-        var targetPaths = path.replacingOccurrences(of: rootFolder, with: "").removingPercentEncoding!.components(separatedBy: "/")
+        var targetPaths = path.replacingOccurrences(of: rootFolder, with: "").components(separatedBy: "/").map {
+            $0.removingPercentEncoding ?? $0
+        }
         targetPaths.removeLast()
+        if let externalVolumeName { targetPaths.insert(externalVolumeName, at: 0) }
         log("Locate:",targetPaths)
         
         // 额外插入一层用来定位
