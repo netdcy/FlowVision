@@ -144,19 +144,16 @@ extension URL {
 }
 
 func getFileSchemeAbsPath(_ path: String) -> String {
-    var pathNoScheme = path.hasPrefix("file://") ? String(path.dropFirst("file://".count)) : path
-    pathNoScheme = pathNoScheme.removingPercentEncoding!.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
-    let pathWithScheme = "file://" + pathNoScheme
-    return pathWithScheme
+    guard !path.isEmpty else { return "" }
+    // Only file:// strings are URL-encoded. A raw filename may contain a literal "%20".
+    let url = path.hasPrefix("file://") ? URL(string: path) : fileURLPreservingUnicode(path: path)
+    return url?.absoluteString ?? ""
 }
 
 func getFileSchemeAbsParentFolderPath(_ path: String) -> String {
-    var pathNoScheme = path.hasPrefix("file://") ? String(path.dropFirst("file://".count)) : path
-    pathNoScheme = pathNoScheme.removingPercentEncoding!.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
-    let pathWithScheme = "file://" + pathNoScheme
-    guard let url=URL(string: pathWithScheme) else { return "" }
-    var folderPath=url.deletingLastPathComponent().absoluteString
-    return folderPath
+    let encodedPath = getFileSchemeAbsPath(path)
+    guard !encodedPath.isEmpty, let url = URL(string: encodedPath) else { return "" }
+    return url.deletingLastPathComponent().absoluteString
 }
 
 func attributedStringWithSymbols(_ symbols: [String]) -> NSAttributedString {
@@ -811,10 +808,9 @@ func triggerFinderSound() {
 }
 
 func resolveRelativePath(basePath: String, relativePath: String) -> String? {
-    // 移除开头的 file:// 并解码
-    // Remove leading file:// and decode
-    var base = basePath.replacingOccurrences(of: "file://", with: "").removingPercentEncoding ?? basePath
-    var relative = relativePath.removingPercentEncoding ?? relativePath
+    // Both arguments are raw filesystem paths, already decoded at the input boundary.
+    var base = basePath
+    var relative = relativePath
     
     // 处理波浪号(~)表示用户主目录
     // Handle tilde (~) representing user home directory
