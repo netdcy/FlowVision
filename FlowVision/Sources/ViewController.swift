@@ -2443,6 +2443,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func handleDraggedFiles(_ urls: [URL]) {
+        let urls = urls.map { $0.resolvingActualFilePath() }
         var folderPath="file:///"
         var path="file:///"
         

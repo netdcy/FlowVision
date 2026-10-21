@@ -205,9 +205,10 @@ extension ViewController {
             for i in 0..<count {
                 if let rawPtr = MDQueryGetResultAtIndex(query, i) {
                     let item = Unmanaged<MDItem>.fromOpaque(rawPtr).takeUnretainedValue()
-                    if let path = MDItemCopyAttribute(item, kMDItemPath) as? String {
+                    if let path = MDItemCopyAttribute(item, kMDItemPath) as? String,
+                       let url = fileURLPreservingUnicode(path: path) {
                         spotlightPaths.insert(path)
-                        contents.append(URL(fileURLWithPath: path))
+                        contents.append(url)
                     }
                 }
             }
