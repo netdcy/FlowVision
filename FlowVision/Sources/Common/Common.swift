@@ -122,6 +122,27 @@ extension UserDefaults {
     }
 }
 
+// URL(fileURLWithPath:) may change NFC to NFD. Keep the raw path's spelling when encoding it.
+func fileURLPreservingUnicode(path: String) -> URL? {
+    var components = URLComponents()
+    components.scheme = "file"
+    components.host = ""
+    components.path = path.hasPrefix("/") ? path : FileManager.default.currentDirectoryPath + "/" + path
+    return components.url
+}
+
+extension URL {
+    // Resolve externally supplied paths to the spelling returned by the filesystem, not to NFC/NFD.
+    // Unsupported volumes or missing files retain the supplied URL.
+    func resolvingActualFilePath() -> URL {
+        guard isFileURL,
+              let values = try? resourceValues(forKeys: [.canonicalPathKey]),
+              let path = values.allValues[.canonicalPathKey] as? String,
+              let url = fileURLPreservingUnicode(path: path) else { return self }
+        return hasDirectoryPath ? url.appendingPathComponent("", isDirectory: true) : url
+    }
+}
+
 func getFileSchemeAbsPath(_ path: String) -> String {
     var pathNoScheme = path.hasPrefix("file://") ? String(path.dropFirst("file://".count)) : path
     pathNoScheme = pathNoScheme.removingPercentEncoding!.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
@@ -501,14 +522,14 @@ class VolumeManager {
     }
     
     func isExternalVolume(_ path: String) -> Bool {
-        guard var url = URL(string: path) else {
-            return false
+        let url: URL?
+        if path.hasPrefix("/") {
+            url = fileURLPreservingUnicode(path: path)
+        } else {
+            url = URL(string: path)
         }
-        
-        if url.scheme == nil {
-            url = URL(fileURLWithPath: path.removingPercentEncoding!)
-        }
-        
+        // 空值、相对路径、HTTP/SMB URL：返回 false
+        guard let url, url.isFileURL, url.path.hasPrefix("/") else { return false }
         return isExternalVolume(url)
     }
     
