@@ -768,6 +768,7 @@ extension ViewController {
         
         // 是捕获界面，还是将从finder打开替换为目录中打开
         // Capture interface, or replace opening from finder with opening in directory
+        var openedFile: FileModel?
         if publicVar.openFromFinderPath == "" {
             if let snapshot = captureSnapshot(of: coreAreaView){
                 coreAreaView.addSubview(snapshot)
@@ -809,9 +810,7 @@ extension ViewController {
                     file.isGetImageSizeFail = false
                 }
                 largeImageView.file=file
-                
-                setWindowTitleOfLargeImage(file: file)
-                setLoadThumbPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0), ifNeedVisable: false)
+                openedFile = file
             }else{
                 fileDB.unlock()
             }
@@ -841,6 +840,13 @@ extension ViewController {
         fileDB.db[SortKeyDir(path)]?.layoutCalcPos=0
         fileDB.db[SortKeyDir(path)]?.lastLayoutCalcPosUsed=0
         fileDB.unlock()
+
+        // 如果是打开文件的情况，则设置标题、加载大图附近的缩略图
+        if let openedFile {
+            setWindowTitleOfLargeImage(file: openedFile)
+            // 但此时任务池还不存在，目前无法实现加载附近缩略图
+            // setLoadThumbPriority(indexPath: IndexPath(item: currLargeImagePos, section: 0), ifNeedVisable: false)
+        }
         
         // 如果是切换目录或者文件数量过多，则清空后再insertItems，否则仅reloadData(保持位置)
         // If switching directory or too many files, clear then insertItems, otherwise only reloadData (maintain position)
