@@ -2,7 +2,8 @@
 //  ShortcutRecorderView.swift
 //  FlowVision
 //
-//  NSView subclass that captures a single key chord via first-responder + keyDown.
+//  NSView subclass that captures a single key chord via first-responder + keyDown,
+//  plus a local key monitor while recording so menu-owned Cmd chords get through.
 //  Bare Esc (no modifiers) clears the binding; Esc with modifiers records normally.
 //
 
@@ -28,8 +29,14 @@ final class ShortcutRecorderView: NSView {
     }
 
     private var isRecording = false {
-        didSet { needsDisplay = true }
+        didSet {
+            needsDisplay = true
+            isRecording ? installKeyMonitor() : removeKeyMonitor()
+        }
     }
+
+    private var keyMonitor: Any?
+    private var resignKeyObserver: NSObjectProtocol?
 
     /// When false, mouseDown is ignored and the recorder draws greyed out.
     /// Used by settings rows where the primary chord is system-locked (e.g. Quit).
@@ -75,6 +82,42 @@ final class ShortcutRecorderView: NSView {
         // External take-away (Tab to next view, etc): just exit state, no commit.
         isRecording = false
         return super.resignFirstResponder()
+    }
+
+    override func viewWillMove(toWindow newWindow: NSWindow?) {
+        // Table reloads can pull the cell out of the window without a resign.
+        if newWindow == nil { isRecording = false }
+        super.viewWillMove(toWindow: newWindow)
+    }
+
+    // Cmd chords never reach keyDown when a menu item owns them (⌘W closes the
+    // window, ⌘Q quits). A local monitor runs before key-equivalent dispatch,
+    // so while recording it routes every keyDown of this window here instead.
+    private func installKeyMonitor() {
+        guard keyMonitor == nil else { return }
+        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            guard let self, self.isRecording, event.window === self.window else { return event }
+            self.keyDown(with: event)
+            return nil
+        }
+        // Closing Settings only hides the window and keeps this view as first responder,
+        // so without this the first key typed after reopening it would be recorded.
+        resignKeyObserver = NotificationCenter.default.addObserver(
+            forName: NSWindow.didResignKeyNotification, object: window, queue: .main
+        ) { [weak self] _ in
+            self?.isRecording = false
+        }
+    }
+
+    private func removeKeyMonitor() {
+        if let keyMonitor {
+            NSEvent.removeMonitor(keyMonitor)
+            self.keyMonitor = nil
+        }
+        if let resignKeyObserver {
+            NotificationCenter.default.removeObserver(resignKeyObserver)
+            self.resignKeyObserver = nil
+        }
     }
 
     private func endRecording() {
@@ -129,7 +172,7 @@ final class ShortcutRecorderView: NSView {
             text = chord.displayString
         } else {
             text = NSLocalizedString("shortcut.recorder.empty",
-                                      value: "—", comment: "")
+                                      value: "-", comment: "")
         }
 
         let textColor: NSColor
