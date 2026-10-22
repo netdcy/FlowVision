@@ -2,7 +2,7 @@
 //  KeyShortcut.swift
 //  FlowVision
 //
-//  Dispatcher: receives NSEvent keyDowns, matches against ShortcutStore.reverseIndex,
+//  Dispatcher: receives NSEvent keyDowns, matches against ShortcutStore.candidateTiers,
 //  fires the appropriate action handler. Non-rebindable text-input branches
 //  (quick-search, OCR/rename text ops) are handled before lookup.
 //
@@ -39,25 +39,14 @@ extension ViewController {
         // than fixed bindings.
         if handleNonRebindableNavigation(event) { return nil }
 
-        let chord = KeyChord(event: event)
-
-        // Layout-aware matching. The glyph the key actually produced (semantic) outranks
-        // the physical keyCode: on ISO layouts the physical key under a moved symbol is
-        // often bound to the opposite action — e.g. Norwegian '+' sits on the US '-' key,
-        // whose keyCode is bound to zoom-out (issue #16). On US/ANSI glyph and keyCode agree
-        // (so existing bindings are unchanged), but shifted symbols now resolve too — e.g.
-        // Shift+= → '+' → '=' → zoom-in, which keyCode-only matching missed. Special keys
-        // (no glyph) yield no semantic candidates and fall through to physical.
-        let semantic = ShortcutStore.shared.semanticCandidates(
-            characters: event.characters,
-            ignoringModifiers: event.charactersIgnoringModifiers,
-            modifiers: chord.modifiers)
-        let physical = ShortcutStore.shared.reverseIndex[chord] ?? []
-        let candidates = ShortcutMatching.order(semantic: semantic, physical: physical)
-
-        for action in candidates where stateGateOpen(for: action) && scopeMatches(action.scope) {
-            if dispatch(action) { return nil }
+        // Layout-aware tiers (exact, symbol, position); see ShortcutMatching. Only the
+        // first tier with an eligible action runs, so a handler that declines (e.g. tag1
+        // without a selection) passes the key on instead of firing another binding.
+        let tiers = ShortcutStore.shared.candidateTiers(for: ShortcutMatching.Input(event: event))
+        let candidates = ShortcutMatching.firstEligibleTier(tiers) { action in
+            stateGateOpen(for: action) && scopeMatches(action.scope)
         }
+        for action in candidates where dispatch(action) { return nil }
         return event
     }
 

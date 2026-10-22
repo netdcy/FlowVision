@@ -303,9 +303,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
 
     /// Refresh `keyEquivalent` and `keyEquivalentModifierMask` on every NSMenuItem
-    /// whose `identifier` matches a `ShortcutAction.rawValue`. Bare-letter chords
-    /// (Fn-only counts as bare) clear the menu shortcut so AppKit doesn't hijack
-    /// text-input events — those route exclusively through the NSEvent local monitor.
+    /// whose `identifier` matches a `ShortcutAction.rawValue`. Only ⌘/⌃ glyph chords
+    /// are mirrored (see `KeyChord.isMenuKeyEquivalentEligible`); anything else clears
+    /// the menu shortcut so AppKit doesn't hijack text input, and routes exclusively
+    /// through the NSEvent local monitor.
     /// Pass an action to update a single item; pass nil for a full pass.
     func syncMenuShortcuts(only action: ShortcutAction? = nil) {
         guard let main = NSApp.mainMenu else { return }
@@ -313,11 +314,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             guard let id = item.identifier?.rawValue,
                   let target = ShortcutAction(rawValue: id) else { return }
             if let action, target != action { return }
-            // Pick the first chord that has at least one real modifier (Fn alone
-            // doesn't qualify — would hijack text input via menu keyEquivalent).
-            let chord = ShortcutStore.shared.chords(for: target).first { c in
-                !c.modifiers.subtracting(.function).isEmpty
-            }
+            let chord = ShortcutStore.shared.chords(for: target).first { $0.isMenuKeyEquivalentEligible }
             if let chord {
                 item.keyEquivalent = chord.character
                 item.keyEquivalentModifierMask = chord.modifiers.nsFlags

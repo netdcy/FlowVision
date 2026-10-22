@@ -237,17 +237,17 @@ final class ActionsSettingsViewController: NSViewController, SettingsPane,
         let stored = ShortcutStore.shared.chords(for: action).count
         if index < stored {
             ShortcutStore.shared.removeChord(at: index, for: action)
-        } else {
-            // Pending empty slot — pop one.
-            if let n = pendingExtraSlots[action], n > 0 {
-                pendingExtraSlots[action] = n - 1
-                if pendingExtraSlots[action] == 0 {
-                    pendingExtraSlots.removeValue(forKey: action)
-                }
-                rebuildRows()
-                tableView.reloadData()
-            }
+        } else if popPendingSlot(action) {
+            rebuildRows()
+            tableView.reloadData()
         }
+    }
+
+    /// Drops one pending empty slot of `action`. Returns false if it had none.
+    private func popPendingSlot(_ action: ShortcutAction) -> Bool {
+        guard let n = pendingExtraSlots[action], n > 0 else { return false }
+        pendingExtraSlots[action] = n > 1 ? n - 1 : nil
+        return true
     }
 
     // MARK: - Recorder commit + conflict handling
@@ -276,13 +276,20 @@ final class ActionsSettingsViewController: NSViewController, SettingsPane,
         // of another action (e.g. ⌘Q owned by quitApp). Locked primaries can't
         // be reassigned — would corrupt the locked action's UI state.
         if isLockedReservedDefault(chord, excluding: action) {
-            showLockedReservedAlert(chord: chord)
-            // Pending-slot path: the user opened an empty slot and the recorded
-            // chord was rejected — drop the orphan slot so the table doesn't
-            // accumulate stranded empty rows.
-            if isPendingSlot { removeSlot(action, at: index) }
-            rebuildRows()
-            tableView.reloadData()
+            showReservedAlert(chord: chord, body: NSLocalizedString("locked.reserved.body",
+                value: "%@ is reserved by the system and cannot be reassigned.",
+                comment: "%@ is chord glyphs"))
+            rejectRecording(for: action, at: index, isPendingSlot: isPendingSlot)
+            return
+        }
+
+        // Bare arrows, Tab, Return and F2 are consumed by file browser navigation
+        // before shortcut lookup, so a browser action bound to them would never fire.
+        if action.scope != .viewerOnly && chord.isReservedForBrowserNavigation {
+            showReservedAlert(chord: chord, body: NSLocalizedString("navigation.reserved.body",
+                value: "%@ is used to navigate the file browser and can't trigger this action.",
+                comment: "%@ is chord glyphs"))
+            rejectRecording(for: action, at: index, isPendingSlot: isPendingSlot)
             return
         }
 
@@ -291,12 +298,11 @@ final class ActionsSettingsViewController: NSViewController, SettingsPane,
         // are harmless and commit silently.
         let blocking = (ShortcutStore.shared.reverseIndex[chord] ?? [])
             .filter { $0 != action && scopesOverlap($0.scope, action.scope) }
-        let isSystemy = action.isSystemConventional || chord.isSystemReserved
 
         if !blocking.isEmpty {
             showConflictAlert(new: action, chord: chord, blocking: blocking,
                               at: index, isPendingSlot: isPendingSlot)
-        } else if isSystemy {
+        } else if action.needsSystemOverrideConfirmation(for: chord) {
             confirmSystemOverride(action: action, chord: chord,
                                    at: index, isPendingSlot: isPendingSlot)
         } else {
@@ -313,15 +319,20 @@ final class ActionsSettingsViewController: NSViewController, SettingsPane,
         }
     }
 
-    private func showLockedReservedAlert(chord: KeyChord) {
+    private func showReservedAlert(chord: KeyChord, body format: String) {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("Reserved shortcut", comment: "")
-        let fmt = NSLocalizedString("locked.reserved.body",
-            value: "%@ is reserved by the system and cannot be reassigned.",
-            comment: "%@ is chord glyphs")
-        alert.informativeText = String(format: fmt, chord.displayString)
+        alert.informativeText = String(format: format, chord.displayString)
         alert.addButton(withTitle: NSLocalizedString("OK", comment: ""))
         alert.runModal()
+    }
+
+    /// Discards a rejected recording. A pending slot the user opened for it is dropped
+    /// so the table doesn't accumulate stranded empty rows.
+    private func rejectRecording(for action: ShortcutAction, at index: Int, isPendingSlot: Bool) {
+        if isPendingSlot { removeSlot(action, at: index) }
+        rebuildRows()
+        tableView.reloadData()
     }
 
     private func scopesOverlap(_ a: ContextScope, _ b: ContextScope) -> Bool {
@@ -332,12 +343,7 @@ final class ActionsSettingsViewController: NSViewController, SettingsPane,
                         at index: Int, isPendingSlot: Bool) {
         if isPendingSlot {
             // Convert pending slot into a real stored chord.
-            if let n = pendingExtraSlots[action], n > 0 {
-                pendingExtraSlots[action] = n - 1
-                if pendingExtraSlots[action] == 0 {
-                    pendingExtraSlots.removeValue(forKey: action)
-                }
-            }
+            _ = popPendingSlot(action)
             ShortcutStore.shared.appendChord(chord, for: action)
         } else {
             ShortcutStore.shared.setChord(chord, at: index, for: action)
@@ -590,8 +596,10 @@ private final class BindingCell: NSTableCellView {
             host.onRecordedChord(chord, for: action, at: self.index)
         }
 
-        // Toggle button visibility per slot.
+        // Toggle button visibility per slot. [+] needs a filled primary slot: an empty
+        // primary is already the place to record the first chord.
         plusButton.isHidden  = index != 0
+        plusButton.isEnabled = chordForSlot != nil
         resetButton.isHidden = index != 0
         minusButton.isHidden = index == 0
     }

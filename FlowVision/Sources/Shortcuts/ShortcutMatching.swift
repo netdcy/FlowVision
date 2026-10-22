@@ -2,107 +2,117 @@
 //  ShortcutMatching.swift
 //  FlowVision
 //
-//  Layout-aware semantic fallback for keyboard shortcuts.
+//  Layout-aware matching rules for keyboard shortcuts.
 //
-//  The primary dispatch path matches on physical keyCode (see ShortcutStore.reverseIndex),
-//  which is correct for US/ANSI and physical-position layouts (Dvorak/Colemak) but wrong for
-//  ISO national layouts where +, -, = live on different physical keys or behind AltGr/Option
-//  (e.g. Norwegian + sits on the US '-' key; Nordic '=' is Option+0). See issue #16.
+//  A chord names either a glyph (letter, digit, symbol) or a special key (arrows, Esc,
+//  Return, F-keys, ...). Glyph chords match the character the active layout puts on the
+//  pressed key, like menus do, so AZERTY Cmd+A is never read as the US Cmd+Q position.
+//  Special keys match by key code. Candidates come in tiers, most specific first:
 //
-//  This enum holds the pure matching helpers — no AppKit / NSEvent dependency so the algorithm
-//  is unit-testable from raw glyph strings + modifiers.
+//  1. exact:    the key's base glyph (or special key code) with exactly the same modifiers.
+//  2. symbol:   the glyph the modifiers produced, for bindings to a bare symbol. Shift and
+//               Option are what produced it (US '+' = Shift+=, Nordic '=' = Option+0), so
+//               only ⌘ and ⌃ must match. Covers symbols that move between layouts (#16).
+//  3. position: the US key position, only when the key has no ASCII letter or digit to
+//               match by name. Non-Latin and accented letters (Russian, Czech number row)
+//               reach letter and digit bindings; number-row symbols (AZERTY &é"') reach
+//               digit bindings.
+//
+//  The dispatcher runs the first tier that has an eligible action and never moves on to a
+//  later tier, so a handler that declines can't hand the key to an unrelated binding.
 //
 
 import Foundation
 
 enum ShortcutMatching {
 
-    /// Index/lookup key: a produced glyph plus its semantically-relevant modifiers.
-    struct SemKey: Hashable {
-        let char: String
-        let mods: Modifiers
-    }
+    /// The parts of a key event the matcher needs. Built from NSEvent via `init(event:)`.
+    struct Input {
+        let keyCode: UInt16
+        let modifiers: Modifiers
+        /// The layout's unmodified character for the key, lowercased. Empty for special keys.
+        let baseGlyph: String
+        /// The character the held modifiers produced. Empty for special keys, dead keys
+        /// and control codes.
+        let producedGlyph: String
 
-    /// Reduce modifiers to the set that meaningfully distinguishes a shortcut for `char`.
-    ///
-    /// For symbol glyphs (anything not a letter/digit), Shift and Option are *consumers* —
-    /// they are what produced the glyph (US '+' = Shift+=, Nordic '=' = Option+0), so they
-    /// must not be required again at match time. Only ⌘ and ⌃ survive.
-    ///
-    /// For letters/digits the glyph is the base key, so Shift stays significant (don't
-    /// collapse ⌘⇧Z onto ⌘Z); Option/Fn are dropped as they alter the glyph or are implicit.
-    static func semMods(_ mods: Modifiers, char: String) -> Modifiers {
-        if isSymbol(char) {
-            return mods.intersection([.command, .control])
-        }
-        return mods.intersection([.command, .control, .shift])
-    }
-
-    /// Expand produced glyphs with zoom-cluster equivalences so a key that yields '+'
-    /// also satisfies the '=' binding, and '_' satisfies '-'.
-    static func expand(_ chars: Set<String>) -> Set<String> {
-        var out = chars
-        for c in chars {
-            switch c {
-            case "+": out.insert("=")
-            case "_": out.insert("-")
-            default: break
+        /// - Parameters:
+        ///   - base: characters with no modifiers applied (`characters(byApplyingModifiers: [])`).
+        ///   - produced: characters with the held modifiers (`characters`).
+        ///   - ignoringModifiers: `charactersIgnoringModifiers`, used when `base` is empty.
+        init(keyCode: UInt16, modifiers: Modifiers,
+             base: String?, produced: String?, ignoringModifiers: String?) {
+            self.keyCode = keyCode
+            var mods = modifiers
+            if KeyChord.isImplicitFn(keyCode) { mods.remove(.function) }
+            self.modifiers = mods
+            if KeyChord.isSpecialKey(keyCode) {
+                baseGlyph = ""
+                producedGlyph = ""
+            } else {
+                baseGlyph = ShortcutMatching.printable(base)
+                    ?? ShortcutMatching.printable(ignoringModifiers) ?? ""
+                producedGlyph = ShortcutMatching.printable(produced) ?? ""
             }
         }
-        return out
     }
 
-    /// Glyphs a key event produced, equivalence-expanded.
-    ///
-    /// Resolves the glyph with the same rule the recorder uses (`recordedCharacter`) so a
-    /// keypress at dispatch produces exactly the glyph its binding was indexed under. That
-    /// rule prefers the literal `characters` (carries Option/AltGr and Shift symbols) but
-    /// rejects control codes and empties — using the literal unconditionally would both leak
-    /// the base-layer digit (Nordic Option+0 reports characters="=" but ignoringModifiers="0",
-    /// falsely firing zoom-reset) and emit control codes for Ctrl combos.
-    static func producedChars(characters: String?, ignoringModifiers: String?) -> Set<String> {
-        let glyph = recordedCharacter(literal: characters, ignoringModifiers: ignoringModifiers)
-        guard !glyph.isEmpty else { return [] }
-        return expand([glyph])
+    struct GlyphKey: Hashable {
+        let glyph: String
+        let modifiers: Modifiers
     }
 
-    /// Glyph to persist when recording a chord, kept symmetric with `producedChars` so a
-    /// re-recorded binding matches what dispatch later sees.
-    ///
-    /// Prefers the literal `characters` when it is a normal printable glyph — this captures
-    /// Option/AltGr-produced symbols (Nordic '=' is Option+0, where `charactersIgnoringModifiers`
-    /// reports the base-layer '0'). Falls back to the modifier-independent base for control
-    /// combos (Ctrl+A reports a control code) and dead keys / empty literals.
-    static func recordedCharacter(literal: String?, ignoringModifiers: String?) -> String {
-        let lit = literal ?? ""
-        if let scalar = lit.unicodeScalars.first, scalar.value >= 0x20 {
-            return lit.lowercased()
+    struct PositionKey: Hashable {
+        let keyCode: UInt16
+        let modifiers: Modifiers
+    }
+
+    /// Modifiers that must still match for a symbol binding once Shift / Option produced it.
+    static let symbolModifiers: Modifiers = [.command, .control]
+
+    /// The glyph followed by its zoom-cluster partner: a key yielding '+' also satisfies
+    /// '=' bindings and '_' satisfies '-'. The exact glyph always comes first.
+    static func equivalents(of glyph: String) -> [String] {
+        switch glyph {
+        case "+": return ["+", "="]
+        case "_": return ["_", "-"]
+        default:  return [glyph]
         }
-        return (ignoringModifiers ?? "").lowercased()
     }
 
-    /// Build the canonical SemKey for indexing or lookup of a (glyph, modifiers) pair.
-    static func key(char: String, mods: Modifiers) -> SemKey {
-        SemKey(char: char.lowercased(), mods: semMods(mods, char: char))
+    /// Whether a key whose base glyph is `eventGlyph` may trigger the binding recorded at
+    /// the same US key position with glyph `boundGlyph`. See tier 3 in the file header.
+    static func allowsPositionMatch(eventGlyph: String, boundGlyph: String) -> Bool {
+        guard let c = eventGlyph.first, !isASCIIAlphanumeric(c) else { return false }
+        guard let bound = boundGlyph.first else { return false }
+        if c.isLetter { return isASCIIAlphanumeric(bound) }
+        return bound.isASCII && bound.isNumber
     }
 
-    /// Merge semantic and physical candidates with **semantic first**, deduped (stable).
-    ///
-    /// Semantic (the glyph the user actually typed) must outrank physical keyCode: on ISO
-    /// layouts the physical key under a moved symbol is often bound to the *opposite* action
-    /// (Norwegian '+' sits on the US '-' key, whose keyCode is bound to zoom-out). Preferring
-    /// the glyph fixes issue #16 while staying a no-op on US/ANSI, where both agree.
-    static func order<T: Hashable>(semantic: [T], physical: [T]) -> [T] {
-        var out: [T] = []
-        var seen: Set<T> = []
-        for item in semantic + physical where seen.insert(item).inserted {
-            out.append(item)
+    /// The actions of the first tier holding at least one eligible action.
+    static func firstEligibleTier<T>(_ tiers: [[T]], where isEligible: (T) -> Bool) -> [T] {
+        for tier in tiers {
+            let eligible = tier.filter(isEligible)
+            if !eligible.isEmpty { return eligible }
         }
-        return out
+        return []
     }
 
-    private static func isSymbol(_ char: String) -> Bool {
-        guard let c = char.first else { return false }
+    static func isSymbol(_ glyph: String) -> Bool {
+        guard let c = glyph.first else { return false }
         return !c.isLetter && !c.isNumber
+    }
+
+    private static func isASCIIAlphanumeric(_ c: Character) -> Bool {
+        c.isASCII && (c.isLetter || c.isNumber)
+    }
+
+    /// Lowercased `s` if it is a visible character, nil for empty strings, control codes,
+    /// DEL and the private-use range AppKit reports for function keys.
+    private static func printable(_ s: String?) -> String? {
+        guard let s, let scalar = s.unicodeScalars.first,
+              scalar.value >= 0x20, scalar.value != 0x7F,
+              !(0xF700...0xF8FF).contains(scalar.value) else { return nil }
+        return s.lowercased()
     }
 }

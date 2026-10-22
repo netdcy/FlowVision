@@ -102,10 +102,6 @@ struct ShortcutDef {
     /// Defaults false — only menu-style actions opt in.
     var firesDuringSearch: Bool = false
 
-    /// Chord is a macOS HIG convention (Cmd+Q, Cmd+W, etc.). Recorder prompts
-    /// before letting the user override.
-    var isSystemConventional: Bool = false
-
     /// Primary (index 0) slot is rendered disabled and cannot be reassigned.
     /// Currently only `quitApp` — Cmd+Q is owned by macOS.
     var hasLockedPrimary: Bool = false
@@ -125,8 +121,13 @@ extension ShortcutAction {
     var englishName: String        { def.englishName }
     var defaultChords: [KeyChord]  { def.defaultChords }
     var firesDuringSearch: Bool    { def.firesDuringSearch }
-    var isSystemConventional: Bool { def.isSystemConventional }
     var hasLockedPrimary: Bool     { def.hasLockedPrimary }
+
+    /// Binding a macOS-reserved chord (⌘W, ⌘H, ...) to an action that doesn't own it by
+    /// default asks the user first.
+    func needsSystemOverrideConfirmation(for chord: KeyChord) -> Bool {
+        chord.isSystemReserved && !defaultChords.contains(chord)
+    }
 
     var displayName: String {
         NSLocalizedString("shortcut.action.\(rawValue)",
@@ -176,11 +177,11 @@ extension ShortcutAction {
         case .browserScrollTop: return .init(
             category: .navigation, scope: .browserOnly,
             englishName: "Scroll to top",
-            defaultChords: [k(0x73)])  // Home
+            defaultChords: [k(0x73), k(0x7E, "", .command)])  // Home, Cmd+↑
         case .browserScrollBottom: return .init(
             category: .navigation, scope: .browserOnly,
             englishName: "Scroll to bottom",
-            defaultChords: [k(0x77)])  // End
+            defaultChords: [k(0x77), k(0x7D, "", .command)])  // End, Cmd+↓
         case .browserPageUp: return .init(
             category: .navigation, scope: .browserOnly,
             englishName: "Page up",
@@ -225,7 +226,7 @@ extension ShortcutAction {
         case .viewerOpenFromSelection: return .init(
             category: .navigation, scope: .browserOnly,
             englishName: "Open selection in viewer",
-            defaultChords: [k(0x31, " ")])
+            defaultChords: [k(0x31)])
 
         // MARK: Viewer ops
         // viewerZoomIn / Out: W and S share keys with browserDirUp/Down via
@@ -287,7 +288,7 @@ extension ShortcutAction {
         case .videoPauseResume: return .init(
             category: .video, scope: .viewerOnly,
             englishName: "Play / Pause",
-            defaultChords: [k(0x31, " ")])
+            defaultChords: [k(0x31)])
         case .videoSeekFwd: return .init(
             category: .video, scope: .viewerOnly,
             englishName: "Seek forward",
@@ -350,7 +351,7 @@ extension ShortcutAction {
             category: .window, scope: .both,
             englishName: "Toggle full screen",
             defaultChords: [k(0x03, "f", [.command, .control]),
-                            k(0x24, "\r", .option)])  // Cmd+Ctrl+F, Opt+Return
+                            k(0x24, "", .option), k(0x4C, "", .option)])  // Cmd+Ctrl+F, Opt+Return, Opt+keypad Enter
         case .windowToggleOnTop: return .init(
             category: .window, scope: .both,
             englishName: "Toggle always on top",
@@ -358,23 +359,19 @@ extension ShortcutAction {
         case .windowRefresh: return .init(
             category: .window, scope: .both,
             englishName: "Refresh",
-            defaultChords: [k(0x0F, "r", .command), k(0x60)],  // Cmd+R, F5
-            isSystemConventional: true)
+            defaultChords: [k(0x0F, "r", .command), k(0x60)])  // Cmd+R, F5
         case .windowNew: return .init(
             category: .window, scope: .both,
             englishName: "New window",
-            defaultChords: [k(0x2D, "n", .command)],
-            isSystemConventional: true)
+            defaultChords: [k(0x2D, "n", .command)])
         case .windowNewTab: return .init(
             category: .window, scope: .both,
             englishName: "New tab",
-            defaultChords: [k(0x11, "t", .command)],
-            isSystemConventional: true)
+            defaultChords: [k(0x11, "t", .command)])
         case .windowClose: return .init(
             category: .window, scope: .both,
             englishName: "Close window",
-            defaultChords: [k(0x0D, "w", .command)],
-            isSystemConventional: true)
+            defaultChords: [k(0x0D, "w", .command)])
         case .windowCloseTab: return .init(
             category: .window, scope: .both,
             englishName: "Close tab",
@@ -383,13 +380,11 @@ extension ShortcutAction {
             category: .window, scope: .both,
             englishName: "Reopen closed tab",
             defaultChords: [k(0x11, "t", [.command, .shift])],
-            firesDuringSearch: true,
-            isSystemConventional: true)
+            firesDuringSearch: true)
         case .quitApp: return .init(
             category: .window, scope: .both,
             englishName: "Quit application",
             defaultChords: [k(0x0C, "q", .command)],
-            isSystemConventional: true,
             hasLockedPrimary: true)
 
         // MARK: File ops
@@ -605,8 +600,7 @@ extension ShortcutAction {
             category: .search, scope: .browserOnly,
             englishName: "Toggle search",
             defaultChords: [k(0x03, "f", .command), k(0x63)],  // Cmd+F, F3
-            firesDuringSearch: true,
-            isSystemConventional: true)
+            firesDuringSearch: true)
         case .searchToggleRecursive: return .init(
             category: .search, scope: .browserOnly,
             englishName: "Toggle recursive search",

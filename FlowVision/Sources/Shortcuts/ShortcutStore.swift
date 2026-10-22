@@ -11,29 +11,34 @@ import Cocoa
 
 final class ShortcutStore {
     static let shared = ShortcutStore()
-    private init() {}
+
+    private let defaults: UserDefaults
+
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+    }
 
     /// Active binding map. Missing key + not in `clearedExplicitly` = use defaults.
     /// Empty array = user has explicitly removed all bindings.
     private(set) var bindings: [ShortcutAction: [KeyChord]] = [:]
 
-    /// Lookup index. Multiple actions may share a chord (legal when scopes are
-    /// disjoint — enforced by conflict UI in the settings pane, not by the store).
+    /// Exact-match index keyed by chord identity (see KeyChord ==). Multiple actions may
+    /// share a chord when their scopes are disjoint; the settings pane's conflict UI
+    /// enforces that, not the store.
     private(set) var reverseIndex: [KeyChord: [ShortcutAction]] = [:]
 
-    /// Layout-aware index keyed on produced glyph rather than physical keyCode. The dispatcher
-    /// consults this *before* `reverseIndex` and lets a glyph match win (see
-    /// `ShortcutMatching.order`), because on ISO layouts the physical key under a moved symbol
-    /// is often bound to the opposite action. Fixes issue #16 (+, -, = move position or sit
-    /// behind Option/AltGr). On US/ANSI glyph and keyCode agree, so behavior is unchanged —
-    /// except shifted symbols now resolve too (e.g. Shift+= → '+' → '=' → zoom-in), which the
-    /// keyCode-only path could not match.
-    private(set) var semanticIndex: [ShortcutMatching.SemKey: [ShortcutAction]] = [:]
+    /// Bare-symbol bindings by glyph and ⌘/⌃, for the symbol tier in ShortcutMatching.
+    private var symbolIndex: [ShortcutMatching.GlyphKey: [ShortcutAction]] = [:]
+
+    /// Glyph bindings by recorded key position, for the position tier in ShortcutMatching.
+    private var positionIndex: [ShortcutMatching.PositionKey: [(glyph: String, action: ShortcutAction)]] = [:]
 
     /// Actions the user has wiped completely. Distinguishes "user cleared all"
     /// from "never persisted" so defaults don't sneak back after a reset-empty.
     private var clearedExplicitly: Set<ShortcutAction> = []
 
+    // v2 is the first format ever persisted (no build wrote a v1 blob), so there
+    // is nothing to migrate from. Bump the suffix only alongside a migration.
     private let defaultsKey   = "shortcutBindings.v2"
 
     // MARK: - Wire format v2
@@ -57,8 +62,15 @@ final class ShortcutStore {
         init(from decoder: Decoder) throws {
             let c = try decoder.container(keyedBy: CodingKeys.self)
             let raw = try? c.decode(String.self, forKey: .action)
-            self.action = raw.flatMap { ShortcutAction(rawValue: $0) }
-            self.chords = (try? c.decode([KeyChord].self, forKey: .chords)) ?? []
+            // An unreadable chord list would otherwise load as "user cleared every chord".
+            // Drop the entry instead so the action keeps its defaults.
+            if let chords = try? c.decode([KeyChord].self, forKey: .chords) {
+                self.action = raw.flatMap { ShortcutAction(rawValue: $0) }
+                self.chords = chords
+            } else {
+                self.action = nil
+                self.chords = []
+            }
         }
 
         func encode(to encoder: Encoder) throws {
@@ -82,7 +94,7 @@ final class ShortcutStore {
         clearedExplicitly.removeAll()
         bindings = [:]
 
-        if let data = UserDefaults.standard.data(forKey: defaultsKey),
+        if let data = defaults.data(forKey: defaultsKey),
            let wire = try? JSONDecoder().decode(Wire.self, from: data) {
             applyV2(wire)
         }
@@ -93,11 +105,7 @@ final class ShortcutStore {
         guard wire.version == 2 else { return }
         for entry in wire.entries {
             guard let a = entry.action else { continue }
-            if entry.chords.isEmpty {
-                clearedExplicitly.insert(a)
-            } else {
-                bindings[a] = entry.chords
-            }
+            assign(entry.chords, to: a)
         }
     }
 
@@ -123,27 +131,12 @@ final class ShortcutStore {
 
     /// Append a chord to the end of `action`'s chord list.
     func appendChord(_ chord: KeyChord, for action: ShortcutAction) {
-        var current = chords(for: action)
-        current.append(chord)
-        commit(current, for: action)
+        commit(chords(for: action) + [chord], for: action)
     }
 
     /// Remove the chord at `index` from `action`'s chord list.
     func removeChord(at index: Int, for action: ShortcutAction) {
-        var current = chords(for: action)
-        guard index < current.count else { return }
-        current.remove(at: index)
-        commit(current, for: action)
-    }
-
-    /// Remove every occurrence of `chord` from `action`'s chord list. No-op if
-    /// the chord isn't bound on that action.
-    func removeChord(_ chord: KeyChord, from action: ShortcutAction) {
-        var current = chords(for: action)
-        let filtered = current.filter { $0 != chord }
-        guard filtered.count != current.count else { return }
-        current = filtered
-        commit(current, for: action)
+        setChord(nil, at: index, for: action)
     }
 
     /// Remove every occurrence of `chord` from each action in `actions` in one
@@ -156,39 +149,61 @@ final class ShortcutStore {
             let filtered = current.filter { $0 != chord }
             guard filtered.count != current.count else { continue }
             anyChanged = true
-            if filtered.isEmpty {
-                bindings.removeValue(forKey: action)
-                clearedExplicitly.insert(action)
-            } else {
-                bindings[action] = filtered
-                clearedExplicitly.remove(action)
-            }
+            assign(filtered, to: action)
         }
         guard anyChanged else { return }
-        persist()
-        rebuildIndex()
-        NotificationCenter.default.post(name: .shortcutsChanged, object: nil)
+        didChange(nil)
     }
 
     /// Reset `action` to its built-in defaults (or empty if no default).
     func reset(_ action: ShortcutAction) {
         clearedExplicitly.remove(action)
         bindings.removeValue(forKey: action)
-        persist()
-        rebuildIndex()
-        NotificationCenter.default.post(name: .shortcutsChanged, object: action)
+        didChange(action)
     }
 
     /// Wipe all custom bindings, restore defaults.
     func resetAll() {
         clearedExplicitly.removeAll()
         bindings.removeAll()
-        UserDefaults.standard.removeObject(forKey: defaultsKey)
+        defaults.removeObject(forKey: defaultsKey)
         rebuildIndex()
         NotificationCenter.default.post(name: .shortcutsChanged, object: nil)
     }
 
-    private func commit(_ chords: [KeyChord], for action: ShortcutAction) {
+    /// Candidate actions for a key event, grouped into ShortcutMatching's tiers (exact,
+    /// symbol, position). A glyph and its zoom-cluster partner get separate tiers so a '+'
+    /// binding that declines never hands the key to '='. The dispatcher runs only the
+    /// first tier with an eligible action.
+    func candidateTiers(for input: ShortcutMatching.Input) -> [[ShortcutAction]] {
+        guard !input.baseGlyph.isEmpty else {
+            let chord = KeyChord(keyCode: input.keyCode, character: "", modifiers: input.modifiers)
+            return [reverseIndex[chord] ?? []]
+        }
+
+        var tiers = ShortcutMatching.equivalents(of: input.baseGlyph).map { glyph in
+            reverseIndex[KeyChord(keyCode: input.keyCode, character: glyph, modifiers: input.modifiers)] ?? []
+        }
+
+        let produced = input.producedGlyph
+        if produced != input.baseGlyph && ShortcutMatching.isSymbol(produced) {
+            let mods = input.modifiers.intersection(ShortcutMatching.symbolModifiers)
+            tiers += ShortcutMatching.equivalents(of: produced).map { glyph in
+                symbolIndex[ShortcutMatching.GlyphKey(glyph: glyph, modifiers: mods)] ?? []
+            }
+        }
+
+        let positionKey = ShortcutMatching.PositionKey(keyCode: input.keyCode, modifiers: input.modifiers)
+        tiers.append((positionIndex[positionKey] ?? [])
+            .filter { ShortcutMatching.allowsPositionMatch(eventGlyph: input.baseGlyph, boundGlyph: $0.glyph) }
+            .map(\.action))
+
+        return tiers.map(Self.removingDuplicates)
+    }
+
+    // MARK: - Internals
+
+    private func assign(_ chords: [KeyChord], to action: ShortcutAction) {
         if chords.isEmpty {
             bindings.removeValue(forKey: action)
             clearedExplicitly.insert(action)
@@ -196,54 +211,47 @@ final class ShortcutStore {
             bindings[action] = chords
             clearedExplicitly.remove(action)
         }
+    }
+
+    private func commit(_ chords: [KeyChord], for action: ShortcutAction) {
+        assign(chords, to: action)
+        didChange(action)
+    }
+
+    private func didChange(_ action: ShortcutAction?) {
         persist()
         rebuildIndex()
         NotificationCenter.default.post(name: .shortcutsChanged, object: action)
     }
 
-    // MARK: - Internals
-
     private func rebuildIndex() {
-        var idx: [KeyChord: [ShortcutAction]] = [:]
-        var sem: [ShortcutMatching.SemKey: [ShortcutAction]] = [:]
+        var exact: [KeyChord: [ShortcutAction]] = [:]
+        var symbol: [ShortcutMatching.GlyphKey: [ShortcutAction]] = [:]
+        var position: [ShortcutMatching.PositionKey: [(glyph: String, action: ShortcutAction)]] = [:]
         for action in ShortcutAction.allCases {
             // Dedupe within an action so intra-action chord duplicates
             // don't show up twice in reverseIndex[chord].
             var seen: Set<KeyChord> = []
-            var seenSem: Set<ShortcutMatching.SemKey> = []
             for chord in chords(for: action) where seen.insert(chord).inserted {
-                idx[chord, default: []].append(action)
-                // Index the recorded glyph for the semantic fallback. Special keys
-                // (arrows, Esc, …) record an empty character and are physical-only.
-                guard !chord.character.isEmpty else { continue }
-                let key = ShortcutMatching.key(char: chord.character, mods: chord.modifiers)
-                if seenSem.insert(key).inserted {
-                    sem[key, default: []].append(action)
+                exact[chord, default: []].append(action)
+                guard !KeyChord.isSpecialKey(chord.keyCode), !chord.character.isEmpty else { continue }
+                position[ShortcutMatching.PositionKey(keyCode: chord.keyCode, modifiers: chord.modifiers),
+                         default: []].append((chord.character, action))
+                if ShortcutMatching.isSymbol(chord.character)
+                    && chord.modifiers.isSubset(of: ShortcutMatching.symbolModifiers) {
+                    symbol[ShortcutMatching.GlyphKey(glyph: chord.character, modifiers: chord.modifiers),
+                           default: []].append(action)
                 }
             }
         }
-        reverseIndex = idx
-        semanticIndex = sem
+        reverseIndex = exact
+        symbolIndex = symbol
+        positionIndex = position
     }
 
-    /// Layout-aware lookup. Returns actions whose recorded glyph matches one of the glyphs
-    /// this key event produced. The dispatcher merges these ahead of `reverseIndex` matches
-    /// via `ShortcutMatching.order`.
-    func semanticCandidates(characters: String?,
-                            ignoringModifiers: String?,
-                            modifiers: Modifiers) -> [ShortcutAction] {
-        let glyphs = ShortcutMatching.producedChars(characters: characters,
-                                                    ignoringModifiers: ignoringModifiers)
-        guard !glyphs.isEmpty else { return [] }
-        var out: [ShortcutAction] = []
+    private static func removingDuplicates(_ actions: [ShortcutAction]) -> [ShortcutAction] {
         var seen: Set<ShortcutAction> = []
-        for glyph in glyphs {
-            let key = ShortcutMatching.key(char: glyph, mods: modifiers)
-            for action in semanticIndex[key] ?? [] where seen.insert(action).inserted {
-                out.append(action)
-            }
-        }
-        return out
+        return actions.filter { seen.insert($0).inserted }
     }
 
     @discardableResult
@@ -258,7 +266,7 @@ final class ShortcutStore {
         }
         do {
             let data = try JSONEncoder().encode(Wire(version: 2, entries: entries))
-            UserDefaults.standard.set(data, forKey: defaultsKey)
+            defaults.set(data, forKey: defaultsKey)
             return true
         } catch {
             NSLog("[shortcuts] ShortcutStore.persist failed: \(error)")

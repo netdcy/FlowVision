@@ -42,10 +42,10 @@ struct Modifiers: OptionSet, Hashable, Codable {
     }
 }
 
-/// A single key chord. Hash/equality intentionally on `(keyCode, modifiers)` only —
-/// `character` is display metadata captured at record time so menu glyphs stay stable
-/// per recording layout but two recordings of the same physical key on different layouts
-/// still match.
+/// A single key chord. Glyph keys store the layout's unmodified character for the key plus
+/// the exact modifiers held (US Shift+= records as "=" with Shift); special keys store an
+/// empty character. `keyCode` is kept for special keys and the position fallback described
+/// in ShortcutMatching.
 struct KeyChord: Codable {
     let keyCode: UInt16
     let character: String
@@ -57,16 +57,23 @@ struct KeyChord: Codable {
         self.modifiers = modifiers
     }
 
+    init(input: ShortcutMatching.Input) {
+        self.init(keyCode: input.keyCode, character: input.baseGlyph, modifiers: input.modifiers)
+    }
+
     init(event: NSEvent) {
-        self.keyCode = event.keyCode
-        // Prefer the produced glyph so Option/AltGr symbols (Nordic '=' = Option+0) record
-        // correctly and stay symmetric with semantic dispatch. See ShortcutMatching.
-        self.character = ShortcutMatching.recordedCharacter(
-            literal: event.characters,
-            ignoringModifiers: event.charactersIgnoringModifiers)
-        var m = Modifiers(event.modifierFlags)
-        if Self.isImplicitFn(event.keyCode) { m.remove(.function) }
-        self.modifiers = m
+        self.init(input: ShortcutMatching.Input(event: event))
+    }
+
+    /// Keys without a layout-dependent glyph. They match by key code.
+    static func isSpecialKey(_ k: UInt16) -> Bool {
+        switch k {
+        case 0x7B, 0x7C, 0x7D, 0x7E: return true     // ← → ↓ ↑
+        case 0x73, 0x77, 0x74, 0x79: return true     // home, end, pgup, pgdn
+        case 0x31, 0x24, 0x4C, 0x30: return true     // space, return, keypad enter, tab
+        case 0x35, 0x33, 0x75, 0x72: return true     // esc, backspace, forward delete, help
+        default: return isImplicitFn(k)              // F1–F20
+        }
     }
 
     /// Keys that macOS auto-flags with `.function` regardless of physical Fn press.
@@ -87,14 +94,34 @@ struct KeyChord: Codable {
     }
 }
 
+/// Identity is what the exact matching tier compares: glyph and modifiers for glyph keys,
+/// so the same glyph recorded on two layouts is one binding, key code and modifiers for
+/// special keys.
 extension KeyChord: Hashable {
     static func == (l: KeyChord, r: KeyChord) -> Bool {
-        l.keyCode == r.keyCode && l.modifiers == r.modifiers
+        guard l.modifiers == r.modifiers else { return false }
+        let lSpecial = isSpecialKey(l.keyCode)
+        guard lSpecial == isSpecialKey(r.keyCode) else { return false }
+        return lSpecial ? l.keyCode == r.keyCode : l.character == r.character
     }
 
     func hash(into h: inout Hasher) {
-        h.combine(keyCode)
         h.combine(modifiers)
+        if Self.isSpecialKey(keyCode) {
+            h.combine(keyCode)
+        } else {
+            h.combine(character)
+        }
+    }
+}
+
+extension ShortcutMatching.Input {
+    init(event: NSEvent) {
+        self.init(keyCode: event.keyCode,
+                  modifiers: Modifiers(event.modifierFlags),
+                  base: event.characters(byApplyingModifiers: []),
+                  produced: event.characters,
+                  ignoringModifiers: event.charactersIgnoringModifiers)
     }
 }
 
@@ -126,6 +153,28 @@ extension KeyChord {
     }()
 
     var isSystemReserved: Bool { Self.systemReservedSet.contains(self) }
+
+    /// Bare or Shift-only arrows and bare Tab / Return / Enter / F2 drive file browser
+    /// navigation before shortcuts are looked up (handleNonRebindableNavigation), so a
+    /// browser action bound to one of them would never fire.
+    var isReservedForBrowserNavigation: Bool {
+        switch keyCode {
+        case 0x7B, 0x7C, 0x7D, 0x7E:
+            return modifiers.isSubset(of: .shift)
+        case 0x30, 0x24, 0x4C, 0x78:
+            return modifiers.isEmpty
+        default:
+            return false
+        }
+    }
+
+    /// AppKit matches menu key equivalents against typed text, so only ⌘ or ⌃ chords with
+    /// a glyph are safe to mirror into the menu; a Shift- or Option-only letter would be
+    /// taken from text fields.
+    var isMenuKeyEquivalentEligible: Bool {
+        !character.isEmpty && !Self.isSpecialKey(keyCode)
+            && !modifiers.isDisjoint(with: [.command, .control])
+    }
 }
 
 extension KeyChord {
