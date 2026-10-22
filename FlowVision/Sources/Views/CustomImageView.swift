@@ -41,11 +41,11 @@ class CustomImageView: NSImageView {
             if viewController.publicVar.isInLargeView {
                 let pasteboard = sender.draggingPasteboard
                 if let urls = pasteboard.readObjects(forClasses: [NSURL.self], options: nil) as? [URL] {
-                    getViewController(self)?.handleDraggedFiles(urls)
+                    viewController.handleDraggedFiles(urls)
                     return true
                 }
             }else if isFolder{
-                getViewController(self)?.handleMove(targetURL: url, pasteboard: sender.draggingPasteboard)
+                viewController.handleMove(targetURL: url, pasteboard: sender.draggingPasteboard)
                 return true
             }else{
                 if sender.draggingSource is CustomCollectionView {

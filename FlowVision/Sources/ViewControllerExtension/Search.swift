@@ -41,7 +41,7 @@ extension ViewController {
             let regexCheckboxWidth = 25 + regexCheckboxTitle.size(withAttributes: [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]).width
             let fullPathCheckboxTitle = NSLocalizedString("Use Full Path", comment: "使用完整路径")
             let fullPathCheckboxWidth = 25 + fullPathCheckboxTitle.size(withAttributes: [.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]).width
-            let filterButtonTitle = NSLocalizedString("Apply Filter", comment: "执行过滤")
+            let filterButtonTitle = NSLocalizedString("Apply Filter", comment: "应用筛选")
             let filterButtonFont = NSFont.systemFont(ofSize: 12.6)
             let filterButtonWidth = 25 + filterButtonTitle.size(withAttributes: [.font: filterButtonFont]).width.rounded()
             // 用于整体调整宽度
@@ -98,7 +98,7 @@ extension ViewController {
             nextButton.target = self
             nextButton.action = #selector(nextButtonClicked(_:))
 
-            // 创建执行过滤按钮 - 放在正则表达式复选框后面
+            // 创建应用筛选按钮 - 放在正则表达式复选框后面
             // Create apply filter button - place after regex checkbox
             let filterButtonX = prevButton.frame.origin.x - filterButtonWidth
             let filterButton = NSButton(frame: NSRect(x: filterButtonX, y: 3, width: filterButtonWidth, height: 25))
@@ -368,8 +368,8 @@ extension ViewController {
             var fileName = _fileName
             var searchText = _searchText
             if !search_isCaseSensitive {
-                fileName = fileName.lowercased()
-                searchText = searchText.lowercased()
+                fileName = fileName.localizedLowercase
+                searchText = searchText.localizedLowercase
             }
             var result = fileName.contains(searchText)
             if globalVar.usePinyinSearch {
@@ -459,10 +459,14 @@ extension ViewController {
     
     func applyFilter(isReset: Bool = false) {
         if isReset {
-            searchField?.stringValue = ""
+            search_filterText = ""
+        } else {
+            search_filterText = searchField?.stringValue ?? ""
         }
-        let searchText = searchField?.stringValue ?? ""
-        publicVar.isFilenameFilterOn = searchText == "" ? false : true
+        search_filterUseRegex = search_useRegex
+        search_filterIsCaseSensitive = search_isCaseSensitive
+        search_filterIsUseFullPath = search_isUseFullPath
+        publicVar.isFilenameFilterOn = search_filterText == "" ? false : true
         refreshCollectionView(needLoadThumbPriority: true)
     }
     

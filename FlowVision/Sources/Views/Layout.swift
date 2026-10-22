@@ -51,14 +51,15 @@ class CustomFlowLayout: NSCollectionViewLayout {
 
     override func prepare() {
         guard let collectionView = collectionView else { return }
+        guard let viewController = getViewController(collectionView) else { return }
         guard let delegate = collectionView.delegate as? NSCollectionViewDelegateFlowLayout else { return }
 
         cache.removeAll()
         contentHeight = 0
 
-        let cellPadding = getViewController(collectionView)!.publicVar.profile.ThumbnailCellPadding
-        let borderThickness = getViewController(collectionView)!.publicVar.profile.ThumbnailBorderThickness
-        let lineSpaceAdjust = getViewController(collectionView)!.publicVar.profile.ThumbnailLineSpaceAdjust
+        let cellPadding = viewController.publicVar.profile.ThumbnailCellPadding
+        let borderThickness = viewController.publicVar.profile.ThumbnailBorderThickness
+        let lineSpaceAdjust = viewController.publicVar.profile.ThumbnailLineSpaceAdjust
         var xOffset: CGFloat = cellPadding
         var yOffset: CGFloat = cellPadding
         var rowHeight: CGFloat = 0
@@ -90,7 +91,7 @@ class CustomFlowLayout: NSCollectionViewLayout {
         // RTL: 镜像翻转所有item的x坐标
         // RTL: mirror flip x coordinates for all items
         if collectionView.userInterfaceLayoutDirection == .rightToLeft {
-            let scrollbarWidth = getViewController(collectionView)!.publicVar.profile.ThumbnailScrollbarWidth
+            let scrollbarWidth = viewController.publicVar.profile.ThumbnailScrollbarWidth
             let mirrorWidth = contentWidth - scrollbarWidth
             for attributes in cache {
                 attributes.frame.origin.x = mirrorWidth - attributes.frame.origin.x - attributes.frame.width
@@ -100,7 +101,8 @@ class CustomFlowLayout: NSCollectionViewLayout {
 
     override var collectionViewContentSize: NSSize {
         guard let collectionView = collectionView else { return NSSize(width: 100, height: 100)}
-        let cellPadding = getViewController(collectionView)!.publicVar.profile.ThumbnailCellPadding
+        guard let viewController = getViewController(collectionView) else { return NSSize(width: 100, height: 100)}
+        let cellPadding = viewController.publicVar.profile.ThumbnailCellPadding
         return NSSize(width: contentWidth, height: contentHeight)
     }
 
@@ -136,16 +138,17 @@ class CustomGridLayout: NSCollectionViewLayout {
 
     override func prepare() {
         guard let collectionView = collectionView else { return }
+        guard let viewController = getViewController(collectionView) else { return }
         guard let delegate = collectionView.delegate as? NSCollectionViewDelegateFlowLayout else { return }
 
         cache.removeAll()
         contentHeight = 0
 
-        let filenamePadding = getViewController(collectionView)!.publicVar.profile.ThumbnailFilenamePadding
-        let cellPadding = getViewController(collectionView)!.publicVar.profile.ThumbnailCellPadding
-        let borderThickness = getViewController(collectionView)!.publicVar.profile.ThumbnailBorderThickness
-        let numberOfColumns = Double(getViewController(collectionView)!.publicVar.waterfallLayout.numberOfColumns)
-        let scrollbarWidth = getViewController(collectionView)!.publicVar.profile.ThumbnailScrollbarWidth
+        let filenamePadding = viewController.publicVar.profile.ThumbnailFilenamePadding
+        let cellPadding = viewController.publicVar.profile.ThumbnailCellPadding
+        let borderThickness = viewController.publicVar.profile.ThumbnailBorderThickness
+        let numberOfColumns = Double(viewController.publicVar.waterfallLayout.numberOfColumns)
+        let scrollbarWidth = viewController.publicVar.profile.ThumbnailScrollbarWidth
         var totalWidth = contentWidth - scrollbarWidth - 2 * cellPadding
         
         var xOffset: CGFloat = cellPadding
@@ -203,7 +206,8 @@ class CustomGridLayout: NSCollectionViewLayout {
 
     override var collectionViewContentSize: NSSize {
         guard let collectionView = collectionView else { return NSSize(width: 100, height: 100)}
-        let cellPadding = getViewController(collectionView)!.publicVar.profile.ThumbnailCellPadding
+        guard let viewController = getViewController(collectionView) else { return NSSize(width: 100, height: 100)}
+        let cellPadding = viewController.publicVar.profile.ThumbnailCellPadding
         return NSSize(width: contentWidth, height: contentHeight)
     }
 
@@ -238,13 +242,14 @@ class WaterfallLayout: NSCollectionViewLayout {
 
     override func prepare() {
         guard let collectionView = collectionView else { return }
+        guard let viewController = getViewController(collectionView) else { return }
         guard let delegate = collectionView.delegate as? NSCollectionViewDelegateFlowLayout else { return }
 
-        let cellPadding = getViewController(collectionView)!.publicVar.profile.ThumbnailCellPadding
-        let borderThickness = getViewController(collectionView)!.publicVar.profile.ThumbnailBorderThickness
-        let lineSpaceAdjust = getViewController(collectionView)!.publicVar.profile.ThumbnailLineSpaceAdjust
-        let totalWidth = getViewController(collectionView)?.mainScrollView.bounds.width ?? collectionView.bounds.width
-        let scrollbarWidth = getViewController(collectionView)!.publicVar.profile.ThumbnailScrollbarWidth
+        let cellPadding = viewController.publicVar.profile.ThumbnailCellPadding
+        let borderThickness = viewController.publicVar.profile.ThumbnailBorderThickness
+        let lineSpaceAdjust = viewController.publicVar.profile.ThumbnailLineSpaceAdjust
+        let totalWidth = viewController.mainScrollView.bounds.width
+        let scrollbarWidth = viewController.publicVar.profile.ThumbnailScrollbarWidth
         let columnWidth = floor((totalWidth - scrollbarWidth - 2*cellPadding) / CGFloat(numberOfColumns))
         var xOffset: [CGFloat] = []
         for column in 0 ..< numberOfColumns {
@@ -288,7 +293,8 @@ class WaterfallLayout: NSCollectionViewLayout {
 
     override var collectionViewContentSize: NSSize {
         guard let collectionView = collectionView else { return NSSize(width: 100, height: 100)}
-        let cellPadding = getViewController(collectionView)!.publicVar.profile.ThumbnailCellPadding
+        guard let viewController = getViewController(collectionView) else { return NSSize(width: 100, height: 100)}
+        let cellPadding = viewController.publicVar.profile.ThumbnailCellPadding
         return NSSize(width: contentWidth, height: contentHeight)
     }
 

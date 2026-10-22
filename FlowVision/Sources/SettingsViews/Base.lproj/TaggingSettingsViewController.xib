@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24412" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24412"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24506"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -41,7 +41,7 @@
                         <gridCell row="tyX-xi-JUH" column="X7r-A5-zjQ" id="zcw-4m-fRz">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0xk-nv-L5Y">
                                 <rect key="frame" x="15" y="286" width="87" height="16"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Custom Tags:" id="R7m-7o-ENQ">
+                                <textFieldCell key="cell" alignment="right" title="Custom Tags:" id="R7m-7o-ENQ">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -85,7 +85,7 @@
                         <gridCell row="ZWa-1o-EWV" column="X7r-A5-zjQ" id="y67-ck-t68">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="I5y-d5-Xfc">
                                 <rect key="frame" x="-2" y="134" width="104" height="16"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Enhanced Index:" id="tRG-X6-q84">
+                                <textFieldCell key="cell" alignment="right" title="Enhanced Index:" id="tRG-X6-q84">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>

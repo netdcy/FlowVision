@@ -261,6 +261,10 @@ class FavoritesPopoverViewController: NSViewController, NSTableViewDataSource, N
     private func folderName(for folderPath: String) -> String {
         let path = displayPath(for: folderPath)
         if path == "/" { return "/" }
+        if let url = URL(string: folderPath),
+           let localizedName = try? url.resourceValues(forKeys: [.localizedNameKey]).localizedName {
+            return localizedName
+        }
         return (path as NSString).lastPathComponent
     }
     

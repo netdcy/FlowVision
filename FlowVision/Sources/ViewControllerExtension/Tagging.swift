@@ -112,7 +112,7 @@ extension ViewController {
     func toggleFinderTagFilter(_ tagName: String?) {
         guard let tagName = tagName else {
             publicVar.finderTagFilters.removeAll()
-            coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: false)
+            coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: true)
             refreshCollectionView(needLoadThumbPriority: true)
             return
         }
@@ -122,10 +122,10 @@ extension ViewController {
             publicVar.finderTagFilters.insert(tagName)
         }
         if publicVar.finderTagFilters.isEmpty {
-            coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: false)
+            coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: true)
         } else {
             let names = publicVar.finderTagFilters.compactMap { FinderTag.byName($0)?.name }.joined(separator: ", ")
-            coreAreaView.showInfo(NSLocalizedString("Filter", comment: "筛选") + ": \(names)", timeOut: 0.8, cannotBeCleard: false)
+            coreAreaView.showInfo(NSLocalizedString("Filter", comment: "筛选") + ": \(names)", timeOut: 0.8, cannotBeCleard: true)
         }
         refreshCollectionView(needLoadThumbPriority: true)
     }
@@ -143,7 +143,7 @@ extension ViewController {
         publicVar.isRatingFilterReversed = false
         publicVar.ratingFilters.removeAll()
         
-        coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: false)
+        coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: true)
         refreshCollectionView(needLoadThumbPriority: true)
     }
 
@@ -156,7 +156,7 @@ extension ViewController {
     func toggleRatingFilter(_ rating: Int?) {
         guard let rating = rating else {
             publicVar.ratingFilters.removeAll()
-            coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: false)
+            coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: true)
             refreshCollectionView(needLoadThumbPriority: true)
             return
         }
@@ -166,10 +166,10 @@ extension ViewController {
             publicVar.ratingFilters.insert(rating)
         }
         if publicVar.ratingFilters.isEmpty {
-            coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: false)
+            coreAreaView.showInfo(NSLocalizedString("Show All", comment: "显示全部"), timeOut: 0.8, cannotBeCleard: true)
         } else {
             let stars = publicVar.ratingFilters.sorted().map { $0 == 0 ? NSLocalizedString("No Rating", comment: "无评级") : String(repeating: "★", count: $0) }.joined(separator: ", ")
-            coreAreaView.showInfo(NSLocalizedString("Filter", comment: "筛选") + ": \(stars)", timeOut: 0.8, cannotBeCleard: false)
+            coreAreaView.showInfo(NSLocalizedString("Filter", comment: "筛选") + ": \(stars)", timeOut: 0.8, cannotBeCleard: true)
         }
         refreshCollectionView(needLoadThumbPriority: true)
     }

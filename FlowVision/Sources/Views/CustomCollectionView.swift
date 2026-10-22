@@ -51,7 +51,7 @@ class CustomCollectionView: NSCollectionView {
         let result = super.becomeFirstResponder()
         log("CustomCollectionView becomeFirstResponder")
         
-        getViewController(self)!.publicVar.isCollectionViewFirstResponder=true
+        getViewController(self)?.publicVar.isCollectionViewFirstResponder = true
         
         let selectedIndexPaths = self.selectionIndexPaths
         for indexPath in selectedIndexPaths{
@@ -67,7 +67,7 @@ class CustomCollectionView: NSCollectionView {
         let result = super.resignFirstResponder()
         log("CustomCollectionView resignFirstResponder")
         
-        getViewController(self)!.publicVar.isCollectionViewFirstResponder=false
+        getViewController(self)?.publicVar.isCollectionViewFirstResponder = false
         
         let selectedIndexPaths = self.selectionIndexPaths
         for indexPath in selectedIndexPaths{
@@ -87,18 +87,19 @@ class CustomCollectionView: NSCollectionView {
     }
     
     override func rightMouseDown(with event: NSEvent) {
-        getViewController(self)!.publicVar.isColllectionViewItemRightClicked=false
+        getViewController(self)?.publicVar.isColllectionViewItemRightClicked = false
         self.window?.makeFirstResponder(self)
         self.mouseDownLocation = event.locationInWindow
         super.rightMouseDown(with: event)
     }
 
     override func rightMouseUp(with event: NSEvent) {
+        guard let viewController = getViewController(self) else { return }
         let mouseUpLocation = event.locationInWindow
         
         if let mouseDownLocation = self.mouseDownLocation {
             
-            if !getViewController(self)!.publicVar.isColllectionViewItemRightClicked {
+            if !viewController.publicVar.isColllectionViewItemRightClicked {
                 // 允许的最大移动距离
                 // Maximum allowed movement distance
                 let maxDistance: CGFloat = 5.0
@@ -117,7 +118,7 @@ class CustomCollectionView: NSCollectionView {
                         canPasteOrMove=false
                     }
 
-                    let curFolder = getViewController(self)!.fileDB.curFolder
+                    let curFolder = viewController.fileDB.curFolder
                     let isVirtualFinderTagsFolder = curFolder.hasPrefix("file:///VirtualFinderTagsFolder")
                     
                     // 弹出菜单

@@ -63,7 +63,7 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
     func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
         guard let treeNode = item as? TreeNode else { return nil }
         let view = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("DataCell"), owner: self) as! CustomTableCellView
-        view.textField?.stringValue = treeNode.name
+        view.textField?.stringValue = treeNode.localizedName ?? treeNode.name
         
         if treeNode.fullPath.contains("FlowVisionTitleFolder") {
             view.imageView?.image = NSImage(named: "AppIcon")
@@ -99,7 +99,14 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
 //        backgroundView.frame = view.bounds
 //        backgroundView.autoresizingMask = [.width, .height]
         
-        view.alphaValue = globalVar.cutItemPaths.contains(treeNode.fullPath) ? 0.4 : 1.0
+        let isCut = globalVar.cutItemPaths.contains(treeNode.fullPath)
+        if isCut {
+            view.alphaValue = 0.4
+        } else if treeNode.isHidden {
+            view.alphaValue = 0.5
+        } else {
+            view.alphaValue = 1.0
+        }
         
         return view
     }
@@ -115,6 +122,7 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
     }
     
     func itemSelected(_ item: TreeNode) {
+        guard let viewController = getViewController(outlineView) else { return }
         if ifActWhenSelected {
             // log("Selected item: \(item.name)")
             // fileDB.lock()
@@ -122,8 +130,8 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
             // fileDB.curFolder = item.fullPath
             // log(fileDB.curFolder)
             // fileDB.unlock()
-            // getViewController(self)!.publicVar.folderStepStack.insert(lastFolderPath, at: 0)
-            getViewController(outlineView!)?.switchDirByDirection(direction: .zero, dest: item.fullPath, doCollapse: false, expandLast: false, skip: false, stackDeep: 0)
+            // viewController.publicVar.folderStepStack.insert(lastFolderPath, at: 0)
+            viewController.switchDirByDirection(direction: .zero, dest: item.fullPath, doCollapse: false, expandLast: false, skip: false, stackDeep: 0)
         }
         
     }
@@ -182,7 +190,7 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
                 if let item = outlineView.item(atRow: i) as? TreeNode {
                     // 计算这个单元格内容的宽度
                     // Calculate width of this cell content
-                    let content = item.name
+                    let content = item.localizedName ?? item.name
                     let attributes = [NSAttributedString.Key.font: NSFont.systemFont(ofSize: 13)]
                     let size = (content as NSString).size(withAttributes: attributes)
                     

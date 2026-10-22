@@ -115,7 +115,7 @@ class DrawingView: NSView {
         path?.move(to: location)
         // 继续传递事件
         // Continue passing event
-        super.rightMouseDown(with: event)
+        //super.rightMouseDown(with: event)
     }
     
     func _rightMouseDragged(with event: NSEvent) {
@@ -125,7 +125,7 @@ class DrawingView: NSView {
         needsDisplay = true
         // 继续传递事件
         // Continue passing event
-        super.rightMouseDragged(with: event)
+        //super.rightMouseDragged(with: event)
     }
     
     func _rightMouseUp(with event: NSEvent) {
@@ -137,7 +137,7 @@ class DrawingView: NSView {
         needsDisplay = true
         // 继续传递事件
         // Continue passing event
-        super.rightMouseUp(with: event)
+        //super.rightMouseUp(with: event)
     }
     
     override func draw(_ dirtyRect: NSRect) {

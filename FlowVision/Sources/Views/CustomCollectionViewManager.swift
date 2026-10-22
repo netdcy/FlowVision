@@ -42,34 +42,36 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
     }
     
     func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
-        for indexPath in indexPaths{
+        // guard let viewController = getViewController(collectionView) else { return }
+        // for indexPath in indexPaths{
             // 注意：下面这句当item不在视野内时为nil
             // Note: The following statement is nil when item is not in view
             // let item = collectionView.item(at: indexPath) as? ImageCollectionViewItem
 //            fileDB.lock()
 //            if let file=fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.elementSafe(atOffset: indexPath.item)?.1{
 //                log("Select:",String(indexPath.item),file.path)
-//                getViewController(collectionView)!.publicVar.selectedUrls2.append(URL(string: file.path)!)
+//                viewController.publicVar.selectedUrls2.append(URL(string: file.path)!)
 //            }
 //            fileDB.unlock()
-        }
+        // }
         // log("Selected numbers:"+String(indexPaths.count))
     }
     
     func collectionView(_ collectionView: NSCollectionView, didDeselectItemsAt indexPaths: Set<IndexPath>) {
-        for indexPath in indexPaths {
+        // guard let viewController = getViewController(collectionView) else { return }
+        // for indexPath in indexPaths {
             // 注意：下面这句当item不在视野内时为nil
             // Note: The following statement is nil when item is not in view
             // let item = collectionView.item(at: indexPath) as? ImageCollectionViewItem
 //            fileDB.lock()
 //            if let file=fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.elementSafe(atOffset: indexPath.item)?.1{
 //                log("Deselect:",String(indexPath.item),file.path)
-//                if let index=getViewController(collectionView)!.publicVar.selectedUrls2.firstIndex(of: URL(string: file.path)!){
-//                    getViewController(collectionView)!.publicVar.selectedUrls2.remove(at: index)
+//                if let index=viewController.publicVar.selectedUrls2.firstIndex(of: URL(string: file.path)!){
+//                    viewController.publicVar.selectedUrls2.remove(at: index)
 //                }
 //            }
 //            fileDB.unlock()
-        }
+        // }
         // log("Deselected numbers:"+String(indexPaths.count))
     }
     func collectionView(_ collectionView: NSCollectionView, layout collectionViewLayout: NSCollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> NSSize {

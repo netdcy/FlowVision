@@ -18,6 +18,8 @@ extension ViewController {
             return event
         }
 
+        logKeyEvent(event)
+
         // Non-rebindable text-input branches run first and short-circuit.
         if handleNonRebindable(event) { return nil }
 
@@ -77,6 +79,22 @@ extension ViewController {
 
     private var isInFullScreen: Bool {
         view.window?.styleMask.contains(.fullScreen) == true
+    }
+
+    /// 把按键信息打印出来，用于调试不同键盘的键值差异
+    /// Logs raw key info to debug keyCode differences across keyboards.
+    private func logKeyEvent(_ event: NSEvent) {
+        let modifierFlags = event.modifierFlags
+        var modifierStrings: [String] = []
+        if modifierFlags.contains(.command)  { modifierStrings.append("Command") }
+        if modifierFlags.contains(.option)   { modifierStrings.append("Option") }
+        if modifierFlags.contains(.control)  { modifierStrings.append("Control") }
+        if modifierFlags.contains(.shift)    { modifierStrings.append("Shift") }
+        if modifierFlags.contains(.function) { modifierStrings.append("Fn") }
+        let modifierDescription = modifierStrings.isEmpty ? "None" : modifierStrings.joined(separator: "+")
+        let characters = (event.charactersIgnoringModifiers ?? "").lowercased()
+        let specialKey = event.specialKey ?? .f30
+        log("Key Event Debug - characters: \(characters), keyCode: \(event.keyCode), specialKey: \(specialKey), modifierFlags: \(modifierFlags.rawValue), Modifiers: \(modifierDescription)", level: .debug)
     }
 
     /// Returns true if the event was consumed by a non-rebindable text-input branch.
@@ -161,6 +179,13 @@ extension ViewController {
                     return true
                 }
             }
+        }
+
+        // Esc with "Close Window" selected in settings: pre-empts the Esc-bound
+        // viewerClose / browserDeselect actions, same as the legacy dispatcher.
+        if event.keyCode == KeyChord.escKeyCode && noModifierKey && !globalVar.isEscKeyToGoBack {
+            view.window?.close()
+            return true
         }
 
         // Tab: swap focus between outline and collection view (browser only).

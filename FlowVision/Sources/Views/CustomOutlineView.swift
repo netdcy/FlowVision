@@ -14,14 +14,14 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
     override func becomeFirstResponder() -> Bool {
         let result = super.becomeFirstResponder()
         log("CustomOutlineView becomeFirstResponder")
-        getViewController(self)!.publicVar.isOutlineViewFirstResponder=true
+        getViewController(self)?.publicVar.isOutlineViewFirstResponder = true
         return result
     }
     
     override func resignFirstResponder() -> Bool {
         let result = super.resignFirstResponder()
         log("CustomOutlineView resignFirstResponder")
-        getViewController(self)!.publicVar.isOutlineViewFirstResponder=false
+        getViewController(self)?.publicVar.isOutlineViewFirstResponder = false
         return result
     }
     
@@ -33,6 +33,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
     }
     
     override func mouseDown(with event: NSEvent) {
+        guard let viewController = getViewController(self) else { return }
         let locationInWindow = event.locationInWindow
         let locationInOutlineView = convert(locationInWindow, from: nil)
         let clickedRow = row(at: locationInOutlineView)
@@ -43,7 +44,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         // To solve the issue where after clicking directory tree, quickly right-clicking and left-clicking in blank area of CollectionView on the right causes abnormal response in directory tree
         // 且弹出重命名对话框时异常响应的问题
         // And abnormal response when rename dialog pops up
-        if clickedRow >= 0 && getViewController(self)!.publicVar.isKeyEventEnabled {
+        if clickedRow >= 0 && viewController.publicVar.isKeyEventEnabled {
             super.mouseDown(with: event)
         } else {
             // 如果点击区域无效，不执行默认的点击处理
@@ -69,6 +70,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
     }
     
     override func menu(for event: NSEvent) -> NSMenu? {
+        guard let viewController = getViewController(self) else { return nil }
         
         let locationInView = self.convert(event.locationInWindow, from: nil)
         let clickedRow = self.row(at: locationInView)
@@ -99,11 +101,6 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
             menu.autoenablesItems = false
             
             let actionItemOpenInNewTab = menu.addItem(withTitle: NSLocalizedString("Open in New Tab", comment: "在新标签页中打开"), action: #selector(actOpenInNewTab), keyEquivalent: "")
-            if isWindowNumMax() {
-                actionItemOpenInNewTab.isEnabled=false
-            }else{
-                actionItemOpenInNewTab.isEnabled=true
-            }
 
             if curRightClickedPath.hasPrefix("file:///VirtualFinderTagsFolder") {
                 
@@ -124,16 +121,16 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
                 let sortSubmenu = NSMenu()
                 let sortTypes: [(SortType, String)] = [
                     (.pathA, NSLocalizedString("sort-pathA", comment: "文件名")),
-                    (.pathZ, NSLocalizedString("sort-pathZ", comment: "文件名(倒序)")),
+                    (.pathZ, NSLocalizedString("sort-pathZ", comment: "文件名(降序)")),
                     (.createDateA, NSLocalizedString("sort-createDateA", comment: "创建日期")),
-                    (.createDateZ, NSLocalizedString("sort-createDateZ", comment: "创建日期(倒序)")),
+                    (.createDateZ, NSLocalizedString("sort-createDateZ", comment: "创建日期(降序)")),
                     (.modDateA, NSLocalizedString("sort-modDateA", comment: "修改日期")),
-                    (.modDateZ, NSLocalizedString("sort-modDateZ", comment: "修改日期(倒序)")),
+                    (.modDateZ, NSLocalizedString("sort-modDateZ", comment: "修改日期(降序)")),
                     (.addDateA, NSLocalizedString("sort-addDateA", comment: "添加日期")),
-                    (.addDateZ, NSLocalizedString("sort-addDateZ", comment: "添加日期(倒序)"))
+                    (.addDateZ, NSLocalizedString("sort-addDateZ", comment: "添加日期(降序)"))
                 ]
                 
-                let currentDirTreeSortType = SortType(rawValue: Int(getViewController(self)!.publicVar.profile.getValue(forKey: "dirTreeSortType")) ?? 0)
+                let currentDirTreeSortType = SortType(rawValue: Int(viewController.publicVar.profile.getValue(forKey: "dirTreeSortType")) ?? 0)
                 
                 for (sortType, title) in sortTypes {
                     let item = sortSubmenu.addItem(withTitle: title, action: #selector(actSortByType(_:)), keyEquivalent: "")
@@ -261,7 +258,9 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
     @objc func actOpenInNewTab() {
         guard let url=URL(string: curRightClickedPath) else{return}
         if let appDelegate=NSApplication.shared.delegate as? AppDelegate {
-            _ = appDelegate.createNewWindow(url.absoluteString)
+            // 按住 Cmd 点击菜单项时在后台打开
+            // Hold Cmd when clicking the menu item to open in background
+            _ = appDelegate.createNewWindow(url.absoluteString, openInBackground: NSEvent.modifierFlags.contains(.command))
         }
     }
 

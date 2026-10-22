@@ -17,8 +17,7 @@ extension ViewController {
                 if lastPath.hasSuffix("/") {
                     _ = appDelegate.createNewWindow(lastPath)
                 } else {
-                    globalVar.isLaunchFromFile=true
-                    if let windowController = appDelegate.createNewWindow(lastPath) {
+                    if let windowController = appDelegate.createNewWindow(lastPath, isLaunchFromFile: true) {
                         appDelegate.openImageInTargetWindow(lastPath, windowController: windowController)
                     }
                 }
@@ -156,6 +155,7 @@ extension ViewController {
     func toggleIsShowAllTypeFile(){
         publicVar.isShowAllTypeFile.toggle()
         UserDefaults.standard.set(publicVar.isShowAllTypeFile, forKey: "isShowAllTypeFile")
+        publicVar.setFileExtensions()
         var showText = NSLocalizedString("Not Show All Types of Files", comment: "不显示所有类型文件")
         if publicVar.isShowAllTypeFile {
             showText = NSLocalizedString("Show All Types of Files", comment: "显示所有类型文件")

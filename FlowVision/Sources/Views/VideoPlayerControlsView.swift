@@ -163,7 +163,7 @@ class VideoPlayerControlsView: NSView {
         effectView.blendingMode = .withinWindow
         effectView.state = .active
         effectView.wantsLayer = true
-        if #available(macOS 26.0, *) {
+        if #available(macOS 26.0, *), SDK_VERSION >= 26 {
             effectView.layer?.cornerRadius = 16
         } else {
             effectView.layer?.cornerRadius = 8

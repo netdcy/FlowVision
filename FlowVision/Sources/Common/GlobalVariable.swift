@@ -19,24 +19,24 @@ let INFO_VIEW_DURATION = 0.3
 let OFFICIAL_WEBSITE = "https://flowvision.app"
 let FINDER_TAG_LEARN_MORE_URL = "https://flowvision.app/tag"
 
-let ROOT_NAME = getSystemVolumeName() ?? "Macintosh HD"
+var ROOT_NAME: String { return getSystemVolumeName() ?? "Macintosh HD" }
 
 let COLOR_COLLECTIONVIEW_BG_LIGHT = "#FFFFFF"
 let COLOR_COLLECTIONVIEW_BG_DARK = "#2D2D2D"
 
 class GlobalVar{
     var myFavoritesArray = ["/"]
-    var WINDOW_LIMIT=16
-    var windowNum=0
+    var windowNum = 0
     var toolbarIndex = 0
     var operationLogs: [String] = []
     var closedPaths: [String] = []
     
-    // TODO: 临时公用状态变量
-    // TODO: Temporary shared state variables
+    // 临时公用状态变量，供新窗口启动时使用
+    // Temporary shared state variables, used for new window startup
     var isLaunchFromFile = false
     var startSpeedUpImageSizeCache: NSSize? = nil
-    var useCreateWindowShowDelay = false
+    var launchFileFolderExtCounts: [String: [String: Int]] = [:]
+    var launchFileFolderExtCountsLock = NSLock()
     
     // 剪切模式标志，剪切时置为true，粘贴时检查此标志决定执行移动还是复制
     // Cut mode flag, set to true on cut, checked on paste to decide move or copy
@@ -96,6 +96,7 @@ class GlobalVar{
     }
     var useQuickSearch = false
     var isEnterKeyToOpen = false
+    var isEscKeyToGoBack = true
     var clickEdgeToSwitchImage = false
     var scrollMouseWheelToZoom = false
     var openLastFolder = true
@@ -134,10 +135,10 @@ class GlobalVar{
 
     init(){
         HandledImageExtensions = ["jpg", "jpeg", "jpe", "jxl", "png", "gif", "bmp", "heif", "heic", "heics", "hif", "avif", "tif", "tiff", "webp", "jfif", "jp2", "ai", "psd", "ico", "cur", "icns", "svg", "tga", "pvr", "dds", "astc", "ktx", "ktx2", "exr", "hdr", "mpo", "pict", "pct", "sgi", "pbm", "pgm", "ppm", "pnm", "pam", "pfm"]
-        HandledRawExtensions = ["crw", "cr2", "cr3", "nef", "nrw", "arw", "arq", "sr2", "rw2", "orf", "srf", "raf", "pef", "dng", "raw", "rwl", "3fr", "fff", "iiq", "mos", "dcr", "kdc", "erf", "mrw", "srw"] + ["gpr", "x3f"]
+        HandledRawExtensions = ["raw", "dng", "crw", "cr2", "cr3", "dxo", "erf", "raf", "fff", "3fr", "dcr", "kdc", "k25", "mrw", "mos", "rwl", "nef", "nefx", "nrw", "orf", "rw2", "pef", "ptx", "iiq", "cap", "srw", "arw", "sr2", "srf", "axr"] + ["gpr", "x3f"]
         HandledImageAndRawExtensions = HandledImageExtensions + HandledRawExtensions
-        HandledNativeSupportedVideoExtensions = ["mp4", "mov", "m2ts", "mts", "ts", "mpeg", "mpg", "mpe", "m2v", "m4v", "vob"]
-        HandledNotNativeSupportedVideoExtensions = ["mkv", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "3gp", "3g2", "mjpeg"]
+        HandledNativeSupportedVideoExtensions = ["mp4", "mov", "m2ts", "mts", "ts", "mpeg", "mpg", "mpe", "m2v", "m4v", "vob", "3gp", "3g2"]
+        HandledNotNativeSupportedVideoExtensions = ["mkv", "avi", "flv", "f4v", "asf", "wmv", "rmvb", "rm", "webm", "divx", "xvid", "mjpeg", "hevc", "mxf", "ogv", "wtv"]
         HandledVideoExtensions = HandledNativeSupportedVideoExtensions + HandledNotNativeSupportedVideoExtensions
         // 不能为""，否则会把目录异常包含进来
         // Cannot be "", otherwise directories will be incorrectly included
@@ -151,7 +152,7 @@ class GlobalVar{
         HandledSearchExtensions = HandledImageAndRawExtensions + HandledVideoExtensions
         // 目录缩略图
         // Folder thumbnails
-        HandledFolderThumbExtensions = HandledImageAndRawExtensions.filter{$0 != "svg"} + HandledVideoExtensions // + ["pdf"]
+        HandledFolderThumbExtensions = HandledImageAndRawExtensions + HandledVideoExtensions // + ["pdf"]
         // 使用个别特殊svg作为文件夹缩略图绘图元素会导致程序异常 'NSGenericException', reason: 'NaN point value'
         // Using certain special SVGs as folder thumbnail drawing elements will cause program exception 'NSGenericException', reason: 'NaN point value'
     }
@@ -159,10 +160,6 @@ class GlobalVar{
 var globalVar = GlobalVar()
 
 let homeDirectory = NSHomeDirectory()
-
-func isWindowNumMax() -> Bool{
-    return globalVar.windowNum >= globalVar.WINDOW_LIMIT
-}
 
 func getMainViewController() -> ViewController? {
     if let viewController = NSApplication.shared.mainWindow?.contentViewController as? ViewController {
@@ -180,7 +177,8 @@ func getAnyViewController() -> ViewController? {
     return nil
 }
 
-func getViewController(_ selfView: NSView) -> ViewController? {
+func getViewController(_ selfView: NSView?) -> ViewController? {
+    guard let selfView = selfView else { return nil }
     var responder: NSResponder? = selfView
     while responder != nil {
         if let viewController = responder as? ViewController {
@@ -192,7 +190,6 @@ func getViewController(_ selfView: NSView) -> ViewController? {
 }
 
 func getSystemVolumeName() -> String? {
-    let fileManager = FileManager.default
     
     // 获取根目录的URL
     // Get root directory URL

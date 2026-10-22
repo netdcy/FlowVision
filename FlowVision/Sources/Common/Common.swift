@@ -201,10 +201,10 @@ func showConfirmation(title: String, message: String, confirmButtonText: String?
     alert.addButton(withTitle: confirmButtonText ?? NSLocalizedString("OK", comment: "确定"))
     alert.addButton(withTitle: cancelButtonText ?? NSLocalizedString("Cancel", comment: "取消"))
     alert.icon = NSImage(named: NSImage.cautionName)
-    let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
-    getMainViewController()!.publicVar.isKeyEventEnabled = false
+    let StoreIsKeyEventEnabled = getMainViewController()?.publicVar.isKeyEventEnabled
+    getMainViewController()?.publicVar.isKeyEventEnabled = false
     let response = alert.runModal()
-    getMainViewController()!.publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
+    getMainViewController()?.publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled ?? true
     return response == .alertFirstButtonReturn
 }
 
@@ -214,10 +214,10 @@ func showAlert(message: String) {
     alert.alertStyle = .warning
     alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
     alert.icon = NSImage(named: NSImage.cautionName)
-    let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
-    getMainViewController()!.publicVar.isKeyEventEnabled=false
+    let StoreIsKeyEventEnabled = getMainViewController()?.publicVar.isKeyEventEnabled
+    getMainViewController()?.publicVar.isKeyEventEnabled = false
     alert.runModal()
-    getMainViewController()!.publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
+    getMainViewController()?.publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled ?? true
 }
 
 func showInformation(title: String, message: String) {
@@ -227,10 +227,10 @@ func showInformation(title: String, message: String) {
     alert.alertStyle = .informational
     alert.addButton(withTitle: NSLocalizedString("OK", comment: "确定"))
     alert.icon = NSImage(named: NSImage.infoName)
-    let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
-    getMainViewController()!.publicVar.isKeyEventEnabled=false
+    let StoreIsKeyEventEnabled = getMainViewController()?.publicVar.isKeyEventEnabled
+    getMainViewController()?.publicVar.isKeyEventEnabled = false
     alert.runModal()
-    getMainViewController()!.publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
+    getMainViewController()?.publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled ?? true
 }
 
 func showInformationLongDeprecate(title: String, message: String, width: CGFloat = 400) {
@@ -283,10 +283,10 @@ func showInformationLongDeprecate(title: String, message: String, width: CGFloat
     textField.frame = NSRect(x: 0, y: 0, width: width, height: height)
     alert.accessoryView = textField
     
-    let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
-    getMainViewController()!.publicVar.isKeyEventEnabled=false
+    let StoreIsKeyEventEnabled = getMainViewController()?.publicVar.isKeyEventEnabled
+    getMainViewController()?.publicVar.isKeyEventEnabled = false
     alert.runModal()
-    getMainViewController()!.publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
+    getMainViewController()?.publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled ?? true
 }
 
 func showInformationLong(title: String, message: String, width: CGFloat = 400) {
@@ -389,10 +389,10 @@ func showInformationLong(title: String, attributedMessage: NSAttributedString, w
     // Set as alert accessory view
     alert.accessoryView = scrollView
     
-    let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
-    getMainViewController()!.publicVar.isKeyEventEnabled = false
+    let StoreIsKeyEventEnabled = getMainViewController()?.publicVar.isKeyEventEnabled
+    getMainViewController()?.publicVar.isKeyEventEnabled = false
     alert.runModal()
-    getMainViewController()!.publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
+    getMainViewController()?.publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled ?? true
 }
 
 func showInformationCopy(title: String, message: String) {
@@ -404,10 +404,10 @@ func showInformationCopy(title: String, message: String) {
     alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "取消"))
     alert.icon = NSImage(named: NSImage.infoName)
     
-    let StoreIsKeyEventEnabled = getMainViewController()!.publicVar.isKeyEventEnabled
-    getMainViewController()!.publicVar.isKeyEventEnabled = false
+    let StoreIsKeyEventEnabled = getMainViewController()?.publicVar.isKeyEventEnabled
+    getMainViewController()?.publicVar.isKeyEventEnabled = false
     let response = alert.runModal()
-    getMainViewController()!.publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled
+    getMainViewController()?.publicVar.isKeyEventEnabled = StoreIsKeyEventEnabled ?? true
 
     if response == .alertFirstButtonReturn {
         let pasteboard = NSPasteboard.general

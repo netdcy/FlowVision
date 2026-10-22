@@ -110,7 +110,7 @@ extension ViewController {
         // 额外插入一层用来定位
         // Insert an additional layer for positioning
         if treeRootFolder == "root" && !isInExternal {
-            targetPaths.insert(ROOT_NAME, at: 0)
+            targetPaths.insert("/", at: 0)
         }
         
         // 标签

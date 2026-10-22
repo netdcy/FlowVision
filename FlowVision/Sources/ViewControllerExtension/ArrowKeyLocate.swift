@@ -210,7 +210,7 @@ extension ViewController {
                 fileDB.unlock()
             }
         } else {
-            indexPaths = nearbyIndexPaths(around: [currentIndexPath], range: (-20,20))
+            assertionFailure()
         }
         
         let currentCenter = centerPoint(of: currentItem)

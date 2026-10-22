@@ -245,14 +245,14 @@ class PublicVar{
 
     func setFileExtensions(){
         HandledImageAndRawExtensions = []
-        if self.isShowImageFile{
+        if self.isShowImageFile || self.isShowAllTypeFile {
             HandledImageAndRawExtensions += globalVar.HandledImageExtensions
         }
-        if self.isShowRawFile {
+        if self.isShowRawFile || self.isShowAllTypeFile {
             HandledImageAndRawExtensions += globalVar.HandledRawExtensions
         }
         HandledVideoExtensions = []
-        if self.isShowVideoFile {
+        if self.isShowVideoFile || self.isShowAllTypeFile {
             HandledVideoExtensions += globalVar.HandledVideoExtensions
         }
         HandledOtherExtensions = globalVar.HandledOtherExtensions
@@ -349,6 +349,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var watchFileDescriptor: Int32 = -1
     var watchDispatchSource: DispatchSourceFileSystemObject?
     
+    // 所有读写都必须持有 fileDB.dblock。
+    // All accesses must be protected by fileDB.dblock.
     var LRUqueue = [(String,DispatchTime,Int)]()
     
     var largeImageLoadTask: DispatchWorkItem?
@@ -434,12 +436,27 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var search_useRegex: Bool = false
     var search_isCaseSensitive: Bool = false
     var search_isUseFullPath: Bool = false
+
+    // 筛选
+    // Filter
+    var search_filterText: String = ""
+    var search_filterUseRegex: Bool = false
+    var search_filterIsCaseSensitive: Bool = false
+    var search_filterIsUseFullPath: Bool = false
     
     // 快速搜索
     // Quick search
     var quickSearchTimer: Timer?
     var quickSearchText: String = ""
     var quickSearchState: Bool = false
+    
+    override func swipe(with event: NSEvent) {
+        guard !publicVar.isInLargeView, event.deltaX != 0 else {
+            super.swipe(with: event)
+            return
+        }
+        switchDirByDirection(direction: event.deltaX > 0 ? .back : .forward, stackDeep: 0)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -612,7 +629,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }else if publicVar.profile.layoutType == .grid {
             collectionView.collectionViewLayout = publicVar.gridLayout
         }else {
-            collectionView.collectionViewLayout = publicVar.justifiedLayout
+            assertionFailure()
         }
         changeWaterfallLayoutNumberOfColumns()
         
@@ -749,12 +766,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if event.window != self.view.window {
                 return event
             }
-            self.handleScrollWheel(event)
-            if publicVar.isInLargeView && largeImageView.file.type == .video {
-                return nil
-            }else{
-                return event
+            if self.coreAreaView.frame.contains(event.locationInWindow) {
+                self.handleScrollWheel(event)
+                if publicVar.isInLargeView && largeImageView.file.type == .video {
+                    // 视频播放器默认行为会利用滚动事件调整播放进度，所以不传递事件
+                    // The default behavior of the video player will use the scroll event to adjust the playback progress, so don't pass the event
+                    return nil
+                }
             }
+            return event
         }
         
         // 滚动collectionView
@@ -783,19 +803,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 return event
             }
             if true || self.coreAreaView.frame.contains(event.locationInWindow) {
-                if publicVar.isInLargeView {
-                    self.largeImageView.rightMouseUp(with: event)
-                }else{
+                if !publicVar.isInLargeView {
                     self.drawingView?._rightMouseUp(with: event)
+                    self._rightMouseUp(with: event)
+                }else if largeImageView.file.type == .video {
+                    self.largeImageView.rightMouseUp(with: event)
+                    return nil
                 }
-                // 不传递事件
-                // Don't pass event
-                return nil
-            } else {
-                // 继续传递事件
-                // Continue passing event
-                return event
             }
+            return event
         }
 
         eventMonitorRightMouseDown = NSEvent.addLocalMonitorForEvents(matching: .rightMouseDown) { [weak self] event in
@@ -805,20 +821,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if event.window != self.view.window {
                 return event
             }
-            if true || self.coreAreaView.frame.contains(event.locationInWindow) {
-                if publicVar.isInLargeView {
-                    self.largeImageView.rightMouseDown(with: event)
-                }else{
+            if self.coreAreaView.frame.contains(event.locationInWindow) {
+                if !publicVar.isInLargeView {
                     self.drawingView?._rightMouseDown(with: event)
+                    self._rightMouseDown(with: event)
+                }else if largeImageView.file.type == .video {
+                    self.largeImageView.rightMouseDown(with: event)
+                    return nil
                 }
-                // 不传递事件
-                // Don't pass event
-                return nil
-            } else {
-                // 继续传递事件
-                // Continue passing event
-                return event
             }
+            return event
         }
 
         eventMonitorRightMouseDragged = NSEvent.addLocalMonitorForEvents(matching: .rightMouseDragged) { [weak self] event in
@@ -829,19 +841,15 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 return event
             }
             if true || self.coreAreaView.frame.contains(event.locationInWindow) {
-                if publicVar.isInLargeView {
-                    self.largeImageView.rightMouseDragged(with: event)
-                }else{
+                if !publicVar.isInLargeView {
                     self.drawingView?._rightMouseDragged(with: event)
+                    self._rightMouseDragged(with: event)
+                }else if largeImageView.file.type == .video {
+                    self.largeImageView.rightMouseDragged(with: event)
+                    return nil
                 }
-                // 不传递事件
-                // Don't pass event
-                return nil
-            } else {
-                // 继续传递事件
-                // Continue passing event
-                return event
             }
+            return event
         }
         
         // =========结束事件监听配置==========
@@ -1253,7 +1261,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
         // 读取信息线程
         // Read info thread
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+        // 使用 Thread 而非 DispatchQueue.global，避免无限循环永久占用 GCD 线程池槽位
+        // Use Thread instead of DispatchQueue.global to avoid permanently consuming GCD thread pool slots in infinite loops
+        let readInfoThread = Thread { [weak self] in
             guard let self = self else { return }
             let operationQueue = OperationQueue()
             operationQueue.maxConcurrentOperationCount = globalVar.thumbThreadNum > 2 ? 2 : 1
@@ -1457,9 +1467,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
             }
         }
+        readInfoThread.qualityOfService = .userInitiated
+        readInfoThread.start()
         // 缩略图线程
         // Thumbnail thread
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+        let thumbThread = Thread { [weak self] in
             guard let self = self else { return }
             let operationQueue = OperationQueue()
             operationQueue.maxConcurrentOperationCount = globalVar.thumbThreadNum
@@ -1741,8 +1753,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 }
             }
         }
+        thumbThread.qualityOfService = .userInitiated
+        thumbThread.start()
         
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+        let memMonitorThread = Thread { [weak self] in
             guard let self = self else { return }
             let memSizeInGB = getSystemMemorySize()
             while true {
@@ -1754,16 +1768,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 
                 // log("Memory usage: "+String(memUse), level: .warn)
                 
-                if LRUqueue.count >= 1 {
-                    guard let lastLRUItem = LRUqueue.last else {continue}
-                    
+                fileDB.lock()
+                if let lastLRUItem = LRUqueue.last {
                     let overTime = (DispatchTime.now().uptimeNanoseconds-lastLRUItem.1.uptimeNanoseconds)/1000000000
                     let memUseLimit = globalVar.memUseLimit
-                    
-                    fileDB.lock()
-                    let curFolder=fileDB.curFolder
-                    let curFolderFileCount = fileDB.db[SortKeyDir(curFolder)]!.fileCount
-                    fileDB.unlock()
+                    let curFolder = fileDB.curFolder
+                    let curFolderVersion = fileDB.ver
                     
                     var totalCount = 0
                     for (_,_,count) in LRUqueue {
@@ -1790,10 +1800,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         // 由于先置目录再请求缩略图，所以此处可保证安全
                         // Safe here because directory is set before requesting thumbnails
                         
-                        if(lastLRUItem.0 != fileDB.curFolder){
+                        if(lastLRUItem.0 != curFolder){
                             // 不是当前目录
                             // Not current directory
-                            fileDB.lock()
                             // TODO: 为什么这里可能为null？
                             // TODO: Why this could be null?
                             if let dirModel = fileDB.db[SortKeyDir(lastLRUItem.0)] {
@@ -1813,6 +1822,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         }else{
                             // 是当前目录
                             // Is current directory
+                            // 不能持有 fileDB 锁同步切到主线程，否则主线程等待同一把锁时会死锁。
+                            // Do not synchronously enter the main queue while holding fileDB's lock.
+                            fileDB.unlock()
                             var indexPaths: Set<IndexPath> = []
                             var isInLargeView = false
                             var curImagePos = -1
@@ -1854,7 +1866,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             
                             if indexMax > indexMin {
                                 fileDB.lock()
-                                if let dirModel = fileDB.db[SortKeyDir(lastLRUItem.0)] {
+                                // 主线程查询期间目录可能已切换，只有快照仍然有效时才清理。
+                                // Commit only if the directory snapshot is still valid after the main-thread query.
+                                if fileDB.curFolder == lastLRUItem.0,
+                                   fileDB.ver == curFolderVersion,
+                                   LRUqueue.last?.0 == lastLRUItem.0,
+                                   let dirModel = fileDB.db[SortKeyDir(lastLRUItem.0)] {
                                     dirModel.isMemClearedToAvoidRemainingTask=true
                                     for fileModel in dirModel.files {
                                         // 如果不在任一范围内,才清除缩略图
@@ -1870,15 +1887,21 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             }
                         }
                         
+                    }else{
+                        fileDB.unlock()
                     }
+                }else{
+                    fileDB.unlock()
                 }
                 
             }
             
         }
+        memMonitorThread.qualityOfService = .userInitiated
+        memMonitorThread.start()
         
         if isDeveloper {
-            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let devThread = Thread { [weak self] in
                 guard let self = self else { return }
                 while true {
                     if willTerminate {break}
@@ -1889,6 +1912,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     }
                 }
             }
+            devThread.qualityOfService = .userInitiated
+            devThread.start()
         }
         
     }
@@ -2184,6 +2209,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             return
         }
         
+        stopWatchingDirectory()
         watchFileDescriptor = open(path, O_EVTONLY)
         guard watchFileDescriptor != -1 else {
             log("Failed to open directory, errno: \(errno)", level: .warn)
@@ -2226,8 +2252,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             
         }
         
+        let fd = watchFileDescriptor
         watchDispatchSource?.setCancelHandler {
-            close(self.watchFileDescriptor)
+            close(fd)
         }
         
         watchDispatchSource?.resume()
@@ -2274,7 +2301,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
     }
     
-    override func rightMouseDown(with event: NSEvent) {
+    func _rightMouseDown(with event: NSEvent) {
         // publicVar.isRightMouseDown = true
         if !largeImageView.isHidden {return}
         
@@ -2282,10 +2309,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         lastMouseLocation = initialMouseLocation
         gestureState = .none
 
-        super.rightMouseDown(with: event)
+        // super.rightMouseDown(with: event)
     }
 
-    override func rightMouseDragged(with event: NSEvent) {
+    func _rightMouseDragged(with event: NSEvent) {
         if !largeImageView.isHidden {return}
         if event.locationInWindow.y > self.mainScrollView.bounds.height {
             return
@@ -2322,10 +2349,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         analyzeGesture(doAction: false)
 
-        super.rightMouseDragged(with: event)
+        // super.rightMouseDragged(with: event)
     }
 
-    override func rightMouseUp(with event: NSEvent) {
+    func _rightMouseUp(with event: NSEvent) {
         // publicVar.isRightMouseDown = false
         if !largeImageView.isHidden {return}
         
@@ -2352,7 +2379,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             popTitlebarMenu(with: event)
         }
 
-        super.rightMouseUp(with: event)
+        // super.rightMouseUp(with: event)
     }
     
     func getSelectedURLs() -> [URL] {

@@ -13,6 +13,24 @@ private class ScanCancelHandler: NSObject {
     @objc func cancel(_ sender: Any?) { onCancel?() }
 }
 
+private final class FileInfoScanState {
+    private let lock = NSLock()
+    private var cancelled = false
+
+    func cancel() {
+        lock.lock()
+        cancelled = true
+        lock.unlock()
+    }
+
+    func isCancelled() -> Bool {
+        lock.lock()
+        let value = cancelled
+        lock.unlock()
+        return value
+    }
+}
+
 extension ViewController {
     
     func scanFiles(at folderURL: URL, contents: inout [URL], properties: [URLResourceKey]) {
@@ -105,7 +123,7 @@ extension ViewController {
                     fileCount += 1
                     if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
                         imageCount += 1
-                    } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
+                    } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) && isNotFalseTsVideoFile(url) {
                         videoCount += 1
                     }
                     let fc = fileCount
@@ -114,10 +132,10 @@ extension ViewController {
                     lock.unlock()
                     
                     let now = Date()
-                    if now.timeIntervalSince(lastUpdateTime) >= 0.3 {
+                    if now.timeIntervalSince(lastUpdateTime) >= 0.25 {
                         lastUpdateTime = now
                         DispatchQueue.main.async {
-                            statusLabel.stringValue = String(format: NSLocalizedString("scanned-files-progress", comment: "当前已扫描 %d 个文件，其中图像 %d 个，视频 %d 个"), fc, ic, vc)
+                            statusLabel.stringValue = String(format: NSLocalizedString("scanned-files-progress", comment: "已扫描 %d 个文件，其中图像 %d 个，视频 %d 个"), fc, ic, vc)
                         }
                     }
                 }
@@ -160,7 +178,7 @@ extension ViewController {
             let ic = imageCount
             let vc = videoCount
             lock.unlock()
-            statusLabel.stringValue = String(format: NSLocalizedString("scanned-files-progress", comment: "当前已扫描 %d 个文件，其中图像 %d 个，视频 %d 个"), fc, ic, vc)
+            statusLabel.stringValue = String(format: NSLocalizedString("scanned-files-progress", comment: "已扫描 %d 个文件，其中图像 %d 个，视频 %d 个"), fc, ic, vc)
             progressIndicator.startAnimation(nil)
             
             let storeIsKeyEventEnabled = publicVar.isKeyEventEnabled
@@ -313,14 +331,23 @@ extension ViewController {
 
         // 搜索过滤
         // Search filter
-        let searchText = searchField?.stringValue ?? search_searchText
+        let searchText = search_filterText
         if publicVar.isFilenameFilterOn && searchText != "" {
+            let savedUseRegex = search_useRegex
+            let savedIsCaseSensitive = search_isCaseSensitive
+            let savedIsUseFullPath = search_isUseFullPath
+            search_useRegex = search_filterUseRegex
+            search_isCaseSensitive = search_filterIsCaseSensitive
+            search_isUseFullPath = search_filterIsUseFullPath
             contents = contents.filter { url in
                 if let fileName = getFileNameForSearch(path: url.absoluteString) {
                     return isSearchMatch(fileName: fileName, searchText: searchText, forceUseRegex: false)
                 }
                 return true
             }
+            search_useRegex = savedUseRegex
+            search_isCaseSensitive = savedIsCaseSensitive
+            search_isUseFullPath = savedIsUseFullPath
         }
 
         // 过滤标签
@@ -368,7 +395,7 @@ extension ViewController {
         // 如果找平级则无视子目录
         // If finding same level, ignore subdirectories
         if folderURL == initURL && sameLevel { subFolders.removeAll() }
-        subFolders.sort { $0.lastPathComponent.lowercased().localizedStandardCompare($1.lastPathComponent.lowercased()) == .orderedAscending }
+        subFolders.sort { $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending }
         
         // 过滤出需处理文件列表
         // Filter out files to process
@@ -394,28 +421,29 @@ extension ViewController {
         for file in fileContents {
             let aliasValues = try? file.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey])
             let isAlias = aliasValues?.isAliasFile == true
+            let fileExt = file.pathExtension.lowercased()
             let effectiveExt: String
             if isAlias, let resolved = try? URL(resolvingAliasFileAt: file) {
                 effectiveExt = resolved.pathExtension.lowercased()
             } else {
-                effectiveExt = file.pathExtension.lowercased()
+                effectiveExt = fileExt
             }
-            if publicVar.HandledFileExtensions.contains(effectiveExt) || publicVar.isShowAllTypeFile {
+            let isNotFalseTsVideoFile = isNotFalseTsVideoFile(file)
+            if publicVar.isShowAllTypeFile || (publicVar.HandledFileExtensions.contains(effectiveExt) && isNotFalseTsVideoFile) {
                 filesUrlInFolder.append(file)
             }
             // 不将替身文件统计为图像或视频
             // Do not count alias files as images or videos
-            if let values = try? file.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
-               values.isAliasFile == true {
+            if isAlias {
                 continue
             }
-            if publicVar.HandledImageAndRawExtensions.contains(file.pathExtension.lowercased()) {
+            if publicVar.HandledImageAndRawExtensions.contains(fileExt) {
                 imageCount+=1
             }
-            if publicVar.HandledVideoExtensions.contains(file.pathExtension.lowercased()) {
+            if publicVar.HandledVideoExtensions.contains(fileExt) && isNotFalseTsVideoFile {
                 videoCount+=1
             }
-            if publicVar.HandledSearchExtensions.contains(file.pathExtension.lowercased()) {
+            if publicVar.isShowAllTypeFile || (publicVar.HandledSearchExtensions.contains(fileExt) && isNotFalseTsVideoFile) {
                 searchCount+=1
             }
         }
@@ -440,7 +468,6 @@ extension ViewController {
         let fileCount=filesInFolder.count
         for folder in subFolders {
             filesInFolder.append(folder.absoluteString+"_FolderMark")
-            
         }
         
         // 标记当前节点
@@ -453,9 +480,10 @@ extension ViewController {
         if !skip {
             // 文件过滤
             // File filtering
-            fileDB.db[SortKeyDir(folderURL.absoluteString)]?.isFiltered = publicVar.isFilenameFilterOn
+            fileDB.db[SortKeyDir(folderURL.absoluteString)]!.isFiltered = publicVar.isFilenameFilterOn
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.folderCount=subFolders.count
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.fileCount=fileCount
+            fileDB.db[SortKeyDir(folderURL.absoluteString)]!.searchCount=searchCount
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.imageCount=imageCount
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.videoCount=videoCount
         }
@@ -520,6 +548,8 @@ extension ViewController {
         fileDB.lock()
         if !skip && (initURL != folderURL || direction == .zero) {
             let folderpath = folderURL.absoluteString
+            let dirModel = fileDB.db[SortKeyDir(folderpath)]!
+            let propertySet = Set(properties)
             // log(filesInFolder.count)
             for (i,filePath) in filesInFolder.enumerated(){
                 var fileSortKey:SortKeyFile
@@ -540,11 +570,12 @@ extension ViewController {
                 var addDate: Date?
                 var doNotActualRead = false
                 var finderTags: [String] = []
+                var isHiddenFile = false
                 do{
                     // 文件在前i个，目录在后面
                     // Files in first i items, directories after
                     if i < fileCount {
-                        let resourceValues = try filesUrlInFolder[i].resourceValues(forKeys: Set(properties))
+                        let resourceValues = try filesUrlInFolder[i].resourceValues(forKeys: propertySet)
                         if let tmp = resourceValues.isAliasFile {
                             isAlias=tmp
                         }
@@ -570,13 +601,14 @@ extension ViewController {
                            downloadingStatus != .current {
                             doNotActualRead=true
                         }
+                        isHiddenFile = resourceValues.isHidden ?? false
                         let tags = (try? filesUrlInFolder[i].resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? []
                         finderTags = tags
                         // finderTags = resourceValues.tagNames ?? []
                     // 目录
                     // Directory
                     }else{
-                        let resourceValues = try subFolders[i-fileCount].resourceValues(forKeys: Set(properties))
+                        let resourceValues = try subFolders[i-fileCount].resourceValues(forKeys: propertySet)
                         if let tmp = resourceValues.isAliasFile {
                             isAlias=tmp
                         }
@@ -603,6 +635,7 @@ extension ViewController {
                            {
                             doNotActualRead=true
                         }
+                        isHiddenFile = resourceValues.isHidden ?? false
                         let tags = (try? subFolders[i-fileCount].resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? []
                         finderTags = tags
                         // finderTags = resourceValues.tagNames ?? []
@@ -611,42 +644,44 @@ extension ViewController {
                     log("Error reading properties.")
                 }
                 // log("i:",i,"path:",fileSortKey.path.removingPercentEncoding)
-                let newFileModel=FileModel(path: fileSortKey.path, ver: fileDB.db[SortKeyDir(folderpath)]!.ver, isDir: isDir, isAlias: isAlias, fileSize: fileSize, createDate: createDate, modDate: modDate, addDate: addDate, doNotActualRead: doNotActualRead)
+                let newFileModel=FileModel(path: fileSortKey.path, ver: dirModel.ver, isDir: isDir, isAlias: isAlias, fileSize: fileSize, createDate: createDate, modDate: modDate, addDate: addDate, doNotActualRead: doNotActualRead)
                 newFileModel.finderTags = finderTags
+                newFileModel.isHidden = isHiddenFile
                 // log(fileSortKey.path)
-                if let file = fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] {
+                if let file = dirModel.files[fileSortKey] {
                     if file.path == fileSortKey.path {
-                        file.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
+                        file.ver = dirModel.ver
                         file.isDir=isDir
                         file.isAlias=isAlias
                         file.doNotActualRead=doNotActualRead
+                        file.isHidden=isHiddenFile
                         file.finderTags=finderTags
                         // 检查文件或文件夹是否有变化(文件夹fileSize为nil)
                         // Check if file or folder has changed (folder fileSize is nil)
                         if fileSize != file.fileSize || modDate != file.modDate {
-                            fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
+                            dirModel.files[fileSortKey] = newFileModel
                         }
                     }else{
                         // 大小写变化，需要删除再插入
                         // Case change, need to delete then insert
-                        fileDB.db[SortKeyDir(folderpath)]!.files.removeValue(forKey: fileSortKey)
-                        fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
+                        dirModel.files.removeValue(forKey: fileSortKey)
+                        dirModel.files[fileSortKey] = newFileModel
                     }
                 }else{
-                    fileDB.db[SortKeyDir(folderpath)]!.files[fileSortKey] = newFileModel
+                    dirModel.files[fileSortKey] = newFileModel
                 }
             }
             var keysToRemove: [SortKeyFile] = []
-            for ele in fileDB.db[SortKeyDir(folderpath)]!.files{
+            for ele in dirModel.files{
                 // log(ele.0.path.removingPercentEncoding)
-                if ele.1.ver != fileDB.db[SortKeyDir(folderpath)]!.ver {
+                if ele.1.ver != dirModel.ver {
                     ele.1.image=nil
                     ele.1.folderImages=[]
                     keysToRemove.append(ele.0)
                 }
             }
             for key in keysToRemove {
-                fileDB.db[SortKeyDir(folderpath)]!.files.removeValue(forKey: key)
+                dirModel.files.removeValue(forKey: key)
             }
         }
         
@@ -655,20 +690,36 @@ extension ViewController {
             var id=0
             var idInImage=0
             var idInImageAndVideo=0
-            for ele in fileDB.db[SortKeyDir(folderpath)]!.files{
-                ele.1.ver = fileDB.db[SortKeyDir(folderpath)]!.ver
+            let dirModel = fileDB.db[SortKeyDir(folderpath)]!
+            for ele in dirModel.files{
+                ele.1.ver = dirModel.ver
                 ele.1.canBeCalcued = false
+                let fileURL = URL(string: ele.1.path)!
+                let isNotFalseTsVideoFile = isNotFalseTsVideoFile(fileURL)
                 if !ele.1.isDir{
-                    ele.1.ext=URL(string: ele.1.path)!.pathExtension.lowercased()
+                    ele.1.ext=fileURL.pathExtension.lowercased()
                     if ele.1.isAlias {
                         ele.1.type = .other
+                        if let resolved = try? URL(resolvingAliasFileAt: fileURL) {
+                            ele.1.aliasActualExt = resolved.pathExtension.lowercased()
+                            if globalVar.HandledImageAndRawExtensions.contains(ele.1.aliasActualExt) {
+                                ele.1.aliasActualType = .image
+                            } else if globalVar.HandledVideoExtensions.contains(ele.1.aliasActualExt) && isNotFalseTsVideoFile {
+                                ele.1.aliasActualType = .video
+                            } else {
+                                ele.1.aliasActualType = .other
+                            }
+                        } else {
+                            ele.1.aliasActualType = .other
+                            ele.1.aliasActualExt = ""
+                        }
                     } else if globalVar.HandledImageAndRawExtensions.contains(ele.1.ext) {
                         ele.1.type = .image
                         ele.1.idInImage = idInImage
                         ele.1.idInImageAndVideo = idInImageAndVideo
                         idInImage += 1
                         idInImageAndVideo += 1
-                    }else if globalVar.HandledVideoExtensions.contains(ele.1.ext) {
+                    }else if globalVar.HandledVideoExtensions.contains(ele.1.ext) && isNotFalseTsVideoFile {
                         ele.1.type = .video
                         ele.1.idInImageAndVideo = idInImageAndVideo
                         idInImageAndVideo += 1
@@ -677,6 +728,7 @@ extension ViewController {
                     }
                 }else{
                     ele.1.type = .folder
+                    ele.1.aliasActualType = .folder
                 }
                 ele.1.id = id
                 id += 1
@@ -770,8 +822,10 @@ extension ViewController {
                 collectionView.collectionViewLayout=publicVar.waterfallLayout
             }else if publicVar.profile.layoutType == .grid {
                 collectionView.collectionViewLayout=publicVar.gridLayout
-            }else {
+            }else if publicVar.profile.layoutType == .justified {
                 collectionView.collectionViewLayout=publicVar.justifiedLayout
+            }else {
+                assertionFailure()
             }
             publicVar.isNeedChangeLayoutType = false
         }
@@ -966,7 +1020,9 @@ extension ViewController {
                     if indexPath.item < curItemCount {
                         publicVar.folderStepForLocate.removeAll()
                         collectionView.scrollToItems(at: [indexPath], scrollPosition: .nearestHorizontalEdge)
+                        collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
                         collectionView.selectItems(at: [indexPath], scrollPosition: [])
+                        collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
                         setLoadThumbPriority(ifNeedVisable: true)
                     }
                 } else {
@@ -1015,7 +1071,9 @@ extension ViewController {
             
             if !matchedIndexPaths.isEmpty {
                 let isFirstMatch = collectionView.selectionIndexPaths.isEmpty
+                collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: Set(matchedIndexPaths))
                 collectionView.selectItems(at: Set(matchedIndexPaths), scrollPosition: [])
+                collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: Set(matchedIndexPaths))
                 if isFirstMatch {
                     collectionView.scrollToItems(at: [matchedIndexPaths[0]], scrollPosition: .nearestHorizontalEdge)
                     setLoadThumbPriority(ifNeedVisable: true)
@@ -1198,7 +1256,7 @@ extension ViewController {
                     }
                 }
                 
-                if fileDB.db[curIndex].1.fileCount>0 && fileDB.db[curIndex].1.ver == fileDB.ver {
+                if fileDB.db[curIndex].1.searchCount>0 && fileDB.db[curIndex].1.ver == fileDB.ver {
                     break
                 }
             }
@@ -1223,6 +1281,18 @@ extension ViewController {
         
         if globalVar.dirTreeAutoExpand {
             treeReLocate(path: nextFolder, doCollapse: doCollapse, expandLast: expandLast)
+        } else {
+            // When "Follow Current Folder" is off, don't expand but select the folder if it's listed in the sidebar
+            var rowIndexes = IndexSet()
+            for row in 0..<outlineView.numberOfRows {
+                if let item = outlineView.item(atRow: row) as? TreeNode, item.fullPath == nextFolder {
+                    rowIndexes = IndexSet(integer: row)
+                    break
+                }
+            }
+            outlineViewManager.ifActWhenSelected=false
+            outlineView.selectRowIndexes(rowIndexes, byExtendingSelection: false)
+            outlineViewManager.ifActWhenSelected=true
         }
         
         log("Switch:",nextFolder.removingPercentEncoding!)
@@ -1237,15 +1307,56 @@ extension ViewController {
     }
     
     class FolderStatisticInfo {
-        var folderCount = 0
-        var fileCount = 0
-        var imageCount = 0
-        var videoCount = 0
-        var totalSize = 0
-        
-        var description: String {
-            let text = String(format: NSLocalizedString("statistic-content", comment: "(统计内容)"),folderCount,fileCount,imageCount,videoCount,readableFileSize(totalSize))
-            return text
+        struct Snapshot {
+            let folderCount: Int
+            let fileCount: Int
+            let imageCount: Int
+            let videoCount: Int
+            let totalSize: Int
+        }
+
+        private let lock = NSLock()
+        private var folderCount = 0
+        private var fileCount = 0
+        private var imageCount = 0
+        private var videoCount = 0
+        private var totalSize = 0
+
+        func snapshot() -> Snapshot {
+            lock.lock()
+            let result = Snapshot(
+                folderCount: folderCount,
+                fileCount: fileCount,
+                imageCount: imageCount,
+                videoCount: videoCount,
+                totalSize: totalSize
+            )
+            lock.unlock()
+            return result
+        }
+
+        func addFolder(size: Int = 0) {
+            lock.lock()
+            folderCount += 1
+            totalSize += size
+            lock.unlock()
+        }
+
+        func addFile(url: URL, size: Int) {
+            let pathExtension = url.pathExtension.lowercased()
+            let isImage = globalVar.HandledImageAndRawExtensions.contains(pathExtension)
+            let isVideo = globalVar.HandledVideoExtensions.contains(pathExtension)
+                && isNotFalseTsVideoFile(url)
+
+            lock.lock()
+            fileCount += 1
+            if isImage {
+                imageCount += 1
+            } else if isVideo {
+                videoCount += 1
+            }
+            totalSize += size
+            lock.unlock()
         }
     }
     
@@ -1256,14 +1367,11 @@ extension ViewController {
         }
         if urls.isEmpty {return}
 
-        // log(readFinderExtendedAttributes(url: urls[0], needFinderInfo: true), level: .debug)
-        // return;
-        
         if urls.count == 1 {
             let url = urls[0]
             var isDirectory: ObjCBool = false
             if FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) {
-                
+
                 let aliasResourceValues = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey])
                 let isAliasFile = aliasResourceValues?.isAliasFile ?? false
                 let isSymlink = aliasResourceValues?.isSymbolicLink ?? false
@@ -1281,226 +1389,408 @@ extension ViewController {
                     aliasTypeLabel = ""
                 }
                 let resolvedIsDirectory = resolvedUrl.hasDirectoryPath
-                
+
                 if !isDirectory.boolValue && !resolvedIsDirectory {
-
-                    let file = FileModel(path: "", ver: 0)
-                    file.path = url.absoluteString
-                    file.fileSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize)
-                    file.createDate = (try? url.resourceValues(forKeys: [.creationDateKey]).creationDate)
-                    file.modDate = (try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate)
-                    file.addDate = (try? url.resourceValues(forKeys: [.addedToDirectoryDateKey]).addedToDirectoryDate)
-                    
-                    let ext = resolvedUrl.pathExtension.lowercased()
-                    if globalVar.HandledImageAndRawExtensions.contains(ext) || globalVar.HandledVideoExtensions.contains(ext) {
-                        file.imageInfo = getImageInfo(url: resolvedUrl, needMetadata: true)
-                    }
-                    let exifData = convertExifData(file: file)
-                    var formatedExifData = formatExifData(exifData ?? [:], isVideo: globalVar.HandledVideoExtensions.contains(ext), needWarp: false)
-
-                    formatedExifData.insert((NSLocalizedString("File Path", comment: "文件路径"), "\u{2066}" + url.deletingLastPathComponent().path + "/" + "\u{2069}"), at: 0)
-
-                    if isAlias {
-                        formatedExifData.insert((NSLocalizedString("Original Path", comment: "原始路径"), "\u{2066}" + resolvedUrl.path + "\u{2069}"), at: 0)
-                        formatedExifData.insert((NSLocalizedString("Alias Type", comment: "替身类型"), aliasTypeLabel), at: 0)
-                    }
-                    
-                    let separator = "--------------------"
-                    
-                    func formatExifDataAligned(_ exifData: [(String, Any)]) -> String {
-                        
-                        let font = NSFont.systemFont(ofSize: NSFont.systemFontSize)
-                        // 计算最长的key的长度
-                        let maxKeyLength = exifData.map { $0.0.size(withAttributes: [.font: font]).width }.max() ?? 0
-                        
-                        // 格式化每一行，使冒号对齐
-                        let formattedLines = exifData.map { (key, value) -> String in
-                            if key == "-" {
-                                return separator
-                            }
-                            let keyLength = key.size(withAttributes: [.font: font]).width
-                            let padding = String(repeating: " ", count: Int((maxKeyLength - keyLength) / " ".size(withAttributes: [.font: font]).width))
-                            return "\(key):\(padding) \(value)"
-                        }
-                        
-                        return formattedLines.joined(separator: "\n")
-                    }
-                    
-                    var text = formatExifDataAligned(formatedExifData)
-
-                    func appendSection(_ content: String) {
-                        text += (text.hasSuffix(separator) ? "\n" : "\n" + separator + "\n") + content
-                    }
-
-                    if globalVar.HandledVideoExtensions.contains(ext),
-                       let videoRawMetadata = getVideoMetadataFFmpeg(for: resolvedUrl),
-                       let specificMetadata = getVideoMetadataFormatedFFmpeg(for: resolvedUrl) {
-                        let metadataAligned = formatExifDataAligned(specificMetadata)
-                        appendSection(metadataAligned + "\n" + separator + "\n" + videoRawMetadata)
-                    }
-                    
-                    if globalVar.HandledImageAndRawExtensions.contains(ext) {
-                        func formatDictionary(_ dictionary: [String: Any], indentLevel: Int = 0, outputFormat: String = "json", sort: Bool = true) -> String {
-                            let sortedDictionary: [(String, Any)]
-                            if sort {
-                                sortedDictionary = dictionary.sorted { $0.key < $1.key }
-                            } else {
-                                sortedDictionary = Array(dictionary)
-                            }
-                            
-                            // 添加错误处理和防护
-                            if outputFormat == "json" {
-                                do {
-                                    let sortedDict = Dictionary(uniqueKeysWithValues: sortedDictionary)
-                                    // 移除不能被JSON序列化的值
-                                    let serializableDict = sortedDict.filter { (_, value) in
-                                        JSONSerialization.isValidJSONObject([value])
-                                    }
-                                    let jsonData = try JSONSerialization.data(withJSONObject: serializableDict, options: [.prettyPrinted, .sortedKeys])
-                                    if let jsonString = String(data: jsonData, encoding: .utf8) {
-                                        return jsonString
-                                    }
-                                } catch {
-                                    log("JSON serialization error: \(error)", level: .warn)
-                                }
-                                return "{}"
-                            } else {
-                                let indent = String(repeating: "  ", count: indentLevel)
-                                var formattedString = ""
-                                for (key, value) in sortedDictionary {
-                                    if let nestedDict = value as? [String: Any] {
-                                        formattedString += "\(indent)\(key):\n"
-                                        formattedString += formatDictionary(nestedDict, indentLevel: indentLevel + 1, outputFormat: outputFormat, sort: sort)
-                                    } else {
-                                        formattedString += "\(indent)\(key): \(value)\n"
-                                    }
-                                }
-                                return formattedString
-                            }
-                        }
-
-                        if let properties = file.imageInfo?.properties {
-                            if properties.count > 0 {
-                                appendSection(formatDictionary(properties).replacingOccurrences(of: "\\/", with: "/"))
-                            }
-                        }
-                        if let metadata = file.imageInfo?.metadata,
-                           let tags = CGImageMetadataCopyTags(metadata) as NSArray? {
-                            
-                            var result = [String: Any]()
-                            for tag in tags {
-                                if CFGetTypeID(tag.self as CFTypeRef) == CGImageMetadataTagGetTypeID() {
-                                    let tagMetadata = tag as! CGImageMetadataTag
-                                    
-                                    if let cfName = CGImageMetadataTagCopyName(tagMetadata),
-                                       let cfPrefix = CGImageMetadataTagCopyPrefix(tagMetadata),
-                                       String(cfPrefix) != "exif" && String(cfPrefix) != "aux" && String(cfPrefix) != "exifEX" && String(cfPrefix) != "tiff" {
-                                        let name = String(cfPrefix) + "::" + String(cfName)
-                                        let value = CGImageMetadataTagCopyValue(tagMetadata)
-                                        result[name] = value
-                                    }
-                                }
-                            }
-                            if result.count > 0 {
-                                appendSection(formatDictionary(result).replacingOccurrences(of: "\\/", with: "/"))
-                            }
-                        }
-                    }
-                    
-                    if text.hasSuffix(separator) {
-                        text = String(text.dropLast(separator.count)).trimmingCharacters(in: .newlines)
-                    }
-                    showInformationLong(title: NSLocalizedString("File Info", comment: "文件信息"), message: text, width: 400)
-                    
+                    presentSingleFileInfo(url: url, resolvedUrl: resolvedUrl, isAlias: isAlias, aliasTypeLabel: aliasTypeLabel)
                     return
                 } else {
-                    let targetUrl = url
-                    
-                    var folderInfoData: [(String, Any)] = []
-
-                    if isAlias {
-                        folderInfoData.append((NSLocalizedString("Alias Type", comment: "替身类型"), aliasTypeLabel))
-                        folderInfoData.append((NSLocalizedString("Original Path", comment: "原始路径"), "\u{2066}" + resolvedUrl.path + "\u{2069}"))
-                    }
-                    
-                    folderInfoData.append((NSLocalizedString("Folder Path", comment: "文件夹路径"), "\u{2066}" + targetUrl.path + "\u{2069}"))
-                    folderInfoData.append((NSLocalizedString("Folder Name", comment: "文件夹名称"), targetUrl.lastPathComponent))
-                    
-                    if let creationDate = (try? targetUrl.resourceValues(forKeys: [.creationDateKey]).creationDate) {
-                        folderInfoData.append((NSLocalizedString("Creation Date", comment: "创建日期"), formatDateToCurrentTimeZone(creationDate)))
-                    }
-                    if let modDate = (try? targetUrl.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) {
-                        folderInfoData.append((NSLocalizedString("Modification Date", comment: "修改日期"), formatDateToCurrentTimeZone(modDate)))
-                    }
-                    if let addDate = (try? targetUrl.resourceValues(forKeys: [.addedToDirectoryDateKey]).addedToDirectoryDate) {
-                        folderInfoData.append((NSLocalizedString("Added Date", comment: "添加日期"), formatDateToCurrentTimeZone(addDate)))
-                    }
-                    
-                    let separator = "--------------------"
-                    let font = NSFont.systemFont(ofSize: NSFont.systemFontSize)
-                    let maxKeyLength = folderInfoData.map { $0.0.size(withAttributes: [.font: font]).width }.max() ?? 0
-                    let formattedLines = folderInfoData.map { (key, value) -> String in
-                        let keyLength = key.size(withAttributes: [.font: font]).width
-                        let padding = String(repeating: " ", count: Int((maxKeyLength - keyLength) / " ".size(withAttributes: [.font: font]).width))
-                        return "\(key):\(padding) \(value)"
-                    }
-                    var text = formattedLines.joined(separator: "\n")
-                    
-                    let result = FolderStatisticInfo()
-                    getFolderStatistic(resolvedUrl, result: result)
-                    text += "\n" + separator + "\n" + result.description
-                    
-                    showInformationLong(title: NSLocalizedString("Folder Info", comment: "文件夹信息"), message: text, width: 400)
-                    
+                    presentSingleFolderInfo(url: url, resolvedUrl: resolvedUrl, isAlias: isAlias, aliasTypeLabel: aliasTypeLabel)
                     return
                 }
             }
         }
-        
-        // 以下是针对非单个图像、视频文件的处理
-        // Below is handling for non-single image/video files
-        
-        let result = FolderStatisticInfo()
-        
-        for url in urls {
-            var isDirectory: ObjCBool = false
-            if FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) {
-                let isAlias = (try? url.resourceValues(forKeys: [.isAliasFileKey]).isAliasFile) ?? false
-                let aliasSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
-                if isAlias {
-                    let resolvedUrl = try? URL(resolvingAliasFileAt: url)
-                    if let resolved = resolvedUrl, resolved.hasDirectoryPath {
-                        result.folderCount += 1
-                        result.totalSize += aliasSize
-                    } else {
-                        result.fileCount += 1
-                        let ext = (resolvedUrl ?? url).pathExtension.lowercased()
-                        if globalVar.HandledImageAndRawExtensions.contains(ext) {
-                            result.imageCount += 1
-                        } else if globalVar.HandledVideoExtensions.contains(ext) {
-                            result.videoCount += 1
+
+        presentMultiSelectionInfo(urls: urls)
+    }
+
+    // MARK: - Info window builders
+
+    private func presentSingleFileInfo(url: URL, resolvedUrl: URL, isAlias: Bool, aliasTypeLabel: String) {
+        let file = FileModel(path: "", ver: 0)
+        file.path = url.absoluteString
+        file.fileSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize)
+        file.createDate = (try? url.resourceValues(forKeys: [.creationDateKey]).creationDate)
+        file.modDate = (try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate)
+        file.addDate = (try? url.resourceValues(forKeys: [.addedToDirectoryDateKey]).addedToDirectoryDate)
+
+        let ext = resolvedUrl.pathExtension.lowercased()
+        let isImage = globalVar.HandledImageAndRawExtensions.contains(ext)
+        let isVideo = globalVar.HandledVideoExtensions.contains(ext) && isNotFalseTsVideoFile(resolvedUrl)
+        if isImage || isVideo {
+            file.imageInfo = getImageInfo(url: resolvedUrl, needMetadata: true)
+        }
+        let exifData = convertExifData(file: file)
+        var formatedExifData = formatExifData(exifData ?? [:], isVideo: isVideo, needWarp: false)
+
+        formatedExifData.insert((NSLocalizedString("File Path", comment: "文件路径"), bidiIsolate(url.deletingLastPathComponent().path + "/")), at: 0)
+        if isAlias {
+            formatedExifData.insert((NSLocalizedString("Original Path", comment: "原始路径"), bidiIsolate(resolvedUrl.path)), at: 0)
+            formatedExifData.insert((NSLocalizedString("Alias Type", comment: "替身类型"), aliasTypeLabel), at: 0)
+        }
+
+        var sections = splitExifIntoSections(formatedExifData)
+
+        if isVideo {
+            // if let formatted = getVideoMetadataFormatedFFmpeg(for: resolvedUrl), !formatted.isEmpty {
+            //     let pairs = formatted.map { ($0.0, $0.1) }
+            //     sections.append(FileInfoSection(
+            //         title: NSLocalizedString("Video", comment: "视频"),
+            //         kind: .keyValue(pairs)
+            //     ))
+            // }
+            if let formatted = getVideoMetadataFormatedFFmpeg(for: resolvedUrl), !formatted.isEmpty {
+                sections.append(contentsOf: splitVideoMetadataIntoSections(formatted))
+            }
+            if let raw = getVideoMetadataFFmpeg(for: resolvedUrl), !raw.isEmpty {
+                sections.append(FileInfoSection(
+                    title: true ? "Video Metadata" : NSLocalizedString("Video Metadata", comment: "视频元数据"),
+                    kind: .textBlock(raw, monospace: true),
+                    collapsible: true,
+                    initiallyCollapsed: true
+                ))
+            }
+        }
+
+        if isImage {
+            if let properties = file.imageInfo?.properties, !properties.isEmpty {
+                let json = jsonDumpString(properties)
+                sections.append(FileInfoSection(
+                    title: true ? "EXIF Metadata" : NSLocalizedString("EXIF Metadata", comment: "EXIF元数据"),
+                    kind: .textBlock(json, monospace: true),
+                    collapsible: true,
+                    initiallyCollapsed: true
+                ))
+            }
+            if let metadata = file.imageInfo?.metadata,
+               let tags = CGImageMetadataCopyTags(metadata) as NSArray? {
+                var result = [String: Any]()
+                for tag in tags {
+                    if CFGetTypeID(tag.self as CFTypeRef) == CGImageMetadataTagGetTypeID() {
+                        let tagMetadata = tag as! CGImageMetadataTag
+                        if let cfName = CGImageMetadataTagCopyName(tagMetadata),
+                           let cfPrefix = CGImageMetadataTagCopyPrefix(tagMetadata),
+                           String(cfPrefix) != "exif" && String(cfPrefix) != "aux" && String(cfPrefix) != "exifEX" && String(cfPrefix) != "tiff" {
+                            let name = String(cfPrefix) + "::" + String(cfName)
+                            let value = CGImageMetadataTagCopyValue(tagMetadata)
+                            result[name] = value
                         }
-                        result.totalSize += aliasSize
                     }
-                } else if isDirectory.boolValue {
-                    result.folderCount += 1
-                    getFolderStatistic(url, result: result)
-                } else {
-                    result.fileCount += 1
-                    if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
-                        result.imageCount += 1
-                    } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
-                        result.videoCount += 1
-                    }
-                    result.totalSize += aliasSize
+                }
+                if !result.isEmpty {
+                    let json = jsonDumpString(result)
+                    sections.append(FileInfoSection(
+                        title: true ? "XMP / IPTC Metadata" : NSLocalizedString("XMP / IPTC Metadata", comment: "XMP/IPTC元数据"),
+                        kind: .textBlock(json, monospace: true),
+                        collapsible: true,
+                        initiallyCollapsed: true
+                    ))
                 }
             }
         }
-        
-        showInformation(title: NSLocalizedString("Statistic", comment: "统计信息"), message: result.description)
+
+        let header = buildHeaderForSingleFile(
+            url: url,
+            resolvedUrl: resolvedUrl,
+            file: file,
+            isAlias: isAlias,
+            aliasTypeLabel: aliasTypeLabel
+        )
+
+        FileInfoWindowController.show(
+            header: header,
+            sections: sections,
+            revealURLs: [url],
+            anchorWindow: view.window
+        )
+    }
+
+    private func presentSingleFolderInfo(url: URL, resolvedUrl: URL, isAlias: Bool, aliasTypeLabel: String) {
+        var generalPairs: [(String, String)] = []
+        if isAlias {
+            generalPairs.append((NSLocalizedString("Alias Type", comment: "替身类型"), aliasTypeLabel))
+            generalPairs.append((NSLocalizedString("Original Path", comment: "原始路径"), bidiIsolate(resolvedUrl.path)))
+        }
+        generalPairs.append((NSLocalizedString("Folder Path", comment: "文件夹路径"), bidiIsolate(url.path)))
+        generalPairs.append((NSLocalizedString("Folder Name", comment: "文件夹名称"), url.lastPathComponent))
+
+        if let creationDate = (try? url.resourceValues(forKeys: [.creationDateKey]).creationDate) {
+            generalPairs.append((NSLocalizedString("Creation Date", comment: "创建日期"), formatDateToCurrentTimeZone(creationDate)))
+        }
+        if let modDate = (try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) {
+            generalPairs.append((NSLocalizedString("Modification Date", comment: "修改日期"), formatDateToCurrentTimeZone(modDate)))
+        }
+        if let addDate = (try? url.resourceValues(forKeys: [.addedToDirectoryDateKey]).addedToDirectoryDate) {
+            generalPairs.append((NSLocalizedString("Added Date", comment: "添加日期"), formatDateToCurrentTimeZone(addDate)))
+        }
+
+        let stat = FolderStatisticInfo()
+        let sections: [FileInfoSection] = [
+            FileInfoSection(title: NSLocalizedString("General", comment: "通用"), kind: .keyValue(generalPairs)),
+            FileInfoSection(title: NSLocalizedString("Statistics", comment: "统计信息"), kind: .keyValue(folderStatisticPairs(stat))),
+        ]
+
+        let header = buildHeaderForFolder(url: url, resolvedUrl: resolvedUrl, isAlias: isAlias, aliasTypeLabel: aliasTypeLabel)
+        let scanState = FileInfoScanState()
+
+        let controller = FileInfoWindowController.show(
+            header: header,
+            sections: sections,
+            revealURLs: [url],
+            anchorWindow: view.window,
+            onClose: { scanState.cancel() }
+        )
+
+        startFolderStatisticScan(
+            state: scanState,
+            controller: controller,
+            makeSections: { [weak self] in
+                guard let self = self else { return sections }
+                return [
+                    FileInfoSection(title: NSLocalizedString("General", comment: "通用"), kind: .keyValue(generalPairs)),
+                    FileInfoSection(title: NSLocalizedString("Statistics", comment: "统计信息"), kind: .keyValue(self.folderStatisticPairs(stat))),
+                ]
+            },
+            work: { [weak self] isCancelled, onProgress in
+                self?.getFolderStatistic(resolvedUrl, result: stat, isCancelled: isCancelled, onProgress: onProgress)
+            }
+        )
+    }
+
+    private func presentMultiSelectionInfo(urls: [URL]) {
+        let stat = FolderStatisticInfo()
+        let sections: [FileInfoSection] = [
+            FileInfoSection(title: NSLocalizedString("Statistics", comment: "统计信息"), kind: .keyValue(folderStatisticPairs(stat))),
+        ]
+
+        let header = buildHeaderForMultiSelection(urls: urls)
+        let scanState = FileInfoScanState()
+
+        let controller = FileInfoWindowController.show(
+            header: header,
+            sections: sections,
+            revealURLs: urls,
+            anchorWindow: view.window,
+            onClose: { scanState.cancel() }
+        )
+
+        startFolderStatisticScan(
+            state: scanState,
+            controller: controller,
+            makeSections: { [weak self] in
+                guard let self = self else { return sections }
+                return [
+                    FileInfoSection(title: NSLocalizedString("Statistics", comment: "统计信息"), kind: .keyValue(self.folderStatisticPairs(stat))),
+                ]
+            },
+            work: { [weak self] isCancelled, onProgress in
+                var lastProgressTime = Date.distantPast
+                for url in urls {
+                    if isCancelled() { return }
+                    var isDirectory: ObjCBool = false
+                    if FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) {
+                        let isAlias = (try? url.resourceValues(forKeys: [.isAliasFileKey]).isAliasFile) ?? false
+                        let aliasSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+                        if isAlias {
+                            let resolvedUrl = try? URL(resolvingAliasFileAt: url)
+                            if let resolved = resolvedUrl, resolved.hasDirectoryPath {
+                                stat.addFolder(size: aliasSize)
+                            } else {
+                                stat.addFile(url: resolvedUrl ?? url, size: aliasSize)
+                            }
+                        } else if isDirectory.boolValue {
+                            stat.addFolder()
+                            self?.getFolderStatistic(url, result: stat, isCancelled: isCancelled, onProgress: onProgress)
+                        } else {
+                            stat.addFile(url: url, size: aliasSize)
+                        }
+                    }
+                    if Date().timeIntervalSince(lastProgressTime) >= 0.25 {
+                        lastProgressTime = Date()
+                        onProgress()
+                    }
+                }
+            }
+        )
+    }
+
+    // MARK: - Section / header helpers
+
+    private func bidiIsolate(_ s: String) -> String {
+        // \u{2066} = LRI, \u{2069} = PDI — keep filesystem paths rendered LTR even in RTL locales
+        return "\u{2066}" + s + "\u{2069}"
+    }
+
+    private func splitExifIntoSections(_ data: [(String, Any)]) -> [FileInfoSection] {
+        var groups: [[(String, String)]] = [[]]
+        for (k, v) in data {
+            if k == "-" {
+                groups.append([])
+            } else {
+                let valueStr: String
+                if let s = v as? String {
+                    valueStr = s
+                } else {
+                    valueStr = String(describing: v)
+                }
+                groups[groups.count - 1].append((k, valueStr))
+            }
+        }
+        let titles = [
+            NSLocalizedString("General", comment: "通用"),
+            NSLocalizedString("Image", comment: "图像"),
+            NSLocalizedString("GPS", comment: "GPS"),
+        ]
+        var result: [FileInfoSection] = []
+        var idx = 0
+        for group in groups {
+            if group.isEmpty { idx += 1; continue }
+            let title = idx < titles.count ? titles[idx] : NSLocalizedString("Other", comment: "其他")
+            result.append(FileInfoSection(title: title, kind: .keyValue(group)))
+            idx += 1
+        }
+        return result
+    }
+
+    /// Split the flat FFprobe output (which uses ("-","-") to separate streams) into
+    /// semantic sections: container info, then one section per video/audio stream.
+    /// Detection relies on the `index` key being the first localized key in each
+    /// stream's translation map for both video and audio.
+    private func splitVideoMetadataIntoSections(_ pairs: [(String, String)]) -> [FileInfoSection] {
+        let videoIndexKey = NSLocalizedString("VideoMetadata-Index", comment: "索引")
+        let audioIndexKey = NSLocalizedString("AudioMetadata-Index", comment: "索引")
+
+        var sections: [(title: String, pairs: [(String, String)])] = []
+        var currentTitle = NSLocalizedString("Container", comment: "容器")
+        var currentPairs: [(String, String)] = []
+        var videoCount = 0
+        var audioCount = 0
+
+        func flush() {
+            if !currentPairs.isEmpty {
+                sections.append((currentTitle, currentPairs))
+                currentPairs = []
+            }
+        }
+
+        for p in pairs {
+            if p.0 == "-" { continue }
+            if p.0 == videoIndexKey {
+                flush()
+                videoCount += 1
+                currentTitle = videoCount > 1
+                    ? NSLocalizedString("Video Stream", comment: "视频流") + " \(videoCount)"
+                    : NSLocalizedString("Video Stream", comment: "视频流")
+            } else if p.0 == audioIndexKey {
+                flush()
+                audioCount += 1
+                currentTitle = audioCount > 1
+                    ? NSLocalizedString("Audio Stream", comment: "音频流") + " \(audioCount)"
+                    : NSLocalizedString("Audio Stream", comment: "音频流")
+            }
+            currentPairs.append(p)
+        }
+        flush()
+
+        return sections.map { FileInfoSection(title: $0.title, kind: .keyValue($0.pairs)) }
+    }
+
+    private func folderStatisticPairs(_ stat: FolderStatisticInfo) -> [(String, String)] {
+        let stat = stat.snapshot()
+        return [
+            (NSLocalizedString("Folders", comment: "目录"), "\(stat.folderCount)"),
+            (NSLocalizedString("Files", comment: "文件"), "\(stat.fileCount)"),
+            (NSLocalizedString("Images", comment: "图像"), "\(stat.imageCount)"),
+            (NSLocalizedString("Videos", comment: "视频"), "\(stat.videoCount)"),
+            (NSLocalizedString("Total Size", comment: "总大小"), readableFileSize(stat.totalSize)),
+        ]
+    }
+
+    private func startFolderStatisticScan(
+        state: FileInfoScanState,
+        controller: FileInfoWindowController,
+        makeSections: @escaping () -> [FileInfoSection],
+        work: @escaping (_ isCancelled: () -> Bool, _ onProgress: @escaping () -> Void) -> Void
+    ) {
+        let publish: () -> Void = { [weak controller] in
+            DispatchQueue.main.async {
+                guard !state.isCancelled() else { return }
+                controller?.updateSections(makeSections())
+            }
+        }
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            work(state.isCancelled, publish)
+            publish()
+        }
+    }
+
+    private func jsonDumpString(_ dictionary: [String: Any]) -> String {
+        let sorted = dictionary.sorted { $0.key < $1.key }
+        let dict = Dictionary(uniqueKeysWithValues: sorted)
+        let serializable = dict.filter { (_, value) in JSONSerialization.isValidJSONObject([value]) }
+        do {
+            let data = try JSONSerialization.data(withJSONObject: serializable, options: [.prettyPrinted, .sortedKeys])
+            if let s = String(data: data, encoding: .utf8) {
+                return s.replacingOccurrences(of: "\\/", with: "/")
+            }
+        } catch {
+            log("JSON serialization error: \(error)", level: .warn)
+        }
+        return "{}"
+    }
+
+    private func buildHeaderForSingleFile(url: URL, resolvedUrl: URL, file: FileModel, isAlias: Bool, aliasTypeLabel: String) -> FileInfoHeader {
+        let icon = NSWorkspace.shared.icon(forFile: resolvedUrl.path)
+        icon.size = NSSize(width: 64, height: 64)
+
+        var parts: [String] = []
+        if let t = (try? url.resourceValues(forKeys: [.localizedTypeDescriptionKey]))?.localizedTypeDescription, !t.isEmpty {
+            parts.append(t)
+        } else if !url.pathExtension.isEmpty {
+            parts.append(url.pathExtension.uppercased())
+        }
+        if let s = file.imageInfo?.size, s.width > 0, s.height > 0 {
+            parts.append("\(Int(s.width))×\(Int(s.height))")
+        }
+        if let size = file.fileSize {
+            parts.append(readableFileSize(size))
+        }
+        if isAlias {
+            parts.append(aliasTypeLabel)
+        }
+        return FileInfoHeader(icon: icon, title: url.lastPathComponent, subtitle: parts.joined(separator: " · "))
+    }
+
+    private func buildHeaderForFolder(url: URL, resolvedUrl: URL, isAlias: Bool, aliasTypeLabel: String) -> FileInfoHeader {
+        let icon = NSWorkspace.shared.icon(forFile: resolvedUrl.path)
+        icon.size = NSSize(width: 64, height: 64)
+        var parts: [String] = []
+        let typeDesc = (try? url.resourceValues(forKeys: [.localizedTypeDescriptionKey]))?.localizedTypeDescription
+        if let t = typeDesc, !t.isEmpty {
+            parts.append(t)
+        } else {
+            parts.append(NSLocalizedString("Folder", comment: "文件夹"))
+        }
+        if isAlias {
+            parts.append(aliasTypeLabel)
+        }
+        let title = url.lastPathComponent.isEmpty ? url.path : url.lastPathComponent
+        return FileInfoHeader(icon: icon, title: title, subtitle: parts.joined(separator: " · "))
+    }
+
+    private func buildHeaderForMultiSelection(urls: [URL]) -> FileInfoHeader {
+        let icon: NSImage
+        if urls.count == 1, let first = urls.first {
+            icon = NSWorkspace.shared.icon(forFile: first.path)
+        } else {
+            icon = NSImage(named: NSImage.multipleDocumentsName) ?? NSImage()
+        }
+        icon.size = NSSize(width: 64, height: 64)
+        let title = String(format: NSLocalizedString("%d items selected", comment: "选中 %d 项"), urls.count)
+        return FileInfoHeader(icon: icon, title: title, subtitle: "")
     }
     
-    func getFolderStatistic(_ folderURL: URL, result: FolderStatisticInfo) {
+    func getFolderStatistic(_ folderURL: URL, result: FolderStatisticInfo, isCancelled: () -> Bool = { false }, onProgress: (() -> Void)? = nil) {
         let properties: [URLResourceKey] = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .isAliasFileKey]
         let options:FileManager.DirectoryEnumerationOptions = [] // [.skipsHiddenFiles]
         
@@ -1509,48 +1799,30 @@ extension ViewController {
             return true
         })
 
-        // var result = StatisticInfo()
-        let scanInterval: TimeInterval = 4.0
-        var startDate = Date()
+        var lastProgressTime = Date.distantPast
         
         while let url = enumerator?.nextObject() as? URL {
+            if isCancelled() { break }
             let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) ?? false
             let isAlias = (try? url.resourceValues(forKeys: [.isAliasFileKey]).isAliasFile) ?? false
             let fileSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
 
             if isAlias && !isDirectory {
                 if let resolved = try? URL(resolvingAliasFileAt: url), resolved.hasDirectoryPath {
-                    result.folderCount += 1
-                    result.totalSize += fileSize
+                    result.addFolder(size: fileSize)
                 } else {
-                    result.fileCount += 1
-                    if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
-                        result.imageCount += 1
-                    } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
-                        result.videoCount += 1
-                    }
-                    result.totalSize += fileSize
+                    result.addFile(url: url, size: fileSize)
                 }
             } else if !isDirectory {
-                result.fileCount += 1
-                if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
-                    result.imageCount += 1
-                } else if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
-                    result.videoCount += 1
-                }
-                result.totalSize += fileSize
+                result.addFile(url: url, size: fileSize)
             } else {
-                result.folderCount += 1
+                result.addFolder()
             }
-            
-            // let elapsedTime = Date().timeIntervalSince(startDate)
-            // if elapsedTime >= scanInterval {
-            //     let shouldContinue = showScanAlert(fileCount: result.fileCount, imageCount: result.imageCount, videoCount: result.videoCount)
-            //     if !shouldContinue {
-            //         break
-            //     }
-            //     startDate = Date()
-            // }
+
+            if let onProgress = onProgress, Date().timeIntervalSince(lastProgressTime) >= 0.25 {
+                lastProgressTime = Date()
+                onProgress()
+            }
         }
     }
 }

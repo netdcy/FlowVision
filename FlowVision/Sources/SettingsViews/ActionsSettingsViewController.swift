@@ -34,6 +34,10 @@ final class ActionsSettingsViewController: NSViewController, SettingsPane,
         NSLocalizedString("Rename", comment: ""), target: nil, action: nil)
     private let radioEnterKeyOpen   = NSButton(radioButtonWithTitle:
         NSLocalizedString("Open / Close", comment: ""), target: nil, action: nil)
+    private let radioEscKeyGoBack = NSButton(radioButtonWithTitle:
+        NSLocalizedString("Go Back", comment: ""), target: nil, action: nil)
+    private let radioEscKeyCloseWindow = NSButton(radioButtonWithTitle:
+        NSLocalizedString("Close Window", comment: ""), target: nil, action: nil)
     private let searchField = NSSearchField()
     private let tableView = NSTableView()
 
@@ -66,11 +70,26 @@ final class ActionsSettingsViewController: NSViewController, SettingsPane,
         radioEnterKeyOpen.target   = self
         radioEnterKeyOpen.action   = #selector(enterKeyToOpenToggled(_:))
 
-        let radioStack = NSStackView(views: [
-            enterLabel, radioEnterKeyRename, radioEnterKeyOpen,
+        let escLabel = NSTextField(labelWithString:
+            NSLocalizedString("Esc Key:", comment: ""))
+        escLabel.font = NSFont.boldSystemFont(ofSize: NSFont.systemFontSize)
+
+        radioEscKeyGoBack.tag      = 0
+        radioEscKeyCloseWindow.tag = 1
+        radioEscKeyGoBack.target      = self
+        radioEscKeyGoBack.action      = #selector(escKeyFuncToggled(_:))
+        radioEscKeyCloseWindow.target = self
+        radioEscKeyCloseWindow.action = #selector(escKeyFuncToggled(_:))
+
+        // Grid keeps both radio pairs column-aligned. Radios sharing a superview
+        // are grouped by action, so the Enter and Esc pairs stay independent.
+        let radioGrid = NSGridView(views: [
+            [enterLabel, radioEnterKeyRename, radioEnterKeyOpen],
+            [escLabel, radioEscKeyGoBack, radioEscKeyCloseWindow],
         ])
-        radioStack.orientation = .horizontal
-        radioStack.spacing = 12
+        radioGrid.columnSpacing = 12
+        radioGrid.rowSpacing = 8
+        radioGrid.rowAlignment = .firstBaseline
 
         searchField.delegate = self
         searchField.placeholderString =
@@ -119,7 +138,7 @@ final class ActionsSettingsViewController: NSViewController, SettingsPane,
         bottomStack.translatesAutoresizingMaskIntoConstraints = false
 
         searchField.translatesAutoresizingMaskIntoConstraints = false
-        let main = NSStackView(views: [radioStack, searchField, scroll, bottomStack])
+        let main = NSStackView(views: [radioGrid, searchField, scroll, bottomStack])
         main.orientation = .vertical
         main.spacing = 12
         main.alignment = .leading
@@ -153,6 +172,9 @@ final class ActionsSettingsViewController: NSViewController, SettingsPane,
         radioEnterKeyOpen.state   = globalVar.isEnterKeyToOpen ? .on  : .off
         radioEnterKeyRename.state = globalVar.isEnterKeyToOpen ? .off : .on
 
+        radioEscKeyGoBack.state      = globalVar.isEscKeyToGoBack ? .on  : .off
+        radioEscKeyCloseWindow.state = globalVar.isEscKeyToGoBack ? .off : .on
+
         convertToLeadingLayoutForRTL(view)
 
         rebuildRows()
@@ -173,12 +195,18 @@ final class ActionsSettingsViewController: NSViewController, SettingsPane,
         if let t = shortcutsObserver { NotificationCenter.default.removeObserver(t) }
     }
 
-    // MARK: - Enter key + reset
+    // MARK: - Enter / Esc key + reset
 
     @objc func enterKeyToOpenToggled(_ sender: NSButton) {
         if sender.tag == 0 { globalVar.isEnterKeyToOpen = false }
         else if sender.tag == 1 { globalVar.isEnterKeyToOpen = true }
         UserDefaults.standard.set(globalVar.isEnterKeyToOpen, forKey: "isEnterKeyToOpen")
+    }
+
+    @objc func escKeyFuncToggled(_ sender: NSButton) {
+        if sender.tag == 0 { globalVar.isEscKeyToGoBack = true }
+        else if sender.tag == 1 { globalVar.isEscKeyToGoBack = false }
+        UserDefaults.standard.set(globalVar.isEscKeyToGoBack, forKey: "isEscKeyToGoBack")
     }
 
     @objc func resetAllClicked(_ sender: NSButton) {

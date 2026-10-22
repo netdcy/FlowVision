@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24412" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24412"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24506"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -63,7 +63,7 @@
                         <gridCell row="ltX-Ja-eM6" column="RqK-yY-jzI" id="042-ss-ffF">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PfT-L0-R1r">
                                 <rect key="frame" x="-2" y="683" width="140" height="16"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Load Dynamic Library:" id="bnu-AS-zpg">
+                                <textFieldCell key="cell" alignment="right" title="Load Dynamic Library:" id="bnu-AS-zpg">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -116,7 +116,7 @@
                         <gridCell row="ON5-EJ-u14" column="RqK-yY-jzI" id="S6f-Ug-zcG">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Pwh-HF-wf6">
                                 <rect key="frame" x="13" y="543" width="125" height="16"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Thumbnail Threads:" id="UWB-wJ-kV4">
+                                <textFieldCell key="cell" alignment="right" title="Thumbnail Threads:" id="UWB-wJ-kV4">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -161,7 +161,7 @@
                         <gridCell row="hK2-hz-DnW" column="RqK-yY-jzI" id="rUP-x1-92x">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kdZ-Ix-AIT">
                                 <rect key="frame" x="5" y="469" width="133" height="16"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Folder Search Depth:" id="UN1-r8-SEh">
+                                <textFieldCell key="cell" alignment="right" title="Folder Search Depth:" id="UN1-r8-SEh">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -224,7 +224,7 @@
                         <gridCell row="hUu-vB-x9E" column="RqK-yY-jzI" id="T2z-Ra-8Ff">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lY6-pg-F5V">
                                 <rect key="frame" x="13" y="280" width="125" height="32"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" id="fpm-qG-HXc">
+                                <textFieldCell key="cell" alignment="right" id="fpm-qG-HXc">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <string key="title">Thumbnail Threads:
 (External Volumes)</string>
@@ -272,7 +272,7 @@
                         <gridCell row="g4b-yS-dHl" column="RqK-yY-jzI" id="6h3-fb-Wms">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="n4I-6t-KIu">
                                 <rect key="frame" x="5" y="190" width="133" height="32"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" id="L44-0u-7JE">
+                                <textFieldCell key="cell" alignment="right" id="L44-0u-7JE">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <string key="title">Folder Search Depth:
 (External Volumes)</string>
@@ -326,7 +326,7 @@
                         <gridCell row="Zqi-zd-glF" column="RqK-yY-jzI" id="FqK-tX-yeu">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DFm-5v-ZoC">
                                 <rect key="frame" x="5" y="81" width="133" height="16"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Memory Usage Limit:" id="a8Q-Mw-3Xn">
+                                <textFieldCell key="cell" alignment="right" title="Memory Usage Limit:" id="a8Q-Mw-3Xn">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>

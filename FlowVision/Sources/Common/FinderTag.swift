@@ -381,11 +381,14 @@ class EnhancedIndex {
             ) else { return }
 
             var urls: [URL] = [folderURL]
+            var lastProgressTime = CFAbsoluteTimeGetCurrent()
             for case let url as URL in enumerator {
                 urls.append(url)
-                if urls.count % 1000 == 0 {
+                let now = CFAbsoluteTimeGetCurrent()
+                if now - lastProgressTime >= 0.01 {
                     guard !isCancelled() else { return }
                     progress?("\(NSLocalizedString("Scanning", comment: "扫描中")): \(urls.count) ...", false)
+                    lastProgressTime = now
                 }
             }
 

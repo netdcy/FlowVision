@@ -36,7 +36,7 @@ class CoreAreaView: NSView {
         ])
     }
     
-    func showInfo(_ info: String, timeOut: Double = 1.0, duration: Double = INFO_VIEW_DURATION, cannotBeCleard: Bool = true) {
+    func showInfo(_ info: String, timeOut: Double = 1.0, duration: Double = INFO_VIEW_DURATION, cannotBeCleard: Bool) {
         infoView.showInfo(text: info, timeOut: timeOut, duration: duration)
         self.cannotBeCleard = cannotBeCleard
     }
@@ -146,7 +146,7 @@ class CoreAreaView: NSView {
             if viewController.publicVar.isInLargeView {
                 let pasteboard = sender.draggingPasteboard
                 if let urls = pasteboard.readObjects(forClasses: [NSURL.self], options: nil) as? [URL] {
-                    getViewController(self)?.handleDraggedFiles(urls)
+                    viewController.handleDraggedFiles(urls)
                     return true
                 }
             }else{

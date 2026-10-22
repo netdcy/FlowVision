@@ -127,7 +127,6 @@ class CustomPathControl: NSPathControl, NSMenuDelegate {
 
         // 在新标签页中打开
         let actionItemOpenInNewTab = menu.addItem(withTitle: NSLocalizedString("Open in New Tab", comment: "在新标签页中打开"), action: #selector(actOpenInNewTab), keyEquivalent: "")
-        actionItemOpenInNewTab.isEnabled = !isWindowNumMax()
 
         menu.addItem(NSMenuItem.separator())
 
@@ -205,7 +204,9 @@ class CustomPathControl: NSPathControl, NSMenuDelegate {
     @objc private func actOpenInNewTab() {
         guard let url = rightClickedURL else { return }
         if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
-            _ = appDelegate.createNewWindow(url.absoluteString)
+            // 按住 Cmd 点击菜单项时在后台打开
+            // Hold Cmd when clicking the menu item to open in background
+            _ = appDelegate.createNewWindow(url.absoluteString, openInBackground: NSEvent.modifierFlags.contains(.command))
         }
     }
 

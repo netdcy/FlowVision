@@ -147,7 +147,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     
     override func viewWillAppear() {
         super.viewWillAppear()
-        if isSelected && !getViewController(collectionView!)!.publicVar.isInLargeView {
+        guard let viewController = getViewController(collectionView) else { return }
+        if isSelected && !viewController.publicVar.isInLargeView {
             // 选中状态的处理代码
             // Handle selected state
             selectedColor()
@@ -168,9 +169,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     override var isSelected: Bool {
         didSet {
             super.isSelected = isSelected
+            guard let viewController = getViewController(collectionView) else { return }
             // 在这里处理选中状态变化
             // Handle selection state change here
-            if isSelected && !getViewController(collectionView!)!.publicVar.isInLargeView {
+            if isSelected && !viewController.publicVar.isInLargeView {
                 // 选中状态的处理代码
                 // Handle selected state
                 selectedColor()
@@ -180,10 +182,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 deselectedColor()
             }
 
-            if (getViewController(collectionView!)!.publicVar.autoPlayVisibleVideo ||
-                (isSelected && getViewController(collectionView!)!.publicVar.autoPlaySelectedVideo)) &&
+            if (viewController.publicVar.autoPlayVisibleVideo ||
+                (isSelected && viewController.publicVar.autoPlaySelectedVideo)) &&
                 isItemVisible() &&
-                !getViewController(collectionView!)!.publicVar.isInLargeView {
+                !viewController.publicVar.isInLargeView {
                 playVideo()
             }else{
                 stopVideo()
@@ -204,20 +206,21 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     private func tagScaleFactor() -> CGFloat {
-        guard let vc = getViewController(collectionView!) else { return 1.0 }
-        let thumbSize = CGFloat(vc.publicVar.profile.thumbSize)
+        guard let collectionView = collectionView else { return 1.0 }
+        guard let viewController = getViewController(collectionView) else { return 1.0 }
+        let thumbSize = CGFloat(viewController.publicVar.profile.thumbSize)
         let baseScale = thumbSize / 512.0 * 1.0
 
-        let layoutCoefficient: CGFloat
-        switch vc.publicVar.profile.layoutType {
+        var layoutCoefficient: CGFloat = 1.0
+        switch viewController.publicVar.profile.layoutType {
         case .justified:
             layoutCoefficient = 1.3
         case .waterfall:
             layoutCoefficient = 1.2
         case .grid:
             layoutCoefficient = 1.1
-        case .detail:
-            layoutCoefficient = 1.0
+        default:
+            assertionFailure()
         }
 
         return max(1.0, min(2.5, baseScale * layoutCoefficient))
@@ -236,10 +239,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
 
     func refreshRatingStars() {
+        guard let viewController = getViewController(collectionView) else { return }
         ratingStarsView?.removeFromSuperview()
         ratingStarsView = nil
 
-        let isShowThumbnailTag = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailTag") == "true"
+        let isShowThumbnailTag = viewController.publicVar.profile.getValue(forKey: "isShowThumbnailTag") == "true"
         guard isShowThumbnailTag, let rating = file.imageInfo?.rating, rating >= 1, rating <= 5 else { return }
 
         let scale = tagScaleFactor()
@@ -303,10 +307,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
 
     func refreshFinderTagDots() {
+        guard let viewController = getViewController(collectionView) else { return }
         finderTagDotsView?.removeFromSuperview()
         finderTagDotsView = nil
 
-        let isShowThumbnailTag = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailTag") == "true"
+        let isShowThumbnailTag = viewController.publicVar.profile.getValue(forKey: "isShowThumbnailTag") == "true"
         if !isShowThumbnailTag { return }
 
         let tags = file.finderTags.compactMap { FinderTag.byName($0) }
@@ -414,14 +419,15 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
 
     func configureWithImage(_ fileModel: FileModel, playAnimation: Bool = false) {
-        
+        guard let viewController = getViewController(collectionView) else { return }
+
         stopVideo()
         
         self.file=fileModel
         
         setTooltip()
         
-        imageNameField.stringValue=getViewController(collectionView!)!.publicVar.profile.isShowThumbnailFilename ? URL(string:file.path)!.lastPathComponent : ""
+        imageNameField.stringValue = viewController.publicVar.profile.isShowThumbnailFilename ? URL(string:file.path)!.lastPathComponent : ""
 
         if isSelected {
             // 选中状态的处理代码
@@ -454,7 +460,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
         // 右上角HDR/RAW标签
         // Top-right corner HDR/RAWlabel
-        let isShowThumbnailBadge = getViewController(collectionView!)!.publicVar.profile.getValue(forKey: "isShowThumbnailBadge") == "true"
+        let isShowThumbnailBadge = viewController.publicVar.profile.getValue(forKey: "isShowThumbnailBadge") == "true"
         let isRawImage = globalVar.HandledRawExtensions.contains(imageViewObj.url?.pathExtension.lowercased() ?? "noExtention")
         if isRawImage {
             imageLabel.stringValue="RAW"
@@ -475,8 +481,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             imageLabel.isHidden=true
         }
         
-        guard let style = getViewController(collectionView!)?.publicVar.profile else {return}
-        if file.type == .video && (getViewController(collectionView!)!.publicVar.profile.layoutType == .grid || style.ThumbnailBorderThickness == 0) {
+        let style = viewController.publicVar.profile
+        if file.type == .video && (viewController.publicVar.profile.layoutType == .grid || style.ThumbnailBorderThickness == 0) {
             // 设置视频播放图标的大小为视图宽度的1/4
             // Set video play icon size to 1/4 of view width
             let iconSize = max(imageViewObj.frame.width, imageViewObj.frame.height) * 0.25
@@ -494,7 +500,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             videoFlag.isHidden = true
         }
         
-        if (getViewController(collectionView!)!.publicVar.autoPlayVisibleVideo || (getViewController(collectionView!)!.publicVar.autoPlaySelectedVideo && isSelected)) && isItemVisible() {
+        if (viewController.publicVar.autoPlayVisibleVideo || (viewController.publicVar.autoPlaySelectedVideo && isSelected)) && isItemVisible() {
             playVideo()
         }
         
@@ -556,7 +562,14 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     
     func updateCutDimEffect() {
         let isCut = globalVar.cutItemPaths.contains(file.path)
-        let targetAlpha: CGFloat = isCut ? 0.4 : 1.0
+        let targetAlpha: CGFloat
+        if isCut {
+            targetAlpha = 0.4
+        } else if file.isHidden {
+            targetAlpha = 0.5
+        } else {
+            targetAlpha = 1.0
+        }
         // 由于布局过程中alpha值可能会被重置，需要等待布局完成后再设置
         // Since the alpha value may be reset during layout, it needs to be set after layout is complete
         DispatchQueue.main.async { [weak self] in
@@ -565,7 +578,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     func setTooltip(){
-        if globalVar.collectionViewItemShowTooltip && !getViewController(collectionView!)!.publicVar.isInLargeView {
+        guard let viewController = getViewController(collectionView) else { return }
+        if globalVar.collectionViewItemShowTooltip && !viewController.publicVar.isInLargeView {
             if file.isDir {
                 self.view.toolTip = generateTooltip(filePath: file.path.removingPercentEncoding!, type: file.type, fileSize: nil, imageSize: nil, creationDate: file.createDate, modificationDate: file.modDate, addDate: file.addDate)
             }else{
@@ -580,9 +594,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     func generateTooltip(filePath: String, type: FileType, fileSize: Int?, imageSize: NSSize?, creationDate: Date?, modificationDate: Date?, addDate: Date?) -> String {
+        guard let collectionView = collectionView else { return "" }
+        guard let viewController = getViewController(collectionView) else { return "" }
         // 当前目录
         // Current directory
-        let curFolder = getViewController(collectionView!)!.fileDB.curFolder.removingPercentEncoding!
+        let curFolder = viewController.fileDB.curFolder.removingPercentEncoding!
 
         // 获取文件名
         // Get filename
@@ -621,7 +637,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         // 添加相对路径
         // Add relative path
-        if getViewController(collectionView!)!.publicVar.isRecursiveMode {
+        if viewController.publicVar.isRecursiveMode {
             tooltipParts.append("\(relativePathLabel): \(relativePath)")
         }
 
@@ -686,7 +702,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
 
     func playVideo() {
-        guard let viewController = getViewController(collectionView!) else {return}
+        guard let viewController = getViewController(collectionView) else { return }
         if viewController.publicVar.isInFindingClosestState {return}
         if viewController.publicVar.isInLargeView {
             stopVideo()
@@ -720,7 +736,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     func stopVideo() {
-        guard let viewController = getViewController(collectionView!) else {return}
+        guard let viewController = getViewController(collectionView) else { return }
         if viewController.publicVar.isInFindingClosestState {return}
         if avPlayerLayer?.isHidden == false {
             playerLooper?.disableLooping()
@@ -732,7 +748,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     func selectedColor(){
-        guard let style = getViewController(collectionView!)?.publicVar.profile else {return}
+        guard let viewController = getViewController(collectionView) else { return }
+        let style = viewController.publicVar.profile
         
         // 设置frame
         // Set frame
@@ -745,7 +762,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         // 失焦
         // Out of focus
         var focusColor = NSColor.systemGray
-        if getViewController(collectionView!)!.publicVar.isCollectionViewFirstResponder || getViewController(collectionView!)!.publicVar.isInSearchState {
+        if viewController.publicVar.isCollectionViewFirstResponder || viewController.publicVar.isInSearchState {
             // 聚焦
             // In focus
             focusColor = NSColor.controlAccentColor
@@ -787,9 +804,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         // 边框为0时不显示底色
         // Don't show background color when border thickness is 0
+        let actualType = file.isAlias ? file.aliasActualType : file.type
+        let actualExt = file.isAlias ? file.aliasActualExt : file.ext
         if style.ThumbnailBorderThickness == 0 {
             view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
-            if file.getThumbFailed || !(file.type == .image || file.type == .video || file.ext == "pdf") {
+            if file.getThumbFailed || !(actualType == .image || actualType == .video || actualExt == "pdf") {
                 imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
             }
         }
@@ -814,7 +833,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
 
     func deselectedColor(){
-        guard let style = getViewController(collectionView!)?.publicVar.profile else {return}
+        guard let viewController = getViewController(collectionView) else { return }
+        let style = viewController.publicVar.profile
         
         // 设置frame
         // Set frame
@@ -871,9 +891,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         // 边框为0时不显示底色
         // Don't show background color when border thickness is 0
+        let actualType = file.isAlias ? file.aliasActualType : file.type
+        let actualExt = file.isAlias ? file.aliasActualExt : file.ext
         if style.ThumbnailBorderThickness == 0 {
             view.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
-            if file.getThumbFailed || !(file.type == .image || file.type == .video || file.ext == "pdf") {
+            if file.getThumbFailed || !(actualType == .image || actualType == .video || actualExt == "pdf") {
                 imageViewObj.layer?.backgroundColor = hexToNSColor(alpha: 0).cgColor
             }
         }
@@ -891,7 +913,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     func setCustomFrameSize(){
-        guard let style = getViewController(collectionView!)?.publicVar.profile else {return}
+        guard let viewController = getViewController(collectionView) else { return }
+        let style = viewController.publicVar.profile
         var tmpFilenamePadding = style.ThumbnailFilenamePadding
         var girdFilenameCompensation = 0.0
         if style.layoutType == .grid {
@@ -934,7 +957,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         // 阴影效果
         // Shadow effect
-        if (style.ThumbnailShowShadow || style.layoutType == .grid) && (file.type == .image || file.type == .video || file.ext == "pdf") && !file.getThumbFailed {
+        let actualType = file.isAlias ? file.aliasActualType : file.type
+        let actualExt = file.isAlias ? file.aliasActualExt : file.ext
+        if (style.ThumbnailShowShadow || style.layoutType == .grid) && (actualType == .image || actualType == .video || actualExt == "pdf") && !file.getThumbFailed {
             view.layer?.shadowColor = NSColor.black.withAlphaComponent(0.4).cgColor
             view.layer?.shadowOffset = CGSize(width: 1.3, height: -1.3)
             view.layer?.shadowRadius = 2.5
@@ -984,7 +1009,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                 
                 if !viewController.publicVar.isInLargeView && !viewController.publicVar.isInLargeViewAfterAnimate {
                     if event.modifierFlags.contains(.command) || event.modifierFlags.contains(.shift) {
-                        actOpenInNewTab()
+                        // 加 Shift 为前台打开，否则后台打开
+                        // Hold Shift to open in foreground, otherwise open in background
+                        openInNewTab(openInBackground: !event.modifierFlags.contains(.shift), openSingleFile: true)
                     }else{
                         viewController.openLargeImageFromIndexPath(selfIndexPath)
                         viewController.largeImageView.videoPreventDoubleClickOpenPauseFlag = true
@@ -1019,7 +1046,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                    let viewController=getViewController(collectionView){
                     
                     if !viewController.publicVar.isInLargeView && !viewController.publicVar.isInLargeViewAfterAnimate {
-                        actOpenInNewTab()
+                        // 加 Shift 为前台打开，否则后台打开
+                        // Hold Shift to open in foreground, otherwise open in background
+                        openInNewTab(openInBackground: !event.modifierFlags.contains(.shift), openSingleFile: true)
                     }
                 }
             }
@@ -1033,7 +1062,9 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
 
     override func rightMouseUp(with event: NSEvent) {
-        getViewController(collectionView!)!.publicVar.isColllectionViewItemRightClicked=true
+        guard let collectionView = collectionView else { return }
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.publicVar.isColllectionViewItemRightClicked=true
           
         let mouseUpLocation = event.locationInWindow
         if let mouseDownLocation = self.mouseDownLocation {
@@ -1059,10 +1090,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     }
                 }
                 
-                var selectedCount = 0
-                if let collectionView = collectionView {
-                    selectedCount=collectionView.selectionIndexPaths.count
-                }
+                var selectedCount = collectionView.selectionIndexPaths.count
                 
                 var canPasteOrMove=true
                 let pasteboard = NSPasteboard.general
@@ -1071,7 +1099,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     canPasteOrMove=false
                 }
 
-                let curFolder = getViewController(collectionView!)!.fileDB.curFolder
+                let curFolder = viewController.fileDB.curFolder
                 let isVirtualFinderTagsFolder = curFolder.hasPrefix("file:///VirtualFinderTagsFolder")
                 
                 // 弹出菜单
@@ -1091,30 +1119,17 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     actionItemOpen.keyEquivalentModifierMask = []
                 }
                 
-                if (file.type == .folder || file.type == .image || (file.type == .video && globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(file.ext.lowercased()))) {
-                    var titleTmp = NSLocalizedString("Open in New Tab", comment: "在新标签页中打开")
-                    if selectedCount > 1 {
-                        titleTmp = NSLocalizedString("open-in-new-tab-this", comment: "在新标签页中打开此项")
-                    }
+                if (true || selectedCount > 1 || file.type == .folder || file.type == .image || (file.type == .video && globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(file.ext.lowercased()))) {
+                    let titleTmp = NSLocalizedString("Open in New Tab", comment: "在新标签页中打开")
                     let actionItemOpenInNewTab = menu.addItem(withTitle: titleTmp, action: #selector(actOpenInNewTab), keyEquivalent: "")
-                    if isWindowNumMax() {
-                        actionItemOpenInNewTab.isEnabled=false
-                    }else{
-                        actionItemOpenInNewTab.isEnabled=true
-                    }
                 }
 
-                let isRecursive = getViewController(collectionView!)?.publicVar.isRecursiveMode ?? false
-                let canShowParent = selectedCount == 1 && (isRecursive || getViewController(collectionView!)!.fileDB.curFolder.hasPrefix("file:///VirtualFinderTagsFolder"))
-                if canShowParent, let url = URL(string: file.path) {
+                let isRecursive = viewController.publicVar.isRecursiveMode
+                let canShowInOriginalFolder = selectedCount == 1 && (file.isAlias || isRecursive || isVirtualFinderTagsFolder)
+                if canShowInOriginalFolder, let url = URL(string: file.path) {
                     let parentURL = url.deletingLastPathComponent()
                     if !parentURL.path.isEmpty && parentURL.absoluteString != url.absoluteString {
-                        let actionItemShowParent = menu.addItem(withTitle: NSLocalizedString("Show in Original Folder", comment: "在原文件夹中显示"), action: #selector(actShowParentInNewTab), keyEquivalent: "")
-                        if isWindowNumMax() {
-                            actionItemShowParent.isEnabled = false
-                        } else {
-                            actionItemShowParent.isEnabled = true
-                        }
+                        let actionItemShowParent = menu.addItem(withTitle: NSLocalizedString("Show in Original Folder", comment: "在原文件夹中显示"), action: #selector(actShowInOriginalFolder), keyEquivalent: "")
                     }
                 }
 
@@ -1157,7 +1172,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
                 menu.addItem(NSMenuItem.separator())
 
-                let selectedURLs = getViewController(collectionView!)?.publicVar.selectedUrls() ?? []
+                let selectedURLs = viewController.publicVar.selectedUrls()
                 let tagsPerURL = selectedURLs.map { FinderTagHelper.readTags(from: $0) }
                 let activeTagNames: Set<String> = {
                     guard !selectedURLs.isEmpty else { return [] }
@@ -1166,8 +1181,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     }.map { $0.name })
                 }()
 
-                let allSelectedAreImages = collectionView!.selectionIndexPaths.allSatisfy { indexPath in
-                    (collectionView!.item(at: indexPath) as? CustomCollectionViewItem)?.file.type == .image
+                let allSelectedAreImages = collectionView.selectionIndexPaths.allSatisfy { indexPath in
+                    (collectionView.item(at: indexPath) as? CustomCollectionViewItem)?.file.type == .image
                 }
 
                 menu.addTaggingMenuItems(
@@ -1177,7 +1192,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     isRatingEnabled: allSelectedAreImages
                 ) { [weak self] tagName in
                     guard let self = self else { return }
-                    getViewController(self.collectionView!)?.handleToggleFinderTag(tagName)
+                    viewController.handleToggleFinderTag(tagName)
                 }
                 
                 menu.addItem(NSMenuItem.separator())
@@ -1230,38 +1245,45 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
 
     @objc func actToggleFinderTag(_ sender: NSMenuItem) {
+        guard let viewController = getViewController(collectionView) else { return }
         guard let tagName = sender.representedObject as? String else { return }
-        getViewController(collectionView!)?.handleToggleFinderTag(tagName)
+        viewController.handleToggleFinderTag(tagName)
     }
 
     @objc func actRemoveAllFinderTags() {
-        getViewController(collectionView!)?.handleRemoveAllFinderTags()
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleRemoveAllFinderTags()
     }
 
     @objc func actScanEnhancedIndex() {
+        guard let viewController = getViewController(collectionView) else { return }
         guard file.isDir, let url = URL(string: file.path) else { return }
-        getViewController(collectionView!)?.handleScanEnhancedIndex(url: url)
+        viewController.handleScanEnhancedIndex(url: url)
     }
 
     @objc func actScanEnhancedIndexReadmeAction() {
-        getViewController(collectionView!)?.handleScanEnhancedIndexReadme()
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleScanEnhancedIndexReadme()
     }
 
     @objc func actTagLearnMore() {
-        getViewController(collectionView!)?.handleTagLearnMore()
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleTagLearnMore()
     }
     
     @objc func actRate(_ sender: NSMenuItem) {
-        let rating = sender.tag
-        getViewController(collectionView!)?.handleRating(rating: rating)
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleRating(rating: sender.tag)
     }
     
     @objc func actRateReadmeAction() {
-        getViewController(collectionView!)?.handleRatingReadme()
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleRatingReadme()
     }
 
     @objc func actRefresh() {
-        getViewController(collectionView!)?.handleUserRefresh()
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleUserRefresh()
     }
     
     @objc func actOpen() {
@@ -1272,22 +1294,88 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     @objc func actOpenInNewTab() {
-        if let appDelegate=NSApplication.shared.delegate as? AppDelegate {
-            if file.type == .folder {
-                _ = appDelegate.createNewWindow(file.path)
-            }else if file.type == .image || (file.type == .video && globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(file.ext.lowercased())){
-                globalVar.isLaunchFromFile=true
-                if let windowController = appDelegate.createNewWindow(file.path) {
-                    appDelegate.openImageInTargetWindow(file.path, windowController: windowController)
+        // 按住 Cmd 点击菜单项时在后台打开
+        // Hold Cmd when clicking the menu item to open in background
+        openInNewTab(openInBackground: NSEvent.modifierFlags.contains(.command))
+    }
+
+    @objc func actOpenInNewTabInBackground() {
+        openInNewTab(openInBackground: true)
+    }
+
+    func openInNewTab(openInBackground: Bool, openSingleFile: Bool = false) {
+        guard let appDelegate = NSApplication.shared.delegate as? AppDelegate else { return }
+        guard let viewController = getViewController(collectionView) else { return }
+        
+        var urls = viewController.publicVar.selectedUrls()
+
+        if openSingleFile {
+            urls = [URL(string: file.path)!]
+        }
+        
+        if !self.isSelected {
+            if let collectionView = self.collectionView,
+               let indexPath = collectionView.indexPath(for: self),
+               let toSelect = collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath]) {
+                collectionView.selectItems(at: toSelect, scrollPosition: [])
+                collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: toSelect)
+            }
+        }
+
+        if urls.count >= 8 {
+            let confirmed = showConfirmation(
+                title: NSLocalizedString("Open Multiple Windows", comment: "打开多个窗口"),
+                message: String(format: NSLocalizedString("You are about to open %d windows at once. Are you sure you want to continue?", comment: "您即将一次性打开 %d 个窗口，确定要继续吗？"), urls.count)
+            )
+            if !confirmed {
+                return
+            }
+        }
+        
+        for url in urls {
+            let resolvedUrl: URL
+            if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
+               values.isAliasFile == true,
+               let resolved = try? URL(resolvingAliasFileAt: url) {
+                resolvedUrl = resolved
+            } else {
+                resolvedUrl = url
+            }
+            let path = resolvedUrl.absoluteString
+            let ext = resolvedUrl.pathExtension.lowercased()
+            let isDir = (try? resolvedUrl.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory ?? false
+            if isDir {
+                _ = appDelegate.createNewWindow(path, openInBackground: openInBackground)
+            } else if globalVar.HandledImageAndRawExtensions.contains(ext) ||
+                      (globalVar.useInternalPlayer && globalVar.HandledNativeSupportedVideoExtensions.contains(ext) && isNotFalseTsVideoFile(resolvedUrl)) {
+                if let windowController = appDelegate.createNewWindow(path, isLaunchFromFile: true, openInBackground: openInBackground) {
+                    appDelegate.openImageInTargetWindow(path, windowController: windowController)
                 }
-            }else{
+            } else {
                 actOpen()
             }
         }
     }
 
-    @objc func actShowParentInNewTab() {
-        guard let url = URL(string: file.path) else { return }
+    @objc func actShowInOriginalFolder() {
+        guard var url = URL(string: file.path) else { return }
+        guard let viewController = getViewController(collectionView) else { return }
+        
+        let isRecursive = viewController.publicVar.isRecursiveMode
+        let isVirtualFinderTagsFolder = viewController.fileDB.curFolder.hasPrefix("file:///VirtualFinderTagsFolder")
+
+        if !(isRecursive || isVirtualFinderTagsFolder) {
+            let resolvedUrl: URL
+            if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
+               values.isAliasFile == true,
+               let resolved = try? URL(resolvingAliasFileAt: url) {
+                resolvedUrl = resolved
+            } else {
+                resolvedUrl = url
+            }
+            url = resolvedUrl
+        }
+
         let parentURL = url.deletingLastPathComponent()
         guard !parentURL.path.isEmpty, parentURL.absoluteString != url.absoluteString else { return }
         var parentPath = parentURL.absoluteString
@@ -1295,7 +1383,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             parentPath += "/"
         }
         if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
-            _ = appDelegate.createNewWindow(parentPath)
+            _ = appDelegate.createNewWindow(parentPath, urlsToSelect: [url])
         }
     }
 
@@ -1303,33 +1391,40 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 //        let folderPath = (file.path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding! as NSString).deletingLastPathComponent
 //        NSWorkspace.shared.selectFile(file.path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!, inFileViewerRootedAtPath: folderPath)
         
-        guard let urls = getViewController(collectionView!)?.publicVar.selectedUrls() else { return }
+        guard let viewController = getViewController(collectionView) else { return }
+        let urls = viewController.publicVar.selectedUrls()
         NSWorkspace.shared.activateFileViewerSelecting(urls)
     }
     
     @objc func actNewFolderWithSelection() {
-        getViewController(collectionView!)?.handleNewFolderWithSelection()
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleNewFolderWithSelection()
     }
     
     @objc func actGetInfo() {
-        getViewController(collectionView!)?.handleGetInfo()
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleGetInfo()
     }
     
     @objc func actRename() {
-        guard let urls = getViewController(collectionView!)?.publicVar.selectedUrls() else { return }
-        getViewController(collectionView!)?.handleRename(urls: urls);
+        guard let viewController = getViewController(collectionView) else { return }
+        let urls = viewController.publicVar.selectedUrls()
+        viewController.handleRename(urls: urls)
     }
     
     @objc func actNewFolder() {
-        getViewController(collectionView!)?.handleNewFolder()
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleNewFolder()
     }
 
     @objc func actNewTextFile() {
-        getViewController(collectionView!)?.handleNewTextFile()
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleNewTextFile()
     }
 
     @objc func actCopyPath() {
-        guard let urls = getViewController(collectionView!)?.getSelectedURLs() else { return }
+        guard let viewController = getViewController(collectionView) else { return }
+        let urls = viewController.getSelectedURLs()
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         let paths = urls.map { $0.path }.joined(separator: "\n")
@@ -1337,31 +1432,38 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     @objc func actCopy() {
-        getViewController(collectionView!)?.handleCopy()
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleCopy()
     }
     
     @objc func actCopyToDownload() {
-        getViewController(collectionView!)?.handleCopyToDownload()
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleCopyToDownload()
     }
     
     @objc func actMoveToDownload() {
-        getViewController(collectionView!)?.handleMoveToDownload()
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleMoveToDownload()
     }
 
     @objc func actDelete() {
-        getViewController(collectionView!)?.handleDelete(isShowPrompt: false)
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleDelete(isShowPrompt: false)
     }
     
     @objc func actPaste() {
-        getViewController(collectionView!)?.handlePaste()
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handlePaste()
     }
     
     @objc func actMove() {
-        getViewController(collectionView!)?.handleMove()
+        guard let viewController = getViewController(collectionView) else { return }
+        viewController.handleMove()
     }
     
     func addOpenWithSubMenu(to menu: NSMenu) {
-        guard let fileUrls = getViewController(collectionView!)?.getSelectedURLs() else { return }
+        guard let viewController = getViewController(collectionView) else { return }
+        let fileUrls = viewController.getSelectedURLs()
 
         let openWithMenu = NSMenu(title: "openWith")
         let openWithMenuItem = NSMenuItem(title: NSLocalizedString("Open With", comment: "打开方式"), action: nil, keyEquivalent: "")
@@ -1401,7 +1503,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     @objc private func selectApplication(_ sender: NSMenuItem) {
-        guard let fileUrls = getViewController(collectionView!)?.getSelectedURLs() else { return }
+        guard let viewController = getViewController(collectionView) else { return }
+        let fileUrls = viewController.getSelectedURLs()
         if let appURL = sender.representedObject as? URL {
             NSWorkspace.shared.open(fileUrls, withApplicationAt: appURL, configuration: NSWorkspace.OpenConfiguration(), completionHandler: { (app, error) in
                 if let error = error {
@@ -1464,7 +1567,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
     @objc func openFileWithApp(_ sender: NSMenuItem) {
         guard let appURL = sender.representedObject as? URL else { return }
-        guard let fileUrls = getViewController(collectionView!)?.getSelectedURLs() else { return }
+        guard let viewController = getViewController(collectionView) else { return }
+        let fileUrls = viewController.getSelectedURLs()
         
         let resolvedUrls = fileUrls.map { resolveAliasIfNeeded($0) }
         NSWorkspace.shared.open(resolvedUrls, withApplicationAt: appURL, configuration: NSWorkspace.OpenConfiguration(), completionHandler: { (app, error) in
@@ -1477,7 +1581,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     }
     
     @objc func actShare(_ sender: NSMenuItem) {
-        guard let urls = getViewController(collectionView!)?.getSelectedURLs() else { return }
+        guard let viewController = getViewController(collectionView) else { return }
+        let urls = viewController.getSelectedURLs()
         let sharingServicePicker = NSSharingServicePicker(items: urls)
         sharingServicePicker.show(relativeTo: view.bounds, of: self.view, preferredEdge: .maxX)
     }

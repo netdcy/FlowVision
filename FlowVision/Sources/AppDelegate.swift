@@ -69,7 +69,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         // Load user shortcut bindings before any window opens.
         ShortcutStore.shared.load()
         
-        func generateRoundedArray() -> [Int] {
+        func generateRoundedArrayDeprecated() -> [Int] {
             var result: [Int] = []
             var uniqueNumbers: Set<Int> = Set()
             var currentNumber: Double = 192
@@ -86,7 +86,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             
             return result
         }
-        THUMB_SIZES=generateRoundedArray()
+        func generateThumbSizeArray() -> [Int] {
+            var result: [Int] = []
+            var currentNumber: Int = 128
+            
+            while currentNumber <= 10000 {
+                result.append(currentNumber)
+                currentNumber += 16
+            }
+            
+            return result
+        }
+        THUMB_SIZES=generateThumbSizeArray()
         // print(THUMB_SIZES)
         
         // UserDefaults.standard.set(nil, forKey: "AppleLanguages")
@@ -198,6 +209,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         }
         if let isEnterKeyToOpen = UserDefaults.standard.value(forKey: "isEnterKeyToOpen") as? Bool {
             globalVar.isEnterKeyToOpen = isEnterKeyToOpen
+        }
+        if let isEscKeyToGoBack = UserDefaults.standard.value(forKey: "isEscKeyToGoBack") as? Bool {
+            globalVar.isEscKeyToGoBack = isEscKeyToGoBack
         }
         if let clickEdgeToSwitchImage = UserDefaults.standard.value(forKey: "clickEdgeToSwitchImage") as? Bool {
             globalVar.clickEdgeToSwitchImage = clickEdgeToSwitchImage
@@ -340,14 +354,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         return true
     }
     
-    func createNewWindow(_ path: String? = nil) -> WindowController? {
+    func createNewWindow(_ path: String? = nil, useCreateWindowShowDelay: Bool = false, isLaunchFromFile: Bool = false, urlsToSelect: [URL]? = nil, openInBackground: Bool = false) -> WindowController? {
         log("Start createNewWindow")
         // Start createNewWindow
-        if isWindowNumMax() {
-            showAlert(message: NSLocalizedString("window-num-max", comment: "窗口数量超过限制"))
-            return nil
-        }
-        
+
         var openFolder: String? = nil
 
         if let path = path,
@@ -373,9 +383,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                    let originalSize=getImageInfo(url: URL(string: getFileSchemeAbsPath(path))!, needMetadata: false)?.size{
                     globalVar.startSpeedUpImageSizeCache=originalSize
                 }
+
+                let isShowHiddenFile = UserDefaults.standard.value(forKey: "isShowHiddenFile") as? Bool ?? false
+                let isInExternalVolume = VolumeManager.shared.isExternalVolume(url)
+                if !isInExternalVolume {
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        let folderPath = getFileSchemeAbsParentFolderPath(path)
+                        guard let folderURL = URL(string: folderPath) else { return }
+                        let properties: [URLResourceKey] = [.isHiddenKey, .isDirectoryKey]
+                        guard let contents = try? FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: properties, options: []) else { return }
+                        var extCounts: [String: Int] = [:]
+                        for url in contents {
+                            guard let values = try? url.resourceValues(forKeys: [.isHiddenKey, .isDirectoryKey]) else { continue }
+                            if values.isHidden == true && !isShowHiddenFile { continue }
+                            if values.isDirectory == true { continue }
+                            let ext = url.pathExtension.lowercased()
+                            extCounts[ext, default: 0] += 1
+                        }
+                        globalVar.launchFileFolderExtCountsLock.lock()
+                        globalVar.launchFileFolderExtCounts[folderPath] = extCounts
+                        globalVar.launchFileFolderExtCountsLock.unlock()
+                    }
+                }
             }
         }
-        
+
+        // 设置临时全局变量
+        // Set temporary global variable
+        globalVar.isLaunchFromFile = isLaunchFromFile
+
         // 加载 Main.storyboard
         // Load Main.storyboard
         let storyboard = NSStoryboard(name: "Main", bundle: nil)
@@ -393,8 +429,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         
         // 显示窗口
         // Show window
-        if !globalVar.isLaunchFromFile || !globalVar.useCreateWindowShowDelay {
-            windowController.showWindow(self)
+        if !useCreateWindowShowDelay {
+            if openInBackground {
+                // 后台打开：显示窗口但不抢占焦点
+                // Open in background: show window without stealing focus
+                windowController.window?.orderBack(nil)
+            } else {
+                windowController.showWindow(self)
+            }
         }
         
         // 获取 contentViewController 并调用其函数
@@ -404,6 +446,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 viewController.fileDB.lock()
                 viewController.fileDB.curFolder=openFolder
                 viewController.fileDB.unlock()
+            }
+            if let urlsToSelect = urlsToSelect {
+                viewController.publicVar.filesForLocateAfterChange = urlsToSelect.map { $0.absoluteString }
+                viewController.publicVar.filesForLocateAfterChangeTime = .now()
             }
             DispatchQueue.main.async {
                 viewController.afterFinishLoad(openFolder)
@@ -426,62 +472,39 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         for filePath in files {
             log(filePath)
         }
-
-        var path = files[0]
         
-        if path == "." {
-            path = FileManager.default.currentDirectoryPath
-        }
-        
-        var file = getFileSchemeAbsPath(path)
-        if let url=URL(string: file){
-            NSDocumentController.shared.noteNewRecentDocumentURL(url)
-        }
-        
-        var isDirectoryObj: ObjCBool = false
-        FileManager.default.fileExists(atPath: path, isDirectory: &isDirectoryObj)
-        let isDirectory=isDirectoryObj.boolValue
-        
-        if isDirectory && file.last != "/" {file=file+"/"}
-        
-        // 新窗口打开（暂时统一新窗口打开）
-        // Open in new window (temporarily unified to open in new window)
-        if true || windowControllers.count == 0 {
+        for path in files {
+            var path = path
+            if path == "." {
+                path = FileManager.default.currentDirectoryPath
+            }
+            
+            var file = getFileSchemeAbsPath(path)
+            if let url=URL(string: file){
+                NSDocumentController.shared.noteNewRecentDocumentURL(url)
+            }
+            
+            var isDirectoryObj: ObjCBool = false
+            FileManager.default.fileExists(atPath: path, isDirectory: &isDirectoryObj)
+            let isDirectory=isDirectoryObj.boolValue
+            
+            if isDirectory && file.last != "/" {file=file+"/"}
+            
+            // 新窗口打开
+            // Open in new window
             if isDirectory{
                 _ = createNewWindow(file)
-                return
             }else{
-                globalVar.isLaunchFromFile=true
+                var useCreateWindowShowDelay = false
                 if windowControllers.count == 0 || globalVar.autoHideToolbar {
                     // 直到大图加载完毕后才显示窗口，用来减少首次启动的画面闪动
                     // Don't show window until large image is loaded, to reduce startup screen flicker
                     // 对于多标签页情况的第二个标签页，使用此会导致大图的缩放是按上次记忆而不是当前窗口实际大小，因此除这两种情况外不适合使用
                     // For second tab in multi-tab case, using this will cause large image scaling to be based on last memory rather than current window actual size, so it's not suitable except for these two cases
-                    globalVar.useCreateWindowShowDelay=true
+                    useCreateWindowShowDelay = true
                 }
-                if let targetWindowController = createNewWindow(file) {
+                if let targetWindowController = createNewWindow(file, useCreateWindowShowDelay: useCreateWindowShowDelay, isLaunchFromFile: true) {
                     openImageInTargetWindow(file, windowController: targetWindowController)
-                }
-                return
-            }
-        }
-        
-        // 本窗口打开
-        // Open in current window
-        if isDirectory{
-            DispatchQueue.main.async {
-                if let mainViewController = NSApplication.shared.mainWindow?.windowController?.contentViewController as? ViewController {
-                    mainViewController.handleDraggedFiles([URL(string: file)!])
-                }else if let viewController = self.windowControllers.first?.contentViewController as? ViewController {
-                    viewController.handleDraggedFiles([URL(string: file)!])
-                }
-            }
-        }else{
-            DispatchQueue.main.async {
-                if let mainWindowController = NSApplication.shared.mainWindow?.windowController {
-                    self.openImageInTargetWindow(file, windowController: mainWindowController)
-                }else if let windowController = self.windowControllers.first {
-                    self.openImageInTargetWindow(file, windowController: windowController)
                 }
             }
         }
@@ -542,8 +565,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 if isDirectory {
                     _ = createNewWindow(result.absoluteString)
                 }else{
-                    globalVar.isLaunchFromFile=true
-                    if let windowController = createNewWindow(result.absoluteString) {
+                    if let windowController = createNewWindow(result.absoluteString, isLaunchFromFile: true) {
                         openImageInTargetWindow(result.absoluteString, windowController: windowController)
                     }
                 }
@@ -772,9 +794,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
     }
     
     func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
-        // 如果焦点在标准文本控件上，启用复制/剪切菜单
-        // If focus is on standard text controls, enable copy/cut menu
-        if menuItem.action == #selector(editCopy(_:)) || menuItem.action == #selector(editCut(_:)) {
+        // 如果焦点在标准文本控件上，启用复制/剪切/粘贴/选择全部菜单
+        // If focus is on standard text controls, enable copy/cut/paste/select all menu
+        if menuItem.action == #selector(editCopy(_:)) || menuItem.action == #selector(editCut(_:)) || menuItem.action == #selector(editPaste(_:)) || menuItem.action == #selector(selectAll(_:)) {
             if let firstResponder = NSApp.keyWindow?.firstResponder,
                firstResponder is NSTextView || firstResponder is NSTextField {
                 return true
@@ -788,11 +810,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             }else{
                 return false
             }
-        }
-        // 新建标签页限制最大窗口数量
-        // New tab limited by maximum window count
-        if menuItem.action == #selector(fileNewTab(_:)) && isWindowNumMax() {
-            return false
         }
         // 重新打开关闭的标签页
         // Reopen closed tabs

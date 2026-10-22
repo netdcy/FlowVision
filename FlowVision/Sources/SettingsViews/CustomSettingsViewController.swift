@@ -22,10 +22,7 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
     @IBOutlet weak var usePinyinSearchCheckbox: NSButton!
     @IBOutlet weak var usePinyinInitialSearchCheckbox: NSButton!
     @IBOutlet weak var keepFilterStateWhenSwitchFolderCheckbox: NSButton!
-    @IBOutlet weak var excludeListView: NSOutlineView!
-    @IBOutlet weak var excludeContainerView: NSView!
-    @IBOutlet weak var refViewForExcludeListView: NSView!
-    @IBOutlet weak var excludeListEditControl: NSSegmentedControl!
+    @IBOutlet weak var excludeContainerView: ThumbnailExcludeView!
     
     @IBOutlet weak var radioGlass: NSButton!
     @IBOutlet weak var radioBlack: NSButton!
@@ -56,41 +53,6 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         radioBlackForVideo.state = globalVar.blackBgAlwaysForVideo ? .on : .off
         radioFullscreenForVideo.state = (!globalVar.blackBgAlwaysForVideo && globalVar.blackBgInFullScreenForVideo) ? .on : .off
 
-        // 设置 OutlineView
-        // Set up OutlineView
-        excludeListView.dataSource = self
-        excludeListView.delegate = self
-
-        // 根据refViewForExcludeListView的x、y设置excludeListView的x、y
-        // Set excludeListView x, y based on refViewForExcludeListView x, y
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            let refFrameInWindow = refViewForExcludeListView.convert(refViewForExcludeListView.bounds, to: nil)
-            let newY = refFrameInWindow.origin.y - excludeContainerView.frame.height + refViewForExcludeListView.frame.height
-            let containerWidth: CGFloat = 300
-            if excludeContainerView.userInterfaceLayoutDirection == .rightToLeft {
-                // RTL: 从参考视图右边缘向左偏移
-                // RTL: offset left from the right edge of reference view
-                let newX = refFrameInWindow.origin.x + refViewForExcludeListView.frame.width - containerWidth - 1
-                excludeContainerView.frame = NSRect(x: newX, y: newY, width: containerWidth, height: 125)
-            } else {
-                excludeContainerView.frame = NSRect(x: refFrameInWindow.origin.x + 1, y: newY, width: containerWidth, height: 125)
-            }
-        }
-        
-        // 设置增减图标
-        // Set add/remove icons
-        if let plusImage = NSImage(systemSymbolName: "plus", accessibilityDescription: "Add Item") {
-            excludeListEditControl.setImage(plusImage, forSegment: 0)
-        }
-        if let minusImage = NSImage(systemSymbolName: "minus", accessibilityDescription: "Remove Item") {
-            excludeListEditControl.setImage(minusImage, forSegment: 1)
-        }
-        
-        // 已在AppDelegate中加载数据
-        // Data already loaded in AppDelegate
-        excludeListView.reloadData()
-
         // MARK: RTL support
         if let container = radioGlass.superview {
             convertToLeadingLayoutForRTL(container)
@@ -98,7 +60,6 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         if let container = radioGlassForVideo.superview {
             convertToLeadingLayoutForRTL(container)
         }
-        convertToLeadingLayoutForRTL(excludeContainerView)
     }
     
     @IBAction func randomFolderThumbToggled(_ sender: NSButton) {
@@ -192,74 +153,157 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         UserDefaults.standard.set(globalVar.keepFilterStateWhenSwitchFolder, forKey: "keepFilterStateWhenSwitchFolder")
     }
     
-    @IBAction func segmentedControlValueChanged(_ sender: NSSegmentedControl) {
+}
+
+// MARK: - ThumbnailExcludeView
+
+class ThumbnailExcludeView: NSView {
+
+    private static let dragType = NSPasteboard.PasteboardType("com.flowvision.excludePathRow")
+
+    private var paths: [String] = []
+    private var tableView: NSTableView!
+
+    override var intrinsicContentSize: NSSize {
+        NSSize(width: NSView.noIntrinsicMetric, height: 120)
+    }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        paths = globalVar.thumbnailExcludeList
+        setupUI()
+    }
+
+    private func setupUI() {
+        tableView = NSTableView()
+        tableView.headerView = nil
+        tableView.rowHeight = 22
+        tableView.usesAlternatingRowBackgroundColors = true
+        tableView.allowsMultipleSelection = false
+        tableView.style = .plain
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.registerForDraggedTypes([Self.dragType])
+        tableView.draggingDestinationFeedbackStyle = .regular
+
+        let col = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("Path"))
+        col.resizingMask = .autoresizingMask
+        tableView.addTableColumn(col)
+
+        let scrollView = NSScrollView()
+        scrollView.documentView = tableView
+        scrollView.hasVerticalScroller = true
+        scrollView.autohidesScrollers = true
+        scrollView.borderType = .bezelBorder
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(scrollView)
+
+        let plusImage = NSImage(systemSymbolName: "plus", accessibilityDescription: "Add") ?? NSImage()
+        let minusImage = NSImage(systemSymbolName: "minus", accessibilityDescription: "Remove") ?? NSImage()
+        let editControl = NSSegmentedControl(images: [plusImage, minusImage], trackingMode: .momentary, target: self, action: #selector(editControlClicked(_:)))
+        editControl.setWidth(24, forSegment: 0)
+        editControl.setWidth(24, forSegment: 1)
+        editControl.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(editControl)
+
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: editControl.topAnchor, constant: -4),
+
+            editControl.leadingAnchor.constraint(equalTo: leadingAnchor),
+            editControl.bottomAnchor.constraint(equalTo: bottomAnchor),
+        ])
+    }
+
+    @objc private func editControlClicked(_ sender: NSSegmentedControl) {
         switch sender.selectedSegment {
-        case 0: 
-            // 增加
-            // Add
-            let openPanel = NSOpenPanel()
-            openPanel.canChooseDirectories = true
-            openPanel.canChooseFiles = false
-            openPanel.allowsMultipleSelection = false
-            
-            openPanel.beginSheetModal(for: self.view.window!) { [weak self] response in
-                guard let self = self else { return }
-                if response == .OK, let url = openPanel.url {
-                    if !globalVar.thumbnailExcludeList.contains(url.path) {
-                        globalVar.thumbnailExcludeList.append(url.path)
-                    }
-                    excludeListView.reloadData()
-                    UserDefaults.standard.set(globalVar.thumbnailExcludeList, forKey: "thumbnailExcludeList")
-                }
-            }
-        case 1: 
-            // 删除
-            // Delete
-            let selectedRow = excludeListView.selectedRow
-            if selectedRow >= 0 && selectedRow < globalVar.thumbnailExcludeList.count {
-                globalVar.thumbnailExcludeList.remove(at: selectedRow)
-                excludeListView.reloadData()
-                UserDefaults.standard.set(globalVar.thumbnailExcludeList, forKey: "thumbnailExcludeList")
-            }
-        default:
-            break
+        case 0: addPath()
+        case 1: removeSelected()
+        default: break
         }
+    }
+
+    private func addPath() {
+        guard let window else { return }
+        let openPanel = NSOpenPanel()
+        openPanel.canChooseDirectories = true
+        openPanel.canChooseFiles = false
+        openPanel.allowsMultipleSelection = false
+        openPanel.beginSheetModal(for: window) { [weak self] response in
+            guard let self, response == .OK, let url = openPanel.url else { return }
+            if !self.paths.contains(url.path) {
+                self.paths.append(url.path)
+                self.save()
+                self.tableView.reloadData()
+            }
+        }
+    }
+
+    private func removeSelected() {
+        let row = tableView.selectedRow
+        guard row >= 0, row < paths.count else { return }
+        paths.remove(at: row)
+        save()
+        tableView.reloadData()
+        if !paths.isEmpty {
+            tableView.selectRowIndexes(IndexSet(integer: min(row, paths.count - 1)), byExtendingSelection: false)
+        }
+    }
+
+    private func save() {
+        globalVar.thumbnailExcludeList = paths
+        UserDefaults.standard.set(paths, forKey: "thumbnailExcludeList")
     }
 }
 
-// MARK: - NSOutlineViewDataSource
-extension CustomSettingsViewController: NSOutlineViewDataSource {
-    func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
-        return item == nil ? globalVar.thumbnailExcludeList.count : 0
-    }
-    
-    func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
-        return globalVar.thumbnailExcludeList[index]
-    }
-    
-    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
-        return false
-    }
-}
+// MARK: - NSTableViewDataSource & Delegate
 
-// MARK: - NSOutlineViewDelegate
-extension CustomSettingsViewController: NSOutlineViewDelegate {
-    func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
-        let cellIdentifier = NSUserInterfaceItemIdentifier("PathCell")
-        
-        guard let cell = outlineView.makeView(withIdentifier: cellIdentifier, owner: self) as? NSTableCellView else {
-            let cell = NSTableCellView()
-            cell.identifier = cellIdentifier
-            let textField = NSTextField(labelWithString: "")
-            cell.addSubview(textField)
-            cell.textField = textField
-            return cell
-        }
-        
-        if let path = item as? String {
-            cell.textField?.stringValue = path
-        }
-        
+extension ThumbnailExcludeView: NSTableViewDataSource, NSTableViewDelegate {
+
+    func numberOfRows(in tableView: NSTableView) -> Int { paths.count }
+
+    func tableView(_ tableView: NSTableView, pasteboardWriterForRow row: Int) -> NSPasteboardWriting? {
+        let item = NSPasteboardItem()
+        item.setString(String(row), forType: Self.dragType)
+        return item
+    }
+
+    func tableView(_ tableView: NSTableView, validateDrop info: NSDraggingInfo, proposedRow row: Int, proposedDropOperation op: NSTableView.DropOperation) -> NSDragOperation {
+        op == .above ? .move : []
+    }
+
+    func tableView(_ tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableView.DropOperation) -> Bool {
+        guard let str = info.draggingPasteboard.pasteboardItems?.first?.string(forType: Self.dragType),
+              let src = Int(str) else { return false }
+        let path = paths.remove(at: src)
+        let dst = src < row ? row - 1 : row
+        paths.insert(path, at: dst)
+        save()
+        tableView.reloadData()
+        tableView.selectRowIndexes(IndexSet(integer: dst), byExtendingSelection: false)
+        return true
+    }
+
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let id = NSUserInterfaceItemIdentifier("PathItem")
+        let cell: NSTableCellView = tableView.makeView(withIdentifier: id, owner: nil) as? NSTableCellView ?? {
+            let c = NSTableCellView()
+            c.identifier = id
+            let tf = NSTextField(labelWithString: "")
+            tf.lineBreakMode = .byTruncatingHead
+            tf.translatesAutoresizingMaskIntoConstraints = false
+            c.addSubview(tf)
+            c.textField = tf
+            NSLayoutConstraint.activate([
+                tf.leadingAnchor.constraint(equalTo: c.leadingAnchor, constant: 4),
+                tf.trailingAnchor.constraint(equalTo: c.trailingAnchor, constant: -4),
+                tf.centerYAnchor.constraint(equalTo: c.centerYAnchor),
+            ])
+            return c
+        }()
+        cell.textField?.stringValue = paths[row]
         return cell
     }
 }

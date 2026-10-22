@@ -9,6 +9,14 @@ import AVFoundation
 import Vision
 import SDWebImageWebPCoder
 
+private func isDrawableImageSize(_ size: NSSize) -> Bool {
+    size.width.isFinite && size.height.isFinite && size.width > 0 && size.height > 0
+}
+
+private func isDrawableImageRect(_ rect: NSRect) -> Bool {
+    rect.origin.x.isFinite && rect.origin.y.isFinite && isDrawableImageSize(rect.size)
+}
+
 extension NSImage {
     func rotated(by degrees: CGFloat) -> NSImage {
         if degrees == 0 { return self }
@@ -237,6 +245,57 @@ extension CGImage {
 //    }
 // }
 
+func isNotFalseTsVideoFile(_ url: URL) -> Bool {
+    if url.pathExtension.lowercased() == "ts" || url.pathExtension.lowercased() == "mts" {
+        return !isProbablyTextFile(url)
+    }
+    return true
+}
+
+func isProbablyTextFile(_ url: URL) -> Bool {
+    let resourceValues = try? url.resourceValues(forKeys: [.fileSizeKey, .isUbiquitousItemKey, .ubiquitousItemDownloadingStatusKey])
+    if let fileSize = resourceValues?.fileSize,
+       fileSize < 100 * 1024 {
+        return true
+    }
+
+    if let isUbiquitousItem = resourceValues?.isUbiquitousItem,
+       isUbiquitousItem,
+       let downloadingStatus = resourceValues?.ubiquitousItemDownloadingStatus,
+       downloadingStatus != .current {
+        return false
+    }
+
+    guard let handle = try? FileHandle(forReadingFrom: url) else {
+        return false
+    }
+    defer { try? handle.close() }
+
+    let data = handle.readData(ofLength: 512)
+    if data.isEmpty { return true }
+
+    if data.starts(with: [0xEF, 0xBB, 0xBF])
+        || data.starts(with: [0xFF, 0xFE])
+        || data.starts(with: [0xFE, 0xFF]) {
+        return true
+    }
+
+    let maxControlByteCount = max(1, data.count / 20)
+    var controlByteCount = 0
+    for byte in data {
+        if byte == 0 {
+            return false
+        }
+        if byte != 9 && byte != 10 && byte != 13 && byte < 32 {
+            controlByteCount += 1
+            if controlByteCount > maxControlByteCount {
+                return false
+            }
+        }
+    }
+    return true
+}
+
 func getFileInfo(file: FileModel) {
     let fileManager = FileManager.default
     do {
@@ -317,7 +376,7 @@ func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, preferDi
                         // 每个目录最多收集maxImages张，达到后跳过图片但继续遍历以发现子目录
                         // Collect at most maxImages per directory, skip images after that but continue to discover subdirectories
                         if dirImages.count >= maxImages { continue }
-                        if validExtensions.contains(fileURL.pathExtension.lowercased()) {
+                        if validExtensions.contains(fileURL.pathExtension.lowercased()) && isNotFalseTsVideoFile(fileURL) {
                             dirImages.append(fileURL)
                         }
                     }
@@ -401,7 +460,7 @@ func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, preferDi
                     } else {
                         // 检查文件扩展名是否为可生成缩略图的格式
                         // Check if file extension is a format that can generate thumbnails
-                        if validExtensions.contains(fileURL.pathExtension.lowercased()) {
+                        if validExtensions.contains(fileURL.pathExtension.lowercased()) && isNotFalseTsVideoFile(fileURL) {
                             imageUrls.append(fileURL)
 
                             // 检查是否已经找到足够多的图片
@@ -422,6 +481,17 @@ func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, preferDi
 }
 
 func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Bool]) -> NSImage? {
+    // 底层文件不完整或损坏时，NSImage 可能不为 nil，但尺寸为零或非有限值。
+    // NSImage may be non-nil while its size is zero or non-finite when the underlying file is incomplete or malformed.
+    // 不要把这类几何数据传给 AppKit 绘图 API，否则 NaN 会触发 Objective-C 异常。
+    // Never pass such geometry to AppKit drawing APIs, which raise an Objective-C exception for NaN.
+    let drawableItems: [(image: NSImage, isVideo: Bool)] = zip(images, isVideos).compactMap { item in
+        let (image, isVideo) = item
+        guard isDrawableImageSize(image.size) else { return nil }
+        return (image, isVideo)
+    }
+    guard !drawableItems.isEmpty else { return background }
+
     // 定义通用参数
     // Define common parameters
     let borderColor: NSColor = NSColor(white: 1.0, alpha: 1.0)
@@ -461,29 +531,33 @@ func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Boo
         let scale: CGFloat = 0.68
         let rotationAngles: [CGFloat] = [15.0, -15.0, 0]
         
-        for (index, image) in images.enumerated() {
-            context.saveGState()
-            
-            // 设置阴影
-            // Set shadow
-            context.setShadow(offset: shadowOffset, blur: shadowBlurRadius, color: shadowColor.cgColor)
-
+        for (index, item) in drawableItems.enumerated() {
+            let image = item.image
             // 计算缩放和旋转后的中心位置
             // Calculate center position after scaling and rotation
             let centerX = size.width / 2
             let centerY = size.height / 2
-            context.translateBy(x: centerX, y: centerY)
-            context.rotate(by: rotationAngles[index] * CGFloat.pi / 180)
-            context.translateBy(x: -centerX, y: -centerY)
 
             // 计算等比缩放因子
             // Calculate proportional scaling factor
             let totalScale = min(resolution / image.size.width, resolution / image.size.height) * scale
+            guard totalScale.isFinite && totalScale > 0 else { continue }
             
             // 应用缩放
             // Apply scaling
             let newSize = NSSize(width: image.size.width * totalScale, height: image.size.height * totalScale)
             let imageRect = NSRect(x: centerX - newSize.width / 2, y: centerY - newSize.height / 2, width: newSize.width, height: newSize.height)
+            guard isDrawableImageRect(imageRect) else { continue }
+
+            context.saveGState()
+
+            // 设置阴影
+            // Set shadow
+            context.setShadow(offset: shadowOffset, blur: shadowBlurRadius, color: shadowColor.cgColor)
+
+            context.translateBy(x: centerX, y: centerY)
+            context.rotate(by: rotationAngles[index] * CGFloat.pi / 180)
+            context.translateBy(x: -centerX, y: -centerY)
 
             // 绘制不透明背景(针对透明png图像)
             // Draw opaque background (for transparent PNG images)
@@ -501,7 +575,7 @@ func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Boo
 
             // 添加边框
             // Add border
-            if isVideos[index] {
+            if item.isVideo {
                 hexToNSColor(hex: "#3E3E3E").setStroke()
             }else{
                 borderColor.setStroke()
@@ -522,7 +596,7 @@ func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Boo
         let gap: CGFloat = resolution * 0.025
         // 每张照片随机略微旋转角度（度），模拟自然摆放效果
         // Random slight rotation angles (degrees) for each photo, simulating natural placement
-        let tileRotations: [CGFloat] = images.indices.map { _ in
+        let tileRotations: [CGFloat] = drawableItems.indices.map { _ in
             let magnitude = CGFloat.random(in: 2.0...4.0)
             let sign: CGFloat = Bool.random() ? 1 : -1
             return magnitude * sign
@@ -533,7 +607,7 @@ func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Boo
         var cellSize: CGFloat = 0
         var cellCenters: [CGPoint] = []
         
-        switch images.count {
+        switch drawableItems.count {
         case 1:
             // 单张图像：居中，适当大小
             // Single image: centered, moderate size
@@ -580,10 +654,23 @@ func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Boo
             break
         }
         
-        for (index, image) in images.enumerated() {
+        for (index, item) in drawableItems.enumerated() {
+            let image = item.image
             guard index < cellCenters.count else { break }
             let center = cellCenters[index]
             let angle = tileRotations[index % tileRotations.count]
+
+            // 正方形绘制区域
+            // Square drawing area
+            let imageRect = NSRect(x: center.x - cellSize / 2, y: center.y - cellSize / 2, width: cellSize, height: cellSize)
+            guard isDrawableImageRect(imageRect) else { continue }
+
+            let scaleToFill = max(cellSize / image.size.width, cellSize / image.size.height)
+            guard scaleToFill.isFinite && scaleToFill > 0 else { continue }
+            let drawWidth = image.size.width * scaleToFill
+            let drawHeight = image.size.height * scaleToFill
+            let drawRect = NSRect(x: center.x - drawWidth / 2, y: center.y - drawHeight / 2, width: drawWidth, height: drawHeight)
+            guard isDrawableImageRect(drawRect) else { continue }
             
             context.saveGState()
             
@@ -592,10 +679,6 @@ func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Boo
             context.translateBy(x: center.x, y: center.y)
             context.rotate(by: angle * CGFloat.pi / 180)
             context.translateBy(x: -center.x, y: -center.y)
-            
-            // 正方形绘制区域
-            // Square drawing area
-            let imageRect = NSRect(x: center.x - cellSize / 2, y: center.y - cellSize / 2, width: cellSize, height: cellSize)
             
             // 设置阴影
             // Set shadow
@@ -617,16 +700,12 @@ func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Boo
             let clipPath = NSBezierPath(rect: imageRect)
             clipPath.addClip()
             
-            let scaleToFill = max(cellSize / image.size.width, cellSize / image.size.height)
-            let drawWidth = image.size.width * scaleToFill
-            let drawHeight = image.size.height * scaleToFill
-            let drawRect = NSRect(x: center.x - drawWidth / 2, y: center.y - drawHeight / 2, width: drawWidth, height: drawHeight)
             image.draw(in: drawRect)
             context.restoreGState()
             
             // 添加边框
             // Add border
-            if isVideos[index] {
+            if item.isVideo {
                 hexToNSColor(hex: "#3E3E3E").setStroke()
             } else {
                 borderColor.setStroke()
@@ -806,7 +885,13 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         return thumb
     }
     
-    let size: NSSize? = oriSize != nil ? NSSize(width: round(oriSize!.width), height: round(oriSize!.height)) : nil
+    let size: NSSize?
+    if let oriSize {
+        let roundedSize = NSSize(width: round(oriSize.width), height: round(oriSize.height))
+        size = isDrawableImageSize(roundedSize) ? roundedSize : nil
+    } else {
+        size = nil
+    }
     
     if(url.hasDirectoryPath){
         
@@ -828,7 +913,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
                     img = getFileTypeIcon(url: url)
                 }
                 imgs.append(img!)
-                isVideos.append(globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()))
+                isVideos.append(globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) && isNotFalseTsVideoFile(url))
             }
             if imgs.count>0 {
                 let finalImg=createCompositeImage(background: NSImage(named: NSImage.folderName)!, images: imgs, isVideos: isVideos)
@@ -837,6 +922,10 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         }
         return NSImage(named: NSImage.folderName)
 
+    }
+
+    if !isNotFalseTsVideoFile(url) {
+        return nil
     }
     
     // 处理不支持的缩略图
@@ -918,12 +1007,15 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         // Handle other thumbnails
         // 使用原图的格式
         // Use original image format
-        if ["gif", "svg"].contains(url.pathExtension.lowercased()) {
-            return NSImage(contentsOf: url)
+        if ["gif", "svg", "ai"].contains(url.pathExtension.lowercased()) {
+            guard let image = NSImage(contentsOf: url), isDrawableImageSize(image.size) else {
+                return nil
+            }
+            return image
         }
         // 若指定了大小则特殊处理
         // Special handling if size is specified
-        if size != nil && "ai" != url.pathExtension.lowercased() {
+        if size != nil {
             if let resizedImage=getResizedImage(url: url, size: size!, isRawUseEmbeddedThumb: true){
                 return resizedImage
             }
@@ -973,9 +1065,9 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         
         // 对于缩略图旋转异常的情况
         // For cases where thumbnail rotation is abnormal
-        if refSize != nil && globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
-            let ratio1 = Double(scaledImage.width) / Double(scaledImage.height) / refSize!.width * refSize!.height
-            let ratio2 = Double(scaledImage.height) / Double(scaledImage.width) / refSize!.width * refSize!.height
+        if let refSize, isDrawableImageSize(refSize), globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()) {
+            let ratio1 = Double(scaledImage.width) / Double(scaledImage.height) / refSize.width * refSize.height
+            let ratio2 = Double(scaledImage.height) / Double(scaledImage.width) / refSize.width * refSize.height
             if ratio1 > 1.05 || ratio1 < 0.95 {
                 if ratio2 < 1.05 && ratio2 > 0.95 {
                     // return getResizedImage(url: url, size: NSSize(width: scaledImage.self.height, height: scaledImage.self.width))
@@ -1730,6 +1822,9 @@ func getImageInfo(url: URL, needMetadata: Bool) -> ImageInfo? {
         return getImageInfo(url: resolved, needMetadata: needMetadata)
     }
     // let defaultSize = DEFAULT_SIZE
+    if !isNotFalseTsVideoFile(url) {
+        return nil
+    }
     if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
         if globalVar.HandledNotNativeSupportedVideoExtensions.contains(url.pathExtension.lowercased()){
             if let sizeUseFFmpeg = getVideoResolutionFFmpeg(for: url){
@@ -1761,12 +1856,12 @@ func getImageInfo(url: URL, needMetadata: Bool) -> ImageInfo? {
         if let thumb = getImageThumb(url: url) {return ImageInfo(thumb.size)}
         return nil
     }else if globalVar.HandledImageAndRawExtensions.contains(url.pathExtension.lowercased()){
-        // SVG 是矢量格式，ImageIO 在旧系统上可能不支持
-        // SVG is a vector format; ImageIO may not support it on older systems
-        if url.pathExtension.lowercased() == "svg" {
-            if let nsImage = NSImage(contentsOf: url), nsImage.size.width > 0, nsImage.size.height > 0 {
+        // 矢量格式
+        // Vector format
+        if url.pathExtension.lowercased() == "svg" || url.pathExtension.lowercased() == "ai" {
+            if let nsImage = NSImage(contentsOf: url), isDrawableImageSize(nsImage.size) {
                 let imageInfo = ImageInfo(nsImage.size)
-                imageInfo.ext = "svg"
+                imageInfo.ext = url.pathExtension.lowercased()
                 return imageInfo
             }
             return nil
@@ -1959,10 +2054,11 @@ func formatExifData(_ imageProperties: [String: Any], isVideo: Bool, needWarp: B
         ("FileCreatedTime" as CFString, NSLocalizedString("Exif-FileCreatedTime", comment: "文件创建时间")),
         ("FileModifiedTime" as CFString, NSLocalizedString("Exif-FileModifiedTime", comment: "文件修改时间")),
         ("FileAddedTime" as CFString, NSLocalizedString("Exif-FileAddedTime", comment: "文件添加时间")),
-        ("Rating" as CFString, NSLocalizedString("Exif-Rating", comment: "评级")),
         
         ("-" as CFString, "-"),
         
+        ("Rating" as CFString, NSLocalizedString("Exif-Rating", comment: "评级")),
+
         (kCGImagePropertyExifDateTimeOriginal, NSLocalizedString("Exif-DateTimeOriginal", comment: "拍摄时间")),
         (kCGImagePropertyExifDateTimeDigitized, NSLocalizedString("Exif-DateTimeDigitized", comment: "数字化时间")),
         (kCGImagePropertyTIFFDateTime, NSLocalizedString("Exif-TIFFDateTime", comment: "元数据时间")),
@@ -2604,8 +2700,10 @@ class ThumbImageProcessor {
             
             // 生成图像
             // Generate image
-            var image: NSImage?
-            image = getImageThumb(url: url, size: size, refSize: refSize, isPreferInternalThumb: isPreferInternalThumb)
+            var image = getImageThumb(url: url, size: size, refSize: refSize, isPreferInternalThumb: isPreferInternalThumb)
+            if let generatedImage = image, !isDrawableImageSize(generatedImage.size) {
+                image = nil
+            }
             
             // 更新缓存（包括nil情况）
             // Update cache (including nil cases)
