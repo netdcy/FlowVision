@@ -48,7 +48,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
         languagePopUpButton.addItems(withTitles: [autoTitle, "Arabic(العربية)", "Chinese Simplified(简体中文)", "Chinese Traditional(繁體中文)", "Dutch(Nederlands)", "English(English)", "French(Français)", "German(Deutsch)", "Italian(Italiano)", "Japanese(日本語)", "Korean(한국어)", "Polish(Polski)", "Portuguese Brazil(Português)", "Portuguese Portugal(Português)", "Russian(Русский)", "Spanish(Español)", "Swedish(Svenska)", "Turkish(Türkçe)"])
         // 设置初始选择
         // Set initial selection
-        if let languageCodes = UserDefaults.standard.array(forKey: "AppleLanguages") as? [String], let firstLanguage = languageCodes.first {
+        if let languageCodes = UserDefaults.standard.persistentDomain(forName: Bundle.main.bundleIdentifier!)?["AppleLanguages"] as? [String], let firstLanguage = languageCodes.first {
             switch firstLanguage {
             case let lang where lang.hasPrefix("en"):
                 languagePopUpButton.selectItem(withTitle: "English(English)")
