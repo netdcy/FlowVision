@@ -27,7 +27,7 @@
             <rect key="frame" x="0.0" y="0.0" width="510" height="656"/>
             <subviews>
                 <gridView xPlacement="center" yPlacement="center" rowAlignment="none" rowSpacing="8" columnSpacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="lkV-Y2-eOl">
-                    <rect key="frame" x="30" y="62" width="450" height="574"/>
+                    <rect key="frame" x="30" y="64" width="450" height="572"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="450" id="5HG-su-XZq"/>
                     </constraints>
@@ -58,7 +58,7 @@
                     <gridCells>
                         <gridCell row="fKO-X7-QnW" column="GGj-JC-w4E" id="cJ1-eu-dcJ">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pP4-VT-r7d">
-                                <rect key="frame" x="39" y="554" width="68" height="16"/>
+                                <rect key="frame" x="39" y="552" width="68" height="16"/>
                                 <textFieldCell key="cell" alignment="right" title="Language:" id="s9c-vd-E8g">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -68,7 +68,7 @@
                         </gridCell>
                         <gridCell row="fKO-X7-QnW" column="cs9-fm-l2F" id="8St-Yi-onW">
                             <popUpButton key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3Ab-aZ-SDF">
-                                <rect key="frame" x="115" y="550" width="76" height="24"/>
+                                <rect key="frame" x="115" y="548" width="76" height="24"/>
                                 <popUpButtonCell key="cell" type="push" title="Auto" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="hGF-9Y-ejC" id="H3d-6S-qhu">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="message"/>
@@ -86,7 +86,7 @@
                         <gridCell row="6s8-bz-Bj9" column="GGj-JC-w4E" id="cms-bj-WuF"/>
                         <gridCell row="6s8-bz-Bj9" column="cs9-fm-l2F" id="Xl9-c7-tBk">
                             <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="ROF-P1-6ml">
-                                <rect key="frame" x="113" y="528" width="265" height="14"/>
+                                <rect key="frame" x="113" y="526" width="265" height="14"/>
                                 <textFieldCell key="cell" selectable="YES" title="Restart the application for changes to take effect." id="qe3-7u-Trn">
                                     <font key="font" metaFont="message" size="11"/>
                                     <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
@@ -96,7 +96,7 @@
                         </gridCell>
                         <gridCell row="uLO-pI-Rng" column="GGj-JC-w4E" id="iQf-kM-Ntg">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="36e-fs-Acz">
-                                <rect key="frame" x="54" y="504" width="53" height="16"/>
+                                <rect key="frame" x="54" y="502" width="53" height="16"/>
                                 <textFieldCell key="cell" alignment="right" title="Toolbar:" id="QHt-c1-9Ji">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -106,7 +106,7 @@
                         </gridCell>
                         <gridCell row="uLO-pI-Rng" column="cs9-fm-l2F" id="tkz-9O-t5b">
                             <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8Z4-Ey-mOg">
-                                <rect key="frame" x="115" y="504" width="131" height="16"/>
+                                <rect key="frame" x="115" y="502" width="131" height="16"/>
                                 <buttonCell key="cell" type="check" title="Auto Hide Toolbar" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="EBi-bb-P2R">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -119,7 +119,7 @@
                         <gridCell row="DqQ-B1-rBX" column="GGj-JC-w4E" id="4WE-5t-jZf"/>
                         <gridCell row="DqQ-B1-rBX" column="cs9-fm-l2F" id="9Bf-2Q-si2">
                             <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="GrH-Fc-hHA">
-                                <rect key="frame" x="113" y="468" width="332" height="28"/>
+                                <rect key="frame" x="113" y="466" width="332" height="28"/>
                                 <textFieldCell key="cell" selectable="YES" id="QqU-Xz-7dB">
                                     <font key="font" metaFont="message" size="11"/>
                                     <string key="title">When this option is enabled, the multi-tab bar cannot be used.
@@ -131,7 +131,7 @@ Restart the application for changes to take effect.</string>
                         </gridCell>
                         <gridCell row="qRQ-wQ-p0q" column="GGj-JC-w4E" id="d9c-ug-roI">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Vt6-jC-8Jo">
-                                <rect key="frame" x="8" y="444" width="99" height="16"/>
+                                <rect key="frame" x="8" y="442" width="99" height="16"/>
                                 <textFieldCell key="cell" alignment="right" title="Close Behavior:" id="uKy-ok-dDi">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -141,7 +141,7 @@ Restart the application for changes to take effect.</string>
                         </gridCell>
                         <gridCell row="qRQ-wQ-p0q" column="cs9-fm-l2F" id="eWu-0F-cb3">
                             <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eIh-jy-wRw">
-                                <rect key="frame" x="115" y="444" width="288" height="16"/>
+                                <rect key="frame" x="115" y="442" width="288" height="16"/>
                                 <buttonCell key="cell" type="check" title="Quit Application When Closing Last Window" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="dB2-6s-xY8">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -153,7 +153,7 @@ Restart the application for changes to take effect.</string>
                         </gridCell>
                         <gridCell row="1jQ-pG-rHu" column="GGj-JC-w4E" id="G4b-NZ-M4j">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4Y9-mV-mhX">
-                                <rect key="frame" x="10" y="413" width="97" height="16"/>
+                                <rect key="frame" x="10" y="411" width="97" height="16"/>
                                 <textFieldCell key="cell" alignment="right" title="Open Behavior:" id="uga-eQ-cEz">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -163,7 +163,7 @@ Restart the application for changes to take effect.</string>
                         </gridCell>
                         <gridCell row="1jQ-pG-rHu" column="cs9-fm-l2F" id="Ugz-yQ-jm5">
                             <customView key="contentView" placeholderIntrinsicWidth="300" placeholderIntrinsicHeight="30" translatesAutoresizingMaskIntoConstraints="NO" id="fGb-Yd-AGP">
-                                <rect key="frame" x="115" y="406" width="300" height="30"/>
+                                <rect key="frame" x="115" y="404" width="300" height="30"/>
                                 <subviews>
                                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Eeu-lU-58j">
                                         <rect key="frame" x="-2" y="6" width="92" height="18"/>
@@ -193,7 +193,7 @@ Restart the application for changes to take effect.</string>
                         <gridCell row="V0Z-tx-5vQ" column="GGj-JC-w4E" id="TIR-tb-aBC"/>
                         <gridCell row="V0Z-tx-5vQ" column="cs9-fm-l2F" id="ess-4d-3EQ">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fPd-GS-Edl">
-                                <rect key="frame" x="113" y="382" width="70" height="16"/>
+                                <rect key="frame" x="113" y="380" width="70" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingHead" title="Homepage" id="6dV-cD-yRh">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -204,7 +204,7 @@ Restart the application for changes to take effect.</string>
                         <gridCell row="hB1-BQ-zjj" column="GGj-JC-w4E" id="gde-8A-Aqn"/>
                         <gridCell row="hB1-BQ-zjj" column="cs9-fm-l2F" id="MjO-gZ-k09">
                             <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7Xr-Ss-qcW">
-                                <rect key="frame" x="115" y="350" width="115" height="24"/>
+                                <rect key="frame" x="115" y="348" width="115" height="24"/>
                                 <buttonCell key="cell" type="push" title="Select Folder..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="BFV-85-Ue3">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -216,13 +216,13 @@ Restart the application for changes to take effect.</string>
                         </gridCell>
                         <gridCell row="Vxw-AW-fH6" column="GGj-JC-w4E" headOfMergedCell="YUZ-t2-HaZ" xPlacement="fill" id="YUZ-t2-HaZ">
                             <box key="contentView" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="0at-6J-tiq">
-                                <rect key="frame" x="0.0" y="330" width="450" height="5"/>
+                                <rect key="frame" x="0.0" y="328" width="450" height="5"/>
                             </box>
                         </gridCell>
                         <gridCell row="Vxw-AW-fH6" column="cs9-fm-l2F" headOfMergedCell="YUZ-t2-HaZ" id="Nj4-9X-TOs"/>
                         <gridCell row="RR8-D8-Ahi" column="GGj-JC-w4E" id="Qmo-nF-Kre">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="htw-Ih-GPU">
-                                <rect key="frame" x="58" y="298" width="49" height="16"/>
+                                <rect key="frame" x="58" y="296" width="49" height="16"/>
                                 <textFieldCell key="cell" alignment="right" title="Cursor:" id="NRe-qh-vzH">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -232,7 +232,7 @@ Restart the application for changes to take effect.</string>
                         </gridCell>
                         <gridCell row="RR8-D8-Ahi" column="cs9-fm-l2F" id="CCn-jh-eBx">
                             <button key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="788-Gm-Cyc">
-                                <rect key="frame" x="115" y="298" width="231" height="16"/>
+                                <rect key="frame" x="115" y="296" width="231" height="16"/>
                                 <buttonCell key="cell" type="check" title="Auto Hide Cursor When Fullscreen" bezelStyle="regularSquare" imagePosition="left" inset="2" id="xbd-RA-zT3">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -244,7 +244,7 @@ Restart the application for changes to take effect.</string>
                         </gridCell>
                         <gridCell row="5Wg-OC-iT6" column="GGj-JC-w4E" id="FlT-Vc-woe">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WbB-V9-WBX">
-                                <rect key="frame" x="58" y="274" width="49" height="16"/>
+                                <rect key="frame" x="58" y="272" width="49" height="16"/>
                                 <textFieldCell key="cell" alignment="right" title="Tooltip:" id="1gS-Zy-0KS">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -254,7 +254,7 @@ Restart the application for changes to take effect.</string>
                         </gridCell>
                         <gridCell row="5Wg-OC-iT6" column="cs9-fm-l2F" id="xcg-UN-FpW">
                             <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qCq-Mk-v6e">
-                                <rect key="frame" x="115" y="274" width="202" height="16"/>
+                                <rect key="frame" x="115" y="272" width="202" height="16"/>
                                 <buttonCell key="cell" type="check" title="Show Tooltip on Mouse Hover" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="QVF-Ku-2Zm">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -266,7 +266,7 @@ Restart the application for changes to take effect.</string>
                         </gridCell>
                         <gridCell row="uYv-LA-Jp3" column="GGj-JC-w4E" id="uh6-dV-Ti8">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BZR-tk-X4Y">
-                                <rect key="frame" x="-1" y="249" width="108" height="16"/>
+                                <rect key="frame" x="-1" y="248" width="108" height="16"/>
                                 <textFieldCell key="cell" alignment="right" title="Scroll Sensitivity:" id="Uce-9P-gQt">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -276,7 +276,7 @@ Restart the application for changes to take effect.</string>
                         </gridCell>
                         <gridCell row="uYv-LA-Jp3" column="cs9-fm-l2F" id="6xk-G7-Pcz">
                             <customView key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="JiD-4X-Vul">
-                                <rect key="frame" x="115" y="248" width="200" height="18"/>
+                                <rect key="frame" x="115" y="248" width="200" height="16"/>
                                 <subviews>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZfP-7k-XS3">
                                         <rect key="frame" x="0.0" y="0.0" width="200" height="16"/>
@@ -293,7 +293,7 @@ Restart the application for changes to take effect.</string>
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="ZfP-7k-XS3" secondAttribute="bottom" id="7ep-Jk-EIL"/>
-                                    <constraint firstItem="ZfP-7k-XS3" firstAttribute="top" secondItem="JiD-4X-Vul" secondAttribute="top" constant="2" id="RCb-CO-st8"/>
+                                    <constraint firstItem="ZfP-7k-XS3" firstAttribute="top" secondItem="JiD-4X-Vul" secondAttribute="top" id="RCb-CO-st8"/>
                                     <constraint firstItem="ZfP-7k-XS3" firstAttribute="leading" secondItem="JiD-4X-Vul" secondAttribute="leading" id="WeO-NN-eqD"/>
                                     <constraint firstAttribute="trailing" secondItem="ZfP-7k-XS3" secondAttribute="trailing" id="Zx2-Ca-Suk"/>
                                 </constraints>
