@@ -31,7 +31,7 @@
             <rect key="frame" x="0.0" y="0.0" width="510" height="782"/>
             <subviews>
                 <gridView xPlacement="center" yPlacement="center" rowAlignment="none" rowSpacing="8" columnSpacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="UrC-xJ-uLm">
-                    <rect key="frame" x="30" y="56" width="450" height="706"/>
+                    <rect key="frame" x="30" y="54" width="450" height="708"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="450" id="vG6-yf-hye"/>
                     </constraints>
@@ -62,7 +62,7 @@
                     <gridCells>
                         <gridCell row="ltX-Ja-eM6" column="RqK-yY-jzI" id="042-ss-ffF">
                             <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PfT-L0-R1r">
-                                <rect key="frame" x="-2" y="683" width="140" height="16"/>
+                                <rect key="frame" x="-2" y="684" width="140" height="16"/>
                                 <textFieldCell key="cell" alignment="right" title="Load Dynamic Library:" id="bnu-AS-zpg">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -72,7 +72,7 @@
                         </gridCell>
                         <gridCell row="ltX-Ja-eM6" column="d5q-Pb-pgU" id="W2c-el-Egx">
                             <button key="contentView" horizontalHuggingPriority="248" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zhk-nP-ekf">
-                                <rect key="frame" x="144" y="675" width="306" height="32"/>
+                                <rect key="frame" x="146" y="676" width="304" height="32"/>
                                 <buttonCell key="cell" type="radio" title="Use FFmpeg for More Video Format Thumbnails" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="G15-Qe-p8C">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -85,7 +85,7 @@
                         <gridCell row="OOd-hD-rve" column="RqK-yY-jzI" id="ibh-ig-esN"/>
                         <gridCell row="OOd-hD-rve" column="d5q-Pb-pgU" id="1P6-Pp-b5f">
                             <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zL0-h8-cNf">
-                                <rect key="frame" x="144" y="651" width="149" height="18"/>
+                                <rect key="frame" x="146" y="652" width="145" height="16"/>
                                 <buttonCell key="cell" type="radio" title="Do Not Use FFmpeg" bezelStyle="regularSquare" imagePosition="left" inset="2" id="1V0-bu-KPz">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -335,17 +335,25 @@
                         </gridCell>
                         <gridCell row="Zqi-zd-glF" column="d5q-Pb-pgU" id="CBW-Vd-cSa">
                             <customView key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="PvV-l2-hUi">
-                                <rect key="frame" x="146" y="74" width="100" height="30"/>
+                                <rect key="frame" x="146" y="74" width="225" height="30"/>
                                 <subviews>
-                                    <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WIL-Sz-1r8">
-                                        <rect key="frame" x="-2" y="-1" width="225" height="28"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                        <sliderCell key="cell" state="on" alignment="left" minValue="1000" maxValue="16000" doubleValue="4000" tickMarkPosition="above" numberOfTickMarks="11" sliderType="linear" id="NBB-wg-vxt"/>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WIL-Sz-1r8">
+                                        <rect key="frame" x="0.0" y="-1" width="225" height="16"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="225" id="Dqw-1Z-YKY"/>
+                                        </constraints>
+                                        <sliderCell key="cell" state="on" alignment="left" minValue="1000" maxValue="16000" doubleValue="4000" tickMarkPosition="above" numberOfTickMarks="16" allowsTickMarkValuesOnly="YES" sliderType="linear" id="NBB-wg-vxt"/>
                                         <connections>
                                             <action selector="memUseLimitSliderChanged:" target="-2" id="OjG-u9-1Uy"/>
                                         </connections>
                                     </slider>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstItem="WIL-Sz-1r8" firstAttribute="leading" secondItem="PvV-l2-hUi" secondAttribute="leading" id="DXQ-cK-FmC"/>
+                                    <constraint firstItem="WIL-Sz-1r8" firstAttribute="top" secondItem="PvV-l2-hUi" secondAttribute="top" constant="15" id="Phf-rx-J37"/>
+                                    <constraint firstAttribute="bottom" secondItem="WIL-Sz-1r8" secondAttribute="bottom" constant="-1" id="YzO-Cu-OMM"/>
+                                    <constraint firstAttribute="trailing" secondItem="WIL-Sz-1r8" secondAttribute="trailing" id="iRA-0A-OQr"/>
+                                </constraints>
                             </customView>
                         </gridCell>
                         <gridCell row="vXH-Op-53p" column="RqK-yY-jzI" id="HCa-nV-Y0T"/>

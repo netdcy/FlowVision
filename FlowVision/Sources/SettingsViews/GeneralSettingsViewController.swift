@@ -101,9 +101,6 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
         if let container = radioHomeFolder.superview {
             convertToLeadingLayoutForRTL(container)
         }
-        if let container = scrollSensitivitySlider.superview {
-            convertToLeadingLayoutForRTL(container)
-        }
     }
     
     @IBAction func languageSelectionChanged(_ sender: NSPopUpButton) {
