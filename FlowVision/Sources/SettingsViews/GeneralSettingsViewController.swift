@@ -263,8 +263,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
         panel.canChooseFiles = false
         panel.allowsMultipleSelection = false
         panel.directoryURL = URL(string: globalVar.homeFolder)
-        panel.runModal()
-        if let url = panel.url {
+        if panel.runModal() == .OK, let url = panel.url {
             globalVar.homeFolder = url.absoluteString
             labelHomeFolder.stringValue = globalVar.homeFolder.removingPercentEncoding!.replacingOccurrences(of: "file://", with: "")
             UserDefaults.standard.set(globalVar.homeFolder, forKey: "homeFolder")
