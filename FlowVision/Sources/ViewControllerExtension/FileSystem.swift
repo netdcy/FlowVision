@@ -750,6 +750,14 @@ extension ViewController {
 
     }
     
+    func stopMomentumScroll() {
+        let stop = NSSelectorFromString("_stopGestureScrollTracking")
+        guard let behaviorIvar = class_getInstanceVariable(NSScrollView.self, "_scrollingBehavior"),
+              let behavior = object_getIvar(mainScrollView, behaviorIvar) as? NSObject,
+              behavior.responds(to: stop) else { return }
+        _ = behavior.perform(stop)
+    }
+    
     func switchFolder(path: String) {
         // startTime = DispatchTime.now()
         
@@ -846,6 +854,10 @@ extension ViewController {
         fileDB.lock()
         let needClearThenInsert = lastCurFolder != path || fileNum > RESET_VIEW_FILE_NUM_THRESHOLD || fileDB.db[SortKeyDir(path)]?.keepScrollPos == false
         fileDB.unlock()
+        // Remove trackpad momentum when the folder changes
+        if lastCurFolder != path {
+            stopMomentumScroll()
+        }
         if needClearThenInsert {
             // 必须按顺序执行以下两句，否则频繁切换目录时会出现异常
             // Must execute the following two statements in order, otherwise exceptions will occur when frequently switching directories
