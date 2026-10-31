@@ -26,6 +26,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
 
     @IBOutlet weak var labelHomeFolder: NSTextField!
     @IBOutlet weak var buttonSelectHomeFolder: NSButton!
+    @IBOutlet weak var openFilesInCurrentWindowCheckbox: NSButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -96,6 +97,7 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
         labelHomeFolder.stringValue = globalVar.homeFolder.removingPercentEncoding!.replacingOccurrences(of: "file://", with: "")
         labelHomeFolder.textColor = globalVar.openLastFolder ? .disabledControlTextColor : .controlTextColor
         buttonSelectHomeFolder.isEnabled = !globalVar.openLastFolder
+        openFilesInCurrentWindowCheckbox.state = globalVar.openFilesInCurrentWindow ? .on : .off
 
         // MARK: RTL support
         if let container = radioHomeFolder.superview {
@@ -255,6 +257,11 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
             labelHomeFolder.textColor = .controlTextColor
             buttonSelectHomeFolder.isEnabled = true
         }
+    }
+    
+    @IBAction func openFilesInCurrentWindowToggled(_ sender: NSButton) {
+        globalVar.openFilesInCurrentWindow = (sender.state == .on)
+        UserDefaults.standard.set(globalVar.openFilesInCurrentWindow, forKey: "openFilesInCurrentWindow")
     }
 
     @IBAction func selectHomeFolder(_ sender: Any) {
