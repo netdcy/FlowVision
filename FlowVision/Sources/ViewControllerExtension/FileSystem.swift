@@ -840,6 +840,12 @@ extension ViewController {
         fileDB.db[SortKeyDir(path)]?.layoutCalcPos=0
         fileDB.db[SortKeyDir(path)]?.lastLayoutCalcPosUsed=0
         fileDB.unlock()
+        // Remember where the folder being left was scrolled to if it has been scrolled
+        if lastCurFolder != path,
+           let scrollView = collectionView.enclosingScrollView,
+           scrollView.contentView.bounds.origin.y > 0 {
+            publicVar.folderScrollPos[lastCurFolder] = scrollView.contentView.bounds.origin
+        }
         
         // 如果是切换目录或者文件数量过多，则清空后再insertItems，否则仅reloadData(保持位置)
         // If switching directory or too many files, clear then insertItems, otherwise only reloadData (maintain position)
@@ -943,6 +949,7 @@ extension ViewController {
                     if ver != dirModel.ver {return}
                     
                     if curFolder == path {
+                        _ = restoreFolderScrollPos(folder: curFolder)
                         
                         if snapshotQueue.count > 0 {
                             let curTime = DispatchTime.now()
@@ -986,6 +993,35 @@ extension ViewController {
         }
     }
     
+    // Restore where it was scrolled, return false while it's waiting
+    func restoreFolderScrollPos(folder: String) -> Bool {
+        guard let savedContentOffset = publicVar.folderScrollPos[folder],
+              let scrollView = collectionView.enclosingScrollView else { return true }
+        // Give up to avoid flash
+        if snapshotQueue.isEmpty {
+            publicVar.folderScrollPos[folder] = nil
+            return true
+        }
+        fileDB.lock()
+        let isAllInserted = fileDB.db[SortKeyDir(folder)]?.keepScrollPos == true
+        fileDB.unlock()
+        // Wait until "Locate folder when going up or back" is over and layout is enough or everything is inserted to restore
+        guard isAllInserted
+                || (publicVar.folderStepForLocate.isEmpty && collectionView.bounds.height - scrollView.contentSize.height >= savedContentOffset.y)
+        else { return false }
+        publicVar.folderScrollPos[folder] = nil
+        let newY = max(0, min(savedContentOffset.y, collectionView.bounds.height - scrollView.contentSize.height))
+        let newOrigin = NSPoint(x: savedContentOffset.x, y: newY)
+        scrollView.contentView.scroll(to: newOrigin)
+        scrollView.reflectScrolledClipView(scrollView.contentView)
+        let savedSelection = collectionView.selectionIndexPaths
+        collectionView.reloadData()
+        collectionView.selectionIndexPaths = savedSelection
+        collectionView.numberOfItems(inSection:0)
+        debounceSetLoadThumbPriority(interval: 0.1, ifNeedVisable: true)
+        return true
+    }
+    
     /// 选中产生变化的文件（粘贴/移动后）或定位文件夹（返回上级时）
     /// - Parameters:
     ///   - isFinal: true=全量模式（检查所有items、清空列表、滚动定位）；false=增量模式（仅检查指定范围、不清空、不滚动）
@@ -1019,7 +1055,10 @@ extension ViewController {
                     let indexPath = IndexPath(item: offset, section: 0)
                     if indexPath.item < curItemCount {
                         publicVar.folderStepForLocate.removeAll()
-                        collectionView.scrollToItems(at: [indexPath], scrollPosition: .nearestHorizontalEdge)
+                        // Don't scroll to put the selected folder at the bottom of the viewport when a remembered scroll position exists
+                        if publicVar.folderScrollPos[curFolder] == nil {
+                            collectionView.scrollToItems(at: [indexPath], scrollPosition: .nearestHorizontalEdge)
+                        }
                         collectionView.delegate?.collectionView?(collectionView, shouldSelectItemsAt: [indexPath])
                         collectionView.selectItems(at: [indexPath], scrollPosition: [])
                         collectionView.delegate?.collectionView?(collectionView, didSelectItemsAt: [indexPath])
@@ -1028,6 +1067,9 @@ extension ViewController {
                 } else {
                     fileDB.unlock()
                 }
+            } else {
+                // make sure to throw away the stale note
+                publicVar.folderStepForLocate.removeAll()
             }
         }
         
