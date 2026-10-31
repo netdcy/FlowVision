@@ -253,6 +253,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
     @objc func actAutoExpand() {
         globalVar.dirTreeAutoExpand.toggle()
         UserDefaults.standard.set(globalVar.dirTreeAutoExpand, forKey: "dirTreeAutoExpand")
+        (dataSource as? CustomOutlineViewManager)?.saveExpandedItems()
     }
     
     @objc func actOpenInNewTab() {
