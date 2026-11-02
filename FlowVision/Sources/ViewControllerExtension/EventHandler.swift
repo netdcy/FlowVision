@@ -103,10 +103,11 @@ extension ViewController {
     func toggleSidebar(){
         hasManualToggleSidebar=true
         publicVar.profile.isDirTreeHidden.toggle()
+        let isRTL = splitView.userInterfaceLayoutDirection == .rightToLeft
         if !publicVar.profile.isDirTreeHidden{
-            splitView.setPosition(270, ofDividerAt: 0)
+            splitView.setPosition(isRTL ? splitView.bounds.width - splitView.dividerThickness - 270 : 270, ofDividerAt: 0)
         }else{
-            splitView.setPosition(0, ofDividerAt: 0)
+            splitView.setPosition(isRTL ? splitView.bounds.width : 0, ofDividerAt: 0)
         }
 
 //        let defaults = UserDefaults.standard

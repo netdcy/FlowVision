@@ -14,13 +14,13 @@ class CustomSplitView: NSSplitView {
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
 
-        // RTL布局时交换子视图顺序，使目录树显示在右侧
-        // Flip subview order under RTL so the sidebar appears on the right
-        if !didFlipForRTL && userInterfaceLayoutDirection == .rightToLeft && subviews.count == 2 {
+        // RTL布局时交换实际分栏顺序，使目录树显示在右侧
+        // Flip arranged subview order under RTL so the sidebar appears on the right
+        if !didFlipForRTL && userInterfaceLayoutDirection == .rightToLeft && arrangedSubviews.count == 2 {
             didFlipForRTL = true
-            let first = subviews[0]
-            let second = subviews[1]
-            subviews = [second, first]
+            let contentView = arrangedSubviews[1]
+            removeArrangedSubview(contentView)
+            insertArrangedSubview(contentView, at: 0)
         }
     }
     
