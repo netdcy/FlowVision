@@ -76,9 +76,6 @@ final class AdvancedSettingsViewController: NSViewController, SettingsPane {
                 convertToLeadingLayoutForRTL(container)
             }
         }
-        if let container = memUseLimitSlider.superview {
-            convertToLeadingLayoutForRTL(container)
-        }
 	}
 
     @IBAction func memUseLimitSliderChanged(_ sender: NSSlider) {

@@ -276,11 +276,13 @@ Restart the application for changes to take effect.</string>
                         </gridCell>
                         <gridCell row="uYv-LA-Jp3" column="cs9-fm-l2F" id="6xk-G7-Pcz">
                             <customView key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="JiD-4X-Vul">
-                                <rect key="frame" x="115" y="240" width="100" height="30"/>
+                                <rect key="frame" x="115" y="248" width="200" height="16"/>
                                 <subviews>
-                                    <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZfP-7k-XS3">
-                                        <rect key="frame" x="-2" y="0.0" width="200" height="28"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZfP-7k-XS3">
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="16"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="200" id="Az2-Zo-ea4"/>
+                                        </constraints>
                                         <sliderCell key="cell" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="5" tickMarkPosition="above" numberOfTickMarks="9" allowsTickMarkValuesOnly="YES" sliderType="linear" id="qNp-91-alT">
                                             <font key="font" metaFont="cellTitle"/>
                                         </sliderCell>
@@ -289,6 +291,12 @@ Restart the application for changes to take effect.</string>
                                         </connections>
                                     </slider>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="ZfP-7k-XS3" secondAttribute="bottom" id="7ep-Jk-EIL"/>
+                                    <constraint firstItem="ZfP-7k-XS3" firstAttribute="top" secondItem="JiD-4X-Vul" secondAttribute="top" id="RCb-CO-st8"/>
+                                    <constraint firstItem="ZfP-7k-XS3" firstAttribute="leading" secondItem="JiD-4X-Vul" secondAttribute="leading" id="WeO-NN-eqD"/>
+                                    <constraint firstAttribute="trailing" secondItem="ZfP-7k-XS3" secondAttribute="trailing" id="Zx2-Ca-Suk"/>
+                                </constraints>
                             </customView>
                         </gridCell>
                         <gridCell row="Gaw-Xx-0K0" column="GGj-JC-w4E" headOfMergedCell="x1D-kH-7cI" id="x1D-kH-7cI">
