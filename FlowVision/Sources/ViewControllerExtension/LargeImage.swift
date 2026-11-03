@@ -366,6 +366,11 @@ extension ViewController {
         fileDB.unlock()
         
         if ifFoundNextImage {
+            // When switching images with keyboard, hide cursor if it's over the window
+            if globalVar.autoHideCursorWhenSwitchingImages, NSApp.currentEvent?.type == .keyDown,
+               let window = view.window, NSApp.keyWindow === window, window.frame.contains(NSEvent.mouseLocation) {
+                NSCursor.setHiddenUntilMouseMoves(true)
+            }
             // 复原之前图片的旋转
             // Restore the rotation of the previous image
             largeImageView.file.rotate=0
