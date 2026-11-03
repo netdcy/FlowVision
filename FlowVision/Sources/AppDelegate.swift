@@ -114,6 +114,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let openLastFolder = UserDefaults.standard.value(forKey: "openLastFolder") as? Bool {
             globalVar.openLastFolder = openLastFolder
         }
+        if let openFilesInCurrentWindow = UserDefaults.standard.value(forKey: "openFilesInCurrentWindow") as? Bool {
+            globalVar.openFilesInCurrentWindow = openFilesInCurrentWindow
+        }
         if let homeFolder = UserDefaults.standard.value(forKey: "homeFolder") as? String {
             globalVar.homeFolder = homeFolder
         }
@@ -447,6 +450,29 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             if isDirectory{
                 _ = createNewWindow(file)
             }else{
+                // Open in the frontmost window
+                if globalVar.openFilesInCurrentWindow {
+                    for window in NSApplication.shared.orderedWindows {
+                        if let windowController = window.windowController as? WindowController,
+                           let viewController = windowController.contentViewController as? ViewController {
+                            windowController.showWindow(self)
+                            // Soften the transition
+                            let snapshot = captureSnapshot(of: viewController.coreAreaView)
+                            if let snapshot = snapshot {
+                                viewController.coreAreaView.addSubview(snapshot)
+                            }
+                            CATransaction.flush()
+                            openImageInTargetWindow(file, windowController: windowController)
+                            NSAnimationContext.runAnimationGroup({ context in
+                                context.duration = 0.2
+                                snapshot?.animator().alphaValue = 0
+                            }, completionHandler: {
+                                snapshot?.removeFromSuperview()
+                            })
+                            return
+                        }
+                    }
+                }
                 var useCreateWindowShowDelay = false
                 if windowControllers.count == 0 || globalVar.autoHideToolbar {
                     // 直到大图加载完毕后才显示窗口，用来减少首次启动的画面闪动
