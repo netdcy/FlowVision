@@ -162,10 +162,36 @@ extension CustomOutlineViewManager: NSOutlineViewDelegate {
             }
         }
         
+        saveExpandedItems()
     }
     
     func outlineViewItemDidCollapse(_ notification: Notification) {
         adjustColumnWidth()
+        saveExpandedItems()
+    }
+    
+    func saveExpandedItems() {
+        guard !globalVar.dirTreeAutoExpand, let outlineView = outlineView else { return }
+        var paths = [String]()
+        for row in 0..<outlineView.numberOfRows {
+            if let item = outlineView.item(atRow: row) as? TreeNode, outlineView.isItemExpanded(item) {
+                paths.append(item.fullPath)
+            }
+        }
+        UserDefaults.standard.set(paths, forKey: "dirTreeExpandedItems")
+    }
+    
+    func restoreExpandedItems() {
+        guard !globalVar.dirTreeAutoExpand, let outlineView = outlineView,
+              let paths = UserDefaults.standard.stringArray(forKey: "dirTreeExpandedItems") else { return }
+        for path in paths {
+            for row in 0..<outlineView.numberOfRows {
+                if let item = outlineView.item(atRow: row) as? TreeNode, item.fullPath == path {
+                    outlineView.expandItem(item)
+                    break
+                }
+            }
+        }
     }
     
     func adjustColumnWidth() {

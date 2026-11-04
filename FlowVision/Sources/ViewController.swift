@@ -660,6 +660,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         treeViewData.initData(path: treeRootFolder)
         outlineView.reloadData()
+        outlineViewManager.restoreExpandedItems()
         DispatchQueue.main.async {
             self.outlineViewManager.adjustColumnWidth()
         }
