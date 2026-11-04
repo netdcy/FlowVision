@@ -477,10 +477,15 @@ extension ViewController {
         fileDB.unlock()
         
         let shortTitle = (file.path as NSString).lastPathComponent.removingPercentEncoding!
-        view.window?.title = shortTitle
         publicVar.toolbarTitle = fullTitle
         publicVar.titleStatisticInfo = indexInfo
         // publicVar.toolbarTitle = shortTitle
+        
+        // 只有活动窗格改写窗口标题与工具栏
+        // Only the active pane writes the window title and toolbar
+        guard isActivePane else { return }
+        
+        view.window?.title = shortTitle
         if let windowController = view.window?.windowController as? WindowController {
             windowController.updateToolbarSync()
         }

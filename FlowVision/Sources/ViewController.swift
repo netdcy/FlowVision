@@ -276,6 +276,9 @@ class PublicVar{
     }
     
     func updateToolbar(){
+        // 窗口只有一个工具栏，归属于活动窗格；后台窗格改写它会覆盖用户正在看的那一栏
+        // A window has a single toolbar and it belongs to the active pane; a background pane would overwrite what the user is looking at
+        guard viewController.isActivePane else { return }
         if let windowController = (viewController.view.window?.windowController) as? WindowController {
             windowController.updateToolbar()
         }
@@ -366,6 +369,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var previousSplitViewWidth: CGFloat = 0.0
     
     var hasManualToggleSidebar=false
+    
+    // 作为副窗格被自动收起侧边栏时置位；用户自己切换过侧边栏后清除
+    // Set when the sidebar was auto collapsed because this is a secondary pane; cleared once the user toggles it themselves
+    var isSidebarAutoHiddenAsSecondaryPane = false
+    
+    // 目录树被提到窗口层级共享之前所在的父视图，用于之后放回原处
+    // The tree's superview before it was lifted to the window level shared sidebar, used to put it back
+    weak var outlineScrollViewHomeView: NSView?
     
     var eventMonitorKeyDown: Any?
     var eventMonitorLeftMouseDown: Any?
@@ -677,15 +688,21 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         // Left mouse button event
         eventMonitorLeftMouseDown = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { [weak self] event in
             guard let self = self else { return event }
-            if event.window != self.view.window { return event }
+            // 分屏时，点击哪个窗格就激活哪个窗格，且只由该窗格处理
+            // When split, a click activates the pane it lands in and only that pane handles it
+            if !self.shouldHandleMouseEvent(event, activate: true) { return event }
 
             if publicVar.isInLargeView && largeImageView.file.type == .video {
                 let clickLocation = event.locationInWindow
-                let videoControlYmin = largeImageView.videoView.frame.minY
-                let videoControlYmax = largeImageView.videoView.frame.maxY
-                let videoControlXmin = largeImageView.videoView.frame.minX
-                let videoControlXmax = largeImageView.videoView.frame.maxX
-                let coreAreaYmax = coreAreaView.frame.maxY - (globalVar.autoHideToolbar ? 40 : 0)
+                // 换算到窗口坐标系，分屏时窗格不在窗口原点
+                // Convert to window coordinates, a pane does not sit at the window origin when split
+                let videoFrameInWindow = largeImageView.videoView.superview?.convert(largeImageView.videoView.frame, to: nil) ?? largeImageView.videoView.frame
+                let coreAreaFrameInWindow = coreAreaView.superview?.convert(coreAreaView.frame, to: nil) ?? coreAreaView.frame
+                let videoControlYmin = videoFrameInWindow.minY
+                let videoControlYmax = videoFrameInWindow.maxY
+                let videoControlXmin = videoFrameInWindow.minX
+                let videoControlXmax = videoFrameInWindow.maxX
+                let coreAreaYmax = coreAreaFrameInWindow.maxY - (globalVar.autoHideToolbar ? 40 : 0)
                 
                 if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax,
                    clickLocation.x > videoControlXmin && clickLocation.x < videoControlXmax,
@@ -702,15 +719,19 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
         eventMonitorLeftMouseUp = NSEvent.addLocalMonitorForEvents(matching: .leftMouseUp) { [weak self] event in
             guard let self = self else { return event }
-            if event.window != self.view.window { return event }
+            if !self.shouldHandleMouseEvent(event) { return event }
 
             if publicVar.isInLargeView && largeImageView.file.type == .video {
                 let clickLocation = event.locationInWindow
-                let videoControlYmin = largeImageView.videoView.frame.minY
-                let videoControlYmax = largeImageView.videoView.frame.maxY
-                let videoControlXmin = largeImageView.videoView.frame.minX
-                let videoControlXmax = largeImageView.videoView.frame.maxX
-                let coreAreaYmax = coreAreaView.frame.maxY - (globalVar.autoHideToolbar ? 40 : 0)
+                // 换算到窗口坐标系，分屏时窗格不在窗口原点
+                // Convert to window coordinates, a pane does not sit at the window origin when split
+                let videoFrameInWindow = largeImageView.videoView.superview?.convert(largeImageView.videoView.frame, to: nil) ?? largeImageView.videoView.frame
+                let coreAreaFrameInWindow = coreAreaView.superview?.convert(coreAreaView.frame, to: nil) ?? coreAreaView.frame
+                let videoControlYmin = videoFrameInWindow.minY
+                let videoControlYmax = videoFrameInWindow.maxY
+                let videoControlXmin = videoFrameInWindow.minX
+                let videoControlXmax = videoFrameInWindow.maxX
+                let coreAreaYmax = coreAreaFrameInWindow.maxY - (globalVar.autoHideToolbar ? 40 : 0)
                 
                 if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax,
                    clickLocation.x > videoControlXmin && clickLocation.x < videoControlXmax,
@@ -761,12 +782,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         // Global scroll event
         eventMonitorScrollWheel = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { [weak self] event in
             guard let self=self else{return event}
-            // if getMainViewController() != self {return event}
-            // 检查事件的窗口是否是激活窗口
-            if event.window != self.view.window {
+            // 检查事件是否属于本窗格（未分屏时即整个窗口）
+            // Check the event belongs to this pane (the whole window when not split)
+            if !self.shouldHandleMouseEvent(event) {
                 return event
             }
-            if self.coreAreaView.frame.contains(event.locationInWindow) {
+            if self.isPointInCoreArea(event.locationInWindow) {
                 self.handleScrollWheel(event)
                 if publicVar.isInLargeView && largeImageView.file.type == .video {
                     // 视频播放器默认行为会利用滚动事件调整播放进度，所以不传递事件
@@ -797,12 +818,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         // Right mouse button event
         eventMonitorRightMouseUp = NSEvent.addLocalMonitorForEvents(matching: .rightMouseUp) { [weak self] event in
             guard let self=self else{return event}
-            // if getMainViewController() != self {return event}
-            // 检查事件的窗口是否是激活窗口
-            if event.window != self.view.window {
+            // 检查事件是否属于本窗格（未分屏时即整个窗口）
+            // Check the event belongs to this pane (the whole window when not split)
+            if !self.shouldHandleMouseEvent(event) {
                 return event
             }
-            if true || self.coreAreaView.frame.contains(event.locationInWindow) {
+            if true || self.isPointInCoreArea(event.locationInWindow) {
                 if !publicVar.isInLargeView {
                     self.drawingView?._rightMouseUp(with: event)
                     self._rightMouseUp(with: event)
@@ -816,12 +837,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
         eventMonitorRightMouseDown = NSEvent.addLocalMonitorForEvents(matching: .rightMouseDown) { [weak self] event in
             guard let self=self else{return event}
-            // if getMainViewController() != self {return event}
-            // 检查事件的窗口是否是激活窗口
-            if event.window != self.view.window {
+            // 右键按下同样先激活所在窗格
+            // A right click likewise activates the pane it lands in
+            if !self.shouldHandleMouseEvent(event, activate: true) {
                 return event
             }
-            if self.coreAreaView.frame.contains(event.locationInWindow) {
+            if self.isPointInCoreArea(event.locationInWindow) {
                 if !publicVar.isInLargeView {
                     self.drawingView?._rightMouseDown(with: event)
                     self._rightMouseDown(with: event)
@@ -835,12 +856,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
         eventMonitorRightMouseDragged = NSEvent.addLocalMonitorForEvents(matching: .rightMouseDragged) { [weak self] event in
             guard let self=self else{return event}
-            // if getMainViewController() != self {return event}
-            // 检查事件的窗口是否是激活窗口
-            if event.window != self.view.window {
+            // 检查事件是否属于本窗格（未分屏时即整个窗口）
+            // Check the event belongs to this pane (the whole window when not split)
+            if !self.shouldHandleMouseEvent(event) {
                 return event
             }
-            if true || self.coreAreaView.frame.contains(event.locationInWindow) {
+            if true || self.isPointInCoreArea(event.locationInWindow) {
                 if !publicVar.isInLargeView {
                     self.drawingView?._rightMouseDragged(with: event)
                     self._rightMouseDragged(with: event)
@@ -863,17 +884,21 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 
     }
     
-    func prepareForDeinit() {
+    // recordClosedPath为false时不记入"重新打开已关闭的标签页"，用于丢弃从未被用户看到的占位窗格
+    // With recordClosedPath false the path is kept out of "Reopen Closed Tabs", used for placeholder panes the user never saw
+    func prepareForDeinit(recordClosedPath: Bool = true) {
         // 在这里执行清理工作
         // Perform cleanup work here
         log("ViewController is being deinitialized")
-        
+
         // 存储关闭的目录/文件
         // Store closed directory/file
-        if publicVar.isInLargeView {
-            globalVar.closedPaths.append(largeImageView.file.path)
-        } else {
-            globalVar.closedPaths.append(fileDB.curFolder)
+        if recordClosedPath {
+            if publicVar.isInLargeView {
+                globalVar.closedPaths.append(largeImageView.file.path)
+            } else {
+                globalVar.closedPaths.append(fileDB.curFolder)
+            }
         }
         
         // 移除事件观察者
@@ -1174,7 +1199,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         // 刷新工具栏
         // Refresh toolbar
-        if let windowController = view.window?.windowController as? WindowController {
+        if isActivePane, let windowController = view.window?.windowController as? WindowController {
             windowController.updateToolbar()
         }
     }
@@ -1249,6 +1274,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         publicVar.toolbarTitle = shortTitle
 
         publicVar.titleStatisticInfo = statisticInfo
+        
+        // 标题栏同样只跟随活动窗格；其它窗格的标题存在publicVar里，切换为活动窗格时再显示
+        // The title bar likewise follows the active pane; other panes keep their title in publicVar until they become active
+        guard isActivePane else { return }
+        
         view.window?.title = shortTitle
         
         if let windowController = view.window?.windowController as? WindowController {

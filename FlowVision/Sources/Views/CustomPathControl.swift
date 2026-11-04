@@ -107,7 +107,7 @@ class CustomPathControl: NSPathControl, NSMenuDelegate {
         } else {
             // 最后一个路径项的myUrl为nil，使用当前文件夹路径
             // Last path item has nil myUrl, use current folder path
-            guard let vc = self.window?.contentViewController as? ViewController else { return false }
+            guard let vc = self.window?.flowViewController else { return false }
             vc.fileDB.lock()
             let curFolder = vc.fileDB.curFolder
             vc.fileDB.unlock()
@@ -194,7 +194,7 @@ class CustomPathControl: NSPathControl, NSMenuDelegate {
 
     @objc private func actOpen() {
         guard let url = rightClickedURL else { return }
-        guard let vc = self.window?.contentViewController as? ViewController else { return }
+        guard let vc = self.window?.flowViewController else { return }
         if vc.publicVar.isInLargeView {
             vc.closeLargeImage(0)
         }
@@ -223,7 +223,7 @@ class CustomPathControl: NSPathControl, NSMenuDelegate {
 
     @objc private func actGetInfo() {
         guard let url = rightClickedURL else { return }
-        guard let vc = self.window?.contentViewController as? ViewController else { return }
+        guard let vc = self.window?.flowViewController else { return }
         vc.handleGetInfo([url])
     }
 
@@ -265,7 +265,7 @@ class CustomPathControl: NSPathControl, NSMenuDelegate {
         }
         // 最后一个路径项的myUrl为nil，使用当前文件夹路径
         // Last path item has nil myUrl, use current folder path
-        guard let vc = self.window?.contentViewController as? ViewController else { return nil }
+        guard let vc = self.window?.flowViewController else { return nil }
         vc.fileDB.lock()
         let curFolder = vc.fileDB.curFolder
         vc.fileDB.unlock()
@@ -329,7 +329,7 @@ class CustomPathControl: NSPathControl, NSMenuDelegate {
         defer { updateDragHighlight(for: nil) }
 
         guard let (_, targetUrl) = componentCellAndURL(for: sender) else { return false }
-        guard let viewController = self.window?.contentViewController as? ViewController else { return false }
+        guard let viewController = self.window?.flowViewController else { return false }
 
         let pasteboard = sender.draggingPasteboard
 

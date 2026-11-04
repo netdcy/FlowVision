@@ -684,6 +684,69 @@ Gw
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="IQM-Ub-ajO"/>
+                                        <menuItem title="Split View" id="fvS-p0-m00">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Split View" id="fvS-p0-m01">
+                                                <items>
+                                                    <menuItem title="Split Right" keyEquivalent="d" id="fvS-p0-m02">
+                                                        <connections>
+                                                            <action selector="splitPaneRight:" target="Voe-Tx-rLC" id="fvS-p0-a02"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Split Down" keyEquivalent="D" id="fvS-p0-m03">
+                                                        <connections>
+                                                            <action selector="splitPaneDown:" target="Voe-Tx-rLC" id="fvS-p0-a03"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Close Pane" keyEquivalent="w" id="fvS-p0-m04">
+                                                        <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                                        <connections>
+                                                            <action selector="closePane:" target="Voe-Tx-rLC" id="fvS-p0-a04"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem isSeparatorItem="YES" id="fvS-p0-m05"/>
+                                                    <menuItem title="Merge All Tabs into Split View" id="fvS-p0-m06">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="mergeTabsIntoSplitView:" target="Voe-Tx-rLC" id="fvS-p0-a06"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Move Pane to New Tab" id="fvS-p0-m07">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="movePaneToNewTab:" target="Voe-Tx-rLC" id="fvS-p0-a07"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem isSeparatorItem="YES" id="fvS-p0-m08"/>
+                                                    <menuItem title="Switch Split Direction" id="fvS-p0-m09">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="toggleSplitDirection:" target="Voe-Tx-rLC" id="fvS-p0-a09"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Equalize Panes" id="fvS-p0-m10">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="equalizePanes:" target="Voe-Tx-rLC" id="fvS-p0-a10"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem isSeparatorItem="YES" id="fvS-p0-m11"/>
+                                                    <menuItem title="Next Pane" keyEquivalent="]" id="fvS-p0-m12">
+                                                        <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                                        <connections>
+                                                            <action selector="nextPane:" target="Voe-Tx-rLC" id="fvS-p0-a12"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Previous Pane" keyEquivalent="[" id="fvS-p0-m13">
+                                                        <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                                        <connections>
+                                                            <action selector="previousPane:" target="Voe-Tx-rLC" id="fvS-p0-a13"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="fvS-p0-m14"/>
                                         <menuItem title="Custom Layout Style..." id="EGa-rJ-Y1T">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
@@ -1000,7 +1063,7 @@ Gw
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
-                <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="FlowVision" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ViewController" id="XfG-lQ-9wD" customClass="ViewController" customModule="FlowVision" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="m2S-Jp-Qdl">
                         <rect key="frame" x="0.0" y="0.0" width="1280" height="720"/>
                         <autoresizingMask key="autoresizingMask"/>

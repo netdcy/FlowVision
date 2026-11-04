@@ -18,6 +18,10 @@ class WindowController: NSWindowController, NSWindowDelegate {
         log("Start windowDidLoad")
         
         self.window?.delegate = self
+
+        // 把storyboard提供的ViewController装进分屏容器，之后所有窗格都由容器管理
+        // Wrap the ViewController coming from the storyboard in the pane container, which owns every pane from now on
+        installPaneContainerIfNeeded()
         
         window?.title = ""
 
@@ -54,7 +58,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
         }
         
         if globalVar.portableMode && globalVar.startSpeedUpImageSizeCache != nil {
-            if let viewController = contentViewController as? ViewController {
+            if let viewController = mainViewController {
                 viewController.adjustWindowPortable(refSize: globalVar.startSpeedUpImageSizeCache, firstShowThumb: false, animate: false, justAdjustWindowFrame: true, isToCenter: true)
                 globalVar.startSpeedUpImageSizeCache=nil
             }
@@ -63,7 +67,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
                 let frame = NSRectFromString(frameString)
                 window?.setFrame(frame, display: true)
                 log("Set window frame to:",frame)
-                if let viewController = contentViewController as? ViewController {
+                if let viewController = mainViewController {
                     viewController.changeWaterfallLayoutNumberOfColumns()
                 }
             }
@@ -71,13 +75,30 @@ class WindowController: NSWindowController, NSWindowDelegate {
         
         // 设置焦点
         // Set focus
-        if let viewController = contentViewController as? ViewController {
+        if let viewController = mainViewController {
             window?.makeFirstResponder(viewController.collectionView)
         }
         
         log("End windowDidLoad")
     }
     
+    // 安装分屏容器：把storyboard直接提供的ViewController变成容器里的第一个窗格
+    // Install the pane container: turn the ViewController handed over by the storyboard into the container's first pane
+    func installPaneContainerIfNeeded() {
+        guard let window = window else { return }
+        if window.contentViewController is PaneContainerViewController { return }
+        guard let viewController = window.contentViewController as? ViewController else { return }
+
+        let frameBefore = window.frame
+        let container = PaneContainerViewController()
+        // 先加载容器视图，再交换，避免窗口短暂没有内容视图
+        // Load the container view before swapping so the window is never without a content view
+        _ = container.view
+        self.contentViewController = container
+        container.adoptPane(viewController)
+        window.setFrame(frameBefore, display: false)
+    }
+
     func prepareForDeinit() {
         saveWindowState()
         cancelCursorHideTimer()
@@ -85,7 +106,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     
     func saveWindowState() {
         guard let window = self.window else { return }
-        if let viewController = contentViewController as? ViewController {
+        if let viewController = mainViewController {
             if (viewController.publicVar.isInLargeView && globalVar.portableMode) || window.styleMask.contains(.fullScreen) {
                 return
             }
@@ -105,8 +126,12 @@ class WindowController: NSWindowController, NSWindowDelegate {
         }
         
         // 在窗口关闭时执行清理，例如，保存数据、释放资源等
+        // 分屏时窗口内的每个窗格都要清理；已被移走的窗格不在容器里，因此不会被误清理
         // Perform cleanup when window closes, e.g., save data, release resources
-        if let viewController = contentViewController as? ViewController {
+        // With a split window every pane is cleaned up; panes already moved elsewhere are no longer in the container, so they are left alone
+        if let container = paneContainer {
+            container.prepareForDeinit()
+        } else if let viewController = mainViewController {
             viewController.largeImageView.prepareForDeinit()
             viewController.prepareForDeinit()
         }
@@ -128,7 +153,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     }
     
     func toggleWindowOnTop() {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleOnTop()
     }
 
@@ -144,7 +169,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     // 在窗口已经进入全屏模式时执行
     // Execute when window has entered full screen mode
     func windowDidEnterFullScreen(_ notification: Notification) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         
         // 启动延迟隐藏光标的定时器
         // Start timer to delay hiding cursor
@@ -167,7 +192,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     // 在窗口已经退出全屏模式时执行
     // Execute when window has exited full screen mode
     func windowDidExitFullScreen(_ notification: Notification) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         
         // 取消光标隐藏定时器并显示光标
         // Cancel cursor hide timer and show cursor
@@ -208,7 +233,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     override func mouseMoved(with event: NSEvent) {
         guard let window = window else { return }
         guard let toolbar = window.toolbar else { return }
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         let location = event.locationInWindow
         
         // 在全屏模式下，鼠标移动时显示光标并重置隐藏定时器
@@ -299,6 +324,7 @@ extension NSToolbarItem.Identifier {
     static let upFolder = NSToolbarItem.Identifier("com.example.upFolder")
     static let viewToggle = NSToolbarItem.Identifier("com.example.viewToggle")
     static let newtab = NSToolbarItem.Identifier("com.example.newtab")
+    static let splitView = NSToolbarItem.Identifier("com.example.splitView")
     static let showinfo = NSToolbarItem.Identifier("com.example.showinfo")
     static let ontop = NSToolbarItem.Identifier("com.example.ontop")
     static let windowTitle = NSToolbarItem.Identifier("com.example.windowTitle")
@@ -337,7 +363,7 @@ extension WindowController: NSToolbarDelegate {
         
         // identifiers.append(.upFolder)
         
-        if let viewController = contentViewController as? ViewController {
+        if let viewController = mainViewController {
             if viewController.publicVar.isInLargeView {
                 identifiers.append(.windowTitle)
                 if #available(macOS 14.0, *) {
@@ -395,6 +421,7 @@ extension WindowController: NSToolbarDelegate {
         }
         
         identifiers.append(.more)
+        identifiers.append(.splitView)
         identifiers.append(.newtab)
         
         return identifiers
@@ -489,7 +516,7 @@ extension WindowController: NSToolbarDelegate {
     
     func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
         let toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier)
-        guard let viewController = contentViewController as? ViewController else {return toolbarItem}
+        guard let viewController = mainViewController else {return toolbarItem}
         
         // let titleFontColor = NSApp.effectiveAppearance.name == .darkAqua ? hexToNSColor(hex: "#FFFFFF", alpha: 0.847) : hexToNSColor(hex: "#000000", alpha: 0.847)
         // let titleFontColor = NSApp.effectiveAppearance.name == .darkAqua ? hexToNSColor(hex: "#FFFFFF", alpha: 0.64) : hexToNSColor(hex: "#000000", alpha: 0.6)
@@ -499,7 +526,7 @@ extension WindowController: NSToolbarDelegate {
         switch itemIdentifier {
             
         case .windowTitle:
-            let title = (contentViewController as? ViewController)?.publicVar.toolbarTitle ?? "FlowVision"
+            let title = mainViewController?.publicVar.toolbarTitle ?? "FlowVision"
             let isInLargeView = viewController.publicVar.isInLargeView
             let showExtra = isInLargeView || viewController.publicVar.profile.getValue(forKey: "isWindowTitleShowStatistics") == "true"
             let statisticInfo = viewController.publicVar.titleStatisticInfo
@@ -537,7 +564,7 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.visibilityPriority = .high
             
         case .windowTitleStatistics:
-            let text = (contentViewController as? ViewController)?.publicVar.titleStatisticInfo
+            let text = mainViewController?.publicVar.titleStatisticInfo
             let titleLabel = createWindowTitleLabel(string: text ?? "")
             titleLabel.font = NSFont.systemFont(ofSize: 13, weight: .regular)
             titleLabel.textColor = NSColor.placeholderTextColor
@@ -561,7 +588,7 @@ extension WindowController: NSToolbarDelegate {
             pathControl.action = #selector(pathControlClicked(_:))
             let font = NSFont.systemFont(ofSize: 13, weight: .regular)
             
-            if let viewController = contentViewController as? ViewController {
+            if let viewController = mainViewController {
                 viewController.fileDB.lock()
                 let curFolder = viewController.fileDB.curFolder
                 viewController.fileDB.unlock()
@@ -783,7 +810,7 @@ extension WindowController: NSToolbarDelegate {
         case .sort:
             var title = ""
             var image = NSImage(systemSymbolName: "arrow.up.arrow.down", accessibilityDescription: "")!
-            if let viewController = contentViewController as? ViewController {
+            if let viewController = mainViewController {
                 switch viewController.publicVar.profile.sortType {
                 case .pathA,.pathZ:
                     title = NSLocalizedString("sort-label-name", comment: "名称")
@@ -900,6 +927,18 @@ extension WindowController: NSToolbarDelegate {
             toolbarItem.paletteLabel = NSLocalizedString("More", comment: "更多")
             toolbarItem.visibilityPriority = .high
             
+        case .splitView:
+            let isSplit = paneContainer?.isSplit ?? false
+            let symbol = isSplit ? "rectangle.split.2x1.fill" : "rectangle.split.2x1"
+            let image = NSImage(systemSymbolName: symbol, accessibilityDescription: "") ?? NSImage(systemSymbolName: "rectangle.split.2x1", accessibilityDescription: "")!
+            let button = NSButton(title: "", image: image, target: self, action: #selector(splitViewAction(_:)))
+            setButtonStyle(button)
+            button.toolTip = NSLocalizedString("Split View", comment: "分屏")
+            toolbarItem.view = button
+            toolbarItem.label = NSLocalizedString("Split View", comment: "分屏")
+            toolbarItem.paletteLabel = NSLocalizedString("Split View", comment: "分屏")
+            toolbarItem.visibilityPriority = .high
+
         case .newtab:
             let button = NSButton(title: "", image: NSImage(systemSymbolName: "rectangle.badge.plus", accessibilityDescription: "")!, target: self, action: #selector(newtabAction(_:)))
             setButtonStyle(button)
@@ -930,7 +969,7 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func pathControlClicked(_ sender: NSPathControl) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         if let clickedItem = sender.clickedPathItem as? CustomPathControlItem {
             if let itemURL = clickedItem.myUrl {
                 if viewController.publicVar.isInLargeView {
@@ -969,7 +1008,7 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func sidebarAction(_ sender: Any?) {
-        if let viewController = contentViewController as? ViewController {
+        if let viewController = mainViewController {
             viewController.toggleSidebar()
         }
     }
@@ -979,26 +1018,108 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func goBackAction(_ sender: Any?) {
-        if let viewController = contentViewController as? ViewController {
+        if let viewController = mainViewController {
             viewController.handleHistoryBack()
         }
     }
 
     @objc func goForwardAction(_ sender: Any?) {
-        if let viewController = contentViewController as? ViewController {
+        if let viewController = mainViewController {
             viewController.handleHistoryForward()
         }
     }
 
     @objc func upFolderAction(_ sender: Any?) {
-        if let viewController = contentViewController as? ViewController {
+        if let viewController = mainViewController {
             viewController.switchDirByDirection(direction: .up, stackDeep: 0)
         }
     }
     
+    // 分屏按钮：直接左右分屏；按住或右键弹出完整的分屏菜单
+    // Split button: split side by side directly; hold or right click for the full split menu
+    @objc func splitViewAction(_ sender: Any?) {
+        guard let viewController = mainViewController else { return }
+        if let event = NSApp.currentEvent,
+           event.modifierFlags.contains(.option) || event.type == .rightMouseUp || event.type == .rightMouseDown {
+            showSplitMenu(sender)
+            return
+        }
+        viewController.splitPane(direction: .right)
+    }
+
+    @objc func showSplitMenu(_ sender: Any?) {
+        guard let viewController = mainViewController else { return }
+        let container = viewController.paneContainer
+        let isSplit = container?.isSplit ?? false
+
+        let menu = NSMenu()
+
+        let splitRight = menu.addItem(withTitle: NSLocalizedString("Split Right", comment: "左右分屏"), action: #selector(splitRightAction(_:)), keyEquivalent: "")
+        splitRight.target = self
+        let splitDown = menu.addItem(withTitle: NSLocalizedString("Split Down", comment: "上下分屏"), action: #selector(splitDownAction(_:)), keyEquivalent: "")
+        splitDown.target = self
+
+        menu.addItem(NSMenuItem.separator())
+
+        let mergeTabs = menu.addItem(withTitle: NSLocalizedString("Merge All Tabs into Split View", comment: "把所有标签页并入分屏"), action: #selector(mergeTabsAction(_:)), keyEquivalent: "")
+        mergeTabs.target = self
+        mergeTabs.isEnabled = NSApplication.shared.windows.contains { $0 !== window && $0.paneContainer != nil && $0.isVisible }
+
+        if isSplit {
+            let moveOut = menu.addItem(withTitle: NSLocalizedString("Move Pane to New Tab", comment: "把窗格移到新标签页"), action: #selector(movePaneOutAction(_:)), keyEquivalent: "")
+            moveOut.target = self
+
+            menu.addItem(NSMenuItem.separator())
+
+            let switchDirection = menu.addItem(withTitle: NSLocalizedString("Switch Split Direction", comment: "切换分屏方向"), action: #selector(switchSplitDirectionAction(_:)), keyEquivalent: "")
+            switchDirection.target = self
+            let equalize = menu.addItem(withTitle: NSLocalizedString("Equalize Panes", comment: "均分窗格"), action: #selector(equalizePanesAction(_:)), keyEquivalent: "")
+            equalize.target = self
+
+            menu.addItem(NSMenuItem.separator())
+
+            let closePane = menu.addItem(withTitle: NSLocalizedString("Close Pane", comment: "关闭窗格"), action: #selector(closePaneAction(_:)), keyEquivalent: "")
+            closePane.target = self
+        }
+
+        if let button = sender as? NSView {
+            menu.popUp(positioning: nil, at: NSPoint(x: 0, y: button.bounds.height + 5), in: button)
+        } else {
+            menu.popUp(positioning: nil, at: NSEvent.mouseLocation, in: nil)
+        }
+    }
+
+    @objc func splitRightAction(_ sender: Any?) {
+        mainViewController?.splitPane(direction: .right)
+    }
+
+    @objc func splitDownAction(_ sender: Any?) {
+        mainViewController?.splitPane(direction: .down)
+    }
+
+    @objc func mergeTabsAction(_ sender: Any?) {
+        mainViewController?.mergeTabsIntoPanes()
+    }
+
+    @objc func movePaneOutAction(_ sender: Any?) {
+        mainViewController?.movePaneToNewTab()
+    }
+
+    @objc func switchSplitDirectionAction(_ sender: Any?) {
+        paneContainer?.toggleSplitDirection()
+    }
+
+    @objc func equalizePanesAction(_ sender: Any?) {
+        paneContainer?.equalizePanes()
+    }
+
+    @objc func closePaneAction(_ sender: Any?) {
+        mainViewController?.closeCurrentPaneOrWindow()
+    }
+
     @objc func newtabAction(_ sender: Any?) {
         if let appDelegate = NSApplication.shared.delegate as? AppDelegate,
-           let viewController = contentViewController as? ViewController {
+           let viewController = mainViewController {
             viewController.fileDB.lock()
             let curFolder = viewController.fileDB.curFolder
             viewController.fileDB.unlock()
@@ -1007,37 +1128,37 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func showinfoAction(_ sender: Any?) {
-        if let viewController = contentViewController as? ViewController {
+        if let viewController = mainViewController {
             viewController.largeImageView.actShowExif()
         }
     }
     
     @objc func rotateLAction(_ sender: Any?) {
-        if let viewController = contentViewController as? ViewController {
+        if let viewController = mainViewController {
             viewController.largeImageView.actRotateL()
         }
     }
     
     @objc func rotateRAction(_ sender: Any?) {
-        if let viewController = contentViewController as? ViewController {
+        if let viewController = mainViewController {
             viewController.largeImageView.actRotateR()
         }
     }
     
     @objc func zoomInAction(_ sender: Any?) {
-        if let viewController = contentViewController as? ViewController {
+        if let viewController = mainViewController {
             viewController.largeImageView.zoom(direction: +1)
         }
     }
     
     @objc func zoomOutAction(_ sender: Any?) {
-        if let viewController = contentViewController as? ViewController {
+        if let viewController = mainViewController {
             viewController.largeImageView.zoom(direction: -1)
         }
     }
     
     @objc func viewToggleAction(_ sender: NSSegmentedControl) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         switch sender.selectedSegment {
         case 0:
             // 切换到自适应视图的代码
@@ -1057,7 +1178,7 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func showSortMenu(_ sender: Any?) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         // 图标映射
         // Icon mapping
         let sortTypeIcons: [SortType: NSImage?] = [
@@ -1172,20 +1293,20 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func sortFolderFirst(_ sender: NSMenuItem) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.publicVar.profile.isSortFolderFirst.toggle()
         viewController.changeSortType(sortType: viewController.publicVar.profile.sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst, isSortUseFullPath: viewController.publicVar.profile.isSortUseFullPath)
     }
     
     @objc func sortUseFullPath(_ sender: NSMenuItem) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.publicVar.profile.isSortUseFullPath.toggle()
         viewController.changeSortType(sortType: viewController.publicVar.profile.sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst, isSortUseFullPath: viewController.publicVar.profile.isSortUseFullPath)
     }
     
     @objc func sortItems(_ sender: NSMenuItem) {
         guard let sortType = sender.representedObject as? SortType else { return }
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.changeSortType(sortType: sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst, isSortUseFullPath: viewController.publicVar.profile.isSortUseFullPath)
     }
     
@@ -1199,7 +1320,7 @@ extension WindowController: NSToolbarDelegate {
         let favVC = FavoritesPopoverViewController()
         favVC.onNavigate = { [weak self] path in
             guard let self = self,
-                  let viewController = self.contentViewController as? ViewController else { return }
+                  let viewController = self.mainViewController else { return }
             guard let url = URL(string: getFileSchemeAbsPath(path)) else { return }
             if viewController.publicVar.isInLargeView {
                 viewController.closeLargeImage(0)
@@ -1207,7 +1328,7 @@ extension WindowController: NSToolbarDelegate {
             viewController.switchDirByDirection(direction: .zero, dest: url.absoluteString, doCollapse: true, expandLast: true, skip: false, stackDeep: 0)
         }
         favVC.onGetCurrentFolder = { [weak self] in
-            guard let viewController = self?.contentViewController as? ViewController else { return nil }
+            guard let viewController = self?.mainViewController else { return nil }
             viewController.fileDB.lock()
             let curFolder = viewController.fileDB.curFolder
             viewController.fileDB.unlock()
@@ -1254,7 +1375,7 @@ extension WindowController: NSToolbarDelegate {
     }
 
     @objc func taggingAction(_ sender: Any?) {
-        guard let viewController = contentViewController as? ViewController else { return }
+        guard let viewController = mainViewController else { return }
         let collectionView = viewController.collectionView!
         
         let menu = NSMenu()
@@ -1344,32 +1465,32 @@ extension WindowController: NSToolbarDelegate {
     
     @objc func actToggleFinderTag(_ sender: NSMenuItem) {
         guard let tagName = sender.representedObject as? String else { return }
-        guard let viewController = contentViewController as? ViewController else { return }
+        guard let viewController = mainViewController else { return }
         viewController.handleToggleFinderTag(tagName)
     }
 
     @objc func actRemoveAllFinderTags() {
-        guard let viewController = contentViewController as? ViewController else { return }
+        guard let viewController = mainViewController else { return }
         viewController.handleRemoveAllFinderTags()
     }
 
     @objc func actTagLearnMore() {
-        guard let viewController = contentViewController as? ViewController else { return }
+        guard let viewController = mainViewController else { return }
         viewController.handleTagLearnMore()
     }
 
     @objc func actRate(_ sender: NSMenuItem) {
-        guard let viewController = contentViewController as? ViewController else { return }
+        guard let viewController = mainViewController else { return }
         viewController.handleRating(rating: sender.tag)
     }
 
     @objc func actRateReadmeAction() {
-        guard let viewController = contentViewController as? ViewController else { return }
+        guard let viewController = mainViewController else { return }
         viewController.handleRatingReadme()
     }
 
     @objc func showThumbSizeMenu(_ sender: Any?) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
 
         let thumbSizeOptions = THUMB_SIZES.map { ($0, "\($0) × \($0)") }
         
@@ -1425,7 +1546,7 @@ extension WindowController: NSToolbarDelegate {
     }
 
     @objc func preferInternalThumbAction(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.publicVar.isPreferInternalThumb = true
         viewController.publicVar.isGenHdThumb = false
         UserDefaults.standard.set(viewController.publicVar.isPreferInternalThumb, forKey: "isPreferInternalThumb")
@@ -1435,7 +1556,7 @@ extension WindowController: NSToolbarDelegate {
     }
 
     @objc func normalThumbAction(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.publicVar.isPreferInternalThumb = false
         viewController.publicVar.isGenHdThumb = false
         UserDefaults.standard.set(viewController.publicVar.isPreferInternalThumb, forKey: "isPreferInternalThumb")
@@ -1445,7 +1566,7 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func genHdThumbAction(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.publicVar.isGenHdThumb = true
         viewController.publicVar.isPreferInternalThumb = false
         UserDefaults.standard.set(viewController.publicVar.isGenHdThumb, forKey: "isGenHdThumb")
@@ -1459,28 +1580,28 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func enlargeThumb(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.adjustThumbSizeByDirection(direction: +1)
     }
     
     @objc func defaultThumbSize(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.adjustThumbSizeByDirection(direction: 0)
     }
     
     @objc func reduceThumb(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.adjustThumbSizeByDirection(direction: -1)
     }
     
     @objc func selectThumbSize(_ sender: NSMenuItem) {
         guard let thumbSize = sender.representedObject as? Int else { return }
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.changeThumbSize(thumbSize: thumbSize)
     }
     
     @objc func showMoreMenu(_ sender: Any?) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         
         let menu = NSMenu()
         menu.autoenablesItems = false
@@ -1742,7 +1863,7 @@ extension WindowController: NSToolbarDelegate {
     }
 
     @objc func toggleEnableHDR(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.publicVar.isEnableHDR.toggle()
         UserDefaults.standard.set(viewController.publicVar.isEnableHDR, forKey: "isEnableHDR")
         DispatchQueue.main.async { [weak self] in
@@ -1756,27 +1877,27 @@ extension WindowController: NSToolbarDelegate {
     }
 
     @objc func toggleLockRotation(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleLockRotation()
     }
 
     @objc func toggleLockZoom(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleLockZoom()
     }
 
     @objc func toggleLockMirror(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleLockMirror()
     }
 
     @objc func showCustomZoomRatioDialog(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.showCustomZoomRatioDialog()
     }
     
     @objc func showCustomZoomStepDialog(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.showCustomZoomStepDialog()
     }
     
@@ -1785,12 +1906,12 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func togglePanWhenZoomed(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.togglePanWhenZoomed()
     }
     
     @objc func toggleRawUseEmbeddedThumb(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleRawUseEmbeddedThumb()
     }
 
@@ -1799,37 +1920,37 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func maximizeWindow(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.adjustWindowMaximize()
     }
     
     @objc func optimizeWindow(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.adjustWindowSuitable()
     }
     
     @objc func adjustWindowActual(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.adjustWindowImageActual()
     }
     
     @objc func adjustWindowCurrent(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.adjustWindowImageCurrent()
     }
     
     @objc func adjustWindowToCenter(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.adjustWindowToCenter()
     }
     
     @objc func switchToActualSize(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.switchToActualSizeForLargeImage()
     }
     
     @objc func switchToFitToWindow(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.switchToFitToWindowForLargeImage()
     }
     
@@ -1852,7 +1973,7 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func pathClick(_ sender: NSMenuItem) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         log("Clicked on \(sender.title)")
 
         let rawPath = (sender.representedObject as? String) ?? sender.title
@@ -1864,7 +1985,7 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func favoritesAdd(_ sender: NSMenuItem) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.fileDB.lock()
         let curFolder=viewController.fileDB.curFolder
         viewController.fileDB.unlock()
@@ -1923,32 +2044,32 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func showHiddenFileAction(_ sender: NSMenuItem) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleIsShowHiddenFile()
     }
     
     @objc func showAllTypeFileAction(_ sender: NSMenuItem) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleIsShowAllTypeFile()
     }
     
     @objc func showImageFileAction(_ sender: NSMenuItem) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleIsShowImageFile()
     }
     
     @objc func showRawFileAction(_ sender: NSMenuItem) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleIsShowRawFile()
     }
     
     @objc func showVideoFileAction(_ sender: NSMenuItem) {
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleIsShowVideoFile()
     }
     
     @objc func togglePortableMode(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.togglePortableMode()
     }
     
@@ -1957,32 +2078,32 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func toggleSearchFilter(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.applyFilter(isReset: true)
     }
 
     @objc func toggleClearTagFilter(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.handleClearFinderTagFilter()
     }
 
     @objc func toggleClearRatingFilter(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.handleClearRatingFilter()
     }
 
     @objc func actClearAllTagsAndRatingFilters(_ sender: NSMenuItem) {
-        guard let viewController = contentViewController as? ViewController else { return }
+        guard let viewController = mainViewController else { return }
         viewController.handleClearTagsAndRatingFilter()
     }
     
     @objc func toggleRecursiveMode(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleRecursiveMode()
     }
     
     @objc func toggleRecursiveContainFolder(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleRecursiveContainFolder()
     }
     
@@ -1991,27 +2112,27 @@ extension WindowController: NSToolbarDelegate {
     }
     
     @objc func toggleAutoScroll(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleAutoScroll()
     }
     
     @objc func toggleAutoPlay(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleAutoPlay()
     }
     
     @objc func toggleAutoPlayVisibleVideo(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleAutoPlayVisibleVideo()
     }
 
     @objc func toggleAutoPlaySelectedVideo(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleAutoPlaySelectedVideo()
     }
 
     @objc func toggleUseInternalPlayer(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleUseInternalPlayer()
     }
     
@@ -2026,27 +2147,27 @@ extension WindowController: NSToolbarDelegate {
     }
 
     @objc func actRememberPlayPosition(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.largeImageView.actRememberPlayPosition()
     }
 
     @objc func actABPlay(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.largeImageView.actABPlay()
     }
     
     @objc func actSequentialPlay(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.largeImageView.actSequentialPlay()
     }
 
     @objc func customLayoutStyle(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.customLayoutStylePrompt()
     }
 
     @objc func toggleLargeImageViewShowTagsAndRating(_ sender: NSMenuItem){
-        guard let viewController = contentViewController as? ViewController else {return}
+        guard let viewController = mainViewController else {return}
         viewController.toggleLargeImageViewShowTagsAndRating()
     }
 }

@@ -161,16 +161,15 @@ var globalVar = GlobalVar()
 
 let homeDirectory = NSHomeDirectory()
 
+// 主窗口中当前活动的窗格
+// The active pane of the main window
 func getMainViewController() -> ViewController? {
-    if let viewController = NSApplication.shared.mainWindow?.contentViewController as? ViewController {
-        return viewController
-    }
-    return nil
+    return NSApplication.shared.mainWindow?.flowViewController
 }
 
 func getAnyViewController() -> ViewController? {
     for window in NSApplication.shared.windows {
-        if let viewController = window.contentViewController as? ViewController {
+        if let viewController = window.flowViewController {
             return viewController
         }
     }

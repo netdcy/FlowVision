@@ -11,6 +11,10 @@ class CoreAreaView: NSView {
     var infoView: InfoView!
     var cannotBeCleard: Bool = true
     
+    // 拖拽悬停时的高亮，分屏后用来指示文件会落进哪个窗格
+    // Hover highlight during a drag, it shows which pane the files will land in
+    private var dropHighlightView: PaneDropHighlightView!
+    
     private var scanProgressView: NSView?
     private var scanProgressLabel: NSTextField?
     var onScanCancel: (() -> Void)?
@@ -26,6 +30,11 @@ class CoreAreaView: NSView {
     }
     
     private func commonInit() {
+        dropHighlightView = PaneDropHighlightView(frame: bounds)
+        dropHighlightView.autoresizingMask = [.width, .height]
+        dropHighlightView.isHidden = true
+        addSubview(dropHighlightView)
+
         infoView = InfoView(frame: .zero)
         infoView.setupView(fontSize: 20, fontWeight: .light, cornerRadius: 6.0, edge: (18,8))
         infoView.translatesAutoresizingMaskIntoConstraints = false
@@ -34,6 +43,23 @@ class CoreAreaView: NSView {
             infoView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             infoView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
         ])
+    }
+    
+    private func setDropHighlight(_ highlighted: Bool) {
+        guard dropHighlightView.isHidden == highlighted else { return }
+        dropHighlightView.isHidden = !highlighted
+        if highlighted, subviews.last !== dropHighlightView {
+            dropHighlightView.removeFromSuperview()
+            addSubview(dropHighlightView)
+        }
+    }
+    
+    // 拖拽源是否就是本窗格自己的缩略图区域
+    // Whether the drag started in this very pane's thumbnail area
+    private func isDragFromThisPane(_ sender: NSDraggingInfo) -> Bool {
+        guard let sourceView = sender.draggingSource as? CustomCollectionView else { return false }
+        guard let viewController = getViewController(self) else { return false }
+        return sourceView === viewController.collectionView
     }
     
     func showInfo(_ info: String, timeOut: Double = 1.0, duration: Double = INFO_VIEW_DURATION, cannotBeCleard: Bool) {
@@ -133,15 +159,44 @@ class CoreAreaView: NSView {
     }
     
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
+        // 把文件拖回它自己所在的窗格没有意义，直接拒绝，让光标显示"不可放下"
+        // Dropping files back into the pane they came from is a no-op, refuse it so the cursor says "no drop"
+        if isDragFromThisPane(sender) {
+            return []
+        }
         if let viewController = getViewController(self){
             if viewController.publicVar.isInLargeView {
                 return .link
             }
         }
+        // 分屏时高亮本窗格，让用户看清文件会落到哪边
+        // Highlight this pane when split so it is obvious where the files will land
+        if getViewController(self)?.isInSplitLayout == true {
+            setDropHighlight(true)
+        }
         return .every
     }
     
+    override func draggingUpdated(_ sender: NSDraggingInfo) -> NSDragOperation {
+        if isDragFromThisPane(sender) {
+            return []
+        }
+        if let viewController = getViewController(self), viewController.publicVar.isInLargeView {
+            return .link
+        }
+        return .every
+    }
+    
+    override func draggingExited(_ sender: NSDraggingInfo?) {
+        setDropHighlight(false)
+    }
+    
+    override func draggingEnded(_ sender: NSDraggingInfo) {
+        setDropHighlight(false)
+    }
+    
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
+        setDropHighlight(false)
         if let viewController = getViewController(self) {
             if viewController.publicVar.isInLargeView {
                 let pasteboard = sender.draggingPasteboard
@@ -150,10 +205,12 @@ class CoreAreaView: NSView {
                     return true
                 }
             }else{
-                if let source = sender.draggingSource {
-                    if source is CustomCollectionView && (source as? NSView)?.window == self.window {
-                        return false
-                    }
+                // 只拒绝来自本窗格自身的拖拽。分屏后同一个窗口里有多个窗格，
+                // 按窗口判断会把窗格之间的拖放一并挡掉
+                // Only refuse drags coming from this pane itself. A split window holds several panes,
+                // so judging by window would block pane to pane drops as well
+                if isDragFromThisPane(sender) {
+                    return false
                 }
                 if let curFolderUrl = URL(string: viewController.fileDB.curFolder){
                     let pasteboard = sender.draggingPasteboard
@@ -190,5 +247,27 @@ class CoreAreaView: NSView {
         } else {
             super.otherMouseDown(with: event)
         }
+    }
+}
+
+// 拖拽悬停时画在窗格上的边框，不接收鼠标事件
+// Border drawn over a pane while a drag hovers it, never takes mouse events
+class PaneDropHighlightView: NSView {
+    
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        return nil
+    }
+    
+    override var isOpaque: Bool {
+        return false
+    }
+    
+    override func draw(_ dirtyRect: NSRect) {
+        let path = NSBezierPath(rect: bounds.insetBy(dx: 2, dy: 2))
+        path.lineWidth = 4
+        NSColor.controlAccentColor.withAlphaComponent(0.85).setStroke()
+        path.stroke()
+        NSColor.controlAccentColor.withAlphaComponent(0.08).setFill()
+        bounds.fill()
     }
 }

@@ -1124,6 +1124,12 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     let actionItemOpenInNewTab = menu.addItem(withTitle: titleTmp, action: #selector(actOpenInNewTab), keyEquivalent: "")
                 }
 
+                // 目录可以直接在并排的新窗格里打开
+                // A folder can be opened directly in a new side by side pane
+                if file.type == .folder {
+                    let actionItemOpenInNewPane = menu.addItem(withTitle: NSLocalizedString("Open in New Pane", comment: "在新窗格中打开"), action: #selector(actOpenInNewPane), keyEquivalent: "")
+                }
+
                 let isRecursive = viewController.publicVar.isRecursiveMode
                 let canShowInOriginalFolder = selectedCount == 1 && (file.isAlias || isRecursive || isVirtualFinderTagsFolder)
                 if canShowInOriginalFolder, let url = URL(string: file.path) {
@@ -1301,6 +1307,14 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
     @objc func actOpenInNewTabInBackground() {
         openInNewTab(openInBackground: true)
+    }
+
+    // 在当前窗口里新开一个并排窗格
+    // Open a new pane side by side in the current window
+    @objc func actOpenInNewPane() {
+        guard let viewController = getViewController(collectionView) else { return }
+        guard file.type == .folder else { return }
+        viewController.splitPane(direction: .right, folder: file.path)
     }
 
     func openInNewTab(openInBackground: Bool, openSingleFile: Bool = false) {
