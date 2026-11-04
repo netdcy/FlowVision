@@ -111,7 +111,7 @@ extension ViewController {
         // 排序
         // Sort
         if newStyle.sortType != publicVar.profile.sortType || newStyle.isSortFolderFirst != publicVar.profile.isSortFolderFirst || newStyle.isSortUseFullPath != publicVar.profile.isSortUseFullPath || newStyle.sortType == .random {
-            changeSortType(sortType: newStyle.sortType, isSortFolderFirst: newStyle.isSortFolderFirst, isSortUseFullPath: newStyle.isSortUseFullPath, doNotRefresh: true)
+            changeSortType(sortType: newStyle.sortType, isSortFolderFirst: newStyle.isSortFolderFirst, isSortUseFullPath: newStyle.isSortUseFullPath, doNotRefresh: true, alwaysChangeDefault: true)
         }
         // 缩略图大小
         // Thumbnail size
