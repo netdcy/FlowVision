@@ -694,8 +694,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     /// 首次播放视频预览时才创建播放器和图层，避免每个缩略图单元格都创建一个 AVQueuePlayer
     /// Creates the player and its layer on first preview playback, so cells that never
     /// play a video don't each carry an AVQueuePlayer
-    private func setupVideoPlayerIfNeeded() {
-        guard queuePlayer == nil else { return }
+    private func setupVideoPlayerIfNeeded() -> AVQueuePlayer {
+        if let queuePlayer = queuePlayer { return queuePlayer }
 
         let queuePlayer = AVQueuePlayer()
         queuePlayer.isMuted = true
@@ -709,6 +709,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
 
         self.queuePlayer = queuePlayer
         self.avPlayerLayer = avPlayerLayer
+        return queuePlayer
     }
 
     func playVideo() {
@@ -733,11 +734,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             if let url = URL(string: file.path),
                let timeRange = getCommonTimeRange(url: url) {
                 
-                setupVideoPlayerIfNeeded()
+                let queuePlayer = setupVideoPlayerIfNeeded()
                 let playerItem = AVPlayerItem(url: url)
-                queuePlayer?.insert(playerItem, after: nil)
-                playerLooper = AVPlayerLooper(player: queuePlayer!, templateItem: playerItem, timeRange: timeRange)
-                queuePlayer?.play()
+                queuePlayer.insert(playerItem, after: nil)
+                playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem, timeRange: timeRange)
+                queuePlayer.play()
                 currentPlayingURL = URL(string: file.path)
                 avPlayerLayer?.isHidden = false
             }

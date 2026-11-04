@@ -15,16 +15,11 @@ class LargeImageView: NSView {
     var snapshotQueue = [(view: NSView, tag: Int)]()
     // 视频播放器在首次播放视频时才创建（见 setupVideoPlayerIfNeeded）
     // The video player is created on first video playback (see setupVideoPlayerIfNeeded)
-    private var _videoView: LargeAVPlayerView?
-    var videoView: LargeAVPlayerView {
-        setupVideoPlayerIfNeeded()
-        return _videoView!
-    }
+    var videoView: LargeAVPlayerView?
     /// 视频视图是否已创建且可见（不会触发创建）
     /// Whether the video view exists and is visible (never creates it)
     var isVideoViewVisible: Bool {
-        guard let videoView = _videoView else { return false }
-        return !videoView.isHidden
+        videoView?.isHidden == false
     }
     // var videoPlayer: AVPlayer?
     var playerItem: AVPlayerItem?
@@ -573,18 +568,13 @@ class LargeImageView: NSView {
         setupMouseTracking()
     }
     
-    /// 首次需要时才创建 AVPlayerView 和 AVQueuePlayer。
-    /// 将播放器连接到 AVPlayerView 会在主线程上建立音频输出路由，通常需要约 20ms，
-    /// 但在 coreaudiod 繁忙时（例如 SoundSource 等音频工具正在工作）可能阻塞数秒。
-    /// 只浏览图片时完全不需要播放器，因此不再在启动时创建它。
+    /// 仅由播放入口调用，避免读取视图或更新布局时建立音频输出路由、阻塞主线程。
+    /// 已创建的播放器会在后续播放时复用。
     ///
-    /// Creates the AVPlayerView and AVQueuePlayer the first time they are needed.
-    /// Attaching a player to an AVPlayerView sets up an audio output route on the main thread.
-    /// That normally takes ~20 ms, but it can block for seconds when coreaudiod is busy
-    /// (for example while an audio tool such as SoundSource is active). Viewing images never
-    /// needs a player, so it is no longer built at launch.
-    func setupVideoPlayerIfNeeded() {
-        guard _videoView == nil else { return }
+    /// Called only from playback, so reading the view or updating layout never sets up an
+    /// audio output route on the main thread. Reuses the player for subsequent playback.
+    private func setupVideoPlayerIfNeeded() -> LargeAVPlayerView {
+        if let videoView = videoView { return videoView }
 
         let videoView = LargeAVPlayerView(frame: self.bounds)
         let queuePlayer = AVQueuePlayer()
@@ -597,7 +587,7 @@ class LargeImageView: NSView {
         // 保持原有层级：位于图片视图之上、视频控制栏等视图之下
         // Keep the original z-order: above the image view, below the video controls and overlays
         self.addSubview(videoView, positioned: .above, relativeTo: imageView)
-        _videoView = videoView
+        self.videoView = videoView
         self.queuePlayer = queuePlayer
 
         volumeObservation = queuePlayer.observe(\.volume, options: [.new, .old]) { [weak self] _, change in
@@ -611,6 +601,10 @@ class LargeImageView: NSView {
 //        if #available(macOS 13.0, *) {
 //            videoView.allowsVideoFrameAnalysis = false
 //        }
+        // 首次布局可能早于播放器创建，在初始化完成后补上布局。
+        // Initial layout may precede player creation; apply it once initialization is complete.
+        determineBlackBg()
+        return videoView
     }
 
     func pauseOrResumeVideo() {
@@ -706,7 +700,7 @@ class LargeImageView: NSView {
             abPlayPositionB = nil
         }
         videoOrderId += 1
-        _videoView?.isHidden = true
+        videoView?.isHidden = true
         videoControlsView.hideControlsImmediately()
         stopPeriodicTimeObserver()
         hideUnsupportedVideoOverlay()
@@ -790,7 +784,7 @@ class LargeImageView: NSView {
                 guard self.file.type == .video,
                       URL(string: self.file.path) == url else { return }
 
-                setupVideoPlayerIfNeeded()
+                let videoView = setupVideoPlayerIfNeeded()
 
                 if reload && abPlayPositionA != nil && abPlayPositionB != nil {
                     showInfo(NSLocalizedString("A-B Loop Cancel", comment: "（视频）A-B循环取消"))
@@ -1303,12 +1297,13 @@ class LargeImageView: NSView {
     }
     
     func enableBlackBgForVideo() {
-        videoView.frame = self.frame
+        videoView?.frame = bounds
     }
     
     func disableBlackBgForVideo() {
+        guard let videoView = videoView else { return }
         let originalSize = file.originalSize ?? imageView.frame.size
-        let zoomFrame = AVMakeRect(aspectRatio: originalSize, insideRect: self.frame)
+        let zoomFrame = AVMakeRect(aspectRatio: originalSize, insideRect: bounds)
         videoView.frame = NSRect(x: round(zoomFrame.origin.x), y: round(zoomFrame.origin.y), width: round(zoomFrame.width), height: round(zoomFrame.height))
     }
     
