@@ -680,7 +680,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if event.window != self.view.window { return event }
 
             // Show cursor on click
-            (self.view.window?.windowController as? WindowController)?.showCursor()
+            if let windowController = self.view.window?.windowController as? WindowController {
+                windowController.showCursor()
+            }
 
             if publicVar.isInLargeView && largeImageView.file.type == .video {
                 let clickLocation = event.locationInWindow
@@ -825,7 +827,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 return event
             }
             // Show cursor on click
-            (self.view.window?.windowController as? WindowController)?.showCursor()
+            if let windowController = self.view.window?.windowController as? WindowController {
+                windowController.showCursor()
+            }
             if self.coreAreaView.frame.contains(event.locationInWindow) {
                 if !publicVar.isInLargeView {
                     self.drawingView?._rightMouseDown(with: event)
