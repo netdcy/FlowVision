@@ -80,6 +80,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
     
     func prepareForDeinit() {
         saveWindowState()
+        showCursor()
         cancelCursorHideTimer()
     }
     
@@ -127,6 +128,11 @@ class WindowController: NSWindowController, NSWindowDelegate {
         log("windowDidBecomeKey")
     }
     
+    // Show cursor when window loses focus
+    func windowDidResignKey(_ notification: Notification) {
+        showCursor()
+    }
+    
     func toggleWindowOnTop() {
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.toggleOnTop()
@@ -172,7 +178,7 @@ class WindowController: NSWindowController, NSWindowDelegate {
         // 取消光标隐藏定时器并显示光标
         // Cancel cursor hide timer and show cursor
         cancelCursorHideTimer()
-        NSCursor.unhide()
+        showCursor()
 
         if !globalVar.autoHideToolbar {
             if window?.toolbar?.isVisible == false {
@@ -211,12 +217,8 @@ class WindowController: NSWindowController, NSWindowDelegate {
         guard let viewController = contentViewController as? ViewController else {return}
         let location = event.locationInWindow
         
-        // 在全屏模式下，鼠标移动时显示光标并重置隐藏定时器
-        // In full screen mode, show cursor when mouse moves and reset hide timer
-        if window.styleMask.contains(.fullScreen) {
-            NSCursor.unhide()
-            scheduleCursorHide()
-        }
+        // Show cursor when mouse moves and reset hide timer when in full screen
+        showCursor()
         
         if globalVar.autoHideToolbar {
             if location.y > window.frame.height - 40 {
@@ -271,15 +273,10 @@ class WindowController: NSWindowController, NSWindowDelegate {
     // Schedule delayed cursor hiding (in full screen mode, hide cursor 1 second after mouse stops moving)
     func scheduleCursorHide() {
         cancelCursorHideTimer()
-        if globalVar.autoHideCursorWhenFullscreen {
+        if globalVar.autoHideCursorWhenFullscreen,
+           window?.styleMask.contains(.fullScreen) == true {
             cursorHideTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [weak self] _ in
-                guard let self = self else { return }
-                guard let window = self.window else { return }
-                if window.styleMask.contains(.fullScreen),
-                   NSApp.keyWindow === window,
-                   window.frame.contains(NSEvent.mouseLocation) {
-                    NSCursor.hide()
-                }
+                self?.hideCursor()
             }
         }
     }
@@ -289,6 +286,25 @@ class WindowController: NSWindowController, NSWindowDelegate {
     func cancelCursorHideTimer() {
         cursorHideTimer?.invalidate()
         cursorHideTimer = nil
+    }
+    
+    func hideCursor() {
+        guard let window = window else { return }
+        if !globalVar.isCursorHidden,
+           NSApp.keyWindow === window,
+           window.frame.contains(NSEvent.mouseLocation) {
+            NSCursor.hide()
+            globalVar.isCursorHidden = true
+        }
+    }
+    
+    // Show cursor and reset hide timer when in full screen
+    func showCursor() {
+        if globalVar.isCursorHidden {
+            NSCursor.unhide()
+            globalVar.isCursorHidden = false
+        }
+        scheduleCursorHide()
     }
 }
 

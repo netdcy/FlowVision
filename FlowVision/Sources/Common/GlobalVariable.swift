@@ -71,6 +71,8 @@ class GlobalVar{
     var terminateAfterLastWindowClosed = true
     var autoHideToolbar = false
     var autoHideCursorWhenFullscreen = false
+    var autoHideCursorWhenSwitchingImages = false
+    var isCursorHidden = false
     var doNotUseFFmpeg = false
     var memUseLimit: Int = 4000
     var thumbThreadNum: Int = 8

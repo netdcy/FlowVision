@@ -679,6 +679,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             guard let self = self else { return event }
             if event.window != self.view.window { return event }
 
+            // Show cursor on click
+            (self.view.window?.windowController as? WindowController)?.showCursor()
+
             if publicVar.isInLargeView && largeImageView.file.type == .video {
                 let clickLocation = event.locationInWindow
                 let videoControlYmin = largeImageView.videoView.frame.minY
@@ -821,6 +824,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             if event.window != self.view.window {
                 return event
             }
+            // Show cursor on click
+            (self.view.window?.windowController as? WindowController)?.showCursor()
             if self.coreAreaView.frame.contains(event.locationInWindow) {
                 if !publicVar.isInLargeView {
                     self.drawingView?._rightMouseDown(with: event)

@@ -433,6 +433,114 @@
         }
       }
     },
+    "cOT-Gp-gE9.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Auto Hide Cursor When Switching Images\"; ObjectID = \"cOT-Gp-gE9\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إخفاء المؤشر تلقائيًا عند تبديل الصور"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatisches Ausblenden des Cursors beim Bildwechsel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Auto Hide Cursor When Switching Images"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar cursor automáticamente al cambiar de imagen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer automatiquement le curseur lors du changement d'image"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nascondi automaticamente il cursore al cambio di immagine"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像を切り替えるときにカーソルを自動的に非表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지 전환 시 커서 자동 숨김"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cursor automatisch verbergen bij wisselen van afbeelding"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatycznie ukryj kursor podczas przełączania obrazów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar Cursor Automaticamente ao Alternar Imagens"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar automaticamente o cursor ao mudar de imagem"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автоматически скрывать курсор при переключении изображений"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dölj markör automatiskt vid byte av bilder"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Görüntüleri Değiştirirken İmleci Otomatik Gizle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切换图像时自动隐藏光标"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切換圖像時自動隱藏光標"
+          }
+        }
+      }
+    },
     "dB2-6s-xY8.title" : {
       "comment" : "Class = \"NSButtonCell\"; title = \"Quit Application When Closing Last Window\"; ObjectID = \"dB2-6s-xY8\";",
       "extractionState" : "extracted_with_value",
