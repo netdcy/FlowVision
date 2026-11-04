@@ -487,6 +487,10 @@ extension ViewController {
         publicVar.isKeyEventEnabled = false
         for item in items {
             guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { continue }
+            guard FileManager.default.fileExists(atPath: fileURL.path) else {
+                log("Failed to paste \(fileURL): source does not exist", level: .error)
+                continue
+            }
             let prevSuccessCount = successfulDestURLs.count
             var destURL = destinationURL.appendingPathComponent(fileURL.lastPathComponent)
 
@@ -541,6 +545,10 @@ extension ViewController {
                     }
                 } else {
                     let userChoice = showReplaceDialog(for: destURL, sourceURL: fileURL, isSingle: items.count == 1, isMove: false)
+                    guard userChoice == .cancel || userChoice == .skipAll || FileManager.default.fileExists(atPath: fileURL.path) else {
+                        log("Failed to paste \(fileURL): source does not exist", level: .error)
+                        continue
+                    }
                     switch userChoice {
                     case .replace:
                         do {
@@ -783,6 +791,10 @@ extension ViewController {
         publicVar.isKeyEventEnabled = false
         for item in items {
             guard let fileURL = URL(string: item.string(forType: .fileURL) ?? "") else { continue }
+            guard FileManager.default.fileExists(atPath: fileURL.path) else {
+                log("Failed to move \(fileURL): source does not exist", level: .error)
+                continue
+            }
             let prevSuccessCount = successfulDestURLs.count
             var destURL = destinationURL.appendingPathComponent(fileURL.lastPathComponent)
             
@@ -837,6 +849,10 @@ extension ViewController {
                     }
                 } else {
                     let userChoice = showReplaceDialog(for: destURL, sourceURL: fileURL, isSingle: items.count == 1, isMove: true)
+                    guard userChoice == .cancel || userChoice == .skipAll || FileManager.default.fileExists(atPath: fileURL.path) else {
+                        log("Failed to move \(fileURL): source does not exist", level: .error)
+                        continue
+                    }
                     switch userChoice {
                     case .replace:
                         do {
