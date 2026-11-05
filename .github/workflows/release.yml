@@ -137,3 +137,49 @@ jobs:
             # shellcheck disable=SC2086
             gh release create "$VERSION" dist/*.dmg dist/*.zip --title "FlowVision $VERSION" --generate-notes $FLAGS
           fi
+
+  # 发布完成后，把 tvv.tw 加速链接写进发布说明（国内网络可直接下载）
+  tvv-accelerate:
+    name: 发布页追加 tvv.tw 加速链接
+    needs: release
+    if: needs.release.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 在发布说明末尾追加国内加速下载链接
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          repo="$GITHUB_REPOSITORY"
+          tag="$(gh release list --repo "$repo" --limit 1 --exclude-drafts --json tagName --jq '.[0].tagName' || true)"
+          if [ -z "$tag" ]; then echo "没有已发布的 release，跳过"; exit 0; fi
+          if ! gh api "repos/$repo/releases/tags/$tag" > /dev/null 2>&1; then echo "$tag 对应的 release 不存在，跳过"; exit 0; fi
+          if [ "$(gh api "repos/$repo/releases/tags/$tag" --jq .draft)" = "true" ]; then echo "$tag 还是草稿，跳过"; exit 0; fi
+          assets="$(gh release view "$tag" --repo "$repo" --json assets --jq '.assets[].url' || true)"
+          if [ -z "$assets" ]; then echo "$tag 没有资产，跳过"; exit 0; fi
+          block="$RUNNER_TEMP/tvv-block.md"
+          {
+            echo '## 国内加速下载'
+            echo
+            echo '以下链接走 tvv.tw 加速，国内网络可直接下载：'
+            echo
+            n=0
+            while IFS= read -r url; do
+              if [ -z "$url" ]; then continue; fi
+              name="${url##*/}"
+              case "$name" in
+                update-*|*.delta|*.blockmap|*.json|latest*.yml) continue ;;
+              esac
+              echo "- [${name}](https://tvv.tw/${url})"
+              n=$((n+1))
+            done <<< "$assets"
+            if [ "$n" -eq 0 ]; then echo '（本次发布没有可列的安装包）'; fi
+          } > "$block"
+          notes="$RUNNER_TEMP/tvv-notes.md"
+          gh release view "$tag" --repo "$repo" --json body --jq '.body // ""' \
+            | sed '/^## 国内加速下载/,$d' > "$notes"
+          cat "$block" >> "$notes"
+          gh release edit "$tag" --repo "$repo" --notes-file "$notes"
+          echo "已写入 $tag 的加速链接"
