@@ -49,6 +49,7 @@ class GlobalVar{
     // 实时状态变量
     // Real-time state variables
     var isInMiddleMouseDrag = false
+    var isCursorHidden = false
     
     // "设置"中按钮，用于同步状态
     // Button in "Settings" for synchronizing state
@@ -71,6 +72,7 @@ class GlobalVar{
     var terminateAfterLastWindowClosed = true
     var autoHideToolbar = false
     var autoHideCursorWhenFullscreen = false
+    var autoHideCursorWhenSwitchingImages = false
     var doNotUseFFmpeg = false
     var memUseLimit: Int = 4000
     var thumbThreadNum: Int = 8

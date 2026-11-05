@@ -679,6 +679,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             guard let self = self else { return event }
             if event.window != self.view.window { return event }
 
+            // Show cursor on click
+            if let windowController = self.view.window?.windowController as? WindowController {
+                windowController.showCursor()
+            }
+
             if publicVar.isInLargeView && largeImageView.file.type == .video,
                let videoView = largeImageView.videoView {
                 let clickLocation = event.locationInWindow
@@ -822,6 +827,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             // 检查事件的窗口是否是激活窗口
             if event.window != self.view.window {
                 return event
+            }
+            // Show cursor on click
+            if let windowController = self.view.window?.windowController as? WindowController {
+                windowController.showCursor()
             }
             if self.coreAreaView.frame.contains(event.locationInWindow) {
                 if !publicVar.isInLargeView {

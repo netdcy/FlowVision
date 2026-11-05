@@ -366,6 +366,11 @@ extension ViewController {
         fileDB.unlock()
         
         if ifFoundNextImage {
+            // Hide cursor when switching images except refresh (no thumbnail first) and edge click
+            if globalVar.autoHideCursorWhenSwitchingImages, firstShowThumb, NSApp.currentEvent?.type != .leftMouseUp,
+               let windowController = view.window?.windowController as? WindowController {
+                windowController.hideCursor()
+            }
             // 复原之前图片的旋转
             // Restore the rotation of the previous image
             largeImageView.file.rotate=0
