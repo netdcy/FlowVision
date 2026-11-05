@@ -684,12 +684,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 windowController.showCursor()
             }
 
-            if publicVar.isInLargeView && largeImageView.file.type == .video {
+            if publicVar.isInLargeView && largeImageView.file.type == .video,
+               let videoView = largeImageView.videoView {
                 let clickLocation = event.locationInWindow
-                let videoControlYmin = largeImageView.videoView.frame.minY
-                let videoControlYmax = largeImageView.videoView.frame.maxY
-                let videoControlXmin = largeImageView.videoView.frame.minX
-                let videoControlXmax = largeImageView.videoView.frame.maxX
+                let videoControlYmin = videoView.frame.minY
+                let videoControlYmax = videoView.frame.maxY
+                let videoControlXmin = videoView.frame.minX
+                let videoControlXmax = videoView.frame.maxX
                 let coreAreaYmax = coreAreaView.frame.maxY - (globalVar.autoHideToolbar ? 40 : 0)
                 
                 if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax,
@@ -709,12 +710,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             guard let self = self else { return event }
             if event.window != self.view.window { return event }
 
-            if publicVar.isInLargeView && largeImageView.file.type == .video {
+            if publicVar.isInLargeView && largeImageView.file.type == .video,
+               let videoView = largeImageView.videoView {
                 let clickLocation = event.locationInWindow
-                let videoControlYmin = largeImageView.videoView.frame.minY
-                let videoControlYmax = largeImageView.videoView.frame.maxY
-                let videoControlXmin = largeImageView.videoView.frame.minX
-                let videoControlXmax = largeImageView.videoView.frame.maxX
+                let videoControlYmin = videoView.frame.minY
+                let videoControlYmax = videoView.frame.maxY
+                let videoControlXmin = videoView.frame.minX
+                let videoControlXmax = videoView.frame.maxX
                 let coreAreaYmax = coreAreaView.frame.maxY - (globalVar.autoHideToolbar ? 40 : 0)
                 
                 if clickLocation.y > videoControlYmin + 40 && clickLocation.y < videoControlYmax,
@@ -2452,6 +2454,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     }
     
     func handleDraggedFiles(_ urls: [URL]) {
+        let urls = urls.map { $0.resolvingActualFilePath() }
         var folderPath="file:///"
         var path="file:///"
         

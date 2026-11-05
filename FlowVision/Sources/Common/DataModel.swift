@@ -419,7 +419,7 @@ class SortKey: Comparable {
             let lhsFileName = lhs_paths.last ?? ""
             let rhsFileName = rhs_paths.last ?? ""
             
-            if lhsFileName != rhsFileName {
+            if !lhsFileName.utf8.elementsEqual(rhsFileName.utf8) {
                 return localCompare(lhsFileName, rhsFileName)
             }
             
@@ -429,7 +429,7 @@ class SortKey: Comparable {
             let rhsPathWithoutFileName = rhs_paths.dropLast()
             
             for i in 0..<min(lhsPathWithoutFileName.count, rhsPathWithoutFileName.count) {
-                if lhsPathWithoutFileName[i] == rhsPathWithoutFileName[i] { continue }
+                if lhsPathWithoutFileName[i].utf8.elementsEqual(rhsPathWithoutFileName[i].utf8) { continue }
                 if localCompare(lhsPathWithoutFileName[i], rhsPathWithoutFileName[i]) {
                     return true
                 } else {
@@ -444,7 +444,7 @@ class SortKey: Comparable {
         }
         
         for i in 0...min(lhs_paths.count,rhs_paths.count)-1 {
-            if lhs_paths[i] == rhs_paths[i] { continue }
+            if lhs_paths[i].utf8.elementsEqual(rhs_paths[i].utf8) { continue }
 //            if lhs_paths[i]<rhs_paths[i]{
             if localCompare(lhs_paths[i],rhs_paths[i]){
                 return true

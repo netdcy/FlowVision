@@ -319,7 +319,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
            let url = URL(string: path){
             
             var isDirectoryObj: ObjCBool = false
-            FileManager.default.fileExists(atPath: path, isDirectory: &isDirectoryObj)
+            FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectoryObj)
             let isDirectory=isDirectoryObj.boolValue
 
             // 如果打开目录
@@ -434,10 +434,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
                 path = FileManager.default.currentDirectoryPath
             }
             
-            var file = getFileSchemeAbsPath(path)
-            if let url=URL(string: file){
-                NSDocumentController.shared.noteNewRecentDocumentURL(url)
-            }
+            guard let url = fileURLPreservingUnicode(path: path)?.resolvingActualFilePath() else { continue }
+            var file = url.absoluteString
+            NSDocumentController.shared.noteNewRecentDocumentURL(url)
             
             var isDirectoryObj: ObjCBool = false
             FileManager.default.fileExists(atPath: path, isDirectory: &isDirectoryObj)
@@ -502,7 +501,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         dialog.allowedFileTypes        = globalVar.HandledImageAndRawExtensions
         
         if (dialog.runModal() == NSApplication.ModalResponse.OK) {
-            if let result = dialog.url {
+            if let result = dialog.url?.resolvingActualFilePath() {
                 // Add the selected document to recent documents
                 NSDocumentController.shared.noteNewRecentDocumentURL(result)
                 

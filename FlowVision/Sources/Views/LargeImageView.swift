@@ -13,7 +13,14 @@ class LargeImageView: NSView {
     var imageView: CustomLargeImageView!
     
     var snapshotQueue = [(view: NSView, tag: Int)]()
-    var videoView: LargeAVPlayerView!
+    // 视频播放器在首次播放视频时才创建（见 setupVideoPlayerIfNeeded）
+    // The video player is created on first video playback (see setupVideoPlayerIfNeeded)
+    var videoView: LargeAVPlayerView?
+    /// 视频视图是否已创建且可见（不会触发创建）
+    /// Whether the video view exists and is visible (never creates it)
+    var isVideoViewVisible: Bool {
+        videoView?.isHidden == false
+    }
     // var videoPlayer: AVPlayer?
     var playerItem: AVPlayerItem?
     var queuePlayer: AVQueuePlayer?
@@ -107,28 +114,6 @@ class LargeImageView: NSView {
         imageView.animates=true
         self.addSubview(imageView)
 
-        videoView = LargeAVPlayerView(frame: self.bounds)
-        queuePlayer = AVQueuePlayer()
-        queuePlayer?.volume = globalVar.videoVolume
-        videoView.player = queuePlayer
-        videoView.controlsStyle = .none
-        videoView.showsFullScreenToggleButton = false
-        videoView.videoGravity = .resizeAspect
-        videoView.isHidden = true
-        self.addSubview(videoView)
-        
-        volumeObservation = queuePlayer?.observe(\.volume, options: [.new, .old]) { [weak self] _, change in
-            guard let self = self,
-                  let newVal = change.newValue,
-                  let oldVal = change.oldValue,
-                  newVal != oldVal else { return }
-            self.saveVolumeChange()
-            self.videoControlsView.updateVolumeUI()
-        }
-//        if #available(macOS 13.0, *) {
-//            videoView.allowsVideoFrameAnalysis = false
-//        }
-        
         videoControlsView = VideoPlayerControlsView(frame: .zero)
         videoControlsView.largeImageView = self
         videoControlsView.translatesAutoresizingMaskIntoConstraints = false
@@ -583,6 +568,45 @@ class LargeImageView: NSView {
         setupMouseTracking()
     }
     
+    /// 仅由播放入口调用，避免读取视图或更新布局时建立音频输出路由、阻塞主线程。
+    /// 已创建的播放器会在后续播放时复用。
+    ///
+    /// Called only from playback, so reading the view or updating layout never sets up an
+    /// audio output route on the main thread. Reuses the player for subsequent playback.
+    private func setupVideoPlayerIfNeeded() -> LargeAVPlayerView {
+        if let videoView = videoView { return videoView }
+
+        let videoView = LargeAVPlayerView(frame: self.bounds)
+        let queuePlayer = AVQueuePlayer()
+        queuePlayer.volume = globalVar.videoVolume
+        videoView.player = queuePlayer
+        videoView.controlsStyle = .none
+        videoView.showsFullScreenToggleButton = false
+        videoView.videoGravity = .resizeAspect
+        videoView.isHidden = true
+        // 保持原有层级：位于图片视图之上、视频控制栏等视图之下
+        // Keep the original z-order: above the image view, below the video controls and overlays
+        self.addSubview(videoView, positioned: .above, relativeTo: imageView)
+        self.videoView = videoView
+        self.queuePlayer = queuePlayer
+
+        volumeObservation = queuePlayer.observe(\.volume, options: [.new, .old]) { [weak self] _, change in
+            guard let self = self,
+                  let newVal = change.newValue,
+                  let oldVal = change.oldValue,
+                  newVal != oldVal else { return }
+            self.saveVolumeChange()
+            self.videoControlsView.updateVolumeUI()
+        }
+//        if #available(macOS 13.0, *) {
+//            videoView.allowsVideoFrameAnalysis = false
+//        }
+        // 首次布局可能早于播放器创建，在初始化完成后补上布局。
+        // Initial layout may precede player creation; apply it once initialization is complete.
+        determineBlackBg()
+        return videoView
+    }
+
     func pauseOrResumeVideo() {
         if let queuePlayer = queuePlayer {
             if queuePlayer.timeControlStatus == .playing {
@@ -676,7 +700,7 @@ class LargeImageView: NSView {
             abPlayPositionB = nil
         }
         videoOrderId += 1
-        videoView.isHidden = true
+        videoView?.isHidden = true
         videoControlsView.hideControlsImmediately()
         stopPeriodicTimeObserver()
         hideUnsupportedVideoOverlay()
@@ -759,7 +783,9 @@ class LargeImageView: NSView {
                 guard let self = self else { return }
                 guard self.file.type == .video,
                       URL(string: self.file.path) == url else { return }
-                
+
+                let videoView = setupVideoPlayerIfNeeded()
+
                 if reload && abPlayPositionA != nil && abPlayPositionB != nil {
                     showInfo(NSLocalizedString("A-B Loop Cancel", comment: "（视频）A-B循环取消"))
                 }
@@ -1230,7 +1256,7 @@ class LargeImageView: NSView {
     }
     
     func showVideoControls() {
-        guard file.type == .video, !videoView.isHidden, queuePlayer?.currentItem != nil else { return }
+        guard file.type == .video, isVideoViewVisible, queuePlayer?.currentItem != nil else { return }
         videoControlsView.showControls()
     }
     
@@ -1271,12 +1297,13 @@ class LargeImageView: NSView {
     }
     
     func enableBlackBgForVideo() {
-        videoView.frame = self.frame
+        videoView?.frame = bounds
     }
     
     func disableBlackBgForVideo() {
+        guard let videoView = videoView else { return }
         let originalSize = file.originalSize ?? imageView.frame.size
-        let zoomFrame = AVMakeRect(aspectRatio: originalSize, insideRect: self.frame)
+        let zoomFrame = AVMakeRect(aspectRatio: originalSize, insideRect: bounds)
         videoView.frame = NSRect(x: round(zoomFrame.origin.x), y: round(zoomFrame.origin.y), width: round(zoomFrame.width), height: round(zoomFrame.height))
     }
     
@@ -1528,7 +1555,7 @@ class LargeImageView: NSView {
     override func mouseMoved(with event: NSEvent) {
         super.mouseMoved(with: event)
         
-        if file.type == .video && !videoView.isHidden {
+        if file.type == .video && isVideoViewVisible {
             showVideoControls()
         }
         

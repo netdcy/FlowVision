@@ -122,20 +122,38 @@ extension UserDefaults {
     }
 }
 
+// URL(fileURLWithPath:) may change NFC to NFD. Keep the raw path's spelling when encoding it.
+func fileURLPreservingUnicode(path: String) -> URL? {
+    var components = URLComponents()
+    components.scheme = "file"
+    components.host = ""
+    components.path = path.hasPrefix("/") ? path : FileManager.default.currentDirectoryPath + "/" + path
+    return components.url
+}
+
+extension URL {
+    // Resolve externally supplied paths to the spelling returned by the filesystem, not to NFC/NFD.
+    // Unsupported volumes or missing files retain the supplied URL.
+    func resolvingActualFilePath() -> URL {
+        guard isFileURL,
+              let values = try? resourceValues(forKeys: [.canonicalPathKey]),
+              let path = values.allValues[.canonicalPathKey] as? String,
+              let url = fileURLPreservingUnicode(path: path) else { return self }
+        return hasDirectoryPath ? url.appendingPathComponent("", isDirectory: true) : url
+    }
+}
+
 func getFileSchemeAbsPath(_ path: String) -> String {
-    var pathNoScheme = path.hasPrefix("file://") ? String(path.dropFirst("file://".count)) : path
-    pathNoScheme = pathNoScheme.removingPercentEncoding!.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
-    let pathWithScheme = "file://" + pathNoScheme
-    return pathWithScheme
+    guard !path.isEmpty else { return "" }
+    // Only file:// strings are URL-encoded. A raw filename may contain a literal "%20".
+    let url = path.hasPrefix("file://") ? URL(string: path) : fileURLPreservingUnicode(path: path)
+    return url?.absoluteString ?? ""
 }
 
 func getFileSchemeAbsParentFolderPath(_ path: String) -> String {
-    var pathNoScheme = path.hasPrefix("file://") ? String(path.dropFirst("file://".count)) : path
-    pathNoScheme = pathNoScheme.removingPercentEncoding!.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
-    let pathWithScheme = "file://" + pathNoScheme
-    guard let url=URL(string: pathWithScheme) else { return "" }
-    var folderPath=url.deletingLastPathComponent().absoluteString
-    return folderPath
+    let encodedPath = getFileSchemeAbsPath(path)
+    guard !encodedPath.isEmpty, let url = URL(string: encodedPath) else { return "" }
+    return url.deletingLastPathComponent().absoluteString
 }
 
 func attributedStringWithSymbols(_ symbols: [String]) -> NSAttributedString {
@@ -501,14 +519,14 @@ class VolumeManager {
     }
     
     func isExternalVolume(_ path: String) -> Bool {
-        guard var url = URL(string: path) else {
-            return false
+        let url: URL?
+        if path.hasPrefix("/") {
+            url = fileURLPreservingUnicode(path: path)
+        } else {
+            url = URL(string: path)
         }
-        
-        if url.scheme == nil {
-            url = URL(fileURLWithPath: path.removingPercentEncoding!)
-        }
-        
+        // 空值、相对路径、HTTP/SMB URL：返回 false
+        guard let url, url.isFileURL, url.path.hasPrefix("/") else { return false }
         return isExternalVolume(url)
     }
     
@@ -790,10 +808,9 @@ func triggerFinderSound() {
 }
 
 func resolveRelativePath(basePath: String, relativePath: String) -> String? {
-    // 移除开头的 file:// 并解码
-    // Remove leading file:// and decode
-    var base = basePath.replacingOccurrences(of: "file://", with: "").removingPercentEncoding ?? basePath
-    var relative = relativePath.removingPercentEncoding ?? relativePath
+    // Both arguments are raw filesystem paths, already decoded at the input boundary.
+    var base = basePath
+    var relative = relativePath
     
     // 处理波浪号(~)表示用户主目录
     // Handle tilde (~) representing user home directory
