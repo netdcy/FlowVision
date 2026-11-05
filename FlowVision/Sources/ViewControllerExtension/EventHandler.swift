@@ -103,10 +103,11 @@ extension ViewController {
     func toggleSidebar(){
         hasManualToggleSidebar=true
         publicVar.profile.isDirTreeHidden.toggle()
+        let isRTL = splitView.userInterfaceLayoutDirection == .rightToLeft
         if !publicVar.profile.isDirTreeHidden{
-            splitView.setPosition(270, ofDividerAt: 0)
+            splitView.setPosition(isRTL ? splitView.bounds.width - splitView.dividerThickness - 270 : 270, ofDividerAt: 0)
         }else{
-            splitView.setPosition(0, ofDividerAt: 0)
+            splitView.setPosition(isRTL ? splitView.bounds.width : 0, ofDividerAt: 0)
         }
 
 //        let defaults = UserDefaults.standard
@@ -353,11 +354,13 @@ extension ViewController {
                     if path.hasPrefix("\"") && path.hasSuffix("\"") {
                         path = String(path.dropFirst().dropLast())
                     }
-                    // 解码URL编码
-                    // Decode URL encoding
-                    guard var path = path.replacingOccurrences(of: "file://", with: "").removingPercentEncoding else {
-                        coreAreaView.showInfo(NSLocalizedString("Invalid current path", comment: "当前路径无效"), timeOut: 2, cannotBeCleard: false)
-                        return
+                    // Decode file URLs once; plain paths keep literal percent sequences.
+                    if path.hasPrefix("file://") {
+                        guard let url = URL(string: path), url.isFileURL, !url.path.isEmpty else {
+                            coreAreaView.showInfo(NSLocalizedString("Invalid current path", comment: "当前路径无效"), timeOut: 2, cannotBeCleard: false)
+                            return
+                        }
+                        path = url.path
                     }
                     
                     // 替换连续双斜杠
@@ -420,7 +423,7 @@ extension ViewController {
                     // Check if is directory
                     if !isDirectory.boolValue {
                         if let appDelegate=NSApplication.shared.delegate as? AppDelegate {
-                            appDelegate.openImageInMainWindow(getFileSchemeAbsPath(destPath))
+                            appDelegate.openImageInMainWindow(destPath)
                         }
                         return
                     }

@@ -477,7 +477,7 @@ class EnhancedIndex {
                 continue
             }
 
-            let url = URL(fileURLWithPath: path)
+            guard let url = fileURLPreservingUnicode(path: path) else { continue }
             let currentTags = (try? url.resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? []
 
             indexLock.lock()

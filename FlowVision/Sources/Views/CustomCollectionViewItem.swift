@@ -82,20 +82,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         videoFlag.imageScaling = .scaleAxesIndependently
         videoFlag.wantsLayer = true
 
-        // 视频播放器
-        // Video player
-        queuePlayer = AVQueuePlayer()
-        queuePlayer?.isMuted = true
-        
-        // 初始化 AVPlayerLayer
-        // Initialize AVPlayerLayer
-        avPlayerLayer = AVPlayerLayer(player: queuePlayer)
-        avPlayerLayer?.isHidden = true
-        avPlayerLayer?.frame = videoView.bounds
-        avPlayerLayer?.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
+        // 视频预览播放器在首次播放时才创建（见 setupVideoPlayerIfNeeded）
+        // The video preview player is created on first playback (see setupVideoPlayerIfNeeded)
         videoView.wantsLayer = true
         videoView.layer?.cornerRadius = 5.0
-        videoView.layer?.addSublayer(avPlayerLayer!)
         
 //        for _ in 0...0 {
 //            // 父视图 - 用于阴影和边框
@@ -701,6 +691,27 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         return tooltip
     }
 
+    /// 首次播放视频预览时才创建播放器和图层，避免每个缩略图单元格都创建一个 AVQueuePlayer
+    /// Creates the player and its layer on first preview playback, so cells that never
+    /// play a video don't each carry an AVQueuePlayer
+    private func setupVideoPlayerIfNeeded() -> AVQueuePlayer {
+        if let queuePlayer = queuePlayer { return queuePlayer }
+
+        let queuePlayer = AVQueuePlayer()
+        queuePlayer.isMuted = true
+
+        let avPlayerLayer = AVPlayerLayer(player: queuePlayer)
+        avPlayerLayer.isHidden = true
+        avPlayerLayer.frame = videoView.bounds
+        avPlayerLayer.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
+        videoView.wantsLayer = true
+        videoView.layer?.addSublayer(avPlayerLayer)
+
+        self.queuePlayer = queuePlayer
+        self.avPlayerLayer = avPlayerLayer
+        return queuePlayer
+    }
+
     func playVideo() {
         guard let viewController = getViewController(collectionView) else { return }
         if viewController.publicVar.isInFindingClosestState {return}
@@ -723,10 +734,11 @@ class CustomCollectionViewItem: NSCollectionViewItem {
             if let url = URL(string: file.path),
                let timeRange = getCommonTimeRange(url: url) {
                 
+                let queuePlayer = setupVideoPlayerIfNeeded()
                 let playerItem = AVPlayerItem(url: url)
-                queuePlayer?.insert(playerItem, after: nil)
-                playerLooper = AVPlayerLooper(player: queuePlayer!, templateItem: playerItem, timeRange: timeRange)
-                queuePlayer?.play()
+                queuePlayer.insert(playerItem, after: nil)
+                playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem, timeRange: timeRange)
+                queuePlayer.play()
                 currentPlayingURL = URL(string: file.path)
                 avPlayerLayer?.isHidden = false
             }

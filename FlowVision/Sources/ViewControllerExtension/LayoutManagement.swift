@@ -42,33 +42,33 @@ extension ViewController {
         let actualThreshold=WIDTH_THRESHOLD*totalWidth
         var sum=0.0
         var lineCount=0
-        var singleIds=[SortKeyFile]()
+        var singleIds=[FileModel]()
         var lastSingleHeight:Double?
         
         fileDB.lock()
-        if fileDB.db[SortKeyDir(targetFolder)] == nil {
+        guard let dirModel = fileDB.db[SortKeyDir(targetFolder)] else {
             fileDB.unlock()
             return
         }
-        let count = fileDB.db[SortKeyDir(targetFolder)]!.files.count
-        let fileCount = fileDB.db[SortKeyDir(targetFolder)]!.fileCount
-        let layoutCalcPos = fileDB.db[SortKeyDir(targetFolder)]!.layoutCalcPos
+        let count = dirModel.files.count
+        let fileCount = dirModel.fileCount
+        let layoutCalcPos = dirModel.layoutCalcPos
         // let startKey = fileDB.db[targetFolder]!.files.elementSafe(atOffset: layoutCalcPos).0
         if layoutCalcPos>0 {
-            if let thumbSize=fileDB.db[SortKeyDir(targetFolder)]!.files.elementSafe(atOffset: layoutCalcPos-1)?.1.thumbSize {
+            if let thumbSize=dirModel.files.elementSafe(atOffset: layoutCalcPos-1)?.1.thumbSize {
                 lastSingleHeight = thumbSize.height - (2*publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailFilenamePadding)
             }
         }
         if layoutCalcPos < count {
             for i in layoutCalcPos...(count-1) {
-                guard let key = fileDB.db[SortKeyDir(targetFolder)]!.files.elementSafe(atOffset: i)?.0 else{break}
-                guard var originalSize=fileDB.db[SortKeyDir(targetFolder)]!.files[key]!.originalSize else{break}
-                if fileDB.db[SortKeyDir(targetFolder)]!.files[key]!.canBeCalcued != true {break}
+                guard let file = dirModel.files.elementSafe(atOffset: i)?.1 else{break}
+                guard var originalSize=file.originalSize else{break}
+                if file.canBeCalcued != true {break}
 
                 // if publicVar.profile.layoutType == .grid { originalSize=DEFAULT_SIZE }
                 sum+=(originalSize.width/originalSize.height)
-                singleIds.append(key)
-                if sum>=actualThreshold || i==fileDB.db[SortKeyDir(targetFolder)]!.files.count-1 {
+                singleIds.append(file)
+                if sum>=actualThreshold || i==count-1 {
                     sum=max(sum,actualThreshold)
                     var singleHeight = floor((totalWidth - 2 * (publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailCellPadding) * Double(singleIds.count))/sum)
                     // 防止最后一行不一样大小
@@ -76,7 +76,7 @@ extension ViewController {
                     // if publicVar.profile.layoutType == .grid && lastSingleHeight != nil { singleHeight=lastSingleHeight! }
                     lastSingleHeight=singleHeight
                     for singleId in singleIds{
-                        var originalSizeSingle=fileDB.db[SortKeyDir(targetFolder)]!.files[singleId]!.originalSize!
+                        var originalSizeSingle=singleId.originalSize!
                         
                         // if publicVar.profile.layoutType == .grid { originalSizeSingle=DEFAULT_SIZE }
                         
@@ -98,16 +98,16 @@ extension ViewController {
                         }
                         
                         let size=NSSize(width: singleWidth+2*publicVar.profile.ThumbnailBorderThickness, height: singleHeight+2*publicVar.profile.ThumbnailBorderThickness+publicVar.profile.ThumbnailFilenamePadding)
-                        fileDB.db[SortKeyDir(targetFolder)]!.files[singleId]!.thumbSize=size
-                        fileDB.db[SortKeyDir(targetFolder)]!.files[singleId]!.lineNo=lineCount
+                        singleId.thumbSize=size
+                        singleId.lineNo=lineCount
                     }
                     for singleId in singleIds.reversed(){
-                        fileDB.db[SortKeyDir(targetFolder)]!.files[singleId]!.isLayoutCalcued=true
+                        singleId.isLayoutCalcued=true
                     }
                     singleIds=[]
                     sum=0.0
                     lineCount+=1
-                    fileDB.db[SortKeyDir(targetFolder)]!.layoutCalcPos=i+1
+                    dirModel.layoutCalcPos=i+1
                 }
             }
         }
