@@ -273,7 +273,7 @@ extension ViewController {
         if direction == .left && SortKeyDir(folderURL.absoluteString) > SortKeyDir(initURL.absoluteString) {return}
         
         
-        var contents=[URL]()
+        var contents: [(url: URL, resourceValues: URLResourceValues?)] = []
         var properties: [URLResourceKey] = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey, .isUbiquitousItemKey, .ubiquitousItemDownloadingStatusKey, .tagNamesKey, .isAliasFileKey, .isSymbolicLinkKey]
         if VolumeManager.shared.isExternalVolume(folderURL) {
             properties = [.isHiddenKey, .isDirectoryKey, .fileSizeKey, .contentModificationDateKey, .creationDateKey, .addedToDirectoryDateKey, .tagNamesKey, .isAliasFileKey, .isSymbolicLinkKey]
@@ -300,16 +300,18 @@ extension ViewController {
                         dirURLCache = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: properties, options: [])
                     }
                 }
-                contents.append(contentsOf: dirURLCache)
+                // Read item once for all filters below
+                contents = dirURLCache.map { url in
+                    (url: url, resourceValues: try? url.resourceValues(forKeys: [.isHiddenKey, .isDirectoryKey, .isAliasFileKey, .isSymbolicLinkKey]))
+                }
             }catch{}
         }
 
         // 过滤隐藏文件
         // Filter hidden files
-        contents = contents.filter { url in
+        contents = contents.filter { (url, resourceValues) in
 
             // 获取隐藏属性
-            let resourceValues = try? url.resourceValues(forKeys: [.isHiddenKey])
             let isHidden = resourceValues?.isHidden ?? false
 
             // 保留 /Volumes 目录
@@ -328,7 +330,7 @@ extension ViewController {
 
         // 更新增强索引
         // Update enhanced index
-        EnhancedIndex.updateFiles(contents, isCalledByDirOpen: true, recordTime: true)
+        EnhancedIndex.updateFiles(contents.map { $0.url }, isCalledByDirOpen: true, recordTime: true)
 
         // 搜索过滤
         // Search filter
@@ -340,7 +342,7 @@ extension ViewController {
             search_useRegex = search_filterUseRegex
             search_isCaseSensitive = search_filterIsCaseSensitive
             search_isUseFullPath = search_filterIsUseFullPath
-            contents = contents.filter { url in
+            contents = contents.filter { (url, _) in
                 if let fileName = getFileNameForSearch(path: url.absoluteString) {
                     return isSearchMatch(fileName: fileName, searchText: searchText, forceUseRegex: false)
                 }
@@ -354,7 +356,7 @@ extension ViewController {
         // 过滤标签
         // Filter tags
         if !publicVar.finderTagFilters.isEmpty {
-            contents = contents.filter { url in
+            contents = contents.filter { (url, _) in
                 let tags = Set((try? url.resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? [])
                 let matched: Bool
                 if publicVar.isFinderTagFilterModeAnd {
@@ -369,7 +371,7 @@ extension ViewController {
         // 过滤评级
         // Filter rating
         if !publicVar.ratingFilters.isEmpty {
-            contents = contents.filter { url in
+            contents = contents.filter { (url, _) in
                 let rating = readRating(from: url) ?? 0
                 let matched = publicVar.ratingFilters.contains(rating)
                 return publicVar.isRatingFilterReversed ? !matched : matched
@@ -378,21 +380,21 @@ extension ViewController {
         
         // 过滤出目录列表（含指向目录的替身）
         // Filter out directory list (including aliases pointing to directories)
-        var subFolders = contents.filter { url in
-            if let isDirectoryResourceValue = try? url.resourceValues(forKeys: [.isDirectoryKey]),
+        var subFolders = contents.filter { (url, resourceValues) in
+            if let isDirectoryResourceValue = resourceValues,
                isDirectoryResourceValue.isDirectory == true {
                 return true
             }
             // 替身文件：解析后目标为目录则算作目录
             // Alias file: treat as directory if resolved target is a directory
-            if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
+            if let values = resourceValues,
                values.isAliasFile == true,
                let resolved = try? URL(resolvingAliasFileAt: url),
                resolved.hasDirectoryPath {
                 return true
             }
             return false
-        }
+        }.map { $0.url }
         // 如果找平级则无视子目录
         // If finding same level, ignore subdirectories
         if folderURL == initURL && sameLevel { subFolders.removeAll() }
@@ -404,14 +406,14 @@ extension ViewController {
         var videoCount=0
         var imageCount=0
         var searchCount=0
-        var fileContents = contents.filter { url in
-            guard let isDirectoryResourceValue = try? url.resourceValues(forKeys: [.isDirectoryKey]), let isDirectory = isDirectoryResourceValue.isDirectory else {
+        var fileContents = contents.filter { (url, resourceValues) in
+            guard let isDirectoryResourceValue = resourceValues, let isDirectory = isDirectoryResourceValue.isDirectory else {
                 return false
             }
             if isDirectory { return false }
             // 指向目录的替身已归入目录列表，不再计入文件
             // Aliases pointing to directories are treated as directories, exclude from file list
-            if let values = try? url.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]),
+            if let values = resourceValues,
                values.isAliasFile == true,
                let resolved = try? URL(resolvingAliasFileAt: url),
                resolved.hasDirectoryPath {
@@ -419,8 +421,7 @@ extension ViewController {
             }
             return true
         }
-        for file in fileContents {
-            let aliasValues = try? file.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey])
+        for (file, aliasValues) in fileContents {
             let isAlias = aliasValues?.isAliasFile == true
             let fileExt = file.pathExtension.lowercased()
             let effectiveExt: String

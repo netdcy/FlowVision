@@ -52,7 +52,6 @@ class CustomFlowLayout: NSCollectionViewLayout {
     override func prepare() {
         guard let collectionView = collectionView else { return }
         guard let viewController = getViewController(collectionView) else { return }
-        guard let delegate = collectionView.delegate as? NSCollectionViewDelegateFlowLayout else { return }
 
         cache.removeAll()
         contentHeight = 0
@@ -64,9 +63,14 @@ class CustomFlowLayout: NSCollectionViewLayout {
         var yOffset: CGFloat = cellPadding
         var rowHeight: CGFloat = 0
 
+        viewController.fileDB.lock()
+        let dirFiles = viewController.fileDB.db[SortKeyDir(viewController.fileDB.curFolder)]?.files
+        viewController.fileDB.unlock()
         for item in 0 ..< collectionView.numberOfItems(inSection: 0) {
             let indexPath = IndexPath(item: item, section: 0)
-            let itemSize = delegate.collectionView!(collectionView, layout: self, sizeForItemAt: indexPath)
+            viewController.fileDB.lock()
+            let itemSize = dirFiles?.elementSafe(atOffset: indexPath.item)?.1.thumbSize ?? DEFAULT_SIZE
+            viewController.fileDB.unlock()
             
             let width = itemSize.width + 2 * cellPadding
             let height = itemSize.height + 2 * cellPadding
@@ -139,7 +143,6 @@ class CustomGridLayout: NSCollectionViewLayout {
     override func prepare() {
         guard let collectionView = collectionView else { return }
         guard let viewController = getViewController(collectionView) else { return }
-        guard let delegate = collectionView.delegate as? NSCollectionViewDelegateFlowLayout else { return }
 
         cache.removeAll()
         contentHeight = 0
@@ -155,9 +158,14 @@ class CustomGridLayout: NSCollectionViewLayout {
         var yOffset: CGFloat = cellPadding
         var rowHeight: CGFloat = 0
 
+        viewController.fileDB.lock()
+        let dirFiles = viewController.fileDB.db[SortKeyDir(viewController.fileDB.curFolder)]?.files
+        viewController.fileDB.unlock()
         for item in 0 ..< collectionView.numberOfItems(inSection: 0) {
             let indexPath = IndexPath(item: item, section: 0)
-            let itemSize = delegate.collectionView!(collectionView, layout: self, sizeForItemAt: indexPath)
+            viewController.fileDB.lock()
+            let itemSize = dirFiles?.elementSafe(atOffset: indexPath.item)?.1.thumbSize ?? DEFAULT_SIZE
+            viewController.fileDB.unlock()
             
             // 使用固定尺寸计算位置
             // Use fixed size to calculate position
@@ -243,7 +251,6 @@ class WaterfallLayout: NSCollectionViewLayout {
     override func prepare() {
         guard let collectionView = collectionView else { return }
         guard let viewController = getViewController(collectionView) else { return }
-        guard let delegate = collectionView.delegate as? NSCollectionViewDelegateFlowLayout else { return }
 
         let cellPadding = viewController.publicVar.profile.ThumbnailCellPadding
         let borderThickness = viewController.publicVar.profile.ThumbnailBorderThickness
@@ -260,9 +267,14 @@ class WaterfallLayout: NSCollectionViewLayout {
         cache.removeAll()
         contentHeight = 0
         
+        viewController.fileDB.lock()
+        let dirFiles = viewController.fileDB.db[SortKeyDir(viewController.fileDB.curFolder)]?.files
+        viewController.fileDB.unlock()
         for item in 0 ..< collectionView.numberOfItems(inSection: 0) {
             let indexPath = IndexPath(item: item, section: 0)
-            let itemSize = delegate.collectionView!(collectionView, layout: self, sizeForItemAt: indexPath)
+            viewController.fileDB.lock()
+            let itemSize = dirFiles?.elementSafe(atOffset: indexPath.item)?.1.thumbSize ?? DEFAULT_SIZE
+            viewController.fileDB.unlock()
             let width = columnWidth - (cellPadding * 2)
             let height = round(itemSize.height * (width / itemSize.width) + (cellPadding * 2))
             
