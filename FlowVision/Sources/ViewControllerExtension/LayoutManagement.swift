@@ -114,6 +114,17 @@ extension ViewController {
         fileDB.unlock()
     }
     
+    func getThumbTargetSize(thumbSize: NSSize, originalSize: NSSize?) -> NSSize {
+        var revisedSize = NSSize(width: thumbSize.width-2*publicVar.profile.ThumbnailBorderThickness, height: thumbSize.height-2*publicVar.profile.ThumbnailBorderThickness-publicVar.profile.ThumbnailFilenamePadding)
+        if publicVar.profile.layoutType == .grid {
+            var size = originalSize ?? DEFAULT_SIZE
+            if size.width == 0 || size.height == 0 {size=DEFAULT_SIZE}
+            let rect = AVMakeRect(aspectRatio: size, insideRect: CGRect(origin: CGPoint(x: 0, y: 0), size: revisedSize))
+            revisedSize = NSSize(width: round(rect.size.width), height: round(rect.size.height))
+        }
+        return revisedSize
+    }
+
     func switchToJustifiedView(doNotRefresh: Bool = false){
 //        let defaults = UserDefaults.standard
 //        defaults.setEnum(LayoutType.justified, forKey: "layoutType")

@@ -1288,6 +1288,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     let doNotActualRead=file.doNotActualRead
                     let ver=firstTask.4
                     let count=dirModel.files.count
+                    // Skip reading for known size except the last one to finish the folder
+                    if file.originalSize != nil && i != count-1 {
+                        file.canBeCalcued=true
+                        fileDB.unlock()
+                        continue
+                    }
                     fileDB.unlock() 
                     
                     if i == -1 {continue}
@@ -1444,8 +1450,13 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         fileDB.lock()
                                         let curKey = dirModel.files.elementSafe(atOffset: x)?.0
                                         let file = dirModel.files.elementSafe(atOffset: x)?.1
+                                        let thumbImage = file?.image
+                                        let thumbSize = file?.thumbSize
+                                        let originalSize = file?.originalSize
                                         fileDB.unlock()
                                         guard let curKey=curKey,let file=file else{continue}
+                                        // Skip task for thumbnail in memory with right size except the last one to start the fade
+                                        if let thumbImage, let thumbSize, x != min(count-1, memUseLimit), !publicVar.isGenHdThumb || thumbImage.size.width == getThumbTargetSize(thumbSize: thumbSize, originalSize: originalSize).width {continue}
                                         loadImageTaskPool.lock.lock()
                                         loadImageTaskPool.push(dir,(dir,dirModel,curKey,file,dirModel.ver,OtherTaskInfo()))
                                         loadImageTaskPoolSemaphore.signal()
@@ -1630,13 +1641,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 log("Time taken to start loading first image: \(timeInterval) seconds")
                             }
                             
-                            var revisedSize = NSSize(width: thumbSize.width-2*publicVar.profile.ThumbnailBorderThickness, height: thumbSize.height-2*publicVar.profile.ThumbnailBorderThickness-publicVar.profile.ThumbnailFilenamePadding)
-                            if publicVar.profile.layoutType == .grid {
-                                var size = originalSize ?? DEFAULT_SIZE
-                                if size.width == 0 || size.height == 0 {size=DEFAULT_SIZE}
-                                let rect = AVMakeRect(aspectRatio: size, insideRect: CGRect(origin: CGPoint(x: 0, y: 0), size: revisedSize))
-                                revisedSize = NSSize(width: round(rect.size.width), height: round(rect.size.height))
-                            }
+                            let revisedSize = getThumbTargetSize(thumbSize: thumbSize, originalSize: originalSize)
                             // log(max(revisedSize.width,revisedSize.height),level: .debug)
                             
                             var imageExist=false
