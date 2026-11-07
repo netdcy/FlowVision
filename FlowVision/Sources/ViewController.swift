@@ -1269,7 +1269,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             guard let self = self else { return }
             let operationQueue = OperationQueue()
             operationQueue.maxConcurrentOperationCount = globalVar.thumbThreadNum > 2 ? 2 : 1
-            operationQueue.qualityOfService = .userInitiated
+            operationQueue.qualityOfService = .userInteractive
             while true{
                 if willTerminate {break}
                 readInfoTaskPoolSemaphore.wait()
