@@ -306,7 +306,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     var currLargeImagePos = -1
     var fileDB = DatabaseModel()
     
-    var readInfoTaskPool = [TaskType]()
+    var readInfoTaskPool = ArraySlice<TaskType>()
     var readInfoTaskPoolLock = NSLock()
     
     // var loadImageTaskPool = [(String,String,Int)]()
