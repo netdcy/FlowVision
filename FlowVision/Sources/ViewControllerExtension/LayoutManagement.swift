@@ -161,7 +161,121 @@ extension ViewController {
         publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
         changeWaterfallLayoutNumberOfColumns()
         if !doNotRefresh {
-            refreshCollectionView(dryRun: true, needLoadThumbPriority: true)
+            updateLayoutPreservingScrollPosition()
+        }
+    }
+    
+    func updateLayoutPreservingScrollPosition() {
+        guard let scrollView = mainScrollView ?? collectionView.enclosingScrollView else {
+            return
+        }
+        
+        let visibleRect = scrollView.contentView.bounds
+        let viewportCenter = NSPoint(x: visibleRect.midX, y: visibleRect.midY)
+        let isAtTop = visibleRect.origin.y <= 2
+        let oldContentHeight = max(collectionView.bounds.height, collectionView.collectionViewLayout?.collectionViewContentSize.height ?? 0)
+        let oldMaxScrollY = max(0, oldContentHeight - visibleRect.height)
+        let isAtBottom = oldMaxScrollY > 0 && visibleRect.origin.y >= oldMaxScrollY - 2
+        
+        var anchorIndexPath: IndexPath? = nil
+        var anchorOffsetFromCenterY: CGFloat = 0
+        
+        if publicVar.isInLargeView && currLargeImagePos != -1 {
+            anchorIndexPath = IndexPath(item: currLargeImagePos, section: 0)
+            anchorOffsetFromCenterY = 0
+        } else {
+            let visibleIndexPaths = collectionView.indexPathsForVisibleItems()
+            
+            // 优先检查是否有选中的项且当前可见
+            // Prioritize checking if there is a selected item that is currently visible
+            if let selectedIndexPath = collectionView.selectionIndexPaths.first,
+               visibleIndexPaths.contains(selectedIndexPath),
+               let attr = collectionView.layoutAttributesForItem(at: selectedIndexPath),
+               attr.frame.intersects(visibleRect) {
+                anchorIndexPath = selectedIndexPath
+                anchorOffsetFromCenterY = attr.frame.midY - viewportCenter.y
+            } else {
+                // 否则选取距离视口中心最近的可见项作为锚点
+                // Otherwise choose the visible item closest to the viewport center as the anchor
+                var minDistance: CGFloat = .greatestFiniteMagnitude
+                for indexPath in visibleIndexPaths {
+                    if let attr = collectionView.layoutAttributesForItem(at: indexPath) {
+                        let frame = attr.frame
+                        if frame.intersects(visibleRect) {
+                            let distance = abs(frame.midY - viewportCenter.y)
+                            if distance < minDistance {
+                                minDistance = distance
+                                anchorIndexPath = indexPath
+                                anchorOffsetFromCenterY = frame.midY - viewportCenter.y
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 重新计算当前目录的布局信息
+        // Recalculate layout information for the current directory
+        fileDB.lock()
+        let curFolder = fileDB.curFolder
+        guard !curFolder.isEmpty, let dirModel = fileDB.db[SortKeyDir(curFolder)] else {
+            fileDB.unlock()
+            return
+        }
+        dirModel.layoutCalcPos = 0
+        fileDB.unlock()
+        
+        changeWaterfallLayoutNumberOfColumns()
+        recalcLayout(curFolder)
+        
+        collectionView.collectionViewLayout?.invalidateLayout()
+        view.window?.layoutIfNeeded()
+        
+        // 恢复滚动位置
+        // Restore scroll position
+        let newContentSize = collectionView.collectionViewLayout?.collectionViewContentSize ?? collectionView.bounds.size
+        let newContentHeight = max(newContentSize.height, scrollView.contentSize.height)
+        collectionView.setFrameSize(NSSize(width: collectionView.bounds.width, height: newContentHeight))
+        
+        let maxScrollY = max(0, newContentHeight - visibleRect.height)
+        var targetScrollY: CGFloat = visibleRect.origin.y
+        
+        if isAtTop {
+            targetScrollY = 0
+        } else if isAtBottom {
+            targetScrollY = maxScrollY
+        } else if let anchorIndexPath = anchorIndexPath,
+                  let newAttr = collectionView.layoutAttributesForItem(at: anchorIndexPath) {
+            let targetCenterY = newAttr.frame.midY - anchorOffsetFromCenterY
+            targetScrollY = targetCenterY - visibleRect.height / 2
+            targetScrollY = max(0, min(targetScrollY, maxScrollY))
+        } else if oldMaxScrollY > 0 && maxScrollY > 0 {
+            targetScrollY = max(0, min(visibleRect.origin.y * (maxScrollY / oldMaxScrollY), maxScrollY))
+        }
+        
+        let newOrigin = NSPoint(x: visibleRect.origin.x, y: targetScrollY)
+        scrollView.contentView.scroll(to: newOrigin)
+        scrollView.reflectScrolledClipView(scrollView.contentView)
+        
+        // 确保新滚动位置下的子视图布局完成
+        // Ensure subviews layout is completed under the new scroll position
+        collectionView.layoutSubtreeIfNeeded()
+        
+        // 刷新可见项的内容显示
+        // Refresh content display of visible items
+        let updatedVisibleIndexPaths = collectionView.indexPathsForVisibleItems()
+        for indexPath in updatedVisibleIndexPaths {
+            if let item = collectionView.item(at: indexPath) as? CustomCollectionViewItem {
+                item.configureWithImage(item.file, playAnimation: false)
+            }
+        }
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.setLoadThumbPriority(ifNeedVisable: true)
+        }
+        
+        if let windowController = view.window?.windowController as? WindowController {
+            windowController.updateToolbar()
         }
     }
     
