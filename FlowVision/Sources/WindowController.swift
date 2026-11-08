@@ -219,7 +219,8 @@ class WindowController: NSWindowController, NSWindowDelegate {
         }
         
         if globalVar.autoHideToolbar {
-            if location.y > window.frame.height - 40 {
+            if location.y > window.frame.height - 40 && location.y <= window.frame.height,
+               location.x >= 0 && location.x <= window.frame.width {
                 showTitleBar()
             } else if !window.styleMask.contains(.fullScreen) || (location.y < window.frame.height - 60) {
                 hideTitleBar()
