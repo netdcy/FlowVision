@@ -525,7 +525,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         outlineViewManager=CustomOutlineViewManager(fileDB: fileDB, treeViewData: treeViewData, outlineView: outlineView)
         outlineView.delegate = outlineViewManager
         outlineView.dataSource = outlineViewManager
-        outlineView.registerForDraggedTypes([.fileURL] + NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) })
+        outlineView.registerForDraggedTypes([.fileURL, GlobalVar.favoriteDragType] + NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) })
         // 本地拖动操作
         // Local drag operation
         outlineView.setDraggingSourceOperationMask([.every], forLocal: true)
@@ -660,6 +660,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         
         treeViewData.initData(path: treeRootFolder)
         outlineView.reloadData()
+        if treeRootFolder == "root" {
+            outlineView.expandItem(treeViewData.favoritesSection)
+        }
         DispatchQueue.main.async {
             self.outlineViewManager.adjustColumnWidth()
         }
@@ -1032,7 +1035,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
 
         // 获取行对应的条目
-        if let item = outlineView.item(atRow: row) {
+        if let item = outlineView.item(atRow: row) as? TreeNode, !item.isFavorite {
             if outlineView.isItemExpanded(item) {
                 outlineView.collapseItem(item)
             } else {

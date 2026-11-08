@@ -75,11 +75,9 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         let locationInView = self.convert(event.locationInWindow, from: nil)
         let clickedRow = self.row(at: locationInView)
 
-        if clickedRow != -1 {
-            // self.selectRowIndexes(IndexSet(integer: clickedRow), byExtendingSelection: false)
-            
-            let item = self.item(atRow: clickedRow) as? TreeNode
-            curRightClickedPath=item!.fullPath
+        if clickedRow != -1, let item = self.item(atRow: clickedRow) as? TreeNode,
+           item !== viewController.treeViewData.favoritesSection, !item.isFavoriteSeparator {
+            curRightClickedPath = item.fullPath
             curRightClickedIndex=clickedRow
             
             (self.delegate as? CustomOutlineViewManager)?.ifActWhenSelected=false
@@ -235,7 +233,7 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
     func getFirstSelectedUrl() -> URL? {
         let selectedIndexes = self.selectedRowIndexes
         for index in selectedIndexes {
-            if let item = self.item(atRow: index) as? TreeNode {
+            if let item = self.item(atRow: index) as? TreeNode, !item.fullPath.isEmpty {
                 return URL(string: item.fullPath)
             }
         }

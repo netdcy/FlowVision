@@ -1291,7 +1291,12 @@ extension ViewController {
         } else {
             // When "Follow Current Folder" is off, don't expand but select the folder if it's listed in the sidebar
             var rowIndexes = IndexSet()
-            for row in 0..<outlineView.numberOfRows {
+            let selectedRow = outlineView.selectedRow
+            if selectedRow >= 0,
+               let item = outlineView.item(atRow: selectedRow) as? TreeNode, item.fullPath == nextFolder {
+                rowIndexes.insert(selectedRow)
+            }
+            for row in 0..<outlineView.numberOfRows where rowIndexes.isEmpty {
                 if let item = outlineView.item(atRow: row) as? TreeNode, item.fullPath == nextFolder {
                     rowIndexes = IndexSet(integer: row)
                     break

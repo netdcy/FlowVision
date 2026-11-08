@@ -615,6 +615,9 @@ class TreeNode: NSObject {
     var children: [TreeNode]?
     var hasChild: Bool = false
     var isHidden: Bool = false
+    var favoriteIndex: Int?
+    var isFavorite: Bool { favoriteIndex != nil }
+    var isFavoriteSeparator = false
     
     init(name: String, children: [TreeNode]? = nil, fullPath: String = "") {
         self.name = name
@@ -624,8 +627,39 @@ class TreeNode: NSObject {
 }
 
 class TreeViewModel {
+    static let homeURL = FileManager.default.homeDirectoryForCurrentUser
+    // Use an internal name distinct from any volume name.
+    static let homeRootName = homeURL.path
+
     var root: TreeNode?
+    let favoritesSection = TreeNode(name: NSLocalizedString("Favorites", comment: "收藏夹"))
     weak var viewController: ViewController!
+
+    func updateFavorites() {
+        var oldChildren = favoritesSection.children ?? []
+        var children: [TreeNode] = []
+        var folderCount = 0
+        for (index, entry) in globalVar.myFavoritesArray.enumerated() {
+            guard folderCount < 8 else { break }
+            let isSeparator = entry == GlobalVar.favoriteSeparator
+            let url = GlobalVar.favoriteURL(for: entry)
+            guard isSeparator || url != nil else { continue }
+            let path = url?.absoluteString ?? ""
+            let node: TreeNode
+            if let oldIndex = oldChildren.firstIndex(where: {
+                $0.fullPath == path && $0.isFavoriteSeparator == isSeparator
+            }) {
+                node = oldChildren.remove(at: oldIndex)
+            } else {
+                node = TreeNode(name: url.map(GlobalVar.favoriteName) ?? "", fullPath: path)
+                node.isFavoriteSeparator = isSeparator
+            }
+            node.favoriteIndex = index
+            children.append(node)
+            if !isSeparator { folderCount += 1 }
+        }
+        favoritesSection.children = children
+    }
     
     func initData(path: String) {
         root = TreeNode(name: "Root", fullPath: path)
@@ -670,7 +704,8 @@ class TreeViewModel {
     }
     
     func expand(node: TreeNode, isLookSub: Bool){
-        let folderURL=URL(string: node.fullPath)!
+        guard node !== favoritesSection, !node.isFavorite,
+              let folderURL = URL(string: node.fullPath) else { return }
         do{
             var contents = [URL]()
             
@@ -875,7 +910,8 @@ class TreeViewModel {
 
             if folderURL.path == "root" {
                 let finderTagsURL = URL(string: "file:///VirtualFinderTagsFolder/")!
-                subFolders.insert(finderTagsURL, at: 0)
+                subFolders.insert(Self.homeURL, at: 0)
+                subFolders.append(finderTagsURL)
             }
 
             if globalVar.autoHideToolbar && folderURL.path == "root" {
@@ -889,6 +925,10 @@ class TreeViewModel {
                 var name = subFolder.lastPathComponent
                 var localizedName = localizedNameCache[subFolder]
                 var fullPath = subFolder.absoluteString
+                if folderURL.path == "root", subFolder == Self.homeURL {
+                    name = Self.homeRootName
+                    localizedName = NSUserName()
+                }
                 if name == "/" {
                     localizedName = ROOT_NAME
                 }
@@ -934,8 +974,12 @@ class TreeViewModel {
                     }
                 }
             }
-            
-            
+
+            if folderURL.path == "root" {
+                updateFavorites()
+                let favoritesIndex = globalVar.autoHideToolbar ? 1 : 0
+                node.children?.insert(favoritesSection, at: favoritesIndex)
+            }
         }catch{
             return
         }

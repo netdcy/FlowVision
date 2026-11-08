@@ -18,7 +18,7 @@ extension ViewController {
         let childrenCount = outlineView.numberOfChildren(ofItem: currentItem)
         for index in 0..<childrenCount {
             if let item = outlineView.child(index, ofItem: currentItem),
-               let itemObject = (item as? TreeNode)
+               let itemObject = item as? TreeNode, itemObject !== treeViewData.favoritesSection
             {
                 let itemName = itemObject.name
                 let newPath = currentPath + [itemName]
@@ -35,7 +35,7 @@ extension ViewController {
         let childrenCount = outlineView.numberOfChildren(ofItem: parentItem)
         for index in 0..<childrenCount {
             if let item = outlineView.child(index, ofItem: parentItem),
-               let itemObject = (item as? TreeNode) {
+               let itemObject = item as? TreeNode, itemObject !== treeViewData.favoritesSection {
                 if itemsToExpand.contains(itemObject) {
                     outlineView.expandItem(item)
                 } else {
@@ -56,7 +56,7 @@ extension ViewController {
             for index in 0..<count {
                 if let item = outlineView.child(index, ofItem: currentItem),
                    let itemObject = (item as? TreeNode),
-                   itemObject.name == path {
+                   itemObject !== treeViewData.favoritesSection, itemObject.name == path {
                     currentItem = item
                     found = true
                     break
@@ -78,6 +78,16 @@ extension ViewController {
     }
     
     func treeReLocate(path: String, doCollapse: Bool, expandLast: Bool) {
+        if outlineView.selectedRow >= 0,
+           let selected = outlineView.item(atRow: outlineView.selectedRow) as? TreeNode,
+           selected.isFavorite, selected.fullPath == path, !doCollapse, !expandLast {
+            return
+        }
+
+        let homeComponents = TreeViewModel.homeURL.pathComponents
+        let pathComponents = URL(string: path)?.pathComponents ?? []
+        let isInHome = treeRootFolder == "root" && pathComponents.starts(with: homeComponents)
+
         var path=path
         var isInExternal=false
         var externalVolumeName: String?
@@ -93,7 +103,7 @@ extension ViewController {
 //            }
 //        }
 
-        if let urls = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: nil, options: [.skipHiddenVolumes]) {
+        if !isInHome, let urls = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: nil, options: [.skipHiddenVolumes]) {
             for exUrl in urls {
                 if exUrl.absoluteString == "file:///" {continue}
                 if path.hasPrefix(exUrl.absoluteString) {
@@ -115,7 +125,9 @@ extension ViewController {
         
         // 额外插入一层用来定位
         // Insert an additional layer for positioning
-        if treeRootFolder == "root" && !isInExternal {
+        if isInHome {
+            targetPaths = [TreeViewModel.homeRootName] + pathComponents.dropFirst(homeComponents.count)
+        } else if treeRootFolder == "root" && !isInExternal {
             targetPaths.insert("/", at: 0)
         }
         

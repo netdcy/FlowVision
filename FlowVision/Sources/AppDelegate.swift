@@ -234,7 +234,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let collectionViewItemShowTooltip = UserDefaults.standard.value(forKey: "collectionViewItemShowTooltip") as? Bool {
             globalVar.collectionViewItemShowTooltip = collectionViewItemShowTooltip
         }
-        globalVar.myFavoritesArray = defaults.array(forKey: "globalVar.myFavoritesArray") as? [String] ?? [String]()
+        globalVar.loadFavorites(from: defaults)
         
         if let savedLabels = UserDefaults.standard.array(forKey: CustomTagView.userDefaultsKey) as? [[String: Any]] {
             FinderTag.customLabels = savedLabels.compactMap { dict in
@@ -545,7 +545,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
             
             if globalVar.myFavoritesArray.count > 0 {
                 for (index, folderPath) in globalVar.myFavoritesArray.enumerated() {
-                    if folderPath == FavoritesPopoverViewController.separatorValue {
+                    if folderPath == GlobalVar.favoriteSeparator {
                         favoritesMenu.addItem(NSMenuItem.separator())
                         continue
                     }
@@ -908,7 +908,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if !globalVar.myFavoritesArray.contains(curFolder) {
             globalVar.myFavoritesArray.append(curFolder)
             let defaults = UserDefaults.standard
-            defaults.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
+            defaults.set(globalVar.myFavoritesArray, forKey: GlobalVar.favoritesKey)
         }
     }
     @objc func deleteFavorite(_ sender: NSMenuItem) {
@@ -919,7 +919,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         if let index = globalVar.myFavoritesArray.firstIndex(of: folderPath) {
             globalVar.myFavoritesArray.remove(at: index)
             let defaults = UserDefaults.standard
-            defaults.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
+            defaults.set(globalVar.myFavoritesArray, forKey: GlobalVar.favoritesKey)
         }
         
         // 更新菜单以反映更改
@@ -933,7 +933,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         // Handle move up logic here
         globalVar.myFavoritesArray.swapAt(index, index - 1)
         let defaults = UserDefaults.standard
-        defaults.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
+        defaults.set(globalVar.myFavoritesArray, forKey: GlobalVar.favoritesKey)
         
         // 更新菜单以反映更改
         // Update menu to reflect changes
@@ -947,7 +947,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemVa
         // Handle move down logic here
         globalVar.myFavoritesArray.swapAt(index, index + 1)
         let defaults = UserDefaults.standard
-        defaults.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
+        defaults.set(globalVar.myFavoritesArray, forKey: GlobalVar.favoritesKey)
         
         // 更新菜单以反映更改
         // Update menu to reflect changes
