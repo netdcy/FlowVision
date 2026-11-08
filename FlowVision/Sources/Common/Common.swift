@@ -6,6 +6,22 @@
 import Foundation
 import Cocoa
 
+func openWithApplicationMenuItem(for appURL: URL, target: AnyObject, action: Selector) -> NSMenuItem {
+    let appName = FileManager.default.displayName(atPath: appURL.path)
+    let item = NSMenuItem(title: appName.replacingOccurrences(of: ".app", with: " "), action: action, keyEquivalent: "")
+    item.target = target
+    item.representedObject = appURL
+    let icon = NSWorkspace.shared.icon(forFile: appURL.path)
+    icon.size = NSSize(width: 16, height: 16)
+    item.image = icon
+    #if compiler(>=6.4)
+    if #available(macOS 27.0, *) {
+        item.preferredImageVisibility = .visible
+    }
+    #endif
+    return item
+}
+
 @propertyWrapper
 struct Atomic<Value> {
     private var value: Value

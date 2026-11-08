@@ -1490,14 +1490,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         let commonAppURLs = calculateCommonApplications(for: representativeUrls)
         
         for appURL in commonAppURLs {
-            let appName = FileManager.default.displayName(atPath: appURL.path)
-            let appIcon = NSWorkspace.shared.icon(forFile: appURL.path)
-            let appMenuItem = NSMenuItem(title: appName.replacingOccurrences(of: ".app", with: " "), action: #selector(openFileWithApp(_:)), keyEquivalent: "")
-            appMenuItem.representedObject = appURL
-            appMenuItem.target = self
-            appMenuItem.image = appIcon
-            appMenuItem.image?.size = NSSize(width: 16, height: 16)  // Optionally resize the icon if needed
-            openWithMenu.addItem(appMenuItem)
+            openWithMenu.addItem(openWithApplicationMenuItem(for: appURL, target: self, action: #selector(openFileWithApp(_:))))
         }
         
         if commonAppURLs.isEmpty {
