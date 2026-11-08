@@ -30,6 +30,7 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
     @IBOutlet weak var radioGlassForVideo: NSButton!
     @IBOutlet weak var radioBlackForVideo: NSButton!
     @IBOutlet weak var radioFullscreenForVideo: NSButton!
+    @IBOutlet weak var videoAutoplayDurationContainer: NSView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,6 +54,8 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         radioBlackForVideo.state = globalVar.blackBgAlwaysForVideo ? .on : .off
         radioFullscreenForVideo.state = (!globalVar.blackBgAlwaysForVideo && globalVar.blackBgInFullScreenForVideo) ? .on : .off
 
+        setupVideoAutoplayDuration()
+
         // MARK: RTL support
         if let container = radioGlass.superview {
             convertToLeadingLayoutForRTL(container)
@@ -62,6 +65,46 @@ final class CustomSettingsViewController: NSViewController, SettingsPane {
         }
     }
     
+    private func setupVideoAutoplayDuration() {
+        let title = NSLocalizedString("Minimum Duration for Autoplay", comment: "自动播放最短时长")
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.second]
+        formatter.unitsStyle = .short
+
+        let picker = NSPopUpButton()
+        picker.setAccessibilityLabel(title)
+        picker.target = self
+        picker.action = #selector(videoAutoplayDurationChanged(_:))
+        for seconds in GlobalVar.videoAutoplayDurationRange {
+            picker.addItem(withTitle: formatter.string(from: TimeInterval(seconds)) ?? String(seconds))
+            picker.lastItem?.tag = seconds
+        }
+        picker.selectItem(withTag: globalVar.videoAutoplayMinimumDuration)
+
+        let row = NSStackView(views: [NSTextField(labelWithString: title), picker])
+        row.orientation = .horizontal
+        row.alignment = .centerY
+        row.spacing = 8
+        row.translatesAutoresizingMaskIntoConstraints = false
+        let container = videoAutoplayDurationContainer!
+        container.addSubview(row)
+        NSLayoutConstraint.activate([
+            row.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            row.trailingAnchor.constraint(lessThanOrEqualTo: container.trailingAnchor),
+            row.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+        ])
+    }
+
+    @objc private func videoAutoplayDurationChanged(_ sender: NSPopUpButton) {
+        globalVar.videoAutoplayMinimumDuration = sender.selectedTag()
+        guard let appDelegate = NSApp.delegate as? AppDelegate else { return }
+        for windowController in appDelegate.windowControllers {
+            if let viewController = windowController.contentViewController as? ViewController {
+                viewController.debounceSetLoadThumbPriority(interval: 0.1, ifNeedVisable: true)
+            }
+        }
+    }
+
     @IBAction func randomFolderThumbToggled(_ sender: NSButton) {
         globalVar.randomFolderThumb = (sender.state == .on)
         UserDefaults.standard.set(globalVar.randomFolderThumb, forKey: "randomFolderThumb")

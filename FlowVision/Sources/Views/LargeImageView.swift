@@ -790,6 +790,7 @@ class LargeImageView: NSView {
                     showInfo(NSLocalizedString("A-B Loop Cancel", comment: "（视频）A-B循环取消"))
                 }
 
+                let wasPlayingSameVideo = currentPlayingURL == url && (queuePlayer?.rate ?? 0) > 0
                 if reload || reloadForAB {
                     restorePlayPosition = queuePlayer?.currentTime()
                     restorePlayURL = currentPlayingURL
@@ -898,12 +899,17 @@ class LargeImageView: NSView {
                             playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem, timeRange: finalTimeRange)
                         }
                         
-                        queuePlayer.rate = globalVar.videoPlaybackRate
+                        let shouldPlay = wasPlayingSameVideo || allowsVideoAutoplay(duration: timeRange.duration)
+                        if shouldPlay {
+                            queuePlayer.rate = globalVar.videoPlaybackRate
+                        } else {
+                            queuePlayer.pause()
+                        }
                         currentPlayingURL = url
-                        
+                        videoControlsView.updatePlayPauseIcon()
                         startPeriodicTimeObserver()
-                        
-                        checkPlayerItemStatus(id: videoOrderId)
+
+                        checkPlayerItemStatus(id: videoOrderId, startsPaused: !shouldPlay)
                     }
                 }else{
                     removeAllSnapshots()
@@ -930,7 +936,7 @@ class LargeImageView: NSView {
         }
     }
     
-    private func checkPlayerItemStatus(id: Int) {
+    private func checkPlayerItemStatus(id: Int, startsPaused: Bool) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { [weak self] in
             guard let self = self, let playerItem = self.playerItem else { return }
             if id != videoOrderId { return }
@@ -938,8 +944,18 @@ class LargeImageView: NSView {
             // log("playerItem.status: ", playerItem.status.rawValue)
             
             // if playerItem.status == .readyToPlay || playerItem.status == .failed {
-            let targetTime: CMTime = CMTime(seconds: 0.01, preferredTimescale: 600)
-            if queuePlayer?.currentTime() ?? CMTime.zero >= targetTime {
+            let status = queuePlayer?.currentItem?.status ?? playerItem.status
+            if status == .failed {
+                removeSnapshotsTaggedBefore(id: id)
+                showUnsupportedVideoOverlay()
+                return
+            }
+
+            let targetTime = CMTime(seconds: 0.01, preferredTimescale: 600)
+            let isReady = startsPaused
+                ? status == .readyToPlay
+                : (queuePlayer?.currentTime() ?? .zero) >= targetTime
+            if isReady {
                 
                 // 恢复之前的进度
                 // Restore previous progress
@@ -988,7 +1004,7 @@ class LargeImageView: NSView {
             } else {
                 // 如果还没有准备好，继续检查
                 // If not ready yet, continue checking
-                checkPlayerItemStatus(id: id)
+                checkPlayerItemStatus(id: id, startsPaused: startsPaused)
             }
         }
     }
@@ -1740,6 +1756,16 @@ class LargeImageView: NSView {
         super.mouseUp(with: event)
     }
     
+    private static func boundedDragOrigin(for image: CGRect, in viewport: CGRect, margin: CGSize) -> CGPoint {
+        // A short axis can keep more than the margin of blank space as long as the image fits.
+        let minX = min(viewport.minX, viewport.maxX - image.width - margin.width)
+        let maxX = max(viewport.minX + margin.width, viewport.maxX - image.width)
+        let minY = min(viewport.minY, viewport.maxY - image.height - margin.height)
+        let maxY = max(viewport.minY + margin.height, viewport.maxY - image.height)
+
+        return CGPoint(x: min(max(image.minX, minX), maxX), y: min(max(image.minY, minY), maxY))
+    }
+
     override func mouseDragged(with event: NSEvent) {
         guard let viewController = getViewController(self) else { return }
         if isEventInVideoControls(event) { return }
@@ -1758,29 +1784,10 @@ class LargeImageView: NSView {
             let dy = newLocation.y - lastLocation.y
 
             if file.type == .image {
-                imageView.frame.origin.x += dx
-                imageView.frame.origin.y += dy
-                
-                // 限制图片不能完全移出视野范围
-                // Limit image from being completely moved out of view
-                let imageFrame = imageView.frame
-                let viewFrame = self.frame
-                
-                // 检查是否完全超出视野
-                // Check if completely out of view
-                if imageFrame.maxX < 0 {
-                    imageView.frame.origin.x = -imageFrame.width
-                }
-                if imageFrame.minX > viewFrame.width {
-                    imageView.frame.origin.x = viewFrame.width
-                }
-                if imageFrame.maxY < 0 {
-                    imageView.frame.origin.y = -imageFrame.height
-                }
-                if imageFrame.minY > viewFrame.height {
-                    imageView.frame.origin.y = viewFrame.height
-                }
-                
+                let proposedFrame = imageView.frame.offsetBy(dx: dx, dy: dy)
+                let margin = convertFromBacking(NSSize(width: 30, height: 30))
+                imageView.frame.origin = Self.boundedDragOrigin(for: proposedFrame, in: bounds, margin: margin)
+
                 // 同步编辑画布位置
                 // Sync editing canvas position
                 syncEditingCanvasFrame()
@@ -2067,14 +2074,7 @@ class LargeImageView: NSView {
         let appURLs = LSCopyApplicationURLsForURL(cfFileUrl, .all)?.takeRetainedValue() as? [URL] ?? []
         
         for appURL in appURLs {
-            let appName = FileManager.default.displayName(atPath: appURL.path)
-            let appIcon = NSWorkspace.shared.icon(forFile: appURL.path)
-            let appMenuItem = NSMenuItem(title: appName.replacingOccurrences(of: ".app", with: " "), action: #selector(openFileWithApp(_:)), keyEquivalent: "")
-            appMenuItem.representedObject = appURL
-            appMenuItem.target = self
-            appMenuItem.image = appIcon
-            appMenuItem.image?.size = NSSize(width: 16, height: 16)  // Optionally resize the icon if needed
-            openWithMenu.addItem(appMenuItem)
+            openWithMenu.addItem(openWithApplicationMenuItem(for: appURL, target: self, action: #selector(openFileWithApp(_:))))
         }
         
         // 添加到主菜单

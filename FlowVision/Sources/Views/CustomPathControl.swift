@@ -168,14 +168,7 @@ class CustomPathControl: NSPathControl, NSMenuDelegate {
         let appURLs = LSCopyApplicationURLsForURL(cfURL, .all)?.takeRetainedValue() as? [URL] ?? []
 
         for appURL in appURLs {
-            let appName = FileManager.default.displayName(atPath: appURL.path)
-            let appIcon = NSWorkspace.shared.icon(forFile: appURL.path)
-            let appMenuItem = NSMenuItem(title: appName.replacingOccurrences(of: ".app", with: " "), action: #selector(actOpenWithApp(_:)), keyEquivalent: "")
-            appMenuItem.representedObject = appURL
-            appMenuItem.target = self
-            appMenuItem.image = appIcon
-            appMenuItem.image?.size = NSSize(width: 16, height: 16)
-            openWithMenu.addItem(appMenuItem)
+            openWithMenu.addItem(openWithApplicationMenuItem(for: appURL, target: self, action: #selector(actOpenWithApp(_:))))
         }
 
         if appURLs.isEmpty {

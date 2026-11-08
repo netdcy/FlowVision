@@ -67,6 +67,10 @@ func createLoopingComposition(url: URL) -> AVMutableComposition? {
     return composition
 }
 
+func allowsVideoAutoplay(duration: CMTime) -> Bool {
+    duration.isNumeric && duration >= CMTime(value: Int64(globalVar.videoAutoplayMinimumDuration), timescale: 1)
+}
+
 func getCommonTimeRange(url: URL) -> CMTimeRange? {
     let asset = AVAsset(url: url)
     guard let videoTrack = asset.tracks(withMediaType: .video).first else {

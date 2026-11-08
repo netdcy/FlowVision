@@ -186,7 +186,6 @@ final class GeneralSettingsViewController: NSViewController, SettingsPane {
     }
     
     @IBAction func setAsDefaultApp(_ sender: Any) {
-//        let fileTypes = ["public.jpeg", "public.png", "public.gif", "com.microsoft.bmp", "public.tiff", "public.heif", "org.webmproject.webp", "public.image", "public.heic"]
         guard let fileTypes = getSupportedFileTypes() else {
             log("Failed to get supported file types", level: .error)
             // Failed to get supported file types

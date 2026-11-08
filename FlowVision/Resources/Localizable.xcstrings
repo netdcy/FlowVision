@@ -20331,6 +20331,23 @@
         }
       }
     },
+    "Minimum Duration for Autoplay" : {
+      "comment" : "自动播放最短时长",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动播放最短时长"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動播放最短時長"
+          }
+        }
+      }
+    },
     "Mirror Flip" : {
       "comment" : "镜像翻转",
       "localizations" : {

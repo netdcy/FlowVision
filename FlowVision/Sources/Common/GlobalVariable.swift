@@ -25,7 +25,86 @@ let COLOR_COLLECTIONVIEW_BG_LIGHT = "#FFFFFF"
 let COLOR_COLLECTIONVIEW_BG_DARK = "#2D2D2D"
 
 class GlobalVar{
-    var myFavoritesArray = ["/"]
+    static let favoritesKey = "globalVar.myFavoritesArray"
+    static let favoritesDidChange = Notification.Name("FlowVisionFavoritesDidChange")
+    static let favoriteSeparator = "__SEPARATOR__"
+    static let favoriteDragType = NSPasteboard.PasteboardType("com.flowvision.favorites.row")
+
+    func moveFavorite(from source: Int, before insertion: Int) -> Bool {
+        guard myFavoritesArray.indices.contains(source),
+              (0...myFavoritesArray.count).contains(insertion),
+              insertion != source, insertion != source + 1 else { return false }
+        var favorites = myFavoritesArray
+        let entry = favorites.remove(at: source)
+        favorites.insert(entry, at: insertion > source ? insertion - 1 : insertion)
+        UserDefaults.standard.set(favorites, forKey: Self.favoritesKey)
+        myFavoritesArray = favorites
+        return true
+    }
+
+    func favoriteDragItem(at index: Int) -> NSPasteboardItem? {
+        guard myFavoritesArray.indices.contains(index) else { return nil }
+        let item = NSPasteboardItem()
+        item.setPropertyList([String(index), myFavoritesArray[index]], forType: Self.favoriteDragType)
+        return item
+    }
+
+    func draggedFavoriteIndex(in pasteboard: NSPasteboard) -> Int? {
+        guard let payload = pasteboard.propertyList(forType: Self.favoriteDragType) as? [String],
+              payload.count == 2, let index = Int(payload[0]), myFavoritesArray.indices.contains(index),
+              myFavoritesArray[index] == payload[1] else { return nil }
+        return index
+    }
+
+    var myFavoritesArray: [String] = [] {
+        didSet {
+            guard myFavoritesArray != oldValue else { return }
+            NotificationCenter.default.post(name: Self.favoritesDidChange, object: nil)
+        }
+    }
+
+    func loadFavorites(from defaults: UserDefaults) {
+        let stored = defaults.stringArray(forKey: Self.favoritesKey) ?? []
+        let seededKey = "didSeedDefaultFavorites"
+        guard !defaults.bool(forKey: seededKey) else {
+            myFavoritesArray = stored
+            return
+        }
+
+        let home = FileManager.default.homeDirectoryForCurrentUser
+        let folders: [FileManager.SearchPathDirectory] = [.picturesDirectory, .documentDirectory, .desktopDirectory]
+        let urls = [home] + folders.compactMap {
+            FileManager.default.urls(for: $0, in: .userDomainMask).first
+        }
+        let defaultFavorites = urls.map { Self.directoryURL($0).absoluteString }
+        let defaultPaths = Set(urls.map { $0.path })
+        myFavoritesArray = defaultFavorites + stored.filter {
+            guard let url = Self.favoriteURL(for: $0) else { return true }
+            return !defaultPaths.contains(url.path)
+        }
+        defaults.set(myFavoritesArray, forKey: Self.favoritesKey)
+        defaults.set(true, forKey: seededKey)
+    }
+
+    static func favoriteURL(for entry: String) -> URL? {
+        guard entry != favoriteSeparator, !entry.isEmpty,
+              let url = URL(string: getFileSchemeAbsPath(entry)), url.isFileURL else { return nil }
+        return directoryURL(url)
+    }
+
+    private static func directoryURL(_ url: URL) -> URL {
+        url.hasDirectoryPath ? url : url.appendingPathComponent("", isDirectory: true)
+    }
+
+    static func favoriteDisplayPath(for url: URL) -> String {
+        url.path.replacingOccurrences(of: "/VirtualFinderTagsFolder",
+                                      with: NSLocalizedString("Finder Tags", comment: "Finder标签"))
+    }
+
+    static func favoriteName(for url: URL) -> String {
+        (try? url.resourceValues(forKeys: [.localizedNameKey]).localizedName)
+            ?? (favoriteDisplayPath(for: url) as NSString).lastPathComponent
+    }
     var windowNum = 0
     var toolbarIndex = 0
     var operationLogs: [String] = []
@@ -89,6 +168,19 @@ class GlobalVar{
     var usePinyinInitialSearch = false
     var videoPlayRememberPosition = false
     var videoPlaySequentialPlay = false
+    static let videoAutoplayDurationRange = 1...30
+    private static let videoAutoplayMinimumDurationKey = "videoAutoplayMinimumDuration"
+
+    var videoAutoplayMinimumDuration: Int {
+        get {
+            let seconds = UserDefaults.standard.integer(forKey: Self.videoAutoplayMinimumDurationKey)
+            return min(max(seconds, Self.videoAutoplayDurationRange.lowerBound), Self.videoAutoplayDurationRange.upperBound)
+        }
+        set {
+            let seconds = min(max(newValue, Self.videoAutoplayDurationRange.lowerBound), Self.videoAutoplayDurationRange.upperBound)
+            UserDefaults.standard.set(seconds, forKey: Self.videoAutoplayMinimumDurationKey)
+        }
+    }
     var useInternalPlayer = true {
         didSet {
             useInternalPlayerCheckbox?.state = useInternalPlayer ? .on : .off

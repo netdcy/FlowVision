@@ -1871,7 +1871,7 @@ extension WindowController: NSToolbarDelegate {
         if !globalVar.myFavoritesArray.contains(curFolder) {
             globalVar.myFavoritesArray.append(curFolder)
             let defaults = UserDefaults.standard
-            defaults.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
+            defaults.set(globalVar.myFavoritesArray, forKey: GlobalVar.favoritesKey)
         }
     }
     @objc func deleteFavorite(_ sender: NSMenuItem) {
@@ -1882,7 +1882,7 @@ extension WindowController: NSToolbarDelegate {
         if let index = globalVar.myFavoritesArray.firstIndex(of: folderPath) {
             globalVar.myFavoritesArray.remove(at: index)
             let defaults = UserDefaults.standard
-            defaults.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
+            defaults.set(globalVar.myFavoritesArray, forKey: GlobalVar.favoritesKey)
         }
         
         // 更新菜单以反映更改
@@ -1896,7 +1896,7 @@ extension WindowController: NSToolbarDelegate {
         // Handle move up logic here
         globalVar.myFavoritesArray.swapAt(index, index - 1)
         let defaults = UserDefaults.standard
-        defaults.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
+        defaults.set(globalVar.myFavoritesArray, forKey: GlobalVar.favoritesKey)
         
         // 更新菜单以反映更改
         // Update menu to reflect changes
@@ -1910,7 +1910,7 @@ extension WindowController: NSToolbarDelegate {
         // Handle move down logic here
         globalVar.myFavoritesArray.swapAt(index, index + 1)
         let defaults = UserDefaults.standard
-        defaults.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
+        defaults.set(globalVar.myFavoritesArray, forKey: GlobalVar.favoritesKey)
         
         // 更新菜单以反映更改
         // menuNeedsUpdate(favoritesMenu)

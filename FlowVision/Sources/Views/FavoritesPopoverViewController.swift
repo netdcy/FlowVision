@@ -113,14 +113,12 @@ private class FavoritesCellView: NSTableCellView {
 
 class FavoritesPopoverViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
     
-    static let separatorValue = "__SEPARATOR__"
     
     private let scrollView = NSScrollView()
     private let tableView = NSTableView()
     private let addButton = NSButton()
     private let addSeparatorButton = NSButton()
     private let emptyLabel = NSTextField(labelWithString: "")
-    private static let dragType = NSPasteboard.PasteboardType("com.flowvision.favorites.row")
     private static let cellId = NSUserInterfaceItemIdentifier("FavoritesCellView")
     private static let separatorCellId = NSUserInterfaceItemIdentifier("FavoritesSeparatorCellView")
     
@@ -136,10 +134,16 @@ class FavoritesPopoverViewController: NSViewController, NSTableViewDataSource, N
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadFavorites),
+                                               name: GlobalVar.favoritesDidChange, object: nil)
     }
     
     override func viewWillAppear() {
         super.viewWillAppear()
+        reloadFavorites()
+    }
+
+    @objc private func reloadFavorites() {
         updateAddButtonState()
         tableView.reloadData()
         updateEmptyState()
@@ -180,7 +184,7 @@ class FavoritesPopoverViewController: NSViewController, NSTableViewDataSource, N
         tableView.rowHeight = 48
         tableView.target = self
         tableView.action = #selector(tableViewClicked(_:))
-        tableView.registerForDraggedTypes([Self.dragType])
+        tableView.registerForDraggedTypes([GlobalVar.favoriteDragType])
         tableView.draggingDestinationFeedbackStyle = .regular
         tableView.style = .plain
         tableView.intercellSpacing = NSSize(width: 0, height: 0)
@@ -245,48 +249,24 @@ class FavoritesPopoverViewController: NSViewController, NSTableViewDataSource, N
     }
     
     private func saveFavorites() {
-        UserDefaults.standard.set(globalVar.myFavoritesArray, forKey: "globalVar.myFavoritesArray")
+        UserDefaults.standard.set(globalVar.myFavoritesArray, forKey: GlobalVar.favoritesKey)
     }
     
-    private func displayPath(for folderPath: String) -> String {
-        var result = folderPath.replacingOccurrences(of: "file://", with: "")
-        result = result.removingPercentEncoding ?? result
-        result = result.replacingOccurrences(of: "/VirtualFinderTagsFolder", with: NSLocalizedString("Finder Tags", comment: "Finder标签"))
-        if result.count > 1 && result.hasSuffix("/") {
-            result = String(result.dropLast())
-        }
-        return result
-    }
-    
-    private func folderName(for folderPath: String) -> String {
-        let path = displayPath(for: folderPath)
-        if path == "/" { return "/" }
-        if let url = URL(string: folderPath),
-           let localizedName = try? url.resourceValues(forKeys: [.localizedNameKey]).localizedName {
-            return localizedName
-        }
-        return (path as NSString).lastPathComponent
-    }
-    
-    private func folderIcon(for folderPath: String) -> NSImage {
-        if folderPath.contains("VirtualFinderTagsFolder") {
+    private func folderIcon(for url: URL) -> NSImage {
+        if url.path.hasPrefix("/VirtualFinderTagsFolder") {
             return NSImage(systemSymbolName: "tag.fill", accessibilityDescription: nil)
                 ?? NSImage(named: NSImage.folderName)!
         }
-        var filePath = folderPath.replacingOccurrences(of: "file://", with: "")
-        filePath = filePath.removingPercentEncoding ?? filePath
-        let icon = NSWorkspace.shared.icon(forFile: filePath)
+        let icon = NSWorkspace.shared.icon(forFile: url.path)
         icon.size = NSSize(width: 28, height: 28)
         return icon
     }
-    
+
     // MARK: - Actions
     
     @objc private func addSeparator() {
-        globalVar.myFavoritesArray.insert(Self.separatorValue, at: 0)
+        globalVar.myFavoritesArray.insert(GlobalVar.favoriteSeparator, at: 0)
         saveFavorites()
-        tableView.reloadData()
-        updateEmptyState()
     }
     
     @objc private func addCurrentFolder() {
@@ -297,16 +277,13 @@ class FavoritesPopoverViewController: NSViewController, NSTableViewDataSource, N
             globalVar.myFavoritesArray.insert(curFolder, at: 0)
         }
         saveFavorites()
-        tableView.reloadData()
-        updateEmptyState()
-        updateAddButtonState()
     }
     
     @objc private func tableViewClicked(_ sender: Any) {
         let row = tableView.clickedRow
         guard row >= 0, row < globalVar.myFavoritesArray.count else { return }
         let folderPath = globalVar.myFavoritesArray[row]
-        if folderPath == Self.separatorValue { return }
+        if folderPath == GlobalVar.favoriteSeparator { return }
         onNavigate?(folderPath)
         popover?.close()
     }
@@ -316,9 +293,6 @@ class FavoritesPopoverViewController: NSViewController, NSTableViewDataSource, N
         guard row >= 0, row < globalVar.myFavoritesArray.count else { return }
         globalVar.myFavoritesArray.remove(at: row)
         saveFavorites()
-        tableView.reloadData()
-        updateEmptyState()
-        updateAddButtonState()
     }
     
     // MARK: - NSTableViewDataSource
@@ -333,7 +307,7 @@ class FavoritesPopoverViewController: NSViewController, NSTableViewDataSource, N
         guard row < globalVar.myFavoritesArray.count else { return nil }
         let folderPath = globalVar.myFavoritesArray[row]
         
-        if folderPath == Self.separatorValue {
+        if folderPath == GlobalVar.favoriteSeparator {
             let cellView: FavoritesSeparatorCellView
             if let existing = tableView.makeView(withIdentifier: Self.separatorCellId, owner: self) as? FavoritesSeparatorCellView {
                 cellView = existing
@@ -355,49 +329,38 @@ class FavoritesPopoverViewController: NSViewController, NSTableViewDataSource, N
             cellView.identifier = Self.cellId
         }
         
-        cellView.folderIconView.image = folderIcon(for: folderPath)
-        cellView.nameLabel.stringValue = folderName(for: folderPath)
-        cellView.pathLabel.stringValue = displayPath(for: folderPath)
+        let url = GlobalVar.favoriteURL(for: folderPath)
+        let path = url.map(GlobalVar.favoriteDisplayPath) ?? folderPath
+        cellView.folderIconView.image = url.map(folderIcon) ?? NSImage(named: NSImage.folderName)
+        cellView.nameLabel.stringValue = url.map(GlobalVar.favoriteName) ?? folderPath
+        cellView.pathLabel.stringValue = path
         cellView.deleteButton.tag = row
         cellView.deleteButton.target = self
         cellView.deleteButton.action = #selector(deleteItem(_:))
-        cellView.toolTip = displayPath(for: folderPath)
+        cellView.toolTip = path
         
         return cellView
     }
     
     func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
         guard row < globalVar.myFavoritesArray.count else { return 48 }
-        return globalVar.myFavoritesArray[row] == Self.separatorValue ? 24 : 48
+        return globalVar.myFavoritesArray[row] == GlobalVar.favoriteSeparator ? 24 : 48
     }
     
     // MARK: - Drag & Drop
     
     func tableView(_ tableView: NSTableView, pasteboardWriterForRow row: Int) -> NSPasteboardWriting? {
-        let item = NSPasteboardItem()
-        item.setString(String(row), forType: Self.dragType)
-        return item
+        globalVar.favoriteDragItem(at: row)
     }
-    
+
     func tableView(_ tableView: NSTableView, validateDrop info: NSDraggingInfo, proposedRow row: Int, proposedDropOperation dropOperation: NSTableView.DropOperation) -> NSDragOperation {
-        if dropOperation == .above {
-            return .move
-        }
-        return []
+        guard dropOperation == .above, (info.draggingSource as? NSTableView) === tableView else { return [] }
+        return .move
     }
-    
+
     func tableView(_ tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableView.DropOperation) -> Bool {
-        guard let items = info.draggingPasteboard.pasteboardItems,
-              let item = items.first,
-              let rowString = item.string(forType: Self.dragType),
-              let sourceRow = Int(rowString) else { return false }
-        
-        let movedItem = globalVar.myFavoritesArray.remove(at: sourceRow)
-        let destinationRow = sourceRow < row ? row - 1 : row
-        globalVar.myFavoritesArray.insert(movedItem, at: destinationRow)
-        saveFavorites()
-        
-        tableView.reloadData()
-        return true
+        guard dropOperation == .above, (info.draggingSource as? NSTableView) === tableView,
+              let source = globalVar.draggedFavoriteIndex(in: info.draggingPasteboard) else { return false }
+        return globalVar.moveFavorite(from: source, before: row)
     }
 }

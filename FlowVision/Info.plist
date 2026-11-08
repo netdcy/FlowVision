@@ -37,7 +37,7 @@
 			<string>Default</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>public.gif</string>
+				<string>com.compuserve.gif</string>
 			</array>
 		</dict>
 		<dict>
@@ -217,7 +217,7 @@
 			<string>Default</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>public.vob-video</string>
+				<string>netdcy.flowvision.vob</string>
 			</array>
 		</dict>
 		<dict>
@@ -251,6 +251,23 @@
 				<key>public.filename-extension</key>
 				<array>
 					<string>jfif</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.movie</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>VOB Video</string>
+			<key>UTTypeIdentifier</key>
+			<string>netdcy.flowvision.vob</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>vob</string>
 				</array>
 			</dict>
 		</dict>
