@@ -20,6 +20,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     var queuePlayer: AVQueuePlayer?
     var playerLooper: AVPlayerLooper?
     var currentPlayingURL: URL?
+    private var previewTimeRange: (path: String, version: Int, range: CMTimeRange?)?
     
     var folderViews=[NSView]()
     var folderImageViews=[CustomImageView]()
@@ -288,6 +289,7 @@ class CustomCollectionViewItem: NSCollectionViewItem {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        previewTimeRange = nil
         finderTagDotsView?.removeFromSuperview()
         finderTagDotsView = nil
         ratingStarsView?.removeFromSuperview()
@@ -721,27 +723,28 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         }
         
         if file.type == .video && globalVar.HandledNativeSupportedVideoExtensions.contains(file.ext) {
-            // 检查当前播放的视频是否已经是目标视频
-            // Check if currently playing video is already the target video
-            if currentPlayingURL == URL(string: file.path) {
+            guard let url = URL(string: file.path) else {
+                stopVideo()
                 return
             }
-            
-            playerLooper?.disableLooping()
-            playerLooper = nil
-            queuePlayer?.removeAllItems()
-            
-            if let url = URL(string: file.path),
-               let timeRange = getCommonTimeRange(url: url) {
-                
-                let queuePlayer = setupVideoPlayerIfNeeded()
-                let playerItem = AVPlayerItem(url: url)
-                queuePlayer.insert(playerItem, after: nil)
-                playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem, timeRange: timeRange)
-                queuePlayer.play()
-                currentPlayingURL = URL(string: file.path)
-                avPlayerLayer?.isHidden = false
+            if previewTimeRange?.path != file.path || previewTimeRange?.version != file.ver {
+                previewTimeRange = (file.path, file.ver, getCommonTimeRange(url: url))
             }
+            guard let timeRange = previewTimeRange?.range,
+                  allowsVideoAutoplay(duration: timeRange.duration) else {
+                stopVideo()
+                return
+            }
+            if currentPlayingURL == url { return }
+            stopVideo()
+
+            let queuePlayer = setupVideoPlayerIfNeeded()
+            let playerItem = AVPlayerItem(url: url)
+            queuePlayer.insert(playerItem, after: nil)
+            playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem, timeRange: timeRange)
+            queuePlayer.play()
+            currentPlayingURL = url
+            avPlayerLayer?.isHidden = false
         } else {
             avPlayerLayer?.isHidden = true
         }

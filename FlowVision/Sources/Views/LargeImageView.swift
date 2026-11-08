@@ -790,6 +790,7 @@ class LargeImageView: NSView {
                     showInfo(NSLocalizedString("A-B Loop Cancel", comment: "（视频）A-B循环取消"))
                 }
 
+                let wasPlayingSameVideo = currentPlayingURL == url && (queuePlayer?.rate ?? 0) > 0
                 if reload || reloadForAB {
                     restorePlayPosition = queuePlayer?.currentTime()
                     restorePlayURL = currentPlayingURL
@@ -898,12 +899,17 @@ class LargeImageView: NSView {
                             playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem, timeRange: finalTimeRange)
                         }
                         
-                        queuePlayer.rate = globalVar.videoPlaybackRate
+                        let shouldPlay = wasPlayingSameVideo || allowsVideoAutoplay(duration: timeRange.duration)
+                        if shouldPlay {
+                            queuePlayer.rate = globalVar.videoPlaybackRate
+                        } else {
+                            queuePlayer.pause()
+                        }
                         currentPlayingURL = url
-                        
+                        videoControlsView.updatePlayPauseIcon()
                         startPeriodicTimeObserver()
-                        
-                        checkPlayerItemStatus(id: videoOrderId)
+
+                        checkPlayerItemStatus(id: videoOrderId, startsPaused: !shouldPlay)
                     }
                 }else{
                     removeAllSnapshots()
@@ -930,7 +936,7 @@ class LargeImageView: NSView {
         }
     }
     
-    private func checkPlayerItemStatus(id: Int) {
+    private func checkPlayerItemStatus(id: Int, startsPaused: Bool) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { [weak self] in
             guard let self = self, let playerItem = self.playerItem else { return }
             if id != videoOrderId { return }
@@ -938,8 +944,18 @@ class LargeImageView: NSView {
             // log("playerItem.status: ", playerItem.status.rawValue)
             
             // if playerItem.status == .readyToPlay || playerItem.status == .failed {
-            let targetTime: CMTime = CMTime(seconds: 0.01, preferredTimescale: 600)
-            if queuePlayer?.currentTime() ?? CMTime.zero >= targetTime {
+            let status = queuePlayer?.currentItem?.status ?? playerItem.status
+            if status == .failed {
+                removeSnapshotsTaggedBefore(id: id)
+                showUnsupportedVideoOverlay()
+                return
+            }
+
+            let targetTime = CMTime(seconds: 0.01, preferredTimescale: 600)
+            let isReady = startsPaused
+                ? status == .readyToPlay
+                : (queuePlayer?.currentTime() ?? .zero) >= targetTime
+            if isReady {
                 
                 // 恢复之前的进度
                 // Restore previous progress
@@ -988,7 +1004,7 @@ class LargeImageView: NSView {
             } else {
                 // 如果还没有准备好，继续检查
                 // If not ready yet, continue checking
-                checkPlayerItemStatus(id: id)
+                checkPlayerItemStatus(id: id, startsPaused: startsPaused)
             }
         }
     }
@@ -1740,6 +1756,16 @@ class LargeImageView: NSView {
         super.mouseUp(with: event)
     }
     
+    private static func boundedDragOrigin(for image: CGRect, in viewport: CGRect, margin: CGSize) -> CGPoint {
+        // A short axis can keep more than the margin of blank space as long as the image fits.
+        let minX = min(viewport.minX, viewport.maxX - image.width - margin.width)
+        let maxX = max(viewport.minX + margin.width, viewport.maxX - image.width)
+        let minY = min(viewport.minY, viewport.maxY - image.height - margin.height)
+        let maxY = max(viewport.minY + margin.height, viewport.maxY - image.height)
+
+        return CGPoint(x: min(max(image.minX, minX), maxX), y: min(max(image.minY, minY), maxY))
+    }
+
     override func mouseDragged(with event: NSEvent) {
         guard let viewController = getViewController(self) else { return }
         if isEventInVideoControls(event) { return }
@@ -1756,16 +1782,6 @@ class LargeImageView: NSView {
             
             let dx = newLocation.x - lastLocation.x
             let dy = newLocation.y - lastLocation.y
-    private static func boundedDragOrigin(for image: CGRect, in viewport: CGRect, margin: CGSize) -> CGPoint {
-        // A short axis can keep more than the margin of blank space as long as the image fits.
-        let minX = min(viewport.minX, viewport.maxX - image.width - margin.width)
-        let maxX = max(viewport.minX + margin.width, viewport.maxX - image.width)
-        let minY = min(viewport.minY, viewport.maxY - image.height - margin.height)
-        let maxY = max(viewport.minY + margin.height, viewport.maxY - image.height)
-
-        return CGPoint(x: min(max(image.minX, minX), maxX), y: min(max(image.minY, minY), maxY))
-    }
-
 
             if file.type == .image {
                 let proposedFrame = imageView.frame.offsetBy(dx: dx, dy: dy)

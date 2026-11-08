@@ -168,6 +168,19 @@ func getMainViewController() -> ViewController? {
     return nil
 }
 
+    static let videoAutoplayDurationRange = 1...30
+    private static let videoAutoplayMinimumDurationKey = "videoAutoplayMinimumDuration"
+
+    var videoAutoplayMinimumDuration: Int {
+        get {
+            let seconds = UserDefaults.standard.integer(forKey: Self.videoAutoplayMinimumDurationKey)
+            return min(max(seconds, Self.videoAutoplayDurationRange.lowerBound), Self.videoAutoplayDurationRange.upperBound)
+        }
+        set {
+            let seconds = min(max(newValue, Self.videoAutoplayDurationRange.lowerBound), Self.videoAutoplayDurationRange.upperBound)
+            UserDefaults.standard.set(seconds, forKey: Self.videoAutoplayMinimumDurationKey)
+        }
+    }
 func getAnyViewController() -> ViewController? {
     for window in NSApplication.shared.windows {
         if let viewController = window.contentViewController as? ViewController {
