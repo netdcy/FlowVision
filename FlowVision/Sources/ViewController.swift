@@ -1584,8 +1584,14 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 let curTime = DispatchTime.now()
                                 let nanoTime = curTime.uptimeNanoseconds - startTime.uptimeNanoseconds
                                 let timeInterval = Double(nanoTime) / 1_000_000_000
-                                // Restore scroll position when it exists without waiting for thumbnail progress before removing snapshot, at the latest until the 0.5s timer removes snapshot
-                                if (i>40 || i==count-1 || timeInterval>0.3 || publicVar.folderScrollPos[curFolder] != nil) && restoreFolderScrollPos(folder: curFolder) {
+                                var isRestoreDone = false
+                                if publicVar.folderScrollPos[curFolder] != nil {
+                                    // Keep snapshot while restore waits, at the latest until the independent 0.5s timer in switchFolder removes snapshot first
+                                    if !restoreFolderScrollPos(folder: curFolder) {return}
+                                    isRestoreDone = true
+                                }
+                                // Remove snapshot after restore if a remembered scroll position exists, otherwise remove snapshot when thumbnail is enough or 0.3s passed since the folder change started
+                                if isRestoreDone || i>40 || i==count-1 || timeInterval>0.3 {
                                     
                                     if snapshotQueue.count > 0 {
                                         let curTime = DispatchTime.now()
