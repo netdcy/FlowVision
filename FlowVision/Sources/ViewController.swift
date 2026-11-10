@@ -1766,7 +1766,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         var level: Int32 = 1
         var levelSize = MemoryLayout<Int32>.size
         sysctlbyname("kern.memorystatus_vm_pressure_level", &level, &levelSize, nil, 0)
+        fileDB.lock()
         memoryPressure = DispatchSource.MemoryPressureEvent(rawValue: UInt(level))
+        fileDB.unlock()
         
         // Monitor macOS memory pressure level change
         memoryPressureSource = DispatchSource.makeMemoryPressureSource(eventMask: [.normal, .warning, .critical], queue: .global())
