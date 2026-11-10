@@ -1762,6 +1762,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         thumbThread.qualityOfService = .userInitiated
         thumbThread.start()
         
+        // Set the initial memory pressure level
+        var level: Int32 = 1
+        var levelSize = MemoryLayout<Int32>.size
+        sysctlbyname("kern.memorystatus_vm_pressure_level", &level, &levelSize, nil, 0)
+        memoryPressure = DispatchSource.MemoryPressureEvent(rawValue: UInt(level))
+        
         // Monitor macOS memory pressure level change
         memoryPressureSource = DispatchSource.makeMemoryPressureSource(eventMask: [.normal, .warning, .critical], queue: .global())
         memoryPressureSource?.setEventHandler { [weak self] in
