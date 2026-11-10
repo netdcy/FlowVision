@@ -348,10 +348,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     var watchFileDescriptor: Int32 = -1
     var watchDispatchSource: DispatchSourceFileSystemObject?
+    var memoryPressureSource: DispatchSourceMemoryPressure?
     
     // 所有读写都必须持有 fileDB.dblock。
     // All accesses must be protected by fileDB.dblock.
     var LRUqueue = [(String,DispatchTime,Int)]()
+    var memoryPressure = DispatchSource.MemoryPressureEvent.normal
     
     var largeImageLoadTask: DispatchWorkItem?
     var largeImageLoadQueueLock = NSLock()
@@ -919,6 +921,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         // 停止监控
         // Stop monitoring
         stopWatchingDirectory()
+        memoryPressureSource?.cancel()
+        memoryPressureSource = nil
         
         // 取消所有未完成的异步任务
         // Cancel all unfinished async tasks
@@ -1758,6 +1762,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         thumbThread.qualityOfService = .userInitiated
         thumbThread.start()
         
+        // Monitor macOS memory pressure level change
+        memoryPressureSource = DispatchSource.makeMemoryPressureSource(eventMask: [.normal, .warning, .critical], queue: .global())
+        memoryPressureSource?.setEventHandler { [weak self] in
+            guard let self = self, let source = self.memoryPressureSource else { return }
+            fileDB.lock()
+            memoryPressure = source.data
+            fileDB.unlock()
+        }
+        memoryPressureSource?.resume()
+        
         let memMonitorThread = Thread { [weak self] in
             guard let self = self else { return }
             let memSizeInGB = getSystemMemorySize()
@@ -1765,7 +1779,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 if willTerminate {break}
                 Thread.sleep(forTimeInterval: 2)
                 
-                let memUse = reportTotalMemoryUsage()
+                // Go by the bigger one between footprint and counted thumbnail memory
+                let memUse = max(reportTotalMemoryUsage(), Double(MemoryCache.shared.size) / 1024 / 1024)
                 // let memPhyUse = reportPhyMemoryUsage()
                 
                 // log("Memory usage: "+String(memUse), level: .warn)
@@ -1782,13 +1797,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         totalCount += count
                     }
                     
-                    var ifCantDetectMemUse = false
-                    if #available(macOS 15, *) {
-                        // TODO: 有时在macos 15上观察到，图片占用的内存变成了与WindowServer的共享内存，此时无法直接获取大小
-                        // TODO: Sometimes observed on macOS 15 that image memory becomes shared memory with WindowServer, making it impossible to directly get size
-                        ifCantDetectMemUse = totalCount > memUseLimit * 2
-                    }
-                    
                     var debug = false
 #if DEBUG
                     // 用来在debug环境复现问题
@@ -1796,7 +1804,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     debug = true
 #endif
                     
-                    if (overTime > 600 && LRUqueue.count >= 2) || (Int(memUse) > memUseLimit) || (debug && LRUqueue.count >= 2) {
+                    // Free folders unused for 10 minutes when above half of limit or under warning memory pressure, free regardless of lifetime when above limit or under critical memory pressure
+                    if (overTime > 600 && LRUqueue.count >= 2 && (Int(memUse) > memUseLimit / 2 || memoryPressure == .warning)) || (Int(memUse) > memUseLimit) || memoryPressure == .critical || (debug && LRUqueue.count >= 2) {
                         log("Memory free:", level: .info)
                         log(lastLRUItem.0.removingPercentEncoding, level: .info)
                         // 由于先置目录再请求缩略图，所以此处可保证安全

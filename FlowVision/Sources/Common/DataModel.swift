@@ -511,7 +511,17 @@ class FileModel {
     var isGetImageSizeFail = false
     var thumbSize: NSSize?
     var lineNo: Int = 0
-    var image: NSImage?
+    var image: NSImage? {
+        didSet {
+            let rep = image?.bestRepresentation(for: NSRect(origin: .zero, size: image?.size ?? .zero), context: nil, hints: nil)
+            // Estimate 4 bytes per pixel
+            var bytes = CGFloat(rep?.pixelsWide ?? 0) * CGFloat(rep?.pixelsHigh ?? 0) * 4
+            // Count SVG and AI at most 512 pixels
+            if ["svg", "ai"].contains(isAlias ? aliasActualExt : ext) {bytes = min(bytes, 512 * 512 * 4)}
+            setDecodedSize(bytes < CGFloat(Int.max) ? Int(bytes) : 0)
+        }
+    }
+    private(set) var decodedSize = 0
     var folderImages = [NSImage]()
     var lock: NSLock = NSLock()
     var isLayoutCalcued: Bool = false
@@ -528,6 +538,16 @@ class FileModel {
     var imageInfo: ImageInfo?
     var getThumbFailed = false
     var finderTags: [String] = []
+    
+    func setDecodedSize(_ size: Int) {
+        if size == decodedSize {return}
+        MemoryCache.shared.adjustSize(size - decodedSize)
+        decodedSize = size
+    }
+    
+    deinit {
+        setDecodedSize(0)
+    }
 }
 
 class DirModel {
@@ -596,6 +616,27 @@ class DatabaseModel {
     }
     func unlock(){
         dblock.unlock()
+    }
+}
+
+// Thumbnail memory bookkeeping
+class MemoryCache {
+    static let shared = MemoryCache()
+    
+    private let lock = NSLock()
+    private var totalSize = 0
+    
+    var size: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return totalSize
+    }
+    
+    func adjustSize(_ delta: Int) {
+        lock.lock()
+        totalSize += delta
+        assert(totalSize >= 0)
+        lock.unlock()
     }
 }
 
