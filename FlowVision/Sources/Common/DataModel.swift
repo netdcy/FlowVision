@@ -513,12 +513,9 @@ class FileModel {
     var lineNo: Int = 0
     var image: NSImage? {
         didSet {
-            let rep = image?.bestRepresentation(for: NSRect(origin: .zero, size: image?.size ?? .zero), context: nil, hints: nil)
-            // Estimate 4 bytes per pixel
-            var bytes = CGFloat(rep?.pixelsWide ?? 0) * CGFloat(rep?.pixelsHigh ?? 0) * 4
-            // Count SVG and AI at most 512 pixels
-            if ["svg", "ai"].contains(isAlias ? aliasActualExt : ext) {bytes = min(bytes, 512 * 512 * 4)}
-            setDecodedSize(bytes < CGFloat(Int.max) ? Int(bytes) : 0)
+            // Count like WebKit, vector images are counted 0
+            let cgImage = ["svg", "ai"].contains(isAlias ? aliasActualExt : ext) ? nil : image?.cgImage(forProposedRect: nil, context: nil, hints: nil)
+            setDecodedSize((cgImage?.bytesPerRow ?? 0) * (cgImage?.height ?? 0))
         }
     }
     private(set) var decodedSize = 0
