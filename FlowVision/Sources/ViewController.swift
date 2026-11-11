@@ -1646,7 +1646,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 imageExist=true
                                 // print(revisedSize,thumbImage.size)
                                 
-                                if (publicVar.isGenHdThumb && !noThumbSizeDueToSchedule) && file.type == .image { // && publicVar.layoutType != .grid
+                                if (publicVar.isGenHdThumb && !noThumbSizeDueToSchedule) && (file.type == .image || file.type == .folder || file.type == .video) { // && publicVar.layoutType != .grid
                                     if thumbImage.size.width != revisedSize.width {
                                         imageExist=false
                                     }
@@ -1660,6 +1660,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 if ["gif", "svg", "ai"].contains(file.ext.lowercased()){
                                     // 由于无法正常生成指定大小的缩略图
                                     // Cannot generate thumbnail of specified size normally
+                                    imageExist=true
+                                }
+                                if file.type == .folder && thumbImage.name() == NSImage.folderName {
+                                    // Generic folder icon
                                     imageExist=true
                                 }
                                 if globalVar.HandledRawExtensions.contains(file.ext.lowercased()){
