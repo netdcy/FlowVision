@@ -511,11 +511,7 @@ class FileModel {
     var isGetImageSizeFail = false
     var thumbSize: NSSize?
     var lineNo: Int = 0
-    var image: NSImage? {
-        didSet {
-            if image == nil {setDecodedSize(0)}
-        }
-    }
+    var image: NSImage?
     private(set) var decodedSize = 0
     var folderImages = [NSImage]()
     var lock: NSLock = NSLock()

@@ -677,6 +677,7 @@ extension ViewController {
                 // log(ele.0.path.removingPercentEncoding)
                 if ele.1.ver != dirModel.ver {
                     ele.1.image=nil
+                    ele.1.setDecodedSize(0)
                     ele.1.folderImages=[]
                     keysToRemove.append(ele.0)
                 }

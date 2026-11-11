@@ -959,6 +959,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         for (_,dirModel) in fileDB.db {
             for (_,fileModel) in dirModel.files {
                 fileModel.image=nil
+                fileModel.setDecodedSize(0)
                 fileModel.folderImages=[NSImage]()
             }
             // dirModel.files.removeAll()
@@ -1826,6 +1827,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 dirModel.isMemClearedToAvoidRemainingTask=true
                                 for fileModel in dirModel.files {
                                     fileModel.1.image=nil
+                                    fileModel.1.setDecodedSize(0)
                                     fileModel.1.folderImages=[NSImage]()
                                 }
                             }else{
@@ -1896,6 +1898,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         if (fileModel.1.id < indexMin || fileModel.1.id > indexMax) &&
                                             (fileModel.1.id < indexMinOfLarge || fileModel.1.id > indexMaxOfLarge) {
                                             fileModel.1.image=nil
+                                            fileModel.1.setDecodedSize(0)
                                             fileModel.1.folderImages=[NSImage]()
                                         }
                                     }
