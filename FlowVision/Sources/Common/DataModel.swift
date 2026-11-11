@@ -512,7 +512,7 @@ class FileModel {
     var thumbSize: NSSize?
     var lineNo: Int = 0
     var image: NSImage?
-    var decodedSize = 0
+    private var decodedSize = 0
     var folderImages = [NSImage]()
     var lock: NSLock = NSLock()
     var isLayoutCalcued: Bool = false
