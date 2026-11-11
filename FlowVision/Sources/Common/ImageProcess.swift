@@ -480,7 +480,7 @@ func findImageURLs(in directoryURL: URL, maxDepth: Int, maxImages: Int, preferDi
     }
 }
 
-func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Bool]) -> NSImage? {
+func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Bool], size oriSize: NSSize? = nil) -> NSImage? {
     // 底层文件不完整或损坏时，NSImage 可能不为 nil，但尺寸为零或非有限值。
     // NSImage may be non-nil while its size is zero or non-finite when the underlying file is incomplete or malformed.
     // 不要把这类几何数据传给 AppKit 绘图 API，否则 NaN 会触发 Objective-C 异常。
@@ -496,15 +496,40 @@ func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Boo
     // Define common parameters
     let borderColor: NSColor = NSColor(white: 1.0, alpha: 1.0)
     let shadowColor: NSColor = NSColor(white: 0.3, alpha: 1.0)
-    let shadowOffset: CGSize = CGSize(width: 5.0, height: -5.0)
-    let shadowBlurRadius: CGFloat = 10.0
     
     // 创建一个新的空白图像，用作最终的合成图像
     // Create a new blank image as the final composite image
     let resolution=512.0
     let size = NSSize(width: resolution, height: resolution)
-    let resultImage = NSImage(size: size)
-    resultImage.lockFocus()
+    let pointSize: CGSize
+    if let oriSize {
+        pointSize = CGSize(width: oriSize.width * 2, height: oriSize.height * 2)
+    } else {
+        pointSize = size
+    }
+    
+    let colorSpace = CGColorSpace(name: CGColorSpace.displayP3) ?? CGColorSpace(name: CGColorSpace.sRGB)!
+    
+    guard let context = CGContext(
+        data: nil, width: Int(pointSize.width), height: Int(pointSize.height),
+        bitsPerComponent: 8, bytesPerRow: 0,
+        space: colorSpace,
+        bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+    ) else {
+        return background
+    }
+    context.interpolationQuality = .high
+    
+    let scaleX = pointSize.width / resolution
+    let scaleY = pointSize.height / resolution
+    context.scaleBy(x: scaleX, y: scaleY)
+    
+    // Scale shadows
+    let shadowOffset: CGSize = CGSize(width: 5.0 * scaleX, height: -5.0 * scaleY)
+    let shadowBlurRadius: CGFloat = 10.0 * scaleX
+    
+    NSGraphicsContext.saveGraphicsState()
+    NSGraphicsContext.current = NSGraphicsContext(cgContext: context, flipped: false)
     
     // 设置并填充背景颜色
     // Set and fill background color
@@ -516,10 +541,6 @@ func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Boo
     // Draw background image
     let rect = CGRect(origin: .zero, size: size)
     background.draw(in: rect)
-
-    // 获取图形上下文
-    // Get graphics context
-    let context = NSGraphicsContext.current!.cgContext
 
     if globalVar.thumbnailOfFolderUseStacking {
         // 叠放模式：遍历图像数组，应用旋转变换并叠放绘制到背景上
@@ -718,7 +739,9 @@ func createCompositeImage(background: NSImage, images: [NSImage], isVideos: [Boo
         }
     }
 
-    resultImage.unlockFocus()
+    NSGraphicsContext.restoreGraphicsState()
+    guard let compositeCGImage = context.makeImage() else { return background }
+    let resultImage = NSImage(cgImage: compositeCGImage, size: oriSize ?? size)
     return resultImage
     // return compressImage(resultImage, format: .jpeg, compressionFactor: 0.8)
     // return compressImageToThumbnail(resultImage)
@@ -790,7 +813,7 @@ func compressImage(_ image: NSImage, format: NSBitmapImageRep.FileType, compress
 
 }
 
-func getVideoThumbnailFFmpeg(for url: URL, at time: TimeInterval = 10) -> NSImage? {
+func getVideoThumbnailFFmpeg(for url: URL, at time: TimeInterval = 10, size: NSSize? = nil) -> NSImage? {
     let tempDirectory = FileManager.default.temporaryDirectory
     let uniqueFilename = UUID().uuidString + ".jpg"
     let thumbnailPath = tempDirectory.appendingPathComponent(uniqueFilename).path
@@ -798,11 +821,16 @@ func getVideoThumbnailFFmpeg(for url: URL, at time: TimeInterval = 10) -> NSImag
     // let ffmpegCommand = "-i '\(url.path)' -ss \(time) -vf \"select=eq(n\\,100),thumbnail,scale=512:-1\" -qscale:v 2 -frames:v 1 \(thumbnailPath)"
     // let ffmpegCommand = "-i '\(url.path)' -vf \"scale=1280:-1,blackframe=0,metadata=select:key=lavfi.blackframe.pblack:value=50:function=less\" -frames:v 1 \(thumbnailPath)"
 
+    var maxSize = 512
+    if let size {
+        maxSize = 2 * Int(max(size.width, size.height))
+    }
+
     // 构建 ffmpeg 命令的参数数组
     // Build ffmpeg command argument array
     let ffmpegArgs: [String] = [
         "-i", url.path,
-        "-vf", "scale=1280:-1,blackframe=0,metadata=select:key=lavfi.blackframe.pblack:value=50:function=less",
+        "-vf", "scale=min(\(maxSize)\\,iw):min(\(maxSize)\\,ih):force_original_aspect_ratio=decrease,blackframe=0,metadata=select:key=lavfi.blackframe.pblack:value=50:function=less",
         "-frames:v", "1",
         "-threads", "2",
         thumbnailPath
@@ -845,6 +873,10 @@ func getVideoThumbnailFFmpeg(for url: URL, at time: TimeInterval = 10) -> NSImag
                     // 删除临时文件
                     // Delete temporary file
                     try? FileManager.default.removeItem(at: URL(fileURLWithPath: thumbnailPath))
+                    // Set point size to avoid HD check regenerating thumbnail
+                    if let size {
+                        thumbnail.size = size
+                    }
                     return thumbnail
                 } else {
                     log("Failed to load thumbnail image from \(thumbnailPath)", level: .warn)
@@ -916,7 +948,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
                 isVideos.append(globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) && isNotFalseTsVideoFile(url))
             }
             if imgs.count>0 {
-                let finalImg=createCompositeImage(background: NSImage(named: NSImage.folderName)!, images: imgs, isVideos: isVideos)
+                let finalImg=createCompositeImage(background: NSImage(named: NSImage.folderName)!, images: imgs, isVideos: isVideos, size: size)
                 return finalImg
             }
         }
@@ -932,7 +964,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
     // Handle unsupported thumbnails
     if globalVar.HandledNotNativeSupportedVideoExtensions.contains(url.pathExtension.lowercased()) {
         if globalVar.HandledVideoExtensions.contains(url.pathExtension.lowercased()) {
-            return getVideoThumbnailFFmpeg(for: url)
+            return getVideoThumbnailFFmpeg(for: url, size: size)
         }
         // return getFileTypeIcon(url: url)
         return nil
@@ -950,6 +982,11 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         // imageGenerator.requestedTimeToleranceAfter = .zero
         imageGenerator.requestedTimeToleranceBefore = CMTime(seconds: 0.1, preferredTimescale: 600)
         imageGenerator.requestedTimeToleranceAfter = CMTime(seconds: 0.1, preferredTimescale: 600)
+        var maxSize = 512
+        if let size {
+            maxSize = 2 * Int(max(size.width, size.height))
+        }
+        imageGenerator.maximumSize = CGSize(width: maxSize, height: maxSize)
 
         let durationSeconds = asset.duration.seconds
         
@@ -978,7 +1015,7 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
                 // 检查帧是否为黑屏或过暗
                 // Check if frame is black screen or too dark
                 if brightness >= 0.1 {
-                    let thumbnail = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
+                    let thumbnail = NSImage(cgImage: cgImage, size: size ?? NSSize(width: cgImage.width, height: cgImage.height))
                     return thumbnail.deepCopy()
                 }
                 
@@ -995,13 +1032,13 @@ func getImageThumb(url: URL, size oriSize: NSSize? = nil, refSize: NSSize? = nil
         // 如果有最佳帧（即使不够亮）也使用它
         // If there's a best frame (even if not bright enough), use it
         if let bestFrame = bestFrame {
-            let thumbnail = NSImage(cgImage: bestFrame.image, size: NSSize(width: bestFrame.image.width, height: bestFrame.image.height))
+            let thumbnail = NSImage(cgImage: bestFrame.image, size: size ?? NSSize(width: bestFrame.image.width, height: bestFrame.image.height))
             return thumbnail.deepCopy()
         }
         
         // 如果所有尝试都失败，则使用FFmpeg方案
         // If all attempts fail, use FFmpeg solution
-        return getVideoThumbnailFFmpeg(for: url)
+        return getVideoThumbnailFFmpeg(for: url, size: size)
     }else if (globalVar.HandledImageAndRawExtensions+["pdf"]).contains(url.pathExtension.lowercased()) {
         // 处理其它缩略图
         // Handle other thumbnails
