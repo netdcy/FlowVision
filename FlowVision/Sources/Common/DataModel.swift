@@ -513,8 +513,8 @@ class FileModel {
     var lineNo: Int = 0
     var image: NSImage? {
         didSet {
-            // Count like WebKit, vector images are counted 0
-            let cgImage = ["svg", "ai"].contains(isAlias ? aliasActualExt : ext) ? nil : image?.cgImage(forProposedRect: nil, context: nil, hints: nil)
+            // Count like WebKit, vector images and icons are counted 0
+            let cgImage = ["svg", "ai"].contains(isAlias ? aliasActualExt : ext) || getThumbFailed || image?.name() == NSImage.folderName ? nil : image?.cgImage(forProposedRect: nil, context: nil, hints: nil)
             setDecodedSize((cgImage?.bytesPerRow ?? 0) * (cgImage?.height ?? 0))
         }
     }

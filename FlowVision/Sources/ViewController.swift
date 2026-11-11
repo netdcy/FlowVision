@@ -1727,8 +1727,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         if ver != dirModel.ver {return}
                                         
                                         fileDB.lock()
-                                        file.image=image
                                         file.getThumbFailed=getThumbFailed
+                                        file.image=image
                                         file.folderImages=folderImages
                                         fileDB.unlock()
                                         // 此处必须分开加锁解锁，因为下面这句调用底层会重入锁
