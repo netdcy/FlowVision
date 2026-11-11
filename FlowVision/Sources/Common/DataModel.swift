@@ -636,7 +636,7 @@ class MemoryCache {
 }
 
 // Count like WebKit, vector images and icons are counted 0
-func getDecodedSize(_ image: NSImage?, ext: String, getThumbFailed: Bool = false) -> Int {
+func getDecodedSize(_ image: NSImage?, ext: String, getThumbFailed: Bool) -> Int {
     let cgImage = ["svg", "ai"].contains(ext) || getThumbFailed || image?.name() == NSImage.folderName ? nil : image?.cgImage(forProposedRect: nil, context: nil, hints: nil)
     return (cgImage?.bytesPerRow ?? 0) * (cgImage?.height ?? 0)
 }

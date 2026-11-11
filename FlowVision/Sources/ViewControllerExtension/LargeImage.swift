@@ -712,12 +712,10 @@ extension ViewController {
             file.imageInfo=getImageInfo(url: url, needMetadata: true)
             file.finderTags = (try? url.resourceValues(forKeys: [.tagNamesKey]))?.tagNames ?? []
             file.originalSize=file.imageInfo?.size
-            file.ext=URL(string: file.path)!.pathExtension.lowercased()
             if !justChangeLargeImageViewFile && !publicVar.isLaunchFromFile_changeLargeImage {
                 // 获取缩略图（以加快响应）
                 // Get thumbnail (to speed up response)
                 file.image = getImageThumb(url: url, refSize: file.originalSize)
-                file.setDecodedSize(getDecodedSize(file.image, ext: file.ext))
             }
             if file.originalSize == nil {
                 file.originalSize = DEFAULT_SIZE
@@ -725,6 +723,7 @@ extension ViewController {
             }
             getFileInfo(file: file)
             
+            file.ext=URL(string: file.path)!.pathExtension.lowercased()
             if globalVar.HandledImageAndRawExtensions.contains(file.ext) {
                 file.type = .image
             }else if globalVar.HandledVideoExtensions.contains(file.ext) && isNotFalseTsVideoFile(URL(string: file.path)!) {
