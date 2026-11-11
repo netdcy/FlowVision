@@ -1544,6 +1544,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         fileDB.lock()
                         var originalSize:NSSize? = file.originalSize
                         var thumbSize:NSSize? = file.thumbSize
+                        let actualExt = file.isAlias ? file.aliasActualExt : file.ext
                         let count = dirModel.files.count
                         let isMemClearedToAvoidRemainingTask=dirModel.isMemClearedToAvoidRemainingTask
                         fileDB.unlock()
@@ -1716,9 +1717,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //                                }
                                 
                                 if image != nil {
-                                    fileDB.lock()
-                                    let actualExt = file.isAlias ? file.aliasActualExt : file.ext
-                                    fileDB.unlock()
                                     let decodedSize = getDecodedSize(image, ext: actualExt, getThumbFailed: getThumbFailed)
                                     
                                     // 注意：可能上面的下一轮执行完毕后才执行后面的代码
