@@ -512,7 +512,7 @@ class FileModel {
     var thumbSize: NSSize?
     var lineNo: Int = 0
     var image: NSImage?
-    private(set) var decodedSize = 0
+    var decodedSize = 0
     var folderImages = [NSImage]()
     var lock: NSLock = NSLock()
     var isLayoutCalcued: Bool = false
@@ -617,6 +617,8 @@ class MemoryCache {
     private let lock = NSLock()
     private var totalSize = 0
     
+    private init() {}
+    
     var size: Int {
         lock.lock()
         defer { lock.unlock() }
@@ -626,7 +628,9 @@ class MemoryCache {
     func adjustSize(_ delta: Int) {
         lock.lock()
         totalSize += delta
-        assert(totalSize >= 0)
+        if totalSize < 0 {
+            assertionFailure()
+        }
         lock.unlock()
     }
 }

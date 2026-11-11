@@ -75,11 +75,15 @@ extension ViewController {
     // Read macOS memory pressure level
     func updateMemoryPressure() {
         var level: Int32 = 1
-        var levelSize = MemoryLayout<Int32>.size
-        sysctlbyname("kern.memorystatus_vm_pressure_level", &level, &levelSize, nil, 0)
-        fileDB.lock()
-        memoryPressure = DispatchSource.MemoryPressureEvent(rawValue: UInt(level))
-        fileDB.unlock()
+        var sizeOfLevel = MemoryLayout<Int32>.size
+        
+        let result = sysctlbyname("kern.memorystatus_vm_pressure_level", &level, &sizeOfLevel, nil, 0)
+        
+        if result == 0 {
+            fileDB.lock()
+            memoryPressure = DispatchSource.MemoryPressureEvent(rawValue: UInt(level))
+            fileDB.unlock()
+        }
     }
     
     func getSystemMemorySize() -> Double {
