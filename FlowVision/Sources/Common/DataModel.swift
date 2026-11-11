@@ -513,9 +513,7 @@ class FileModel {
     var lineNo: Int = 0
     var image: NSImage? {
         didSet {
-            // Count like WebKit, vector images and icons are counted 0
-            let cgImage = ["svg", "ai"].contains(isAlias ? aliasActualExt : ext) || getThumbFailed || image?.name() == NSImage.folderName ? nil : image?.cgImage(forProposedRect: nil, context: nil, hints: nil)
-            setDecodedSize((cgImage?.bytesPerRow ?? 0) * (cgImage?.height ?? 0))
+            if image == nil {setDecodedSize(0)}
         }
     }
     private(set) var decodedSize = 0
@@ -535,6 +533,12 @@ class FileModel {
     var imageInfo: ImageInfo?
     var getThumbFailed = false
     var finderTags: [String] = []
+    
+    // Count like WebKit, vector images and icons are counted 0
+    static func getDecodedSize(_ image: NSImage?, ext: String, getThumbFailed: Bool = false) -> Int {
+        let cgImage = ["svg", "ai"].contains(ext) || getThumbFailed || image?.name() == NSImage.folderName ? nil : image?.cgImage(forProposedRect: nil, context: nil, hints: nil)
+        return (cgImage?.bytesPerRow ?? 0) * (cgImage?.height ?? 0)
+    }
     
     func setDecodedSize(_ size: Int) {
         if size == decodedSize {return}

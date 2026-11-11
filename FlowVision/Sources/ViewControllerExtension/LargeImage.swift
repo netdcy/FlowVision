@@ -717,6 +717,7 @@ extension ViewController {
                 // 获取缩略图（以加快响应）
                 // Get thumbnail (to speed up response)
                 file.image = getImageThumb(url: url, refSize: file.originalSize)
+                file.setDecodedSize(FileModel.getDecodedSize(file.image, ext: file.ext))
             }
             if file.originalSize == nil {
                 file.originalSize = DEFAULT_SIZE

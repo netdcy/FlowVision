@@ -1715,6 +1715,11 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //                                }
                                 
                                 if image != nil {
+                                    fileDB.lock()
+                                    let actualExt = file.isAlias ? file.aliasActualExt : file.ext
+                                    fileDB.unlock()
+                                    let decodedSize = FileModel.getDecodedSize(image, ext: actualExt, getThumbFailed: getThumbFailed)
+                                    
                                     // 注意：可能上面的下一轮执行完毕后才执行后面的代码
                                     // Note: Code below may execute after next round above completes
                                     DispatchQueue.main.async { [weak self] in
@@ -1727,8 +1732,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         if ver != dirModel.ver {return}
                                         
                                         fileDB.lock()
-                                        file.getThumbFailed=getThumbFailed
                                         file.image=image
+                                        file.setDecodedSize(decodedSize)
+                                        file.getThumbFailed=getThumbFailed
                                         file.folderImages=folderImages
                                         fileDB.unlock()
                                         // 此处必须分开加锁解锁，因为下面这句调用底层会重入锁
