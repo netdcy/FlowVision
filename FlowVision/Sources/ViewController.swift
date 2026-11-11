@@ -1719,7 +1719,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                     fileDB.lock()
                                     let actualExt = file.isAlias ? file.aliasActualExt : file.ext
                                     fileDB.unlock()
-                                    let decodedSize = FileModel.getDecodedSize(image, ext: actualExt, getThumbFailed: getThumbFailed)
+                                    let decodedSize = getDecodedSize(image, ext: actualExt, getThumbFailed: getThumbFailed)
                                     
                                     // 注意：可能上面的下一轮执行完毕后才执行后面的代码
                                     // Note: Code below may execute after next round above completes
