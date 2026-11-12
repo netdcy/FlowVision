@@ -179,6 +179,7 @@ extension ViewController {
                     file.1.originalSize=nil
                     file.1.thumbSize=nil
                     file.1.image=nil
+                    file.1.setDecodedSize(0)
                     file.1.folderImages=[]
                 }
             }

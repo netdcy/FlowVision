@@ -512,6 +512,7 @@ class FileModel {
     var thumbSize: NSSize?
     var lineNo: Int = 0
     var image: NSImage?
+    private var decodedSize = 0
     var folderImages = [NSImage]()
     var lock: NSLock = NSLock()
     var isLayoutCalcued: Bool = false
@@ -528,6 +529,16 @@ class FileModel {
     var imageInfo: ImageInfo?
     var getThumbFailed = false
     var finderTags: [String] = []
+    
+    func setDecodedSize(_ size: Int) {
+        if size == decodedSize {return}
+        MemoryCache.shared.adjustSize(size - decodedSize)
+        decodedSize = size
+    }
+    
+    deinit {
+        setDecodedSize(0)
+    }
 }
 
 class DirModel {
@@ -597,6 +608,38 @@ class DatabaseModel {
     func unlock(){
         dblock.unlock()
     }
+}
+
+// Thumbnail memory bookkeeping
+class MemoryCache {
+    static let shared = MemoryCache()
+    
+    private let lock = NSLock()
+    private var totalSize = 0
+    
+    private init() {}
+    
+    var size: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return totalSize
+    }
+    
+    func adjustSize(_ delta: Int) {
+        lock.lock()
+        totalSize += delta
+        if totalSize < 0 {
+            assertionFailure()
+        }
+        lock.unlock()
+    }
+}
+
+// Count like WebKit, vector images are counted by file size and icons are counted 0
+func getDecodedSize(_ image: NSImage?, ext: String, fileSize: Int?, getThumbFailed: Bool) -> Int {
+    if ["svg", "ai"].contains(ext) && !getThumbFailed {return fileSize ?? 0}
+    let cgImage = getThumbFailed || image?.name() == NSImage.folderName ? nil : image?.cgImage(forProposedRect: nil, context: nil, hints: nil)
+    return (cgImage?.bytesPerRow ?? 0) * (cgImage?.height ?? 0)
 }
 
 func getMapKeysFile (_ theMap : Map<SortKeyFile,FileModel>) -> [(SortKeyFile,FileModel)]{

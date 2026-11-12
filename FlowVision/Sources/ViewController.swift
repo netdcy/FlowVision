@@ -348,10 +348,12 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     var watchFileDescriptor: Int32 = -1
     var watchDispatchSource: DispatchSourceFileSystemObject?
+    var memoryPressureSource: DispatchSourceMemoryPressure?
     
     // 所有读写都必须持有 fileDB.dblock。
     // All accesses must be protected by fileDB.dblock.
     var LRUqueue = [(String,DispatchTime,Int)]()
+    var memoryPressure = DispatchSource.MemoryPressureEvent.normal
     
     var largeImageLoadTask: DispatchWorkItem?
     var largeImageLoadQueueLock = NSLock()
@@ -919,6 +921,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         // 停止监控
         // Stop monitoring
         stopWatchingDirectory()
+        memoryPressureSource?.cancel()
+        memoryPressureSource = nil
         
         // 取消所有未完成的异步任务
         // Cancel all unfinished async tasks
@@ -955,6 +959,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         for (_,dirModel) in fileDB.db {
             for (_,fileModel) in dirModel.files {
                 fileModel.image=nil
+                fileModel.setDecodedSize(0)
                 fileModel.folderImages=[NSImage]()
             }
             // dirModel.files.removeAll()
@@ -1539,6 +1544,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         fileDB.lock()
                         var originalSize:NSSize? = file.originalSize
                         var thumbSize:NSSize? = file.thumbSize
+                        let actualExt = file.isAlias ? file.aliasActualExt : file.ext
+                        let fileSize = file.fileSize
                         let count = dirModel.files.count
                         let isMemClearedToAvoidRemainingTask=dirModel.isMemClearedToAvoidRemainingTask
                         fileDB.unlock()
@@ -1711,6 +1718,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
 //                                }
                                 
                                 if image != nil {
+                                    let decodedSize = getDecodedSize(image, ext: actualExt, fileSize: fileSize, getThumbFailed: getThumbFailed)
+                                    
                                     // 注意：可能上面的下一轮执行完毕后才执行后面的代码
                                     // Note: Code below may execute after next round above completes
                                     DispatchQueue.main.async { [weak self] in
@@ -1724,6 +1733,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         
                                         fileDB.lock()
                                         file.image=image
+                                        file.setDecodedSize(decodedSize)
                                         file.getThumbFailed=getThumbFailed
                                         file.folderImages=folderImages
                                         fileDB.unlock()
@@ -1758,6 +1768,16 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         thumbThread.qualityOfService = .userInitiated
         thumbThread.start()
         
+        // Monitor macOS memory pressure level change
+        memoryPressureSource = DispatchSource.makeMemoryPressureSource(eventMask: [.normal, .warning, .critical], queue: .global())
+        memoryPressureSource?.setEventHandler { [weak self] in
+            self?.updateMemoryPressure()
+        }
+        memoryPressureSource?.resume()
+        
+        // Set the initial memory pressure level
+        updateMemoryPressure()
+        
         let memMonitorThread = Thread { [weak self] in
             guard let self = self else { return }
             let memSizeInGB = getSystemMemorySize()
@@ -1765,7 +1785,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                 if willTerminate {break}
                 Thread.sleep(forTimeInterval: 2)
                 
-                let memUse = reportTotalMemoryUsage()
+                // Go by the bigger one between footprint and counted thumbnail memory
+                let memUse = max(reportTotalMemoryUsage(), Double(MemoryCache.shared.size) / 1024 / 1024)
                 // let memPhyUse = reportPhyMemoryUsage()
                 
                 // log("Memory usage: "+String(memUse), level: .warn)
@@ -1782,13 +1803,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         totalCount += count
                     }
                     
-                    var ifCantDetectMemUse = false
-                    if #available(macOS 15, *) {
-                        // TODO: 有时在macos 15上观察到，图片占用的内存变成了与WindowServer的共享内存，此时无法直接获取大小
-                        // TODO: Sometimes observed on macOS 15 that image memory becomes shared memory with WindowServer, making it impossible to directly get size
-                        ifCantDetectMemUse = totalCount > memUseLimit * 2
-                    }
-                    
                     var debug = false
 #if DEBUG
                     // 用来在debug环境复现问题
@@ -1796,7 +1810,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     debug = true
 #endif
                     
-                    if (overTime > 600 && LRUqueue.count >= 2) || (Int(memUse) > memUseLimit) || (debug && LRUqueue.count >= 2) {
+                    // Free folders unused for 10 minutes when above half of limit or under warning memory pressure, free regardless of lifetime when above limit or under critical memory pressure
+                    if (overTime > 600 && LRUqueue.count >= 2 && (Int(memUse) > memUseLimit / 2 || memoryPressure == .warning)) || (Int(memUse) > memUseLimit) || memoryPressure == .critical || (debug && LRUqueue.count >= 2) {
                         log("Memory free:", level: .info)
                         log(lastLRUItem.0.removingPercentEncoding, level: .info)
                         // 由于先置目录再请求缩略图，所以此处可保证安全
@@ -1811,6 +1826,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 dirModel.isMemClearedToAvoidRemainingTask=true
                                 for fileModel in dirModel.files {
                                     fileModel.1.image=nil
+                                    fileModel.1.setDecodedSize(0)
                                     fileModel.1.folderImages=[NSImage]()
                                 }
                             }else{
@@ -1881,6 +1897,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         if (fileModel.1.id < indexMin || fileModel.1.id > indexMax) &&
                                             (fileModel.1.id < indexMinOfLarge || fileModel.1.id > indexMaxOfLarge) {
                                             fileModel.1.image=nil
+                                            fileModel.1.setDecodedSize(0)
                                             fileModel.1.folderImages=[NSImage]()
                                         }
                                     }
