@@ -91,7 +91,7 @@ extension ViewController {
             publicVar.profile.saveToUserDefaults(withKey: "CustomStyle_v2_current")
             publicVar.randomSeed = Int.random(in: 0...Int.max)
         }
-        // Resort every cached folder whose order changed (folders with separate sort order keep those)
+        // Compare every cached folder's current sort order with the one that it should be in. If the default is changed, resort every cached folder that should follow the default
         for dirModel in fileDB.db {
             let folderSortOrder = sortOrder(forFolder: dirModel.1.path)
             if dirModel.1.sortOrder != folderSortOrder {

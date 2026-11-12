@@ -480,7 +480,7 @@ extension ViewController {
             fileDB.db[SortKeyDir(folderURL.absoluteString)] = DirModel(path: folderURL.absoluteString, ver: fileDB.ver)
         }
         fileDB.db[SortKeyDir(folderURL.absoluteString)]!.ver = fileDB.ver
-        // If folder's list isn't sorted in the order it should be (new record, or was changed in another window), resort it, so keys built match the list
+        // If folder's list isn't sorted in the order it should be in (new record's placeholder or was changed in another window) resort it into the order that it should be in
         if fileDB.db[SortKeyDir(folderURL.absoluteString)]!.sortOrder != folderSortOrder {
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.changeSortType(folderSortOrder.sortType, isSortFolderFirst: folderSortOrder.isSortFolderFirst, isSortUseFullPath: folderSortOrder.isSortUseFullPath, randomSeed: folderSortOrder.randomSeed)
         }
