@@ -560,10 +560,10 @@ class DirModel {
     var isRecursiveMode: Bool = false
     var isFiltered: Bool = false
     var lock: NSLock = NSLock()
-    var sortOrder = FolderSortOrder(sortType: .pathA, isSortFolderFirst: true, isSortUseFullPath: true, randomSeed: 0)
+    var actualSortOrder = FolderSortOrder(sortType: .pathA, isSortFolderFirst: true, isSortUseFullPath: true, randomSeed: 0)
     
     func changeSortType(_ sortType: SortType, isSortFolderFirst: Bool, isSortUseFullPath: Bool, randomSeed: Int){
-        sortOrder = FolderSortOrder(sortType: sortType, isSortFolderFirst: isSortFolderFirst, isSortUseFullPath: isSortUseFullPath, randomSeed: randomSeed)
+        actualSortOrder = FolderSortOrder(sortType: sortType, isSortFolderFirst: isSortFolderFirst, isSortUseFullPath: isSortUseFullPath, randomSeed: randomSeed)
         let oldFiles=files
         files=Map<SortKeyFile,FileModel>()
         for oldFile in oldFiles {
