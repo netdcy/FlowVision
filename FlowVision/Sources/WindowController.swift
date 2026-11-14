@@ -784,7 +784,8 @@ extension WindowController: NSToolbarDelegate {
             var title = ""
             var image = NSImage(systemSymbolName: "arrow.up.arrow.down", accessibilityDescription: "")!
             if let viewController = contentViewController as? ViewController {
-                switch viewController.expectedSortOrder(forFolder: viewController.fileDB.curFolder).sortType {
+                let actualSortOrder = viewController.actualSortOrder(forFolder: viewController.fileDB.curFolder)
+                switch actualSortOrder.sortType {
                 case .pathA,.pathZ:
                     title = NSLocalizedString("sort-label-name", comment: "名称")
                 case .extA,.extZ:
@@ -804,7 +805,7 @@ extension WindowController: NSToolbarDelegate {
                 case .tagA,.tagZ:
                     title = NSLocalizedString("sort-label-tag", comment: "Finder标签")
                 }
-                switch viewController.expectedSortOrder(forFolder: viewController.fileDB.curFolder).sortType {
+                switch actualSortOrder.sortType {
                 case .pathA,.extA,.sizeA,.createDateA,.modDateA,.addDateA,.exifDateA,.exifPixelA,.ratingA,.tagA:
                     // image = NSImage(systemSymbolName: "arrow.up", accessibilityDescription: "")!
                     // image = NSImage(systemSymbolName: "arrowtriangle.up", accessibilityDescription: "")!
@@ -1058,6 +1059,7 @@ extension WindowController: NSToolbarDelegate {
     
     @objc func showSortMenu(_ sender: Any?) {
         guard let viewController = contentViewController as? ViewController else {return}
+        let actualSortOrder = viewController.actualSortOrder(forFolder: viewController.fileDB.curFolder)
         // 图标映射
         // Icon mapping
         let sortTypeIcons: [SortType: NSImage?] = [
@@ -1113,11 +1115,11 @@ extension WindowController: NSToolbarDelegate {
         let menu = NSMenu()
         
         let folderFirstItem = NSMenuItem(title: NSLocalizedString("Sort Folders First", comment: "文件夹优先排序"), action: #selector(sortFolderFirst(_:)), keyEquivalent: "")
-        folderFirstItem.state = viewController.expectedSortOrder(forFolder: viewController.fileDB.curFolder).isSortFolderFirst ? .on : .off
+        folderFirstItem.state = actualSortOrder.isSortFolderFirst ? .on : .off
         menu.addItem(folderFirstItem)
 
         let sortUseFullPathItem = NSMenuItem(title: NSLocalizedString("Sort Using Full Path In Collection Mode", comment: "集合模式下使用完整路径排序"), action: #selector(sortUseFullPath(_:)), keyEquivalent: "")
-        sortUseFullPathItem.state = viewController.expectedSortOrder(forFolder: viewController.fileDB.curFolder).isSortUseFullPath ? .on : .off
+        sortUseFullPathItem.state = actualSortOrder.isSortUseFullPath ? .on : .off
         menu.addItem(sortUseFullPathItem)
 
         let sortReadme = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(sortReadmeAction), keyEquivalent: "")
@@ -1128,7 +1130,7 @@ extension WindowController: NSToolbarDelegate {
             let menuItem = NSMenuItem(title: title, action: #selector(sortItems(_:)), keyEquivalent: "")
             menuItem.target = self
             menuItem.representedObject = sortType
-            let curSortType = viewController.expectedSortOrder(forFolder: viewController.fileDB.curFolder).sortType
+            let curSortType = actualSortOrder.sortType
             menuItem.state = curSortType == sortType ? .on : .off
             if let icon = sortTypeIcons[sortType] ?? nil {
                 menuItem.image = icon
@@ -1147,7 +1149,7 @@ extension WindowController: NSToolbarDelegate {
             let menuItem = NSMenuItem(title: title, action: #selector(sortItems(_:)), keyEquivalent: "")
             menuItem.target = self
             menuItem.representedObject = sortType
-            let curSortType = viewController.expectedSortOrder(forFolder: viewController.fileDB.curFolder).sortType
+            let curSortType = actualSortOrder.sortType
             menuItem.state = curSortType == sortType ? .on : .off
             if let icon = sortTypeIcons[sortType] ?? nil {
                 menuItem.image = icon
@@ -1159,7 +1161,7 @@ extension WindowController: NSToolbarDelegate {
         
         menu.addItem(NSMenuItem.separator())
         
-        let separateSortItem = NSMenuItem(title: NSLocalizedString("Sort Separately", comment: ""), action: #selector(toggleSeparateSortOrder(_:)), keyEquivalent: "")
+        let separateSortItem = NSMenuItem(title: NSLocalizedString("Sort Separately", comment: "单独排序"), action: #selector(toggleSeparateSortOrder(_:)), keyEquivalent: "")
         separateSortItem.state = globalVar.separateSortOrders[viewController.fileDB.curFolder] != nil ? .on : .off
         menu.addItem(separateSortItem)
         
@@ -1179,32 +1181,21 @@ extension WindowController: NSToolbarDelegate {
     
     @objc func sortFolderFirst(_ sender: NSMenuItem) {
         guard let viewController = contentViewController as? ViewController else {return}
-        if let separateSortOrder = globalVar.separateSortOrders[viewController.fileDB.curFolder] {
-            viewController.changeSortType(sortType: separateSortOrder.sortType, isSortFolderFirst: !separateSortOrder.isSortFolderFirst, isSortUseFullPath: separateSortOrder.isSortUseFullPath)
-            return
-        }
-        viewController.publicVar.profile.isSortFolderFirst.toggle()
-        viewController.changeSortType(sortType: viewController.publicVar.profile.sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst, isSortUseFullPath: viewController.publicVar.profile.isSortUseFullPath)
+        let actualSortOrder = viewController.actualSortOrder(forFolder: viewController.fileDB.curFolder)
+        viewController.changeSortType(sortType: actualSortOrder.sortType, isSortFolderFirst: !actualSortOrder.isSortFolderFirst, isSortUseFullPath: actualSortOrder.isSortUseFullPath)
     }
     
     @objc func sortUseFullPath(_ sender: NSMenuItem) {
         guard let viewController = contentViewController as? ViewController else {return}
-        if let separateSortOrder = globalVar.separateSortOrders[viewController.fileDB.curFolder] {
-            viewController.changeSortType(sortType: separateSortOrder.sortType, isSortFolderFirst: separateSortOrder.isSortFolderFirst, isSortUseFullPath: !separateSortOrder.isSortUseFullPath)
-            return
-        }
-        viewController.publicVar.profile.isSortUseFullPath.toggle()
-        viewController.changeSortType(sortType: viewController.publicVar.profile.sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst, isSortUseFullPath: viewController.publicVar.profile.isSortUseFullPath)
+        let actualSortOrder = viewController.actualSortOrder(forFolder: viewController.fileDB.curFolder)
+        viewController.changeSortType(sortType: actualSortOrder.sortType, isSortFolderFirst: actualSortOrder.isSortFolderFirst, isSortUseFullPath: !actualSortOrder.isSortUseFullPath)
     }
     
     @objc func sortItems(_ sender: NSMenuItem) {
         guard let sortType = sender.representedObject as? SortType else { return }
         guard let viewController = contentViewController as? ViewController else {return}
-        if let separateSortOrder = globalVar.separateSortOrders[viewController.fileDB.curFolder] {
-            viewController.changeSortType(sortType: sortType, isSortFolderFirst: separateSortOrder.isSortFolderFirst, isSortUseFullPath: separateSortOrder.isSortUseFullPath)
-            return
-        }
-        viewController.changeSortType(sortType: sortType, isSortFolderFirst: viewController.publicVar.profile.isSortFolderFirst, isSortUseFullPath: viewController.publicVar.profile.isSortUseFullPath)
+        let actualSortOrder = viewController.actualSortOrder(forFolder: viewController.fileDB.curFolder)
+        viewController.changeSortType(sortType: sortType, isSortFolderFirst: actualSortOrder.isSortFolderFirst, isSortUseFullPath: actualSortOrder.isSortUseFullPath)
     }
     
     @objc func toggleSeparateSortOrder(_ sender: NSMenuItem) {

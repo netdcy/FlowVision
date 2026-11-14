@@ -109,6 +109,14 @@ extension ViewController {
         return globalVar.separateSortOrders[folder] ?? FolderSortOrder(sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
     }
     
+    // Sort order a folder is shown in (expected order when there's no record yet)
+    func actualSortOrder(forFolder folder: String) -> FolderSortOrder {
+        fileDB.lock()
+        let actualSortOrder = fileDB.db[SortKeyDir(folder)]?.actualSortOrder
+        fileDB.unlock()
+        return actualSortOrder ?? expectedSortOrder(forFolder: folder)
+    }
+    
     // Save folders that use separate sort order
     func saveSeparateSortOrders() {
         if let data = try? JSONEncoder().encode(globalVar.separateSortOrders) {
@@ -121,7 +129,7 @@ extension ViewController {
         fileDB.lock()
         let curFolder = fileDB.curFolder
         if globalVar.separateSortOrders[curFolder] == nil {
-            globalVar.separateSortOrders[curFolder] = self.expectedSortOrder(forFolder: curFolder)
+            globalVar.separateSortOrders[curFolder] = fileDB.db[SortKeyDir(curFolder)]?.actualSortOrder
         } else {
             globalVar.separateSortOrders[curFolder] = nil
         }

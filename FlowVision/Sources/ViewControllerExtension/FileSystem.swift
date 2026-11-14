@@ -448,7 +448,6 @@ extension ViewController {
             }
         }
         
-        // Sort order a folder should use (separate sort order if it has one, otherwise the global default)
         let expectedSortOrder = self.expectedSortOrder(forFolder: folderURL.absoluteString)
         
         // Exif排序时间警告
@@ -478,12 +477,12 @@ extension ViewController {
         fileDB.lock()
         if fileDB.db[SortKeyDir(folderURL.absoluteString)] == nil {
             fileDB.db[SortKeyDir(folderURL.absoluteString)] = DirModel(path: folderURL.absoluteString, ver: fileDB.ver)
-        }
-        fileDB.db[SortKeyDir(folderURL.absoluteString)]!.ver = fileDB.ver
-        // If folder's existing list isn't in the sort order it should be in, rebuild it in that order like the new keys. 1. new record: the list is empty, the placeholder actualSortOrder is replaced, 2. the order it should be in was changed in another window: the existing entries are reordered, actualSortOrder is replaced
-        if fileDB.db[SortKeyDir(folderURL.absoluteString)]!.actualSortOrder != expectedSortOrder {
+            fileDB.db[SortKeyDir(folderURL.absoluteString)]!.actualSortOrder = expectedSortOrder
+        } else if fileDB.db[SortKeyDir(folderURL.absoluteString)]!.actualSortOrder != expectedSortOrder {
+            // If folder's existing list isn't in the sort order it should be in because another window changed it, rebuild it in that order like the new keys
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.changeSortType(expectedSortOrder.sortType, isSortFolderFirst: expectedSortOrder.isSortFolderFirst, isSortUseFullPath: expectedSortOrder.isSortUseFullPath, randomSeed: expectedSortOrder.randomSeed)
         }
+        fileDB.db[SortKeyDir(folderURL.absoluteString)]!.ver = fileDB.ver
         if !skip {
             // 文件过滤
             // File filtering
