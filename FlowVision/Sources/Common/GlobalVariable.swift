@@ -71,6 +71,7 @@ class GlobalVar{
     var terminateAfterLastWindowClosed = true
     var autoHideToolbar = false
     var autoHideCursorWhenFullscreen = false
+    var separateSortOrders = [String: FolderSortOrder]()
     var doNotUseFFmpeg = false
     var memUseLimit: Int = 4000
     var thumbThreadNum: Int = 8

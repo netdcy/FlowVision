@@ -449,11 +449,13 @@ extension ViewController {
             }
         }
         
+        let expectedSortOrder = self.expectedSortOrder(forFolder: folderURL.absoluteString)
+        
         // Exif排序时间警告
         // Exif sort time warning
-        if publicVar.profile.sortType == .exifDateA || publicVar.profile.sortType == .exifDateZ
-            || publicVar.profile.sortType == .exifPixelA || publicVar.profile.sortType == .exifPixelZ
-            || publicVar.profile.sortType == .ratingA || publicVar.profile.sortType == .ratingZ {
+        if expectedSortOrder.sortType == .exifDateA || expectedSortOrder.sortType == .exifDateZ
+            || expectedSortOrder.sortType == .exifPixelA || expectedSortOrder.sortType == .exifPixelZ
+            || expectedSortOrder.sortType == .ratingA || expectedSortOrder.sortType == .ratingZ {
             
             if isExifSortTimeExceedCancel(folderURL: folderURL, imageCount: imageCount, videoCount: videoCount) {
                 contents.removeAll()
@@ -476,6 +478,10 @@ extension ViewController {
         fileDB.lock()
         if fileDB.db[SortKeyDir(folderURL.absoluteString)] == nil {
             fileDB.db[SortKeyDir(folderURL.absoluteString)] = DirModel(path: folderURL.absoluteString, ver: fileDB.ver)
+            fileDB.db[SortKeyDir(folderURL.absoluteString)]!.actualSortOrder = expectedSortOrder
+        } else if fileDB.db[SortKeyDir(folderURL.absoluteString)]!.actualSortOrder != expectedSortOrder {
+            // If folder's existing list isn't in the sort order it should be in because another window changed it, rebuild it in that order like the new keys
+            fileDB.db[SortKeyDir(folderURL.absoluteString)]!.changeSortType(expectedSortOrder.sortType, isSortFolderFirst: expectedSortOrder.isSortFolderFirst, isSortUseFullPath: expectedSortOrder.isSortUseFullPath, randomSeed: expectedSortOrder.randomSeed)
         }
         fileDB.db[SortKeyDir(folderURL.absoluteString)]!.ver = fileDB.ver
         if !skip {
@@ -556,10 +562,10 @@ extension ViewController {
                 var fileSortKey:SortKeyFile
                 let isDir: Bool
                 if filePath.hasSuffix("_FolderMark") {
-                    fileSortKey = SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: isInSameDir, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
+                    fileSortKey = SortKeyFile(String(filePath.dropLast("_FolderMark".count)), isDir: true, isInSameDir: isInSameDir, sortType: expectedSortOrder.sortType, isSortFolderFirst: expectedSortOrder.isSortFolderFirst, isSortUseFullPath: expectedSortOrder.isSortUseFullPath, randomSeed: expectedSortOrder.randomSeed)
                     isDir = true
                 }else{
-                    fileSortKey = SortKeyFile(filePath, isInSameDir: isInSameDir, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
+                    fileSortKey = SortKeyFile(filePath, isInSameDir: isInSameDir, sortType: expectedSortOrder.sortType, isSortFolderFirst: expectedSortOrder.isSortFolderFirst, isSortUseFullPath: expectedSortOrder.isSortUseFullPath, randomSeed: expectedSortOrder.randomSeed)
                     isDir = false
                 }
                 // 读取文件大小日期
@@ -789,9 +795,10 @@ extension ViewController {
             let filename=publicVar.openFromFinderPath
             // log(filename)
             fileDB.lock()
-            if let index=fileDB.db[SortKeyDir(path)]?.files.index(forKey: SortKeyFile(filename, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)),
+            if let actualSortOrder=fileDB.db[SortKeyDir(path)]?.actualSortOrder,
+               let index=fileDB.db[SortKeyDir(path)]?.files.index(forKey: SortKeyFile(filename, needGetProperties: true, sortType: actualSortOrder.sortType, isSortFolderFirst: actualSortOrder.isSortFolderFirst, isSortUseFullPath: actualSortOrder.isSortUseFullPath, randomSeed: actualSortOrder.randomSeed)),
                let offset=fileDB.db[SortKeyDir(path)]?.files.offset(of: index),
-               let file=fileDB.db[SortKeyDir(path)]?.files[SortKeyFile(filename, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)],
+               let file=fileDB.db[SortKeyDir(path)]?.files[SortKeyFile(filename, needGetProperties: true, sortType: actualSortOrder.sortType, isSortFolderFirst: actualSortOrder.isSortFolderFirst, isSortUseFullPath: actualSortOrder.isSortUseFullPath, randomSeed: actualSortOrder.randomSeed)],
                let url=URL(string: file.path),
                let totalCount=fileDB.db[SortKeyDir(path)]?.files.count,
                let fileCount=fileDB.db[SortKeyDir(path)]?.fileCount
@@ -1006,6 +1013,7 @@ extension ViewController {
         fileDB.lock()
         let curFolder = fileDB.curFolder
         let dirFiles = fileDB.db[SortKeyDir(curFolder)]?.files
+        let dirActualSortOrder = fileDB.db[SortKeyDir(curFolder)]?.actualSortOrder
         fileDB.unlock()
         
         // 向上或者后退时定位文件夹
@@ -1017,10 +1025,9 @@ extension ViewController {
             } else if let lastURL = URL(string: lastFolder),
                       let curURL = URL(string: curFolder),
                       lastURL.deletingLastPathComponent().absoluteString == curURL.absoluteString {
-                let targetKey = SortKeyFile(lastURL.absoluteString, isDir: true, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)
                 fileDB.lock()
-                if let files = dirFiles,
-                   let index = files.index(forKey: targetKey) {
+                if let files = dirFiles, let actualSortOrder = dirActualSortOrder,
+                   let index = files.index(forKey: SortKeyFile(lastURL.absoluteString, isDir: true, needGetProperties: true, sortType: actualSortOrder.sortType, isSortFolderFirst: actualSortOrder.isSortFolderFirst, isSortUseFullPath: actualSortOrder.isSortUseFullPath, randomSeed: actualSortOrder.randomSeed)) {
                     let offset = files.offset(of: index)
                     fileDB.unlock()
                     let indexPath = IndexPath(item: offset, section: 0)

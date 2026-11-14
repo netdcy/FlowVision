@@ -468,7 +468,8 @@ extension ViewController {
             }
         }
         if rangeCount != 0 {
-            if let file = fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: publicVar.profile.sortType, isSortFolderFirst: publicVar.profile.isSortFolderFirst, isSortUseFullPath: publicVar.profile.isSortUseFullPath, randomSeed: publicVar.randomSeed)] {
+            if let actualSortOrder = fileDB.db[SortKeyDir(folderPath)]?.actualSortOrder,
+               let file = fileDB.db[SortKeyDir(folderPath)]?.files[SortKeyFile(file.path, needGetProperties: true, sortType: actualSortOrder.sortType, isSortFolderFirst: actualSortOrder.isSortFolderFirst, isSortUseFullPath: actualSortOrder.isSortUseFullPath, randomSeed: actualSortOrder.randomSeed)] {
                 let idInRange = globalVar.useInternalPlayer ? file.idInImageAndVideo : file.idInImage
                 indexInfo = String(format: "(%d/%d)",idInRange+1,rangeCount)
                 publicVar.lastLargeImageIdInImage=idInRange
