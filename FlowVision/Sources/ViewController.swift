@@ -1574,6 +1574,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 
                                 fileDB.lock()
                                 let curFolder=fileDB.curFolder
+                                let keepScrollPos=dirModel.keepScrollPos
                                 fileDB.unlock() 
                                 
                                 if ver != dirModel.ver {return}
@@ -1587,7 +1588,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 var isRestoreDone = false
                                 if publicVar.folderScrollPos[curFolder] != nil {
                                     // Keep snapshot while restore waits, at the latest until the independent 0.5s timer in switchFolder removes snapshot first
-                                    if !restoreFolderScrollPos(folder: curFolder) {return}
+                                    if !restoreFolderScrollPos(folder: curFolder, isAllInserted: keepScrollPos) {return}
                                     isRestoreDone = true
                                 }
                                 // Remove snapshot after restore if a remembered scroll position exists, otherwise remove snapshot when thumbnail is enough or 0.3s passed since the folder change started

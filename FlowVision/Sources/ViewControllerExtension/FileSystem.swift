@@ -951,12 +951,13 @@ extension ViewController {
                     fileDB.lock()
                     let curFolder=fileDB.curFolder
                     let layoutCalcPos=fileDB.db[SortKeyDir(curFolder)]?.layoutCalcPos ?? -1
+                    let keepScrollPos=dirModel.keepScrollPos
                     fileDB.unlock()
                     
                     if ver != dirModel.ver {return}
                     
                     if curFolder == path {
-                        _ = restoreFolderScrollPos(folder: curFolder)
+                        _ = restoreFolderScrollPos(folder: curFolder, isAllInserted: keepScrollPos)
                         
                         if snapshotQueue.count > 0 {
                             let curTime = DispatchTime.now()
@@ -1001,7 +1002,7 @@ extension ViewController {
     }
     
     // Restore where it was scrolled, return false while it's waiting
-    func restoreFolderScrollPos(folder: String) -> Bool {
+    func restoreFolderScrollPos(folder: String, isAllInserted: Bool) -> Bool {
         guard let savedContentOffset = publicVar.folderScrollPos[folder],
               let scrollView = collectionView.enclosingScrollView else { return true }
         // Give up to avoid flash
@@ -1009,9 +1010,6 @@ extension ViewController {
             publicVar.folderScrollPos[folder] = nil
             return true
         }
-        fileDB.lock()
-        let isAllInserted = fileDB.db[SortKeyDir(folder)]?.keepScrollPos == true
-        fileDB.unlock()
         // Wait until "Locate folder when going up or back" is over and layout is enough or everything is inserted to restore
         guard publicVar.folderStepForLocate.isEmpty,
               isAllInserted || collectionView.bounds.height - scrollView.contentSize.height >= savedContentOffset.y
