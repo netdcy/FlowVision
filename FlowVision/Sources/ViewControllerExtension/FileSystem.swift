@@ -1013,8 +1013,8 @@ extension ViewController {
         let isAllInserted = fileDB.db[SortKeyDir(folder)]?.keepScrollPos == true
         fileDB.unlock()
         // Wait until "Locate folder when going up or back" is over and layout is enough or everything is inserted to restore
-        guard isAllInserted
-                || (publicVar.folderStepForLocate.isEmpty && collectionView.bounds.height - scrollView.contentSize.height >= savedContentOffset.y)
+        guard publicVar.folderStepForLocate.isEmpty,
+              isAllInserted || collectionView.bounds.height - scrollView.contentSize.height >= savedContentOffset.y
         else { return false }
         publicVar.folderScrollPos[folder] = nil
         let newY = max(0, min(savedContentOffset.y, collectionView.bounds.height - scrollView.contentSize.height))
@@ -1076,6 +1076,10 @@ extension ViewController {
                 }
             } else {
                 // make sure to throw away the stale note
+                publicVar.folderStepForLocate.removeAll()
+            }
+            
+            if isFinal {
                 publicVar.folderStepForLocate.removeAll()
             }
         }
