@@ -47,7 +47,10 @@ extension ViewController {
             // 用于整体调整宽度
             // Used for overall width adjustment
             var withAdjust = caseSensitiveCheckboxWidth + regexCheckboxWidth + filterButtonWidth
-            withAdjust += publicVar.isRecursiveMode ? fullPathCheckboxWidth : 0
+            fileDB.lock()
+            let isMediaUnitFolder = publicVar.isMediaUnit(fileDB.curFolder)
+            fileDB.unlock()
+            withAdjust += (publicVar.isRecursiveMode || isMediaUnitFolder) ? fullPathCheckboxWidth : 0
             withAdjust += -50
             
             // 创建搜索框容器视图 - 增加高度以容纳两行
@@ -125,7 +128,7 @@ extension ViewController {
             containerView.addSubview(searchField!)
             containerView.addSubview(regexCheckbox)
             containerView.addSubview(caseSensitiveCheckbox)
-            if publicVar.isRecursiveMode {
+            if publicVar.isRecursiveMode || isMediaUnitFolder {
                 containerView.addSubview(fullPathCheckbox)
             }
             containerView.addSubview(helpButton)
@@ -205,7 +208,10 @@ extension ViewController {
     }
     
     func getFileNameForSearch(path: String) -> String? {
-        if search_isUseFullPath && publicVar.isRecursiveMode {
+        fileDB.lock()
+        let isMediaUnitFolder = publicVar.isMediaUnit(fileDB.curFolder)
+        fileDB.unlock()
+        if search_isUseFullPath && (publicVar.isRecursiveMode || isMediaUnitFolder) {
             return path.removingPercentEncoding?.replacingOccurrences(of: "file://", with: "")
         } else {
             if path.hasSuffix("/") {

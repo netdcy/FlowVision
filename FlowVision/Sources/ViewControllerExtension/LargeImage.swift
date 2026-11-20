@@ -324,8 +324,11 @@ extension ViewController {
         
         fileDB.lock()
         let curFolder=fileDB.curFolder
-        let totalCount = fileDB.db[SortKeyDir(curFolder)]!.files.count
-        let fileCount = fileDB.db[SortKeyDir(curFolder)]!.fileCount
+        guard let directory = fileDB.db[SortKeyDir(curFolder)] else {
+            fileDB.unlock()
+            return
+        }
+        let totalCount = directory.files.count
         var nextLargeImagePos = largeImageView.isCurtainMode ? (curtainPendingLargeImagePos ?? currLargeImagePos) : currLargeImagePos
         var ifFoundNextImage=false
         // 向前
@@ -333,7 +336,7 @@ extension ViewController {
         if direction == -1 {
             while nextLargeImagePos >= 0 {
                 nextLargeImagePos-=1
-                if let file = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
+                if let file = directory.files.elementSafe(atOffset: nextLargeImagePos)?.1,
                    file.type == .image || (file.type == .video && globalVar.useInternalPlayer) {
                     ifFoundNextImage=true
                     break
@@ -344,7 +347,7 @@ extension ViewController {
         }else if direction == 1 {
             while nextLargeImagePos < totalCount-1 {
                 nextLargeImagePos+=1
-                if let file = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
+                if let file = directory.files.elementSafe(atOffset: nextLargeImagePos)?.1,
                    file.type == .image || (file.type == .video && globalVar.useInternalPlayer) {
                     ifFoundNextImage=true
                     break
@@ -356,7 +359,7 @@ extension ViewController {
             nextLargeImagePos = -1
             while nextLargeImagePos < totalCount-1 {
                 nextLargeImagePos+=1
-                if let file = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
+                if let file = directory.files.elementSafe(atOffset: nextLargeImagePos)?.1,
                    file.type == .image || (file.type == .video && globalVar.useInternalPlayer) {
                     ifFoundNextImage=true
                     break
@@ -368,7 +371,7 @@ extension ViewController {
             nextLargeImagePos = totalCount
             while nextLargeImagePos >= 0 {
                 nextLargeImagePos-=1
-                if let file = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1,
+                if let file = directory.files.elementSafe(atOffset: nextLargeImagePos)?.1,
                    file.type == .image || (file.type == .video && globalVar.useInternalPlayer) {
                     ifFoundNextImage=true
                     break
@@ -380,7 +383,7 @@ extension ViewController {
         
         if ifFoundNextImage {
             fileDB.lock()
-            let targetIsVideo = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.type == .video
+            let targetIsVideo = directory.files.elementSafe(atOffset: nextLargeImagePos)?.1.type == .video
             fileDB.unlock()
             curtainPendingLargeImagePos = nextLargeImagePos
             largeImageView.prepareCurtainTransition(direction: curtainVisualDirection ?? (direction < 0 ? -1 : 1), axis: curtainTransitionAxis)
@@ -401,7 +404,7 @@ extension ViewController {
 
                 if globalVar.portableMode {
                     fileDB.lock()
-                    let refSize = fileDB.db[SortKeyDir(curFolder)]!.files.elementSafe(atOffset: nextLargeImagePos)?.1.originalSize
+                    let refSize = directory.files.elementSafe(atOffset: nextLargeImagePos)?.1.originalSize
                     fileDB.unlock()
                     adjustWindowPortable(refSize: refSize, firstShowThumb: firstShowThumb, animate: false)
                 } else {

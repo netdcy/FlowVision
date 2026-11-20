@@ -10,6 +10,67 @@ import DiskArbitration
 import ImageIO
 import BTree
 
+// Kept independent of AppKit so retry and recovery can be fault-injected.
+enum RenameIO {
+    static func errorChain(_ error: Error) -> String {
+        var current: NSError? = error as NSError
+        var parts: [String] = []
+        for _ in 0..<8 {
+            guard let value = current else { break }
+            parts.append("\(value.domain):\(value.code)")
+            current = value.userInfo[NSUnderlyingErrorKey] as? NSError
+        }
+        return parts.joined(separator: " → ")
+    }
+
+    static func move(from: URL, to: URL, retryBusy: Bool,
+                     operation: (URL, URL) throws -> Void = { try FileManager.default.moveItem(at: $0, to: $1) },
+                     wait: (TimeInterval) -> Void = { Thread.sleep(forTimeInterval: $0) }) throws {
+        for attempt in 0..<3 {
+            do {
+                try operation(from, to)
+                return
+            } catch {
+                var underlying = error as NSError
+                for _ in 0..<8 {
+                    guard let next = underlying.userInfo[NSUnderlyingErrorKey] as? NSError else { break }
+                    underlying = next
+                }
+                // Do not retry permission denial or uncertain network outcomes
+                // (timeout/disconnect): the server may already have moved it.
+                let busy = underlying.domain == NSPOSIXErrorDomain
+                    && [Int(EBUSY), Int(EAGAIN)].contains(underlying.code)
+                guard retryBusy, busy, attempt < 2 else {
+                    throw NSError(domain: "FlowVision.Rename", code: underlying.code, userInfo: [
+                        NSLocalizedDescriptionKey: "\(error.localizedDescription)\n\(from.path) → \(to.path)\n[\(errorChain(error))]",
+                        NSUnderlyingErrorKey: error
+                    ])
+                }
+                wait(0.15 * Double(attempt + 1))
+            }
+        }
+    }
+
+    // Restore completed targets to their staging slots first. Moving directly
+    // to the original names can collide in swaps and longer rename cycles.
+    static func rollback(_ pending: [(source: URL, temp: URL, target: URL)], completed: Int,
+                         move: (URL, URL) throws -> Void) -> [String] {
+        var failures: [String] = []
+        var staged = Set(completed..<pending.count)
+        for index in (0..<completed).reversed() {
+            let item = pending[index]
+            do { try move(item.target, item.temp); staged.insert(index) }
+            catch { failures.append("\(item.target.path): \(error.localizedDescription)") }
+        }
+        for index in staged.sorted().reversed() {
+            let item = pending[index]
+            do { try move(item.temp, item.source) }
+            catch { failures.append("\(item.temp.path): \(error.localizedDescription)") }
+        }
+        return failures
+    }
+}
+
 enum BatchMediaRotation: Int {
     case clockwise90 = 90
     case clockwise180 = 180
@@ -1174,7 +1235,8 @@ extension ViewController {
         let standardizedDestination = destinationURL.standardizedFileURL
         let movedItemsAreVisible = currentFolderURL.map { currentURL in
             standardizedDestination.path == currentURL.path ||
-                (publicVar.isRecursiveMode && isSameOrDescendant(standardizedDestination, of: currentURL))
+                ((publicVar.isRecursiveMode || publicVar.isMediaUnit(currentFolderPath)) &&
+                 isSameOrDescendant(standardizedDestination, of: currentURL))
         } ?? false
         let destinationFolderIsVisible = currentFolderURL.map { currentURL in
             standardizedDestination.deletingLastPathComponent().path == currentURL.path
@@ -1356,6 +1418,21 @@ extension ViewController {
             return false
         }
 
+        // Keep the persisted media hierarchy attached to the renamed folder,
+        // including when the active view is outside that hierarchy.
+        if publicVar.isMediaUnitMode,
+           let mediaRootPath = publicVar.mediaUnitRootPath,
+           let mediaRootURL = URL(string: mediaRootPath),
+           let remappedRootURL = remappedURLAfterRename(mediaRootURL, mappings: mappings) {
+            publicVar.mediaUnitRootPath = remappedRootURL.absoluteString
+            UserDefaults.standard.set(remappedRootURL.absoluteString, forKey: "mediaUnitRootPath")
+        }
+        if let pendingPath = publicVar.mediaUnitPendingPath,
+           let pendingURL = URL(string: pendingPath),
+           let remappedPendingURL = remappedURLAfterRename(pendingURL, mappings: mappings) {
+            publicVar.mediaUnitPendingPath = remappedPendingURL.absoluteString
+        }
+
         let oldPath = oldFolderURL.standardizedFileURL.path
         let matchingMapping = mappings
             .sorted { $0.from.standardizedFileURL.path.count > $1.from.standardizedFileURL.path.count }
@@ -1531,6 +1608,39 @@ extension ViewController {
         return true
     }
 
+    private func prepareNetworkRename(_ mappings: [FileRenameMapping]) -> [NetworkIOCoordinator.PlaybackLease] {
+        let networkURLs = mappings.map(\.from).filter { VolumeManager.shared.isNetworkVolume($0) }
+        guard !networkURLs.isEmpty else { return [] }
+        // Reuse the coordinator's foreground lease to pause optional reads.
+        // This does not stop/reload any player or discard its playback position.
+        let leases = networkURLs.compactMap { NetworkIOCoordinator.shared.beginPlayback(for: $0) }
+        mediaPreheatManager.beginWindow(retaining: [])
+        return leases
+    }
+
+    private func moveRenameItem(from: URL, to: URL) throws {
+        do {
+            try RenameIO.move(from: from, to: to,
+                              retryBusy: !Thread.isMainThread && VolumeManager.shared.isNetworkVolume(from))
+        } catch {
+            log("Rename I/O failed: \(error.localizedDescription)", level: .error)
+            if VolumeManager.shared.isNetworkVolume(from),
+               (error as NSError).code == Int(EACCES) || (error as NSError).code == Int(EPERM) {
+                throw NSError(domain: "FlowVision.Rename", code: (error as NSError).code, userInfo: [
+                    NSLocalizedDescriptionKey: error.localizedDescription + "\nSMB 服务器拒绝改名：目录内有文件正在播放或被其他程序打开时也可能出现此错误。请关闭相关文件后重试；若仍失败，再检查共享权限。",
+                    NSUnderlyingErrorKey: error
+                ])
+            }
+            throw error
+        }
+    }
+
+    private func rollbackRename(_ pending: [PendingTempRename], completed: Int) -> String {
+        let failures = RenameIO.rollback(pending.map { ($0.sourceURL, $0.tempURL, $0.targetURL) },
+                                         completed: completed, move: moveRenameItem)
+        return failures.isEmpty ? "" : "\n恢复失败（保留现存文件）：\n" + failures.joined(separator: "\n")
+    }
+
     @discardableResult
     private func executeFileRenameMappings(
         _ mappings: [FileRenameMapping],
@@ -1541,7 +1651,6 @@ extension ViewController {
     ) -> Bool {
         guard !mappings.isEmpty else { return true }
 
-        let fileManager = FileManager.default
         if let failureMessage = renameValidationFailure(mappings) {
             log("Rename validation failed: \(failureMessage)", level: .error)
             showAlert(message: failureMessage)
@@ -1551,6 +1660,8 @@ extension ViewController {
         publicVar.isInFileOperation = true
         defer { publicVar.isInFileOperation = false }
 
+        let networkLeases = prepareNetworkRename(mappings)
+        defer { networkLeases.forEach { $0.end() } }
         var pendingMoves: [PendingTempRename] = []
 
         for mapping in mappings {
@@ -1560,18 +1671,12 @@ extension ViewController {
 
             let tempURL = mapping.from.deletingLastPathComponent().appendingPathComponent("temp_rename_\(UUID().uuidString)")
             do {
-                try fileManager.moveItem(at: mapping.from, to: tempURL)
+                try moveRenameItem(from: mapping.from, to: tempURL)
                 pendingMoves.append(PendingTempRename(sourceURL: mapping.from, tempURL: tempURL, targetURL: mapping.to))
             } catch {
-                for pending in pendingMoves.reversed() {
-                    do {
-                        try fileManager.moveItem(at: pending.tempURL, to: pending.sourceURL)
-                    } catch {
-                        log("Failed to roll back temp rename \(pending.tempURL.path): \(error)", level: .error)
-                    }
-                }
+                let recovery = rollbackRename(pendingMoves, completed: 0)
                 log("Failed to create temp rename path: \(error)", level: .error)
-                showAlert(message: String(format: NSLocalizedString("重命名失败：%@", comment: "rename failed"), error.localizedDescription))
+                showAlert(message: String(format: NSLocalizedString("重命名失败：%@", comment: "rename failed"), error.localizedDescription + recovery))
                 scheduledRefresh()
                 return false
             }
@@ -1580,26 +1685,13 @@ extension ViewController {
         var appliedMoves: [FileRenameMapping] = []
         for pending in pendingMoves {
             do {
-                try fileManager.moveItem(at: pending.tempURL, to: pending.targetURL)
+                try moveRenameItem(from: pending.tempURL, to: pending.targetURL)
                 publicVar.fileChangedCount += 1
                 appliedMoves.append(FileRenameMapping(from: pending.sourceURL, to: pending.targetURL))
             } catch {
-                for applied in appliedMoves.reversed() {
-                    do {
-                        try fileManager.moveItem(at: applied.to, to: applied.from)
-                    } catch {
-                        log("Failed to roll back applied rename \(applied.to.path): \(error)", level: .error)
-                    }
-                }
-                for remaining in pendingMoves where fileManager.fileExists(atPath: remaining.tempURL.path) {
-                    do {
-                        try fileManager.moveItem(at: remaining.tempURL, to: remaining.sourceURL)
-                    } catch {
-                        log("Failed to restore pending rename \(remaining.tempURL.path): \(error)", level: .error)
-                    }
-                }
+                let recovery = rollbackRename(pendingMoves, completed: appliedMoves.count)
                 log("Failed to complete rename: \(error)", level: .error)
-                showAlert(message: String(format: NSLocalizedString("重命名失败：%@", comment: "rename failed"), error.localizedDescription))
+                showAlert(message: String(format: NSLocalizedString("重命名失败：%@", comment: "rename failed"), (error.localizedDescription + recovery)))
                 scheduledRefresh()
                 return false
             }
@@ -1668,10 +1760,11 @@ extension ViewController {
         publicVar.isInFileOperation = true
         coreAreaView.showOperationIndeterminate(NSLocalizedString("Preparing rename…", comment: "正在准备重命名…"))
 
+        let networkLeases = prepareNetworkRename(mappings)
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            defer { networkLeases.forEach { $0.end() } }
             guard let self = self else { return }
 
-            let fileManager = FileManager.default
             var failureMessage = self.renameValidationFailure(mappings)
 
             let changedMappings = mappings.filter { $0.from.path != $0.to.path }
@@ -1692,15 +1785,16 @@ extension ViewController {
 
                     let tempURL = mapping.from.deletingLastPathComponent().appendingPathComponent("temp_rename_\(UUID().uuidString)")
                     do {
-                        try fileManager.moveItem(at: mapping.from, to: tempURL)
+                        try self.moveRenameItem(from: mapping.from, to: tempURL)
                         pendingMoves.append(PendingTempRename(sourceURL: mapping.from, tempURL: tempURL, targetURL: mapping.to))
                     } catch {
                         failureMessage = error.localizedDescription
                         for pending in pendingMoves.reversed() {
                             do {
-                                try fileManager.moveItem(at: pending.tempURL, to: pending.sourceURL)
+                                try self.moveRenameItem(from: pending.tempURL, to: pending.sourceURL)
                             } catch {
                                 log("Failed to roll back temp rename \(pending.tempURL.path): \(error)", level: .error)
+                                failureMessage = (failureMessage ?? "") + "\n恢复失败：\(pending.tempURL.path): \(error.localizedDescription)"
                             }
                         }
                         pendingMoves.removeAll()
@@ -1721,24 +1815,11 @@ extension ViewController {
                     }
 
                     do {
-                        try fileManager.moveItem(at: pending.tempURL, to: pending.targetURL)
+                        try self.moveRenameItem(from: pending.tempURL, to: pending.targetURL)
                         appliedMoves.append(FileRenameMapping(from: pending.sourceURL, to: pending.targetURL))
                     } catch {
                         failureMessage = error.localizedDescription
-                        for applied in appliedMoves.reversed() {
-                            do {
-                                try fileManager.moveItem(at: applied.to, to: applied.from)
-                            } catch {
-                                log("Failed to roll back applied rename \(applied.to.path): \(error)", level: .error)
-                            }
-                        }
-                        for remaining in pendingMoves where fileManager.fileExists(atPath: remaining.tempURL.path) {
-                            do {
-                                try fileManager.moveItem(at: remaining.tempURL, to: remaining.sourceURL)
-                            } catch {
-                                log("Failed to restore pending rename \(remaining.tempURL.path): \(error)", level: .error)
-                            }
-                        }
+                        failureMessage = error.localizedDescription + self.rollbackRename(pendingMoves, completed: appliedMoves.count)
                         appliedMoves.removeAll()
                         break
                     }
@@ -2962,7 +3043,10 @@ extension ViewController {
                     ifRefresh = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD
                     fileDB.unlock()
                 }
-                if !destinationURL.absoluteString.hasPrefix(curFolder)
+                let destinationIsInsideCurrent = URL(string: curFolder).map {
+                    isSameOrDescendant(destinationURL.standardizedFileURL, of: $0.standardizedFileURL)
+                } ?? false
+                if !destinationIsInsideCurrent
                     && successfulDestURLs.allSatisfy({ urlStr in
                         if let url = URL(string: urlStr) {
                             var isDir: ObjCBool = false
@@ -3465,32 +3549,85 @@ extension ViewController {
         }
     }
 
-    func handleDelete(fileUrls: [URL] = [], isShowPrompt: Bool = true) -> Bool {
+    private func invalidatePlaybackForDeletion(_ urls: [URL], currentFolderPath: String) {
+        let currentFolderURL = URL(string: currentFolderPath)
+        let largeImageFileURL = URL(string: largeImageView.file.path)
+        let currentFolderIsAffected = currentFolderURL.map { folder in
+            urls.contains { isSameOrDescendant(folder, of: $0) }
+        } ?? false
+        let largeImageIsOpenOrPlaying = publicVar.isInLargeView || largeImageView.currentPlayingURL != nil
+        let largeImageIsAffected = largeImageIsOpenOrPlaying && (
+            currentFolderIsAffected
+            || largeImageFileURL.map { file in urls.contains { isSameOrDescendant(file, of: $0) } } ?? false
+            || largeImageView.currentPlayingURL.map { file in urls.contains { isSameOrDescendant(file, of: $0) } } ?? false
+        )
+
+        var didInvalidatePlayback = currentFolderIsAffected
+        if largeImageIsAffected {
+            largeImageView.invalidateForDeletedContent()
+            publicVar.isInLargeView = false
+            publicVar.isInLargeViewAfterAnimate = false
+            publicVar.openFromFinderPath = ""
+            currLargeImagePos = -1
+            largeImageBgEffectView.isHidden = true
+            didInvalidatePlayback = true
+        }
+
+        for case let item as CustomCollectionViewItem in collectionView.visibleItems() {
+            guard let playingURL = item.currentPlayingURL,
+                  urls.contains(where: { isSameOrDescendant(playingURL, of: $0) }) else { continue }
+            item.stopVideo()
+            didInvalidatePlayback = true
+        }
+
+        if didInvalidatePlayback {
+            // Cancel all neighbor reads before the deleted SMB subtree can be
+            // touched by a stale preheat operation.
+            mediaPreheatManager.beginWindow(retaining: [])
+        }
+    }
+
+    private func fallbackDirectoryPath(afterDeleting deletedURLs: [URL], currentFolderPath: String) -> String? {
+        guard let currentFolderURL = URL(string: currentFolderPath), currentFolderURL.isFileURL,
+              deletedURLs.contains(where: { isSameOrDescendant(currentFolderURL, of: $0) }) else {
+            return nil
+        }
+
+        var candidate = currentFolderURL.deletingLastPathComponent()
+        while candidate.path != "/" {
+            var isDirectory: ObjCBool = false
+            if FileManager.default.fileExists(atPath: candidate.path, isDirectory: &isDirectory), isDirectory.boolValue {
+                return candidate.absoluteString
+            }
+            let parent = candidate.deletingLastPathComponent()
+            if parent == candidate { break }
+            candidate = parent
+        }
+        return URL(fileURLWithPath: "/", isDirectory: true).absoluteString
+    }
+
+    func handleDelete(fileUrls: [URL] = [], isShowPrompt: Bool = true, fromDirectoryTree: Bool = false, completion: (() -> Void)? = nil) -> Bool {
+        guard !publicVar.isInFileOperation else { return false }
         var urls = fileUrls
-        if urls.count == 0 {
+        if urls.isEmpty {
             urls = publicVar.selectedUrls()
         }
-        guard urls.count != 0 else {return false}
+        guard !urls.isEmpty else { return false }
 
         fileDB.lock()
-        let curFolder = fileDB.curFolder
+        let currentFolderPath = fileDB.curFolder
         fileDB.unlock()
 
-        let ifHasPermission = requestAppleEventsPermission()
         let isShiftPressed = isShiftKeyPressed()
+        let isExternalVolume = urls.first.map { VolumeManager.shared.isExternalVolume($0) } ?? false
+        let isPermanentDelete = isShiftPressed
 
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("Delete", comment: "删除")
         if isShiftPressed {
             alert.informativeText = NSLocalizedString("ask-to-delete-shift", comment: "你确定要将这些文件永久删除吗？此操作无法撤销。")
-        }else if VolumeManager.shared.isExternalVolume(urls.first!) {
-            alert.informativeText = NSLocalizedString("ask-to-delete-external", comment: "此目录不支持移动到废纸篓。将立即删除这些项目，此操作无法撤销。")
-        }else{
-            if ifHasPermission{
-                alert.informativeText = NSLocalizedString("ask-to-delete", comment: "你确定要将这些文件移动到废纸篓吗？")
-            }else{
-                alert.informativeText = NSLocalizedString("ask-to-delete-nopermission", comment: "你确定要将这些文件移动到废纸篓吗？(无权限)")
-            }
+        } else {
+            alert.informativeText = NSLocalizedString("ask-to-delete", comment: "你确定要将这些文件移动到废纸篓吗？")
         }
         alert.alertStyle = .warning
         alert.addButton(withTitle: NSLocalizedString("Delete", comment: "删除"))
@@ -3500,125 +3637,176 @@ extension ViewController {
         alert.icon = NSImage(named: NSImage.cautionName)
 
         var response: NSApplication.ModalResponse = .alertFirstButtonReturn
-        if isShowPrompt || !ifHasPermission || VolumeManager.shared.isExternalVolume(urls.first!) {
-            let StoreIsKeyEventEnabled = publicVar.isKeyEventEnabled
-            publicVar.isKeyEventEnabled=false
+        if isShowPrompt || isPermanentDelete || isExternalVolume {
+            let storeIsKeyEventEnabled = publicVar.isKeyEventEnabled
+            publicVar.isKeyEventEnabled = false
             response = alert.runModal()
-            publicVar.isKeyEventEnabled=StoreIsKeyEventEnabled
+            publicVar.isKeyEventEnabled = storeIsKeyEventEnabled
         }
 
-        // 在文件操作期间抑制文件系统监控触发的刷新，操作完成后主动刷新
-        // Suppress FS watcher refreshes during file operations, refresh explicitly after completion
-        publicVar.isInFileOperation = true
-        defer {
-            publicVar.isInFileOperation = false
-        }
-
-        if response == .alertFirstButtonReturn {
-            // 用户确认删除
-            // User confirmed deletion
-            let fileManager = FileManager.default
-            var urlsToDelete = [URL]()
-
-            for url in urls {
-                if fileManager.fileExists(atPath: url.path) {
-                    urlsToDelete.append(url)
-                } else {
-                    log("File does not exist: \(url.path)")
-                }
-            }
-
-            // 记录操作到日志
-            // Record operation to log
-            var sourceFiles = urlsToDelete.map { url -> String in
-                return url.lastPathComponent
-            }
-
-            let sourceFilesStr: String
-            if sourceFiles.count > 3 {
-                sourceFilesStr = sourceFiles[0...2].joined(separator: ", ") + "..."
-            } else {
-                sourceFilesStr = sourceFiles.joined(separator: ", ")
-            }
-
-            let operationLog = "[Delete] \(sourceFilesStr)"
-            globalVar.operationLogs.append(operationLog)
-
-            if !urlsToDelete.isEmpty {
-                // 永久删除
-                // Permanently delete
-                if isShiftPressed {
-                    for url in urlsToDelete {
-                        try? fileManager.removeItem(at: url)
-                    }
-                // 删除到回收站
-                // Delete to trash
-                } else {
-                    var appleScriptURLs = ""
-                    for url in urlsToDelete {
-                        let escapedPath = url.path.replacingOccurrences(of: "\"", with: "\\\"")
-                        appleScriptURLs += "\"\(escapedPath)\" as POSIX file, "
-                    }
-
-                    // Remove the trailing comma and space
-                    if appleScriptURLs.hasSuffix(", ") {
-                        appleScriptURLs = String(appleScriptURLs.dropLast(2))
-                    }
-
-                    let script = """
-                            tell application "Finder"
-                                move { \(appleScriptURLs) } to trash
-                            end tell
-                            """
-
-                    var error: NSDictionary?
-                    if let scriptObject = NSAppleScript(source: script) {
-                        scriptObject.executeAndReturnError(&error)
-                        if let error = error, let errorCode = error[NSAppleScript.errorNumber] as? Int, errorCode == -1743 {
-                            // AppleScript 无权限，回退到 NSWorkspace.shared.recycle
-                            NSWorkspace.shared.recycle(urlsToDelete, completionHandler: { (newURLs, error) in
-                                if let error = error {
-                                    log("Failed to delete: \(error)", level: .error)
-                                } else {
-                                    log("File moved to trash")
-                                }
-                            })
-                        } else if let error = error {
-                            log("Failed to delete: \(error)", level: .error)
-                        } else {
-                            log("File moved to trash")
-                        }
-                    }
-                }
-
-                EnhancedIndex.handleFilesDeleted(urlsToDelete.map { $0.path })
-
-                // 文件更改计数
-                // File change count
-                publicVar.fileChangedCount += 1
-
-                // 手动刷新
-                // Manually refresh
-                var ifRefresh = true
-                if publicVar.isRecursiveMode || isVirtualFolderPath(curFolder) {
-                    fileDB.lock()
-                    ifRefresh = fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.count ?? 0 <= RESET_VIEW_FILE_NUM_THRESHOLD
-                    fileDB.unlock()
-                }
-                if ifRefresh {
-                    scheduledRefresh()
-                }
-
-            } else {
-                log("File to delete does not exist")
-            }
-            return true
-        } else {
+        guard !publicVar.isInFileOperation else { return false }
+        guard response == .alertFirstButtonReturn else {
             // 用户取消操作
             // User cancelled operation
             log("Delete operation cancelled")
             return false
         }
+
+        // Capture the actual display order, including the active sort/filter,
+        // before disk I/O starts. Do not guess a neighbor from filenames.
+        fileDB.lock()
+        let deletionVersion = fileDB.ver
+        let collectionOrder = fileDB.db[SortKeyDir(currentFolderPath)]?.files.compactMap {
+            URL(string: $0.1.path)
+        } ?? []
+        fileDB.unlock()
+        let selectionAtDeletion = collectionView.selectionIndexPaths
+        let selectionOrder: [URL] = fromDirectoryTree
+            ? (0..<outlineView.numberOfRows).compactMap { row in
+                guard let node = outlineView.item(atRow: row) as? TreeNode else { return nil }
+                return URL(string: node.fullPath)
+            }
+            : collectionOrder
+
+        // 在文件操作期间抑制文件系统监控触发的刷新，操作完成后主动刷新
+        // Suppress FS watcher refreshes during file operations, refresh explicitly after completion
+        publicVar.isInFileOperation = true
+        invalidatePlaybackForDeletion(urls, currentFolderPath: currentFolderPath)
+
+        let sourceFiles = urls.map { $0.lastPathComponent }
+        let sourceFilesStr = sourceFiles.count > 3
+            ? sourceFiles[0...2].joined(separator: ", ") + "..."
+            : sourceFiles.joined(separator: ", ")
+        globalVar.operationLogs.append("[Delete] \(sourceFilesStr)")
+        coreAreaView.showOperationIndeterminate(NSLocalizedString("Deleting…", comment: "正在删除…"))
+
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+            let fileManager = FileManager.default
+            let urlsToDelete = urls.filter { url in
+                let exists = fileManager.fileExists(atPath: url.path)
+                if !exists { log("File does not exist: \(url.path)") }
+                return exists
+            }
+
+            func finish(succeeded: [URL], failedItems: [String]) {
+                if !succeeded.isEmpty {
+                    EnhancedIndex.handleFilesDeleted(succeeded.map(\.path))
+                }
+                let fallbackPath = succeeded.isEmpty
+                    ? nil
+                    : self.fallbackDirectoryPath(afterDeleting: succeeded, currentFolderPath: currentFolderPath)
+                let selectionTarget = selectionTargetAfterDeletion(in: selectionOrder, deletedURLs: succeeded)
+
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+
+                    if !failedItems.isEmpty {
+                        let preview = failedItems.prefix(3).joined(separator: ", ")
+                        self.coreAreaView.showOperationToast(
+                            String(format: NSLocalizedString("Failed to delete some files: %@", comment: "部分文件删除失败：%@"), preview),
+                            autoHide: 3.0
+                        )
+                    }
+
+                    if !succeeded.isEmpty {
+                        self.publicVar.fileChangedCount += succeeded.count
+                        self.fileDB.lock()
+                        let currentFolder = self.fileDB.curFolder
+                        let canRestoreSelection = currentFolder == currentFolderPath
+                            && self.fileDB.ver == deletionVersion
+                            && (fromDirectoryTree || self.collectionView.selectionIndexPaths == selectionAtDeletion)
+                        self.fileDB.unlock()
+                        let currentFolderIsAffected = URL(string: currentFolder).map { folder in
+                            succeeded.contains { self.isSameOrDescendant(folder, of: $0) }
+                        } ?? false
+
+                        if canRestoreSelection, fromDirectoryTree, let selectionTarget {
+                            self.publicVar.filesForLocateAfterChange.removeAll()
+                            self.publicVar.folderStepForLocate.removeAll()
+                            self.refreshTreeView()
+                            self.switchDirByDirection(direction: .zero, dest: selectionTarget.absoluteString, doCollapse: false, expandLast: false, stackDeep: 0)
+                            self.treeReLocate(path: selectionTarget.absoluteString, doCollapse: false, expandLast: false)
+                            self.view.window?.makeFirstResponder(self.outlineView)
+                        } else if currentFolderIsAffected, let fallbackPath {
+                            self.publicVar.filesForLocateAfterChange.removeAll()
+                            self.switchDirByDirection(direction: .zero, dest: fallbackPath, stackDeep: 0)
+                        } else {
+                            if canRestoreSelection, !fromDirectoryTree {
+                                self.publicVar.filesForLocateAfterChange.removeAll()
+                                self.publicVar.folderStepForLocate.removeAll()
+                                self.publicVar.selectionAfterDeletion = selectionTarget.map { (currentFolder, $0.absoluteString) }
+                            }
+                            // Deletion must rebuild even a large recursive list,
+                            // otherwise both deleted rows and selection stay stale.
+                            self.scheduledRefresh()
+                        }
+                    }
+
+                    self.publicVar.isInFileOperation = false
+                    if failedItems.isEmpty {
+                        self.coreAreaView.hideOperationOverlay(delayed: succeeded.isEmpty ? 0.2 : 0.8)
+                    }
+                    completion?()
+                }
+            }
+
+            guard !urlsToDelete.isEmpty else {
+                finish(succeeded: [], failedItems: urls.map(\.lastPathComponent))
+                return
+            }
+
+            if isPermanentDelete {
+                var succeeded = [URL]()
+                var failedItems = [String]()
+                for url in urlsToDelete {
+                    do {
+                        try fileManager.removeItem(at: url)
+                        succeeded.append(url)
+                    } catch {
+                        failedItems.append("\(url.lastPathComponent): \(error.localizedDescription)")
+                    }
+                }
+                finish(succeeded: succeeded, failedItems: failedItems)
+            } else {
+                NSWorkspace.shared.recycle(urlsToDelete) { newURLs, error in
+                    // NSWorkspace may return a partial URL mapping when a
+                    // provider cannot recycle every item. Resolve each source
+                    // separately so the fallback only touches unresolved URLs.
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        var succeeded = [URL]()
+                        var unresolved = [URL]()
+                        let mappedPathKeys = Set(newURLs.keys.map { $0.standardizedFileURL.path })
+                        for url in urlsToDelete {
+                            let sourceWasRemoved = !fileManager.fileExists(atPath: url.path)
+                            let hasMapping = mappedPathKeys.contains(url.standardizedFileURL.path)
+                            if hasMapping || (error == nil && sourceWasRemoved) {
+                                succeeded.append(url)
+                            } else {
+                                unresolved.append(url)
+                            }
+                        }
+
+                        guard !unresolved.isEmpty else {
+                            finish(succeeded: succeeded, failedItems: [])
+                            return
+                        }
+
+                        var failedItems = [String]()
+                        for url in unresolved {
+                            do {
+                                try fileManager.trashItem(at: url, resultingItemURL: nil)
+                                succeeded.append(url)
+                            } catch {
+                                failedItems.append("\(url.lastPathComponent): \(error.localizedDescription)")
+                            }
+                        }
+                        finish(succeeded: succeeded, failedItems: failedItems)
+                    }
+                }
+            }
+        }
+        return true
     }
 
     enum ReplaceDialogUserChoice {
@@ -4178,7 +4366,7 @@ extension ViewController {
                 }
 
                 let actionName = urls.count > 1 ? NSLocalizedString("批量重命名", comment: "batch rename undo") : NSLocalizedString("重命名", comment: "rename undo")
-                if finalNames.count > 1 {
+                if finalNames.count > 1 || finalNames.contains(where: { VolumeManager.shared.isNetworkVolume($0.from) }) {
                     executeFileRenameMappingsAsync(
                         finalNames,
                         actionName: actionName,

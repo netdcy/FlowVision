@@ -707,7 +707,8 @@ class CustomCollectionViewItem: NSCollectionViewItem {
         
         // 添加相对路径
         // Add relative path
-        if getViewController(collectionView!)!.publicVar.isRecursiveMode {
+        let viewController = getViewController(collectionView!)!
+        if viewController.publicVar.isRecursiveMode || viewController.publicVar.isMediaUnit(viewController.fileDB.curFolder) {
             tooltipParts.append("\(relativePathLabel): \(relativePath)")
         }
 
@@ -1205,8 +1206,10 @@ class CustomCollectionViewItem: NSCollectionViewItem {
                     }
                 }
 
-                let isRecursive = getViewController(collectionView!)?.publicVar.isRecursiveMode ?? false
-                let canShowParent = selectedCount == 1 && (isRecursive || isVirtualFolderPath(getViewController(collectionView!)!.fileDB.curFolder))
+                let viewController = getViewController(collectionView!)!
+                let isRecursive = viewController.publicVar.isRecursiveMode
+                let isMediaUnit = viewController.publicVar.isMediaUnit(viewController.fileDB.curFolder)
+                let canShowParent = selectedCount == 1 && (isRecursive || isMediaUnit || isVirtualFolderPath(viewController.fileDB.curFolder))
                 if canShowParent, let url = URL(string: file.path) {
                     let parentURL = url.deletingLastPathComponent()
                     if !parentURL.path.isEmpty && parentURL.absoluteString != url.absoluteString {

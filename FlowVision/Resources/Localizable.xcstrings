@@ -44339,6 +44339,55 @@
     "快速压缩" : {
       "comment" : "快速压缩"
     },
+    "Media Unit Mode" : {
+      "comment" : "媒体单元模式",
+      "localizations" : {
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "媒体单元模式" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "媒體單元模式" } }
+      }
+    },
+    "Enable Media Unit Mode" : {
+      "comment" : "开启媒体单元模式",
+      "localizations" : {
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "开启媒体单元模式" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "啟用媒體單元模式" } }
+      }
+    },
+    "Exit Media Unit Mode" : {
+      "comment" : "退出媒体单元模式",
+      "localizations" : {
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "退出媒体单元模式" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "退出媒體單元模式" } }
+      }
+    },
+    "Media Unit Mode requires a folder" : {
+      "comment" : "媒体单元模式需要文件夹",
+      "localizations" : {
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "媒体单元模式需要文件夹" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "媒體單元模式需要資料夾" } }
+      }
+    },
+    "Loading Media Unit..." : {
+      "comment" : "正在加载媒体单元…",
+      "localizations" : {
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "正在加载媒体单元…" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "正在載入媒體單元…" } }
+      }
+    },
+    "Failed to load media unit" : {
+      "comment" : "媒体单元加载失败",
+      "localizations" : {
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "媒体单元加载失败" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "媒體單元載入失敗" } }
+      }
+    },
+    "media-unit-mode-nodirection" : {
+      "comment" : "媒体单元模式下不能执行此动作",
+      "localizations" : {
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "媒体单元模式下不能执行此动作" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "媒體單元模式下不能執行此動作" } }
+      }
+    },
     "快速重命名" : {
       "comment" : "quick rename undo"
     },

@@ -1163,6 +1163,16 @@ class LargeImageView: NSView {
         }
     }
 
+    /// Invalidates every player and transition owned by the large-image view.
+    /// This is used before deleting the current file or one of its containing
+    /// folders so a pending media callback cannot revive a removed URL.
+    func invalidateForDeletedContent() {
+        snapshotTimer?.cancel()
+        snapshotTimer = nil
+        stopVideo()
+        isHidden = true
+    }
+
     func playVideo(reload: Bool = false, reloadForAB: Bool = false) {
         hideUnsupportedVideoOverlay()
         

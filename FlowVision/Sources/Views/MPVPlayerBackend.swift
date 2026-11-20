@@ -429,6 +429,7 @@ final class MPVPlayerBackend {
     private weak var renderView: FlowMPVVideoView?
     private weak var renderLayer: MPVRenderLayer?
     private let renderContextLock = NSRecursiveLock()
+    private let teardownQueue = DispatchQueue(label: "netdcy.FlowVision.mpv.teardown", qos: .userInitiated)
     private var progressTimer: Timer?
     private var endHandler: (() -> Void)?
     private var abRange: ClosedRange<Double>?
@@ -594,10 +595,17 @@ final class MPVPlayerBackend {
             isStopping = false
             return
         }
-        _ = command(["stop"])
         if destroyHandle {
-            lib.terminateDestroy(handle)
             self.handle = nil
+            // libmpv can wait for demuxer/decoder threads here, especially for
+            // an SMB URL that was removed while playing. Release the UI-facing
+            // state above, then destroy the handle off the main thread.
+            let lib = self.lib
+            teardownQueue.async {
+                lib.terminateDestroy(handle)
+            }
+        } else {
+            _ = command(["stop"])
         }
         isStopping = false
     }

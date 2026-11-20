@@ -13,6 +13,31 @@ private class ScanCancelHandler: NSObject {
     @objc func cancel(_ sender: Any?) { onCancel?() }
 }
 
+private struct MediaUnitScanConfiguration {
+    let showHidden: Bool
+    let showAllTypes: Bool
+    let showArchives: Bool
+    let handledExtensions: Set<String>
+    let imageExtensions: Set<String>
+    let videoExtensions: Set<String>
+    let sortType: SortType
+    let sortFolderFirst: Bool
+    let sortUseFullPath: Bool
+    let randomSeed: Int
+    let searchEnabled: Bool
+    let searchText: String
+    let searchUseRegex: Bool
+    let searchCaseSensitive: Bool
+    let searchUseFullPath: Bool
+    let usePinyinSearch: Bool
+    let usePinyinInitialSearch: Bool
+    let finderFilters: Set<String>
+    let finderFilterAnd: Bool
+    let finderFilterReversed: Bool
+    let ratingFilters: Set<Int>
+    let ratingFilterReversed: Bool
+}
+
 extension ViewController {
     private func directMediaCounts(in folderURL: URL, showHiddenFiles: Bool) -> (images: Int, videos: Int)? {
         let options: FileManager.DirectoryEnumerationOptions = showHiddenFiles ? [] : [.skipsHiddenFiles]
@@ -124,9 +149,333 @@ extension ViewController {
         }
     }
 
+    private func isMediaUnitRoot(_ folderURL: URL) -> Bool {
+        guard publicVar.isMediaUnitMode,
+              let rootPath = publicVar.mediaUnitRootPath else { return false }
+        return isSameOrDescendantMediaUnitPath(folderURL.absoluteString, of: rootPath)
+            && normalizedMediaUnitURL(folderURL.absoluteString)?.path
+                == normalizedMediaUnitURL(rootPath)?.path
+    }
+
+    private func isMediaUnitFolder(_ folderURL: URL) -> Bool {
+        guard publicVar.isMediaUnitMode,
+              let rootPath = publicVar.mediaUnitRootPath else { return false }
+        return isDirectMediaUnitChildPath(folderURL.absoluteString, of: rootPath)
+    }
+
+    private func mediaUnitSearchMatches(
+        path: String,
+        searchText: String,
+        useRegex: Bool,
+        caseSensitive: Bool,
+        useFullPath: Bool,
+        usePinyinSearch: Bool,
+        usePinyinInitialSearch: Bool
+    ) -> Bool {
+        guard !searchText.isEmpty else { return true }
+        let decodedPath = path.removingPercentEncoding ?? path
+        let fileName: String
+        if useFullPath {
+            fileName = decodedPath.replacingOccurrences(of: "file://", with: "")
+        } else {
+            fileName = URL(string: path)?.lastPathComponent ?? decodedPath
+        }
+        if useRegex {
+            let options: NSRegularExpression.Options = caseSensitive ? [] : [.caseInsensitive]
+            guard let regex = try? NSRegularExpression(pattern: searchText, options: options) else {
+                return false
+            }
+            let range = NSRange(location: 0, length: fileName.utf16.count)
+            return regex.firstMatch(in: fileName, options: [], range: range) != nil
+        }
+        var matchFileName = fileName
+        var matchSearchText = searchText
+        if !caseSensitive {
+            matchFileName = matchFileName.lowercased()
+            matchSearchText = matchSearchText.lowercased()
+        }
+        var result = matchFileName.contains(matchSearchText)
+        if usePinyinSearch {
+            result = result || convertToPinyin(matchFileName, toPinyinFull: true).contains(matchSearchText)
+        }
+        if usePinyinInitialSearch {
+            result = result || convertToPinyin(matchFileName, toPinyinFull: false).contains(matchSearchText)
+        }
+        return result
+    }
+
+    private func makeMediaUnitScanConfiguration() -> MediaUnitScanConfiguration {
+        MediaUnitScanConfiguration(
+            showHidden: publicVar.isShowHiddenFile,
+            showAllTypes: publicVar.isShowAllTypeFile,
+            showArchives: globalVar.showArchiveFileType,
+            handledExtensions: Set(publicVar.HandledFileExtensions),
+            imageExtensions: Set(publicVar.HandledImageAndRawExtensions),
+            videoExtensions: Set(publicVar.HandledVideoExtensions),
+            sortType: publicVar.profile.sortType,
+            sortFolderFirst: publicVar.profile.isSortFolderFirst,
+            sortUseFullPath: publicVar.profile.isSortUseFullPath,
+            randomSeed: publicVar.randomSeed,
+            searchEnabled: publicVar.isFilenameFilterOn,
+            searchText: searchField?.stringValue ?? search_searchText,
+            searchUseRegex: search_useRegex,
+            searchCaseSensitive: search_isCaseSensitive,
+            searchUseFullPath: search_isUseFullPath,
+            usePinyinSearch: globalVar.usePinyinSearch,
+            usePinyinInitialSearch: globalVar.usePinyinInitialSearch,
+            finderFilters: publicVar.finderTagFilters,
+            finderFilterAnd: publicVar.isFinderTagFilterModeAnd,
+            finderFilterReversed: publicVar.isFinderTagFilterReversed,
+            ratingFilters: publicVar.ratingFilters,
+            ratingFilterReversed: publicVar.isRatingFilterReversed
+        )
+    }
+
+    /// Build a flat model for one media unit away from the main thread. The
+    /// enumerator never follows aliases/symlinks into another hierarchy and
+    /// checks the directory generation on every item so a stale navigation can
+    /// stop promptly.
+    private func buildMediaUnitModel(
+        folderURL: URL,
+        version: Int,
+        configuration: MediaUnitScanConfiguration,
+        shouldContinue: @escaping () -> Bool
+    ) -> DirModel? {
+        let model = DirModel(path: folderURL.absoluteString, ver: version)
+        model.isMediaUnitMode = true
+        model.isRecursiveMode = false
+
+        var propertyKeys: Set<URLResourceKey> = [
+            .isDirectoryKey, .isHiddenKey, .isAliasFileKey, .isSymbolicLinkKey,
+            .fileSizeKey, .creationDateKey, .contentModificationDateKey,
+            .addedToDirectoryDateKey, .isUbiquitousItemKey, .ubiquitousItemDownloadingStatusKey,
+            .tagNamesKey
+        ]
+        let shouldReadFinderTagsSynchronously = !VolumeManager.shared.isNetworkVolume(folderURL)
+            || !configuration.finderFilters.isEmpty
+        if !shouldReadFinderTagsSynchronously {
+            propertyKeys.remove(.tagNamesKey)
+        }
+        let options: FileManager.DirectoryEnumerationOptions = configuration.showHidden ? [] : [.skipsHiddenFiles]
+        var enumerationFailed = false
+        let enumerator = FileManager.default.enumerator(
+            at: folderURL,
+            includingPropertiesForKeys: Array(propertyKeys),
+            options: options,
+            errorHandler: { _, _ in
+                enumerationFailed = true
+                return false
+            }
+        )
+
+        guard let enumerator else { return model }
+        while let itemURL = enumerator.nextObject() as? URL {
+            guard shouldContinue() else { return nil }
+            let values = try? itemURL.resourceValues(forKeys: propertyKeys)
+            let isDirectory = values?.isDirectory ?? false
+            let isAlias = values?.isAliasFile ?? false
+            let isSymlink = values?.isSymbolicLink ?? false
+            if isDirectory {
+                // Do not let a link or Finder alias escape the media root.
+                if isAlias || isSymlink {
+                    enumerator.skipDescendants()
+                }
+                continue
+            }
+            if isAlias || isSymlink {
+                // A file alias remains addressable by its real path in the
+                // ordinary scanner; in a media unit it is safer to omit links
+                // because resolving them can leave the selected unit.
+                continue
+            }
+
+            let ext = itemURL.pathExtension.lowercased()
+            let supportedArchive = configuration.showArchives && isSupportedArchiveURL(itemURL)
+            guard configuration.showAllTypes || configuration.handledExtensions.contains(ext) || supportedArchive else { continue }
+            let absolutePath = itemURL.absoluteString
+            if configuration.searchEnabled && !mediaUnitSearchMatches(
+                path: absolutePath,
+                searchText: configuration.searchText,
+                useRegex: configuration.searchUseRegex,
+                caseSensitive: configuration.searchCaseSensitive,
+                useFullPath: configuration.searchUseFullPath,
+                usePinyinSearch: configuration.usePinyinSearch,
+                usePinyinInitialSearch: configuration.usePinyinInitialSearch
+            ) {
+                continue
+            }
+
+            let tags = shouldReadFinderTagsSynchronously ? (values?.tagNames ?? []) : []
+            if !configuration.finderFilters.isEmpty {
+                let tagSet = Set(tags)
+                let matched = configuration.finderFilterAnd
+                    ? configuration.finderFilters.isSubset(of: tagSet)
+                    : !configuration.finderFilters.isDisjoint(with: tagSet)
+                if configuration.finderFilterReversed ? matched : !matched { continue }
+            }
+            if !configuration.ratingFilters.isEmpty {
+                let rating = readRating(from: itemURL) ?? 0
+                let matched = configuration.ratingFilters.contains(rating)
+                if configuration.ratingFilterReversed ? matched : !matched { continue }
+            }
+
+            let fileKey = SortKeyFile(
+                absolutePath,
+                isInSameDir: false,
+                sortType: configuration.sortType,
+                isSortFolderFirst: configuration.sortFolderFirst,
+                isSortUseFullPath: configuration.sortUseFullPath,
+                randomSeed: configuration.randomSeed
+            )
+            fileKey.size = values?.fileSize ?? 0
+            fileKey.createDate = values?.creationDate ?? Date()
+            fileKey.modDate = values?.contentModificationDate ?? Date()
+            fileKey.addDate = values?.addedToDirectoryDate ?? Date()
+            let fileModel = FileModel(
+                path: absolutePath,
+                ver: version,
+                fileSize: values?.fileSize,
+                createDate: values?.creationDate,
+                modDate: values?.contentModificationDate,
+                addDate: values?.addedToDirectoryDate
+            )
+            if values?.isUbiquitousItem == true,
+               let downloadingStatus = values?.ubiquitousItemDownloadingStatus,
+               downloadingStatus != .current {
+                fileModel.doNotActualRead = true
+            }
+            fileModel.finderTags = tags
+            model.files[fileKey] = fileModel
+            model.fileCount += 1
+            if configuration.imageExtensions.contains(ext) { model.imageCount += 1 }
+            if configuration.videoExtensions.contains(ext) { model.videoCount += 1 }
+        }
+
+        var id = 0
+        var imageID = 0
+        var imageAndVideoID = 0
+        for (_, file) in model.files {
+            file.id = id
+            id += 1
+            // Navigation and thumbnail decoding consume type/ext, not the
+            // scanner's counts. Initialize them before publishing the model,
+            // just as the ordinary directory scanner does.
+            file.ext = URL(string: file.path)?.pathExtension.lowercased() ?? ""
+            if configuration.imageExtensions.contains(file.ext) {
+                file.type = .image
+                file.idInImage = imageID
+                file.idInImageAndVideo = imageAndVideoID
+                imageID += 1
+                imageAndVideoID += 1
+            } else if configuration.videoExtensions.contains(file.ext) {
+                file.type = .video
+                file.idInImageAndVideo = imageAndVideoID
+                imageAndVideoID += 1
+            } else {
+                file.type = .other
+            }
+        }
+        guard !enumerationFailed else { return nil }
+        model.isFiltered = configuration.searchEnabled
+        return model
+    }
+
+    private func beginMediaUnitScan(
+        folderURL: URL,
+        lastFolder: String,
+        doCollapse: Bool,
+        expandLast: Bool,
+        version: Int,
+        removePendingHistoryAfterCompletion: Bool = false
+    ) {
+        guard let rootPath = publicVar.mediaUnitRootPath else {
+            publicVar.isInStageOneProgress = false
+            return
+        }
+        let destinationPath = folderURL.absoluteString
+        let configuration = makeMediaUnitScanConfiguration()
+        publicVar.mediaUnitPendingPath = destinationPath
+        coreAreaView.showInfo(
+            NSLocalizedString("Loading Media Unit...", comment: "正在加载媒体单元…"),
+            timeOut: .infinity,
+            cannotBeCleard: false
+        )
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+            let model = self.buildMediaUnitModel(
+                folderURL: folderURL,
+                version: version,
+                configuration: configuration,
+                shouldContinue: { [weak self] in
+                    guard let self else { return false }
+                    self.fileDB.lock()
+                    let currentVersion = self.fileDB.ver == version
+                    self.fileDB.unlock()
+                    return currentVersion && !self.willTerminate
+                }
+            )
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.fileDB.lock()
+                let isCurrent = self.fileDB.ver == version
+                    && self.publicVar.isMediaUnitMode
+                    && self.publicVar.mediaUnitRootPath == rootPath
+                    && self.publicVar.mediaUnitPendingPath == destinationPath
+                self.fileDB.unlock()
+                guard isCurrent else { return }
+                guard let model else {
+                    self.publicVar.mediaUnitPendingPath = nil
+                    self.publicVar.isInStageOneProgress = false
+                    self.coreAreaView.hideInfo(force: true)
+                    self.coreAreaView.showOperationToast(
+                        NSLocalizedString("Failed to load media unit", comment: "媒体单元加载失败"),
+                        autoHide: 2.0
+                    )
+                    if let lastURL = URL(string: lastFolder), lastURL.isFileURL {
+                        self.startWatchingDirectory(atPath: lastURL.path)
+                    }
+                    return
+                }
+                self.fileDB.lock()
+                self.fileDB.db[SortKeyDir(destinationPath)] = model
+                self.fileDB.unlock()
+                if destinationPath != lastFolder {
+                    self.publicVar.folderStepStack.insert(lastFolder, at: 0)
+                }
+                if removePendingHistoryAfterCompletion,
+                   !self.publicVar.folderStepStack.isEmpty {
+                    self.publicVar.folderStepStack.removeFirst()
+                }
+                if globalVar.dirTreeAutoExpand {
+                    self.treeReLocate(path: destinationPath, doCollapse: doCollapse, expandLast: expandLast)
+                }
+                self.coreAreaView.hideInfo(force: true)
+                self.switchFolder(path: destinationPath)
+                if configuration.finderFilters.isEmpty,
+                   VolumeManager.shared.isNetworkVolume(folderURL) {
+                    let tagItems = model.files.compactMap { _, fileModel -> (url: URL, fileModel: FileModel)? in
+                        guard let url = URL(string: fileModel.path) else { return nil }
+                        return (url, fileModel)
+                    }
+                    self.scheduleNetworkTagHydration(
+                        parentFolderURL: folderURL,
+                        items: tagItems,
+                        expectedVersion: version,
+                        tagsAlreadyLoaded: false
+                    )
+                }
+                self.startWatchingDirectory(atPath: folderURL.path)
+                if !self.publicVar.isInLargeView { self.setWindowTitle() }
+                LRUMemRecord(path: destinationPath, count: model.files.count)
+                UserDefaults.standard.set(destinationPath, forKey: "lastFolder")
+                self.publicVar.mediaUnitPendingPath = nil
+            }
+        }
+    }
+
     /// Hydrates Finder tags after a network directory has already produced its
-    /// first model/layout pass. Reads are serialized with other SMB background
-    /// work and pause while a video on the same share is playing.
+    /// first model/layout pass. Reads share the bounded SMB background budget
+    /// and pause while a video on the same share is playing.
     private func scheduleNetworkTagHydration(
         parentFolderURL: URL,
         items: [(url: URL, fileModel: FileModel)],
@@ -596,6 +945,11 @@ extension ViewController {
         var isInSameDir = true
         if !skip {
             do {
+                // Do not reuse a cache produced under ordinary browsing when
+                // the same folder becomes a media hierarchy root.
+                if isMediaUnitRoot(folderURL) {
+                    dirURLCache.removeAll()
+                }
                 let curDirURLCacheParameters = (folderURL, publicVar.isRecursiveMode, publicVar.isShowHiddenFile, publicVar.isRecursiveContainFolder, properties)
                 if let dirURLCacheParameters = dirURLCacheParameters as? (URL, Bool, Bool, Bool, [URLResourceKey]) {
                     if dirURLCacheParameters != curDirURLCacheParameters {
@@ -604,7 +958,7 @@ extension ViewController {
                 }
                 dirURLCacheParameters = curDirURLCacheParameters
 
-                isInSameDir = !publicVar.isRecursiveMode && !isVirtualFolderPath(folderURL.absoluteString)
+                isInSameDir = !publicVar.isRecursiveMode && !isMediaUnitFolder(folderURL) && !isVirtualFolderPath(folderURL.absoluteString)
                 if dirURLCache.isEmpty {
                     if folderURL.path.hasPrefix("/VirtualFinderTagsFolder") {
                         let tagName = folderURL.lastPathComponent
@@ -815,10 +1169,12 @@ extension ViewController {
         }
         fileDB.db[SortKeyDir(folderURL.absoluteString)]!.isMemClearedToAvoidRemainingTask=false
         let lastIsRecursiveMode=fileDB.db[SortKeyDir(folderURL.absoluteString)]!.isRecursiveMode
-        if lastIsRecursiveMode != publicVar.isRecursiveMode {
+        let lastIsMediaUnitMode=fileDB.db[SortKeyDir(folderURL.absoluteString)]!.isMediaUnitMode
+        if lastIsRecursiveMode != publicVar.isRecursiveMode || lastIsMediaUnitMode != isMediaUnitRoot(folderURL) {
             fileDB.db[SortKeyDir(folderURL.absoluteString)]!.keepScrollPos=false
         }
         fileDB.db[SortKeyDir(folderURL.absoluteString)]!.isRecursiveMode=publicVar.isRecursiveMode
+        fileDB.db[SortKeyDir(folderURL.absoluteString)]!.isMediaUnitMode=isMediaUnitRoot(folderURL)
         fileDB.unlock()
         
         // 往前则后序遍历
@@ -1098,8 +1454,28 @@ extension ViewController {
 
     }
     
+    /// A replaced media-unit model can keep its own version unchanged while
+    /// queued callbacks still retain it. Check the active model and navigation
+    /// generation as well before touching collection items or layout state.
+    func isCurrentDirectoryTask(path: String, model: DirModel, version: Int) -> Bool {
+        fileDB.lock()
+        defer { fileDB.unlock() }
+        return fileDB.curFolder == path
+            && fileDB.ver == version
+            && model.ver == version
+            && fileDB.db[SortKeyDir(path)] === model
+    }
+
     func switchFolder(path: String) {
         // startTime = DispatchTime.now()
+
+        fileDB.lock()
+        let hasDirectoryModel = fileDB.db[SortKeyDir(path)] != nil
+        fileDB.unlock()
+        guard hasDirectoryModel else {
+            publicVar.isInStageOneProgress = false
+            return
+        }
         
         // getFileListOfFolder(folderpath: path)
         
@@ -1115,11 +1491,12 @@ extension ViewController {
         
         // 是捕获界面，还是将从finder打开替换为目录中打开
         // Capture interface, or replace opening from finder with opening in directory
+        // Never carry old directory pixels into a new listing. This applies
+        // to normal folders and tab switches as well as media units; waiting
+        // for thumbnail completion to fade them leaves mixed content on stalls.
+        for snapshot in snapshotQueue { snapshot?.removeFromSuperview() }
+        snapshotQueue.removeAll()
         if publicVar.openFromFinderPath == "" {
-            if let snapshot = captureSnapshot(of: coreAreaView){
-                coreAreaView.addSubview(snapshot)
-                snapshotQueue.append(snapshot)
-            }
 //            currLargeImagePos = -1
             initLargeImagePos = -1
             if publicVar.lastLargeImageIdInImage == 0 {
@@ -1199,6 +1576,7 @@ extension ViewController {
             // Reload to clear
             collectionView.reloadData()
             collectionView.numberOfItems(inSection:0)
+            collectionView.collectionViewLayout?.invalidateLayout()
             
             fileDB.lock()
             fileDB.db[SortKeyDir(path)]?.keepScrollPos=false
@@ -1221,8 +1599,12 @@ extension ViewController {
         if true{
             var keys = [(SortKeyFile,FileModel)]()
             fileDB.lock()
-            keys = getMapKeysFile(fileDB.db[SortKeyDir(path)]!.files)
-            let dirModel = fileDB.db[SortKeyDir(path)]!
+            guard let dirModel = fileDB.db[SortKeyDir(path)] else {
+                fileDB.unlock()
+                publicVar.isInStageOneProgress = false
+                return
+            }
+            keys = getMapKeysFile(dirModel.files)
             let ver = dirModel.ver
             fileDB.unlock()
             readInfoTaskPoolLock.lock()
@@ -1239,19 +1621,35 @@ extension ViewController {
             // 对于空文件夹，播放渐变动画（因为没有分派任务，所以在任务里的渐变调用不到）
             // For empty folders, play fade animation (because no tasks are dispatched, fade in tasks won't be called)
             if keys.isEmpty {
+                if publicVar.selectionAfterDeletion?.folderPath == path {
+                    publicVar.selectionAfterDeletion = nil
+                }
                 
                 collectionView.reloadData()
                 collectionView.numberOfItems(inSection:0)
 
                 setProgress(1.0)
 
-                if !FileManager.default.fileExists(atPath: path.dropLast().replacingOccurrences(of: "file://", with: "").removingPercentEncoding!) {
+                let filesystemPath = path.dropLast()
+                    .replacingOccurrences(of: "file://", with: "")
+                    .removingPercentEncoding
+                if let filesystemPath,
+                   !FileManager.default.fileExists(atPath: filesystemPath) {
                     if path == "file:///VirtualFinderTagsFolder/" {
                         collectionView.showFolderInfo(NSLocalizedString("Please select a specific tag", comment: "请选择具体的标签"))
                     } else if !isVirtualFolderPath(path) {
                         collectionView.showFolderInfo(NSLocalizedString("Directory does not exist", comment: "目录不存在"))
                     }
                 }
+
+                // A directory switch can leave the large-image view pointing at
+                // a file that no longer exists. Stop the player before fading the
+                // stale snapshot so callbacks cannot restart the removed media.
+                largeImageView.invalidateForDeletedContent()
+                largeImageBgEffectView.isHidden = true
+                publicVar.isInLargeView = false
+                publicVar.isInLargeViewAfterAnimate = false
+                setWindowTitle()
                 
                 while snapshotQueue.count > 0{
                     let snapshot=snapshotQueue.first!
@@ -1286,7 +1684,7 @@ extension ViewController {
                     let layoutCalcPos=fileDB.db[SortKeyDir(curFolder)]?.layoutCalcPos ?? -1
                     fileDB.unlock()
                     
-                    if ver != dirModel.ver {return}
+                    if !isCurrentDirectoryTask(path: path, model: dirModel, version: ver) {return}
                     
                     if curFolder == path {
                         
@@ -1348,6 +1746,29 @@ extension ViewController {
         let curFolder = fileDB.curFolder
         let dirFiles = fileDB.db[SortKeyDir(curFolder)]?.files
         fileDB.unlock()
+
+        // The target may arrive in a later layout batch on a large/SMB unit.
+        // Keep it until visible; unlike copy/move hints this has no timeout.
+        if let pending = publicVar.selectionAfterDeletion {
+            if pending.folderPath != curFolder {
+                publicVar.selectionAfterDeletion = nil
+            } else {
+                let offset = dirFiles?.enumerated().first(where: {
+                    $0.element.1.path == pending.filePath
+                })?.offset
+                if let offset, offset < curItemCount {
+                    let indexPath = IndexPath(item: offset, section: 0)
+                    collectionView.selectionIndexPaths = [indexPath]
+                    collectionViewManager.lastSelectedIndexPath = indexPath
+                    collectionView.scrollToItems(at: [indexPath], scrollPosition: .nearestHorizontalEdge)
+                    setLoadThumbPriority(ifNeedVisable: true)
+                    view.window?.makeFirstResponder(collectionView)
+                    publicVar.selectionAfterDeletion = nil
+                } else if isFinal {
+                    publicVar.selectionAfterDeletion = nil
+                }
+            }
+        }
         
         // 向上或者后退时定位文件夹
         // Locate folder when going up or back
@@ -1491,12 +1912,12 @@ extension ViewController {
         }
     }
     
-    func switchDirByDirection(direction rawdirection: RightMouseGestureDirection, dest: String = "", doCollapse: Bool = true, expandLast: Bool = true, skip: Bool = false, stackDeep: Int, dryRun: Bool = false, needStopAutoScroll: Bool = true){
+    func switchDirByDirection(direction rawdirection: RightMouseGestureDirection, dest: String = "", doCollapse: Bool = true, expandLast: Bool = true, skip: Bool = false, stackDeep: Int, dryRun: Bool = false, needStopAutoScroll: Bool = true, mediaUnitHistoryCleanupAfterAsync: Bool = false){
         
         if rawdirection == .zero {
             publicVar.isInStageOneProgress = true
         }
-        
+
         if publicVar.isRecursiveMode {
             if rawdirection == .left || rawdirection == .up_left || rawdirection == .down_left
                 || rawdirection == .right || rawdirection == .up_right || rawdirection == .down_right {
@@ -1505,9 +1926,30 @@ extension ViewController {
             }
         }
 
+        // Do this only after navigation guards have accepted the action. A
+        // forbidden left/right gesture must leave the in-flight unit scan
+        // intact. Bumping the generation makes the worker exit promptly when
+        // a real navigation cancels the pending destination.
+        let cancelPendingMediaUnitScan: () -> Void = {
+            guard self.publicVar.mediaUnitPendingPath != nil else { return }
+            self.fileDB.lock()
+            self.fileDB.ver += 1
+            self.fileDB.unlock()
+            self.publicVar.mediaUnitPendingPath = nil
+            self.coreAreaView.hideInfo(force: true)
+        }
+
         fileDB.lock()
         let curFolder = fileDB.curFolder
         fileDB.unlock()
+        if publicVar.isMediaUnitMode,
+           publicVar.isMediaUnitNavigationPath(curFolder),
+           (rawdirection == .left || rawdirection == .up_left || rawdirection == .down_left
+            || rawdirection == .right || rawdirection == .up_right || rawdirection == .down_right) {
+            publicVar.isInStageOneProgress = false
+            showAlert(message: NSLocalizedString("media-unit-mode-nodirection", comment: "媒体单元模式下不能执行此动作"))
+            return
+        }
         if isVirtualFolderPath(curFolder) || !publicVar.finderTagFilters.isEmpty || !publicVar.ratingFilters.isEmpty {
             if rawdirection == .left || rawdirection == .up_left || rawdirection == .down_left
                 || rawdirection == .right || rawdirection == .up_right || rawdirection == .down_right {
@@ -1574,11 +2016,21 @@ extension ViewController {
         if direction == .down || direction == .back {
             if publicVar.folderStepStack.count == 0 {return}
             if publicVar.folderStepStack[0] == "" {return}
+            cancelPendingMediaUnitScan()
+            let destination = publicVar.folderStepStack.removeFirst()
+            let shouldDeferHistoryCleanup = URL(string: destination).map(isMediaUnitFolder) ?? false
             fileDB.lock()
             publicVar.folderStepForwardStack.insert(fileDB.curFolder, at: 0)
             fileDB.unlock()
-            switchDirByDirection(direction: .zero, dest: publicVar.folderStepStack.removeFirst(), stackDeep: stackDeep+1)
-            publicVar.folderStepStack.removeFirst()
+            switchDirByDirection(
+                direction: .zero,
+                dest: destination,
+                stackDeep: stackDeep + 1,
+                mediaUnitHistoryCleanupAfterAsync: shouldDeferHistoryCleanup
+            )
+            if !shouldDeferHistoryCleanup, !publicVar.folderStepStack.isEmpty {
+                publicVar.folderStepStack.removeFirst()
+            }
             return
         }else if direction != .forward && stackDeep == 0 {
             publicVar.folderStepForwardStack.removeAll()
@@ -1588,6 +2040,7 @@ extension ViewController {
         if direction == .forward {
             if publicVar.folderStepForwardStack.count == 0 {return}
             if publicVar.folderStepForwardStack[0] == "" {return}
+            cancelPendingMediaUnitScan()
             switchDirByDirection(direction: .zero, dest: publicVar.folderStepForwardStack.removeFirst(), stackDeep: stackDeep+1)
             return
         }
@@ -1604,10 +2057,20 @@ extension ViewController {
                     return
                 }
             }
+            let navigationPath = publicVar.mediaUnitPendingPath ?? curFolder
+            let hadPendingMediaUnitScan = publicVar.mediaUnitPendingPath != nil
             fileDB.lock()
-            let newFolderPath=URL(string: fileDB.curFolder)!.deletingLastPathComponent().absoluteString
+            guard let currentFolderURL = URL(string: navigationPath) else {
+                fileDB.unlock()
+                publicVar.isInStageOneProgress = false
+                return
+            }
+            let newFolderPath=currentFolderURL.deletingLastPathComponent().absoluteString
             fileDB.unlock()
             if newFolderPath == "file:///../" {return}
+            if hadPendingMediaUnitScan {
+                cancelPendingMediaUnitScan()
+            }
             switchDirByDirection(direction: .zero, dest: newFolderPath, skip: true, stackDeep: stackDeep+1)
             switchDirByDirection(direction: secondDirection, stackDeep: stackDeep+1)
             if secondDirection != .zero {
@@ -1621,16 +2084,33 @@ extension ViewController {
         fileDB.unlock()
         var startFolder=lastFolder
         if direction == .zero && dest != "" { startFolder = dest }
+        if let pending = publicVar.selectionAfterDeletion, pending.folderPath != startFolder {
+            publicVar.selectionAfterDeletion = nil
+        }
+        if direction == .zero,
+           dest.isEmpty,
+           let pendingPath = publicVar.mediaUnitPendingPath,
+           pendingPath != lastFolder {
+            startFolder = pendingPath
+            publicVar.mediaUnitPendingPath = nil
+        }
         if let startURL = URL(string: startFolder),
            isUnavailableMountedVolumeURL(startURL) {
+            publicVar.isInStageOneProgress = false
             coreAreaView.showOperationToast(
                 NSLocalizedString("The network volume is not mounted.", comment: "网络卷尚未挂载。"),
                 autoHide: 2.0
             )
             return
         }
+        guard let startURL = URL(string: startFolder) else {
+            publicVar.isInStageOneProgress = false
+            return
+        }
+        cancelPendingMediaUnitScan()
         fileDB.lock()
         fileDB.ver += 1
+        let expectedMediaUnitVersion = fileDB.ver
         fileDB.unlock()
         if !(direction == .zero && lastFolder == startFolder) {
             // 重置递归模式
@@ -1657,13 +2137,35 @@ extension ViewController {
             // Reset auto-play visible video
             publicVar.autoPlayVisibleVideo = false
         }
+
+        if direction == .zero && isMediaUnitFolder(startURL) {
+            beginMediaUnitScan(
+                folderURL: startURL,
+                lastFolder: lastFolder,
+                doCollapse: doCollapse,
+                expandLast: expandLast,
+                version: expectedMediaUnitVersion,
+                removePendingHistoryAfterCompletion: mediaUnitHistoryCleanupAfterAsync
+            )
+            return
+        }
         
-        treeTraversal(folderURL: URL(string: startFolder)!, round: searchFolderRound, initURL: URL(string: startFolder)!, direction: direction,
+        treeTraversal(folderURL: startURL, round: searchFolderRound, initURL: startURL, direction: direction,
                           sameLevel: secondDirection == .down, skip: skip, dryRun: dryRun)
 
         // let a=1
         fileDB.lock()
-        var curIndex=fileDB.db.index(forKey: SortKeyDir(startFolder))!
+        guard var curIndex = fileDB.db.index(forKey: SortKeyDir(startFolder)) else {
+            fileDB.unlock()
+            // Directory enumeration can finish after a watcher has reported a
+            // deletion. Keep the current model usable and let the next refresh
+            // retry instead of force-unwrapping a vanished directory entry.
+            publicVar.isInStageOneProgress = false
+            if let lastURL = URL(string: lastFolder), lastURL.isFileURL {
+                startWatchingDirectory(atPath: lastURL.path)
+            }
+            return
+        }
         if direction != .zero {
             while true {
                 if direction == .right {
@@ -1708,9 +2210,14 @@ extension ViewController {
             treeReLocate(path: nextFolder, doCollapse: doCollapse, expandLast: expandLast)
         }
         
-        log("Switch:",nextFolder.removingPercentEncoding!)
+        log("Switch:", nextFolder.removingPercentEncoding ?? nextFolder)
         switchFolder(path: nextFolder)
-        startWatchingDirectory(atPath: nextFolder.replacingOccurrences(of: "file://", with: "").removingPercentEncoding!)
+        let nextFolderFilesystemPath = nextFolder
+            .replacingOccurrences(of: "file://", with: "")
+            .removingPercentEncoding
+        if let nextFolderFilesystemPath {
+            startWatchingDirectory(atPath: nextFolderFilesystemPath)
+        }
         if !publicVar.isInLargeView {setWindowTitle()}
         LRUMemRecord(path: nextFolder, count: fileCount)
         

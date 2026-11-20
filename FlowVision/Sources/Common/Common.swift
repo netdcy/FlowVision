@@ -1002,22 +1002,26 @@ final class NetworkIOCoordinator {
             return shouldContinue() ? BackgroundLease(coordinator: nil, volumeKey: nil) : nil
         }
 
-        condition.lock()
-        while playbackCounts[volumeKey, default: 0] > 0
-            || backgroundAccessCounts[volumeKey, default: 0] >= maxConcurrentBackgroundAccessesPerVolume {
-            guard shouldContinue() else {
+        while true {
+            // Caller cancellation checks can acquire the directory/preheat
+            // locks. Never call them while holding the coordinator lock:
+            // playback completion on main may hold those locks in reverse.
+            guard shouldContinue() else { return nil }
+            condition.lock()
+            if playbackCounts[volumeKey, default: 0] == 0
+                && backgroundAccessCounts[volumeKey, default: 0] < maxConcurrentBackgroundAccessesPerVolume {
+                backgroundAccessCounts[volumeKey, default: 0] += 1
                 condition.unlock()
-                return nil
+                let lease = BackgroundLease(coordinator: self, volumeKey: volumeKey)
+                guard shouldContinue() else {
+                    lease.end()
+                    return nil
+                }
+                return lease
             }
             _ = condition.wait(until: Date().addingTimeInterval(0.1))
-        }
-        guard shouldContinue() else {
             condition.unlock()
-            return nil
         }
-        backgroundAccessCounts[volumeKey, default: 0] += 1
-        condition.unlock()
-        return BackgroundLease(coordinator: self, volumeKey: volumeKey)
     }
 
     func isPlaybackActive(for url: URL) -> Bool {

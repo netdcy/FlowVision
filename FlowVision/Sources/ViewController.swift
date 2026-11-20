@@ -136,6 +136,11 @@ class PublicVar{
     var isLargeImageFitWindow = true
     var isRecursiveMode = false
     var isRecursiveContainFolder = false
+    /// Treat the current folder as a media hierarchy root. Its direct child
+    /// folders are media units and each unit is displayed as a flat file list.
+    var isMediaUnitMode = false
+    var mediaUnitRootPath: String?
+    var mediaUnitPendingPath: String?
     var isShowHiddenFile = false
     var isShowAllTypeFile = false
     var isShowImageFile = true
@@ -162,6 +167,22 @@ class PublicVar{
     var ratingFilters: Set<Int> = []
     var isRatingFilterReversed: Bool = false
 
+    func isMediaUnitRoot(_ path: String) -> Bool {
+        guard isMediaUnitMode, let root = mediaUnitRootPath else { return false }
+        guard let candidateURL = normalizedMediaUnitURL(path),
+              let rootURL = normalizedMediaUnitURL(root) else { return false }
+        return candidateURL.path == rootURL.path
+    }
+
+    func isMediaUnit(_ path: String) -> Bool {
+        guard isMediaUnitMode, let root = mediaUnitRootPath else { return false }
+        return isDirectMediaUnitChildPath(path, of: root)
+    }
+
+    func isMediaUnitNavigationPath(_ path: String) -> Bool {
+        isMediaUnitRoot(path) || isMediaUnit(path)
+    }
+
     // 可一键切换的配置
     // Configuration that can be switched with one key
     var profile = CustomProfile()
@@ -177,6 +198,7 @@ class PublicVar{
     var folderStepForLocateTime: DispatchTime = .now()
     var filesForLocateAfterChange = [String]()
     var filesForLocateAfterChangeTime: DispatchTime = .now()
+    var selectionAfterDeletion: (folderPath: String, filePath: String)?
     var collectionScrollRestoreAfterRefresh: (folderPath: String, origin: NSPoint)?
     var collectionViewportAnchorAfterRefresh: (folderPath: String, filePath: String, offset: NSPoint)?
     var isInFileOperation = false
@@ -355,6 +377,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     
     var watchFileDescriptor: Int32 = -1
     var watchDispatchSource: DispatchSourceFileSystemObject?
+    private var watchGeneration = 0
     
     var LRUqueue = [(String,DispatchTime,Int)]()
     
@@ -578,6 +601,10 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if let isRecursiveContainFolder = UserDefaults.standard.value(forKey: "isRecursiveContainFolder") as? Bool {
             publicVar.isRecursiveContainFolder = isRecursiveContainFolder
         }
+        if let isMediaUnitMode = UserDefaults.standard.value(forKey: "isMediaUnitMode") as? Bool {
+            publicVar.isMediaUnitMode = isMediaUnitMode
+        }
+        publicVar.mediaUnitRootPath = UserDefaults.standard.string(forKey: "mediaUnitRootPath")
         if let autoPlayVisibleVideo = UserDefaults.standard.value(forKey: "autoPlayVisibleVideo") as? Bool {
             publicVar.autoPlayVisibleVideo = autoPlayVisibleVideo
         }
@@ -1298,7 +1325,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                     fileDB.unlock() 
                     
                     if i == -1 {continue}
-                    if ver != dirModel.ver {continue}
+                    if !isCurrentDirectoryTask(path: dir, model: dirModel, version: ver) {continue}
                     
                     // 网络卷允许两路受控读取；其它外置卷仍使用单线程。
                     // Network volumes use two bounded reads; other external volumes stay single-threaded.
@@ -1329,7 +1356,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         let curFolder=fileDB.curFolder
                         fileDB.unlock() 
                         
-                        if ver != dirModel.ver {return}
+                        if !isCurrentDirectoryTask(path: dir, model: dirModel, version: ver) {return}
                         // 需要跳过，否则会等上一个目录完全执行完毕后才开始；不过这样就没法预载入其它目录了，待重构任务队列实现
                         // Need to skip, otherwise will wait for previous directory to fully complete before starting; but this prevents preloading other directories, pending task queue refactoring
                         if dir != curFolder {return}
@@ -1356,6 +1383,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         self.fileDB.lock()
                                         let isCurrent = ver == dirModel.ver
                                             && dir == self.fileDB.curFolder
+                                            && ver == self.fileDB.ver
+                                            && self.fileDB.db[SortKeyDir(dir)] === dirModel
                                         self.fileDB.unlock()
                                         return isCurrent
                                     }
@@ -1375,6 +1404,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                             // Note: Code below may execute after next round above completes
                             DispatchQueue.main.async { [weak self] in
                                 guard let self = self else { return }
+                                guard isCurrentDirectoryTask(path: dir, model: dirModel, version: ver) else { return }
                                 
                                 fileDB.lock()
                                 file.imageInfo = imageInfo
@@ -1385,8 +1415,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 let curFolder=fileDB.curFolder
                                 let keepScrollPos=dirModel.keepScrollPos
                                 fileDB.unlock()
-                                
-                                if ver != dirModel.ver {return}
                                 
                                 // 80~0.07s, 50~0.05s, 20~0.04s
                                 if(false || i % 20 == 8 || i == count-1 || publicVar.timer.intervalSafe(name: "recalcLayoutWhenReadInfo", second: 0.1)){
@@ -1521,7 +1549,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                         fileDB.unlock() 
                         
                         if i == -1 {return}
-                        if ver != dirModel.ver {return}
+                        if !isCurrentDirectoryTask(path: dir, model: dirModel, version: ver) {return}
                         // 暂时跳过，以降低网络驱动器单线程的载入延迟
                         // Temporarily skip to reduce loading delay for network drive single-threaded loading
                         if dir != curFolder {return}
@@ -1600,7 +1628,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                 let curFolder=fileDB.curFolder
                                 fileDB.unlock() 
                                 
-                                if ver != dirModel.ver {return}
+                                if !isCurrentDirectoryTask(path: dir, model: dirModel, version: ver) {return}
                                 if dir != curFolder {return}
                                 
                                 coreAreaView.hideInfo()
@@ -1760,7 +1788,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         let curFolder=fileDB.curFolder
                                         fileDB.unlock() 
                                         
-                                        if ver != dirModel.ver {return}
+                                        if !isCurrentDirectoryTask(path: dir, model: dirModel, version: ver) {return}
                                         
                                         fileDB.lock()
                                         file.image=image
@@ -1772,7 +1800,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                         if dir == curFolder {
                                             let indexPath = IndexPath(item: i, section: 0)
                                             if let item = collectionView.item(at: indexPath) as? CustomCollectionViewItem{
-                                                fileDB.lock()
+                                                // Configuration can start/stop a player and
+                                                // acquire network locks. Do not hold fileDB.
                                                 item.configureWithImage(file,playAnimation:true)
                                                 // log(i)
                                                 if i == 0 {
@@ -1781,7 +1810,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
                                                     let timeInterval = Double(nanoTime) / 1_000_000_000
                                                     log("Time taken to complete loading first image: \(timeInterval) seconds")
                                                 }
-                                                fileDB.unlock()
                                             }
                                         }
                                     }
@@ -2228,6 +2256,8 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
     func startWatchingDirectory(atPath path: String) {
         // TODO: 有大量write事件且造成go-nfsv4进程繁忙
         // TODO: Has many write events and causes go-nfsv4 process to be busy
+        stopWatchingDirectory()
+
         if path.contains("Cryptomator") {
             return
         }
@@ -2243,60 +2273,80 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         if publicVar.isRecursiveMode {
             return
         }
-        
-        watchFileDescriptor = open(path, O_EVTONLY)
-        guard watchFileDescriptor != -1 else {
+
+        // A media unit is represented by a flat recursive scan. Its direct
+        // folder watcher cannot observe descendants reliably, so refreshes are
+        // driven by explicit navigation/refresh instead.
+        if publicVar.isMediaUnit(URL(fileURLWithPath: path).absoluteString) {
+            return
+        }
+
+        let fileDescriptor = open(path, O_EVTONLY)
+        guard fileDescriptor != -1 else {
             log("Failed to open directory, errno: \(errno)", level: .warn)
             return
         }
-        
+
+        watchFileDescriptor = fileDescriptor
+        watchGeneration += 1
+        let generation = watchGeneration
         let queue = DispatchQueue.global()
-        watchDispatchSource = DispatchSource.makeFileSystemObjectSource(fileDescriptor: watchFileDescriptor, eventMask: [.write,.link,.delete,.rename], queue: queue)
-        watchDispatchSource?.setEventHandler { [weak self] in
-            guard let self = self else { return }
-            
-            // 打印事件类型
-            // Print event type
-            let event = watchDispatchSource!.data
-            // logFileSystemEvent(event)
-            
-            // 计划刷新
-            // Schedule refresh
-            readInfoTaskPoolLock.lock()
-            let isReadInfoFinish = (readInfoTaskPool.count == 0)
-            readInfoTaskPoolLock.unlock()
-            loadImageTaskPool.lock.lock()
-            let isLoadThumbFinish = (loadImageTaskPool.getTaskNum() == 0)
-            loadImageTaskPool.lock.unlock()
-            let isInProgress = (publicVar.isInStageOneProgress || publicVar.isInStageTwoProgress || publicVar.isInStageThreeProgress
-                                || !isReadInfoFinish || !isLoadThumbFinish)
-            // log(publicVar.isInStageOneProgress,publicVar.isInStageTwoProgress,publicVar.isInStageThreeProgress,!isReadInfoFinish,!isLoadThumbFinish,level: .debug)
-            if publicVar.isInFileOperation {
-                // 文件操作（粘贴/移动）进行中，忽略文件系统事件，操作完成后会主动刷新
-                // File operation (paste/move) in progress, ignore FS events, will refresh after operation completes
-            }else if VolumeManager.shared.isExternalVolume(path) && isInProgress && publicVar.fileChangedCount == 0 {
-                // samba的smb读取时会改变atime，产生write和attrib事件
-                // Samba SMB reading will change atime, generating write and attrib events
-                // log("ExternalVol FileSystemEvent DoNot Refresh.",level: .debug)
-            }else{
-                // log("FileSystemEvent Refreshd",level: .debug)
-                scheduledRefresh()
+        let source = DispatchSource.makeFileSystemObjectSource(
+            fileDescriptor: fileDescriptor,
+            eventMask: [.write, .link, .delete, .rename],
+            queue: queue
+        )
+        watchDispatchSource = source
+        source.setEventHandler { [weak self, weak source] in
+            // DispatchSource callbacks can arrive after a directory switch. Read
+            // the event from this source and validate the generation on main so an
+            // old watcher cannot refresh a new directory or touch its file state.
+            guard let source else { return }
+            let event = source.data
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self, self.watchGeneration == generation else { return }
+
+                // 计划刷新
+                // Schedule refresh
+                self.readInfoTaskPoolLock.lock()
+                let isReadInfoFinish = (self.readInfoTaskPool.count == 0)
+                self.readInfoTaskPoolLock.unlock()
+                self.loadImageTaskPool.lock.lock()
+                let isLoadThumbFinish = (self.loadImageTaskPool.getTaskNum() == 0)
+                self.loadImageTaskPool.lock.unlock()
+                let isInProgress = (self.publicVar.isInStageOneProgress || self.publicVar.isInStageTwoProgress || self.publicVar.isInStageThreeProgress
+                                    || !isReadInfoFinish || !isLoadThumbFinish)
+                let isStructuralChange = event.contains(.delete) || event.contains(.rename) || event.contains(.link)
+                // log(self.publicVar.isInStageOneProgress,self.publicVar.isInStageTwoProgress,self.publicVar.isInStageThreeProgress,!isReadInfoFinish,!isLoadThumbFinish,level: .debug)
+                if self.publicVar.isInFileOperation {
+                    // 文件操作（粘贴/移动）进行中，忽略文件系统事件，操作完成后主动刷新
+                    // File operation (paste/move) in progress, ignore file system events, refresh after completion
+                } else if !isStructuralChange && VolumeManager.shared.isExternalVolume(path) && isInProgress && self.publicVar.fileChangedCount == 0 {
+                    // samba的smb读取时会改变atime，产生write和attrib事件
+                    // Samba SMB reading changes atime and can generate write events
+                    // log("ExternalVol FileSystemEvent DoNot Refresh.",level: .debug)
+                } else {
+                    // log("FileSystemEvent Refreshd",level: .debug)
+                    self.scheduledRefresh()
+                }
             }
-            
         }
-        
-        watchDispatchSource?.setCancelHandler {
-            close(self.watchFileDescriptor)
+
+        source.setCancelHandler {
+            close(fileDescriptor)
         }
-        
-        watchDispatchSource?.resume()
+
+        source.resume()
     }
 
     func stopWatchingDirectory() {
-        watchDispatchSource?.cancel()
+        watchGeneration += 1
+        let source = watchDispatchSource
         watchDispatchSource = nil
+        watchFileDescriptor = -1
+        source?.cancel()
     }
-    
+
     func scheduledRefresh(){
         publicVar.fileChangedCount = 0
         DispatchQueue.main.async { [weak self] in

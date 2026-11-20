@@ -1736,6 +1736,13 @@ extension WindowController: NSToolbarDelegate {
 
             let recursiveModeInfo = menu.addItem(withTitle: NSLocalizedString("Readme...", comment: "说明..."), action: #selector(recursiveModeInfo), keyEquivalent: "")
 
+            let mediaUnitMode = menu.addItem(
+                withTitle: NSLocalizedString("Media Unit Mode", comment: "媒体单元模式"),
+                action: #selector(toggleMediaUnitMode),
+                keyEquivalent: ""
+            )
+            mediaUnitMode.state = viewController.publicVar.isMediaUnitMode ? .on : .off
+
         // 大图视图
         // Large image view
         } else {
@@ -2104,6 +2111,11 @@ extension WindowController: NSToolbarDelegate {
     @objc func toggleRecursiveMode(_ sender: NSMenuItem){
         guard let viewController = contentViewController as? ViewController else {return}
         viewController.toggleRecursiveMode()
+    }
+
+    @objc func toggleMediaUnitMode(_ sender: NSMenuItem){
+        guard let viewController = contentViewController as? ViewController else {return}
+        viewController.toggleMediaUnitMode()
     }
 
     @objc func toggleRecursiveContainFolder(_ sender: NSMenuItem){

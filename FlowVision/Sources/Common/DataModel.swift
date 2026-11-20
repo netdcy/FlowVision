@@ -7,6 +7,50 @@ import Foundation
 import Cocoa
 import BTree
 
+/// Choose in display order, using only successful deletions. Deleting a
+/// directory also removes its descendants from a flattened media listing.
+func selectionTargetAfterDeletion(in orderedURLs: [URL], deletedURLs: [URL]) -> URL? {
+    let deletedPaths = Set(deletedURLs.map { $0.standardizedFileURL.path })
+    func isDeleted(_ url: URL) -> Bool {
+        var path = url.standardizedFileURL.path
+        while true {
+            if deletedPaths.contains(path) { return true }
+            let parent = (path as NSString).deletingLastPathComponent
+            if parent == path || parent.isEmpty { return false }
+            path = parent
+        }
+    }
+    guard let firstDeleted = orderedURLs.firstIndex(where: isDeleted) else { return nil }
+    return orderedURLs[..<firstDeleted].last(where: { !isDeleted($0) })
+        ?? orderedURLs.first(where: { !isDeleted($0) })
+}
+
+/// URL path predicates used by Media Unit Mode. They deliberately compare
+/// path components instead of raw string prefixes so folders such as
+/// `/Media/15` and `/Media/150` remain independent.
+func normalizedMediaUnitURL(_ path: String) -> URL? {
+    guard let url = URL(string: path), url.isFileURL else { return nil }
+    return url.standardizedFileURL
+}
+
+func isSameOrDescendantMediaUnitPath(_ candidate: String, of root: String) -> Bool {
+    guard let candidateURL = normalizedMediaUnitURL(candidate),
+          let rootURL = normalizedMediaUnitURL(root) else { return false }
+    let candidateComponents = candidateURL.pathComponents
+    let rootComponents = rootURL.pathComponents
+    guard candidateComponents.count >= rootComponents.count else { return false }
+    return Array(candidateComponents.prefix(rootComponents.count)) == rootComponents
+}
+
+func isDirectMediaUnitChildPath(_ candidate: String, of root: String) -> Bool {
+    guard let candidateURL = normalizedMediaUnitURL(candidate),
+          let rootURL = normalizedMediaUnitURL(root) else { return false }
+    let candidateComponents = candidateURL.pathComponents
+    let rootComponents = rootURL.pathComponents
+    guard candidateComponents.count == rootComponents.count + 1 else { return false }
+    return Array(candidateComponents.dropLast()) == rootComponents
+}
+
 extension Map {
     func elementSafe(atOffset offset: Int) -> Element? {
         guard offset >= 0 && offset < count else {
@@ -549,6 +593,7 @@ class DirModel {
     var isMemClearedToAvoidRemainingTask: Bool = false
     var keepScrollPos: Bool = false
     var isRecursiveMode: Bool = false
+    var isMediaUnitMode: Bool = false
     var isFiltered: Bool = false
     var lock: NSLock = NSLock()
     
@@ -664,6 +709,11 @@ class TreeViewModel {
     }
     
     func expand(node: TreeNode, isLookSub: Bool){
+        if viewController.publicVar.isMediaUnit(node.fullPath) {
+            node.children = nil
+            node.hasChild = false
+            return
+        }
         let folderURL=URL(string: node.fullPath)!
         do{
             var contents = [URL]()
@@ -874,24 +924,33 @@ class TreeViewModel {
                 node.children?.append(newNode)
                 
                 if isLookSub{
-                    let isExt = VolumeManager.shared.isExternalVolume(subFolder)
-                    if isExt && globalVar.folderSearchDepth_External == 0 {
-                        newNode.hasChild=true
-                    }else if !isExt && globalVar.folderSearchDepth == 0 {
-                        newNode.hasChild=true
-                    }else{
-                        do{
-                            let resourceValues = try subFolder.resourceValues(forKeys: Set([.isUbiquitousItemKey]))
-                            if let doNotActualRead = resourceValues.isUbiquitousItem {
-                                if doNotActualRead {
-                                    newNode.hasChild=true
+                    // A media hierarchy intentionally exposes its direct child
+                    // folders as leaf media units. Opening a unit flattens its
+                    // descendants in the collection view, so there is no
+                    // navigable folder level to expand below it.
+                    if viewController.publicVar.isMediaUnitRoot(node.fullPath) {
+                        newNode.hasChild = false
+                        newNode.children = nil
+                    } else {
+                        let isExt = VolumeManager.shared.isExternalVolume(subFolder)
+                        if isExt && globalVar.folderSearchDepth_External == 0 {
+                            newNode.hasChild=true
+                        }else if !isExt && globalVar.folderSearchDepth == 0 {
+                            newNode.hasChild=true
+                        }else{
+                            do{
+                                let resourceValues = try subFolder.resourceValues(forKeys: Set([.isUbiquitousItemKey]))
+                                if let doNotActualRead = resourceValues.isUbiquitousItem {
+                                    if doNotActualRead {
+                                        newNode.hasChild=true
+                                    }else{
+                                        newNode.hasChild=hasSubdirectory(at: URL(string:newNode.fullPath)!)
+                                    }
                                 }else{
                                     newNode.hasChild=hasSubdirectory(at: URL(string:newNode.fullPath)!)
                                 }
-                            }else{
-                                newNode.hasChild=hasSubdirectory(at: URL(string:newNode.fullPath)!)
-                            }
-                        }catch{}
+                            }catch{}
+                        }
                     }
                 }
             }

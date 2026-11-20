@@ -32,11 +32,11 @@ class CustomCollectionViewManager: NSObject, NSCollectionViewDataSource, NSColle
         var configuredFile: FileModel?
         fileDB.lock()
         if let file=fileDB.db[SortKeyDir(fileDB.curFolder)]?.files.elementSafe(atOffset: indexPath.item)?.1{
-            item.configureWithImage(file)
             configuredFile = file
         }
         fileDB.unlock()
         if let configuredFile {
+            item.configureWithImage(configuredFile)
             getViewController(collectionView)?.scheduleNetworkFolderMediaCountIfNeeded(for: configuredFile)
         }
 

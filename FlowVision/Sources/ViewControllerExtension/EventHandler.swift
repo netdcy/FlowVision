@@ -116,6 +116,23 @@ extension ViewController {
     }
     
     func toggleRecursiveMode(){
+        let enablingRecursiveMode = !publicVar.isRecursiveMode
+        if enablingRecursiveMode && publicVar.isMediaUnitMode {
+            // Recursive traversal and media units have different folder
+            // semantics. Drop the persisted media hierarchy before starting
+            // a recursive scan so a unit cannot be treated as a normal tree.
+            if publicVar.mediaUnitPendingPath != nil {
+                fileDB.lock()
+                fileDB.ver += 1
+                fileDB.unlock()
+            }
+            publicVar.isMediaUnitMode = false
+            publicVar.mediaUnitRootPath = nil
+            publicVar.mediaUnitPendingPath = nil
+            UserDefaults.standard.removeObject(forKey: "isMediaUnitMode")
+            UserDefaults.standard.removeObject(forKey: "mediaUnitRootPath")
+            coreAreaView.hideInfo(force: true)
+        }
         publicVar.isRecursiveMode.toggle()
         var showText = NSLocalizedString("Exit Recursive Mode", comment: "退出递归模式")
         if publicVar.isRecursiveMode {
@@ -127,6 +144,65 @@ extension ViewController {
             closeSearchOverlay()
             showSearchOverlay()
         }
+    }
+
+    /// Enables a persistent media hierarchy rooted at the current directory.
+    /// The root itself remains a normal directory; its direct child folders
+    /// become media units whose contents are flattened when opened.
+    func toggleMediaUnitMode(){
+        if publicVar.isMediaUnitMode {
+            publicVar.isMediaUnitMode = false
+            publicVar.mediaUnitRootPath = nil
+            publicVar.mediaUnitPendingPath = nil
+            UserDefaults.standard.removeObject(forKey: "isMediaUnitMode")
+            UserDefaults.standard.removeObject(forKey: "mediaUnitRootPath")
+            coreAreaView.showInfo(
+                NSLocalizedString("Exit Media Unit Mode", comment: "退出媒体单元模式"),
+                timeOut: 1.0,
+                cannotBeCleard: true
+            )
+            refreshAll(needLoadThumbPriority: true)
+            return
+        }
+
+        fileDB.lock()
+        let currentPath = fileDB.curFolder
+        fileDB.unlock()
+        guard let currentURL = normalizedMediaUnitURL(currentPath),
+              !isVirtualFolderPath(currentPath),
+              currentURL.isFileURL,
+              FileManager.default.fileExists(atPath: currentURL.path, isDirectory: nil) else {
+            coreAreaView.showInfo(
+                NSLocalizedString("Media Unit Mode requires a folder", comment: "媒体单元模式需要文件夹"),
+                timeOut: 1.5,
+                cannotBeCleard: true
+            )
+            return
+        }
+
+        var isDirectory: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: currentURL.path, isDirectory: &isDirectory),
+              isDirectory.boolValue else {
+            coreAreaView.showInfo(
+                NSLocalizedString("Media Unit Mode requires a folder", comment: "媒体单元模式需要文件夹"),
+                timeOut: 1.5,
+                cannotBeCleard: true
+            )
+            return
+        }
+
+        publicVar.isRecursiveMode = false
+        publicVar.isMediaUnitMode = true
+        publicVar.mediaUnitRootPath = currentURL.absoluteString
+        publicVar.mediaUnitPendingPath = nil
+        UserDefaults.standard.set(true, forKey: "isMediaUnitMode")
+        UserDefaults.standard.set(currentURL.absoluteString, forKey: "mediaUnitRootPath")
+        coreAreaView.showInfo(
+            NSLocalizedString("Enable Media Unit Mode", comment: "开启媒体单元模式"),
+            timeOut: 1.0,
+            cannotBeCleard: true
+        )
+        refreshAll(needLoadThumbPriority: true)
     }
     
     func toggleRecursiveContainFolder(){

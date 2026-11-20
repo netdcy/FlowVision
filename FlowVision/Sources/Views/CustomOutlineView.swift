@@ -395,11 +395,11 @@ class CustomOutlineView: NSOutlineView, NSMenuDelegate {
         }
         guard let url = url else {return}
         
-        let result = getViewController(self)?.handleDelete(fileUrls: [url], isShowPrompt: isByKeyboard && isShowPrompt)
-        
-        if result == true && curRightClickedIndex != self.selectedRowIndexes.first {
-            refreshTreeView()
-        }
+        _ = getViewController(self)?.handleDelete(
+            fileUrls: [url],
+            isShowPrompt: isByKeyboard && isShowPrompt,
+            fromDirectoryTree: true
+        )
     }
     
     @objc func actPaste() {
