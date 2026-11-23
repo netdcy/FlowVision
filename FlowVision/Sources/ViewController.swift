@@ -73,7 +73,7 @@ class CustomProfile: Codable {
         }
     }
     var ThumbnailScrollbarWidth: Double {
-        return NSScroller.preferredScrollerStyle == .legacy ? 15 : 0
+        return NSScroller.preferredScrollerStyle == .legacy ? NSScroller.scrollerWidth(for: .regular, scrollerStyle: .legacy) : 0
     }
 
     // 可扩展值
