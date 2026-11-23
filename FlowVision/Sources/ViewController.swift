@@ -73,7 +73,7 @@ class CustomProfile: Codable {
         }
     }
     var ThumbnailScrollbarWidth: Double {
-        return 15
+        return NSScroller.preferredScrollerStyle == .legacy ? 15 : 0
     }
 
     // 可扩展值
@@ -655,9 +655,6 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             largeImageView.imageView.preferredImageDynamicRange = (publicVar.isEnableHDR) ? .high : .standard
         }
         
-        mainScrollView.scrollerStyle = .legacy
-        outlineScrollView.scrollerStyle = .legacy
-        
         treeViewData.initData(path: treeRootFolder)
         outlineView.reloadData()
         DispatchQueue.main.async {
@@ -668,6 +665,9 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         // =========Event monitoring configuration below==========
         
         NSApp.addObserver(self, forKeyPath: "effectiveAppearance", options: [.new, .old], context: nil)
+        
+        // System Settings - Appearance - Show scroll bars
+        NotificationCenter.default.addObserver(self, selector: #selector(preferredScrollerStyleDidChange(_:)), name: NSScroller.preferredScrollerStyleDidChangeNotification, object: nil)
         
         // 双击目录树
         // Double-click directory tree
@@ -915,6 +915,7 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
             NotificationCenter.default.removeObserver(self, name: NSScrollView.didLiveScrollNotification, object: scrollView)
             NotificationCenter.default.removeObserver(self, name: NSScrollView.didEndLiveScrollNotification, object: scrollView)
         }
+        NotificationCenter.default.removeObserver(self, name: NSScroller.preferredScrollerStyleDidChangeNotification, object: nil)
         
         // 停止监控
         // Stop monitoring
@@ -1117,12 +1118,17 @@ class ViewController: NSViewController, NSSplitViewDelegate, NSSearchFieldDelega
         }
     }
     
+    @objc func preferredScrollerStyleDidChange(_ notification: Notification) {
+        splitViewDidResizeSubviews(notification)
+    }
+    
     // var _temp_count_sizeChanged: Int = 0
     @objc func splitViewSizeChanged() {
 
         // 获取当前宽度
         // Get current width
-        let currentWidth = collectionView.bounds.width
+        let scrollbarWidth = publicVar.profile.ThumbnailScrollbarWidth
+        let currentWidth = mainScrollView.bounds.width - scrollbarWidth
         
         // 检查宽度是否发生变化
         // Check if width has changed
