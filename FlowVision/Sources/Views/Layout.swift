@@ -163,6 +163,7 @@ class CustomGridLayout: NSCollectionViewLayout {
             // Use fixed size to calculate position
             let positionWidth: CGFloat = floor(totalWidth/CGFloat(numberOfColumns+1))
             let positionHeight: CGFloat = positionWidth + filenamePadding
+            let rowOffset: CGFloat = (totalWidth - positionWidth * CGFloat(numberOfColumns+1)) / 2
 
             if xOffset + positionWidth > contentWidth {
                 xOffset = cellPadding
@@ -179,7 +180,7 @@ class CustomGridLayout: NSCollectionViewLayout {
 
             // 创建居中的frame
             // Create centered frame
-            let frame = CGRect(x: xOffset + horizontalOffset, y: yOffset + verticalOffset, width: itemWidth, height: itemHeight - filenamePadding)
+            let frame = CGRect(x: xOffset + rowOffset + horizontalOffset, y: yOffset + verticalOffset, width: itemWidth, height: itemHeight - filenamePadding)
             let insetFrame = frame.insetBy(dx: 0, dy: 0)
             let attributes = NSCollectionViewLayoutAttributes(forItemWith: indexPath)
             attributes.frame = insetFrame
@@ -251,9 +252,10 @@ class WaterfallLayout: NSCollectionViewLayout {
         let totalWidth = viewController.mainScrollView.bounds.width
         let scrollbarWidth = viewController.publicVar.profile.ThumbnailScrollbarWidth
         let columnWidth = floor((totalWidth - scrollbarWidth - 2*cellPadding) / CGFloat(numberOfColumns))
+        let columnOffset: CGFloat = (totalWidth - scrollbarWidth - 2*cellPadding - columnWidth * CGFloat(numberOfColumns)) / 2
         var xOffset: [CGFloat] = []
         for column in 0 ..< numberOfColumns {
-            xOffset.append(cellPadding + CGFloat(column) * columnWidth)
+            xOffset.append(cellPadding + columnOffset + CGFloat(column) * columnWidth)
         }
         var yOffset: [CGFloat] = .init(repeating: cellPadding, count: numberOfColumns)
         
